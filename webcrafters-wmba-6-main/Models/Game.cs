@@ -6,6 +6,7 @@ namespace wmbaApp.Models
 {
     /// <summary>
     /// A class for generic game information
+    /// - Emmanuel James
     /// </summary>
     public class Game : IValidatableObject
     {

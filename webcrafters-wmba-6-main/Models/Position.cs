@@ -5,6 +5,7 @@ namespace wmbaApp.Models
     /// <summary>
     /// A class for positions that a player can be assigned
     /// - Nadav Hilu
+    /// - Emmanuel James
     /// </summary>
     public class Position
     {

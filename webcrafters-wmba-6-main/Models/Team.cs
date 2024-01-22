@@ -5,6 +5,7 @@ namespace wmbaApp.Models
     /// <summary>
     /// A class for teams that are in a division
     /// - Nadav Hilu
+    /// - Emmanuel James
     /// </summary>
     public class Team
     {

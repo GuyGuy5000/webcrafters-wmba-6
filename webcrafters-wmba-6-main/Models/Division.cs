@@ -5,6 +5,7 @@ namespace wmbaApp.Models
     /// <summary>
     /// A class for the divisions that teams are split up into
     /// - Nadav Hilu
+    ///  - Emmanuel James
     /// </summary>
     public class Division
     {

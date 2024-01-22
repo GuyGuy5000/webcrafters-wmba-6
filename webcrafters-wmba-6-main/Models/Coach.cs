@@ -5,6 +5,7 @@ namespace wmbaApp.Models
     /// <summary>
     /// A class for coaches. This class will be coupled with the User table from .NET Identity to create a "coach" role in the future
     /// - Nadav Hilu
+    ///  - Emmanuel James
     /// </summary>
     public class Coach
     {

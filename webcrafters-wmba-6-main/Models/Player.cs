@@ -5,6 +5,7 @@ namespace wmbaApp.Models
     /// <summary>
     /// A class for players in a team
     /// - Nadav Hilu
+    /// - Emmanuel James
     /// </summary>
     public class Player
     {

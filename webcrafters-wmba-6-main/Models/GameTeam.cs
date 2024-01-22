@@ -5,6 +5,7 @@ namespace wmbaApp.Models
     /// <summary>
     /// A class for individual games that teams are assigned to.
     /// - Nadav Hilu
+    /// - Emmanuel James
     /// </summary>
     public class GameTeam
     {
