@@ -8,6 +8,15 @@ namespace wmbaApp.Models
     /// </summary>
     public class GameTeam
     {
+        [Display(Name = "Game Team Summary")]
+        public string Summary
+        {
+            get
+            {
+                return $"Team: {Team?.TeamName}, Game ID: {Game?.ID}, Lineup: {GmtmLineup}, Score: {GmtmScore ?? 0}";
+            }
+        }
+
         [Display(Name = "Team")]
         public int TmID { get; set; }
         public Team Team { get; set; }

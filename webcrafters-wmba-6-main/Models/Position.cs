@@ -8,6 +8,16 @@ namespace wmbaApp.Models
     /// </summary>
     public class Position
     {
+
+        [Display(Name = "Position Summary")]
+        public string Summary
+        {
+            get
+            {
+                return $"ID: {ID}, Position: {PosName}";
+            }
+        }
+
         public int ID { get; set; }
         [Required(ErrorMessage = "A position name is required")]
         [Display(Name = "Position")]

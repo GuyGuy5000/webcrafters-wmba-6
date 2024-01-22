@@ -8,6 +8,14 @@ namespace wmbaApp.Models
     /// </summary>
     public class Division
     {
+
+        public string Summary
+        {
+            get
+            {
+                return $"{DivName}";
+            }
+        }
         public int ID {  get; set; }
         [Required(ErrorMessage = "A division name is required")]
         [Display(Name = "Division Name")]

@@ -8,6 +8,17 @@ namespace wmbaApp.Models
     /// </summary>
     public class Team
     {
+
+        [Display(Name = "Team Summary")]
+        public string Summary
+        {
+            get
+            {
+                return $"ID: {ID}, Team: {TmName}, Abbreviation: {TmAbbreviation?.ToUpper()}, Division: {Division?.DivName}";
+            }
+        }   
+
+
         public int ID { get; set; }
         [Required(ErrorMessage = "Team name is required")]
         [StringLength(80, ErrorMessage = "Team name must be less than 80 characters.")]

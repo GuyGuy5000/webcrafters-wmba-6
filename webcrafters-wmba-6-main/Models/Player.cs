@@ -8,6 +8,29 @@ namespace wmbaApp.Models
     /// </summary>
     public class Player
     {
+
+        [Display(Name = "Player Info")]
+        public string Summary
+        {
+            get
+            {
+                return $"ID: {ID}, Name: {PlyrFirstName} {PlyrLastName}, Jersey Number: {PlyrJerseyNumber}, Team: {Team?.TeamName}";
+            }
+        }
+
+        [Display(Name = "Full Name")]
+        public string FullName
+        {
+            get
+            {
+                return $"{PlyrFirstName} {PlyrLastName}";
+            }
+        }
+
+
+
+
+
         public int ID { get; set; }
         [Required(ErrorMessage = "First name is required")]
         [Display(Name = "First Name")]

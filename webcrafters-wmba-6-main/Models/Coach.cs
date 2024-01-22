@@ -8,6 +8,34 @@ namespace wmbaApp.Models
     /// </summary>
     public class Coach
     {
+
+        [Display(Name = "Team Details")]
+        public string Summary
+        {
+            get
+            {
+                return $"{CoachFirstName} {CoachLastName}, Email: {CoachEmail}, Phone: {CoachPhone}";
+            }
+        }
+
+        [Display(Name = "Full Name")]
+        public string FullName
+        {
+            get
+            {
+                return $"{CoachFirstName} {CoachLastName}";
+            }
+        }
+
+        [Display(Name = "Phone")]
+        public string PhoneFormatted
+        {
+            get
+            {
+                return "(" + CoachPhone.Substring(0, 3) + ") " + CoachPhone.Substring(3, 3) + "-" + CoachPhone[6..];
+            }
+        }
+
         public int ID { get; set; }
         [Display(Name = "First Name")]
         [StringLength(50, ErrorMessage = "First name must be less than 50 characters.")]

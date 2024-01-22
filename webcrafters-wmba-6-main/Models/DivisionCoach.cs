@@ -8,6 +8,16 @@ namespace wmbaApp.Models
     /// </summary>
     public class DivisionCoach
     {
+
+        public string Summary
+        {
+            get
+            {
+                return $"{Division}, {Coach}  {Team} ";
+            }
+        }
+
+
         [Display(Name = "Division")]
         public int DivisionID { get; set; }
         public Division Division { get; set; }
