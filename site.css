@@ -1,0 +1,716 @@
+/*Done By: Emmanuel James
+ Last Modified: 2024/01/23
+/*Genereic Css*/
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 1279px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+
+.display-4 {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    font-size: 18px;
+}
+
+
+/*Genereic Css End*/
+
+
+
+
+/*Welland Minor Css Home Page Start*/
+
+
+body {
+    margin: 0;
+}
+
+
+.navbar {
+    background-color: #4CBB17;
+}
+
+
+/********Logo********/
+.logo {
+    width: 150px;
+    height: 200px;
+}
+
+.secondLogo {
+    width: 60px;
+    height: 60px;
+}
+
+/********Logo Ends********/
+
+
+
+/******Header Starts**********/
+
+.header {
+    background-color: #fff;
+    color: #001F3F;
+    padding: 4px 12px;
+    margin: 4px;
+    font-size: 20px;
+    font-weight: 700;
+    height: 40px;
+    margin-top: 100px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.header {
+    animation: fadeIn 1s ease-in-out;
+}
+
+.innerHeader {
+    font-family: italic;
+}
+
+.text-center {
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid black;
+}
+
+.welcome {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #001F3F;
+}
+
+
+
+
+.innerHeader {
+    font-size: 45px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.col-md-12 {
+    display: inline-flex;
+}
+
+.header {
+    font-size: 45px;
+}
+
+.welcomeSpan {
+    background-color: #4CBB17;
+    color: #001F3F;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 33px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .header {
+        font-size: 10px;
+    }
+}
+
+
+
+/******Header Ends**********/
+
+
+
+
+/******H2 and Icon Animation Starts**********/
+.firstSection h2 {
+    animation: fadeIn 1s ease-in-out;
+}
+
+
+.innerSection h2 {
+    animation: fadeIn 1s ease-in-out;
+}
+
+.games h2 {
+    animation: fadeIn 1s ease-in-out;
+}
+
+
+i:hover {
+    transform: translateY(-7px);
+}
+
+
+
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    h1 {
+        font-size: 15px;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+
+
+
+    .welcomeSpan {
+        background-color: #4CBB17;
+        color: #001F3F;
+        padding: 1px 2px;
+        margin: 5px;
+        font-size: 10px;
+        display: inline-block;
+    }
+
+    .innerHeader {
+        font-family: italic;
+        font-size: 16px;
+    }
+
+    .header {
+        background-color: #4CBB17;
+        color: #001F3F;
+        padding: 4px 12px;
+        margin: 4px;
+        height: 40px;
+        margin-top: 10px;
+        margin-left: 30px;
+        margin-right: 30px;
+    }
+
+        .header h1 {
+            font-size: 10px;
+        }
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .innerHeader {
+        font-family: italic;
+        font-size: 30px;
+        margin-top: 25px;
+    }
+}
+
+/******Header and Icon Ends**********/
+
+
+
+div {
+    position: relative;
+}
+
+
+/******Button Starts**********/
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #001F3F;
+    color: #fff;
+    border-radius: 5px;
+}
+
+    .btn:hover {
+        background-color: #F1A41D;
+    }
+
+
+/******Button Ends**********/
+
+
+
+/******startGameSection Starts**********/
+.startGameSection {
+    position: absolute;
+    bottom: 10px;
+    background-color: #4CBB17;
+    color: #001F3F;
+    left: 500px;
+    width: 450px;
+}
+
+    .startGameSection h2 {
+        margin-top: 30px;
+        font-weight: 700;
+    }
+
+
+    .startGameSection p, h2 {
+        margin-left: 20px;
+    }
+
+    .startGameSection a {
+        margin-top: 70px;
+        margin-left: 200px;
+        margin-right: 30px;
+    }
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .startGameSection {
+        background-color: #4CBB17;
+        color: #001F3F;
+        left: 0px;
+        margin-bottom: -238px;
+        width: 100%;
+        z-index: 100;
+    }
+
+        .startGameSection h2 {
+            margin-top: 30px;
+            font-weight: 700;
+        }
+
+        .startGameSection a {
+          
+            margin: 0 auto;
+        }
+
+         .startGameSection h2{
+             margin-top: 99px;
+         }
+
+        .startGameSection, p h2 a {
+          text-align:center;
+        }
+
+        
+}
+
+
+
+
+/******startGameSection Ends**********/
+
+
+
+
+
+
+
+/******coachCorner Starts**********/
+.coachCorner .txtCoach {
+    margin-bottom: 130px;
+    font-weight: 700;
+}
+
+.txtCoach {
+    margin-top: 170px;
+    text-align:center;
+}
+
+
+.coachCorner {
+    width: 425px;
+    background-color: #4CBB17;
+    color: #001F3F;
+    height: 785px;
+    position: absolute;
+    
+    left: 512px;
+}
+
+
+    .coachCorner, p i {
+        text-align: center;
+    }
+
+.bGame {
+    width: 100%;
+}
+
+.blockquote {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* Two columns */
+    width: 850px;
+    margin: 0 auto;
+    height: 400px;
+}
+
+    .blockquote img {
+        height: 400px;
+        width: 450px;
+    }
+
+.coachQuote {
+    background-color: #4CBB17;
+}
+
+.coachQuote h2 {
+   margin-top: 90px;
+  }
+
+.coachQuote h2 #quoteIcon {
+  color: #fff;
+  margin-right: 4px;
+  }
+
+
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .coachCorner {
+       display: none;
+    }
+
+    .bGame, .coach {
+        display: none;
+    }
+
+    .blockquote {
+        display: grid;
+        grid-template-columns: 1fr;
+        /* Single column for smaller screens */
+        width: auto;
+        margin: 0 auto;
+        height: auto;
+        text-align:center;
+    }
+    .blockquote h2 {
+         font-size: 14px;
+    }
+        .blockquote img {
+            width: 100%;
+            /* Make the image width 100% for smaller screens */
+            height: auto;
+        }
+
+    .coachQuote {
+        background-color: #4CBB17;
+    }
+
+        .coachQuote h2 {
+            margin-top: 20px;
+           
+        }
+}
+
+
+
+
+
+
+/********Inner Section Starts**********/
+
+.innerChildSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    gap: 10px; /* Adjust the gap as needed */
+}
+
+
+
+.innerSection {
+    border: 2px solid black;
+    background-color: #fff;
+}
+
+
+
+    .innerSection .innerSectionChild {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 400px;
+        text-align: center;
+    }
+
+        .innerSection .innerSectionChild img {
+            width: 100%;
+            margin-top: -130px;
+        }
+
+
+@keyframes rotateAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+    /* Rotate twice (360deg * 2) */
+}
+
+.innerSection .innerSectionChild img {
+    animation: rotateAnimation 15s linear forwards; /* Rotate the image twice over 5 seconds */
+}
+
+#icon {
+    animation: rotateAnimation 5s linear infinite; /* Rotate the image continuously */
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .innerSection .innerSectionChild img {
+        width: 70%;
+        margin-top: 290px;
+    }
+}
+/********Inner Section Ends**********/
+
+
+
+
+/********smallGallery Starts**********/
+.smallGallery {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    margin: 0px;
+}
+
+    .smallGallery img:hover {
+        transform: scale(1.1);
+    }
+
+    .smallGallery .firstImg, #DsecondImg, .secondImg {
+        width: 90%;
+        height: 70%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
+    }
+
+    .smallGallery .secondImg {
+        margin-left: -20px;
+    }
+
+    .smallGallery #DsecondImg,
+    .firstImgs {
+        margin-top: -90px;
+    }
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .smallGallery {
+        display: none;
+    }
+}
+/********smallGallery Ends**********/
+
+
+
+
+/********coachSection Starts**********/
+.coachSection {
+    margin-left: 500px;
+    width: 450px;
+    background-color: #4CBB17;
+    color: #001F3F;
+    height: 961px;
+}
+
+    .coachSection h2 {
+        margin-top: 190px;
+        margin-left: 20px;
+        font-weight: 700;
+    }
+
+    .coachSection a {
+        margin-top: 180px;
+        margin-left: 200px;
+        margin-right: 30px;
+    }
+
+
+#bat {
+    margin-top: -120px;
+    margin-bottom: 50px;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .coachSection {
+        display: none;
+    }
+
+        .coachSection h2 {
+            margin-top: 190px;
+            margin-left: 20px;
+            font-weight: 700;
+        }
+
+        .coachSection a {
+            margin-top: 180px;
+            margin-left: 200px;
+            margin-right: 30px;
+        }
+
+
+    #bat {
+        margin-top: -120px;
+        margin-bottom: 50px;
+    }
+}
+
+/********coachSection Ends**********/
+
+
+
+
+/********upcomingGames Starts**********/
+.upcomingGames h1 {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.upcomingGames, h1 i {
+    color: #001F3F;
+}
+
+.games {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 70px;
+    gap: 90px;
+}
+
+.gameInfo {
+    text-align: center;
+}
+
+
+.games h2, p {
+    font-weight: 700;
+    color: #001F3F;
+}
+
+
+
+.games .gameInfo {
+    display: block;
+}
+
+.schedule {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .games {
+        display: none;
+    }
+
+    .upcomingGames h1 {
+        font-size: 18px;
+    }
+}
+
+@media only screen and (min-width: 1279px) and (max-width: 1279px) {
+}
+
+
+
+/********upcomingGames Ends**********/
+
+
+
+
+
+/******Help Icon Starts************/
+.helpIconContainer {
+    align-items: center;
+    background-color: #000;
+    border-radius: 100%;
+    cursor: pointer;
+    display: flex;
+    height: 48px;
+    justify-content: center;
+    margin-top: 5px;
+    margin-left: 8px;
+    width: 48px;
+    color: #fff;
+    font-size: 27px;
+}
+
+.icon {
+}
+
+.fa-question {
+    color: #fff;
+}
+
+.helpIcon h2 {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    font-size: 40px;
+    font-weight: 500;
+    color: #001F3F;
+    display: flex;
+    justify-content: center;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 1279px) {
+    .helpIcon h2 {
+        font-size: 15px;
+    }
+
+    .helpIconContainer {
+        align-items: center;
+        background-color: #000;
+        border-radius: 100%;
+        cursor: pointer;
+        display: flex;
+        height: 30px;
+        justify-content: center;
+        margin-top: -4px;
+        margin-left: 8px;
+        width: 30px;
+        color: #fff;
+        font-size: 14px;
+    }
+}
+/******Help Icon Ends************/
+
+
+
+/******Footer Starts************/
+footer {
+    background-color: #4CBB17;
+    height: 40px;
+}
+
+
+/******Footer Ends************/
