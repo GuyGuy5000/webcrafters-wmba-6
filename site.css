@@ -49,7 +49,14 @@ body {
     background-color: #4CBB17;
 }
 
+.navbar a{
+    font-size: 20px;
+    
+}
 
+li a:hover {
+   color: white;
+}
 /********Logo********/
 .logo {
     width: 150px;
@@ -91,7 +98,6 @@ body {
 .text-center {
     text-align: center;
     background-color: #fff;
-    border: 1px solid black;
 }
 
 .welcome {
@@ -264,7 +270,7 @@ div {
     bottom: 10px;
     background-color: #4CBB17;
     color: #001F3F;
-    left: 500px;
+    left: 570px;
     width: 450px;
 }
 
@@ -439,7 +445,7 @@ div {
 
 
 .innerSection {
-    border: 2px solid black;
+  
     background-color: #fff;
 }
 
@@ -473,8 +479,19 @@ div {
     animation: rotateAnimation 15s linear forwards; /* Rotate the image twice over 5 seconds */
 }
 
-#icon {
-    animation: rotateAnimation 5s linear infinite; /* Rotate the image continuously */
+
+#icon1, #icon2 {
+    animation: rotateAnimation 5s linear infinite;
+}
+
+@keyframes rotateAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 
@@ -498,23 +515,37 @@ div {
 }
 
     .smallGallery img:hover {
-        transform: scale(1.1);
+        transform: scale(0.9);
     }
 
-    .smallGallery .firstImg, #DsecondImg, .secondImg {
+    .smallGallery .firstImg, #SsecondImg, #DsecondImg, .secondImg {
         width: 90%;
         height: 70%;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
     }
 
     .smallGallery .secondImg {
-        margin-left: -20px;
+        margin-left: 46px;
     }
 
     .smallGallery #DsecondImg,
-    .firstImgs {
+    .firstImgs,  #SsecondImg {
         margin-top: -90px;
     }
+
+    .smallGallery #DfirstImg, #DsecondImg {
+        margin-left: 80px;
+    }
+
+    .smallGallery #SsecondImg, pitcherImg {
+        margin-top: -180px;
+    }
+
+
+    .smallGallery #DsecondImg {
+        margin-top: -180px;
+    }
+
 
 @media only screen and (min-width: 320px) and (max-width: 1279px) {
     .smallGallery {
@@ -528,11 +559,12 @@ div {
 
 /********coachSection Starts**********/
 .coachSection {
-    margin-left: 500px;
+   position: relative;
+   left: 570px;
     width: 450px;
     background-color: #4CBB17;
     color: #001F3F;
-    height: 961px;
+    height: 893px;
 }
 
     .coachSection h2 {
@@ -637,8 +669,6 @@ div {
     }
 }
 
-@media only screen and (min-width: 1279px) and (max-width: 1279px) {
-}
 
 
 
