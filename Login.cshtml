@@ -1,6 +1,5 @@
-﻿@page
+@page
 @model LoginModel
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 @{
     ViewData["Title"] = "";
@@ -16,51 +15,48 @@
         </td>
         <td>
             <div class="login-container">
-                        <form id="account" method="post">
-                            <h3>Welcome back!</h3>
-                            <div asp-validation-summary="ModelOnly" role="alert"></div>
+                <form id="account" method="post">
+                    <h3>Welcome back!</h3>
+                    <div asp-validation-summary="ModelOnly" role="alert"></div>
 
-                            <div class="identity-box">
-                                <input asp-for="Input.Email" autocomplete="username" aria-required="true" placeholder="Enter Email" />
-                                <label asp-for="Input.Email">
-                                    <i class="fa fa-envelope envelope-top" style="font-size: 30px;"></i>
-                                </label>
-                                <span asp-validation-for="Input.Email"></span>
-                            </div>
+                    <div class="identity-box">
+                        <input asp-for="Input.Email" autocomplete="username" aria-required="true" placeholder="Enter Email" />
+                        <label asp-for="Input.Email">
+                        </label>
+                        <span asp-validation-for="Input.Email"></span>
+                    </div>
 
-                            <div class="identity-box">
-                                <input asp-for="Input.Password" autocomplete="current-password" aria-required="true" placeholder="Enter Password" />
-                                <label asp-for="Input.Password">
-                                <i class="fa fa-lock lock-top" style="font-size: 30px;"></i>
-                                </label>
-                                <span asp-validation-for="Input.Password"></span>
-                            </div>
+                    <div class="identity-box">
+                        <input asp-for="Input.Password" autocomplete="current-password" aria-required="true" placeholder="Enter Password" />
+                        <label asp-for="Input.Password">
+                        </label>
+                        <span asp-validation-for="Input.Password"></span>
+                    </div>
 
-                            <div class="forget-password">
-                                <label asp-for="Input.RememberMe">
-                                    <input class="form-check-input" asp-for="Input.RememberMe" />
-                                    @Html.DisplayNameFor(m => m.Input.RememberMe)
-                                </label>
+                    <div class="forget-password">
+                        <label asp-for="Input.RememberMe">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
 
-                                <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                            </div>
+                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                    </div>
 
-                            <div class="btn-login-page">
-                                <button id="login-submit" type="submit">Log in <i class="fa fa-sign-in"></i></button>
-                            </div>
+                    <div class="btn-login-page">
+                        <button id="login-submit" type="submit">Log in <i class="fa fa-sign-in"></i></button>
+                    </div>
 
-                            <div class="new-account">
-                                <p>
-                                    <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create an Account <i class="fa fa-arrow-right"></i></a>
-                                </p>
-                                <p>
-                                    <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                                </p>
+                    <div class="new-account">
+                        <p>
+                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Create an Account <i class="fa fa-arrow-right"></i></a>
+                        </p>
+                        <p>
+                            <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                        </p>
+                    </div>
 
-                            </div>
-
-                        </form>
-                </div>
+                </form>
+            </div>
         </td>
     </tr>
 </table>
