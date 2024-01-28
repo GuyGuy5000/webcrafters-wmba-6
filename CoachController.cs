@@ -66,20 +66,48 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Coach/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Coaches == null)
-            {
-                return NotFound();
-            }
+       public async Task<IActionResult> Edit(int? id)
+ {
+     if (id == null || _context.Coaches == null)
+     {
+         return NotFound();
+     }
 
-            var coach = await _context.Coaches.FindAsync(id);
-            if (coach == null)
-            {
-                return NotFound();
-            }
-            return View(coach);
-        }
+     var coach = await _context.Coaches.FindAsync(id);
+     if (coach == null)
+     {
+         return NotFound();
+     }
+
+     // Use TryUpdateModelAsync to update the model from the request data
+     if (await TryUpdateModelAsync(coach, "", c => c.CoachFirstName, c => c.CoachLastName ))
+     {
+         try
+         {
+            
+             await _context.SaveChangesAsync();
+             return View(coach); // Return the edited coach to the same Edit view
+         }
+         catch (DbUpdateConcurrencyException)
+         {
+             if (!CoachExists(coach.ID))
+             {
+                 return NotFound();
+             }
+             else
+             {
+                 throw;
+             }
+         }
+         catch (DbUpdateException)
+         {
+             // Handle database update exception, if needed
+             ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+         }
+     }
+
+     return View(coach);
+ }
 
         // POST: Coach/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
