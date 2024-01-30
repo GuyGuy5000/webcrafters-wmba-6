@@ -1,0 +1,81 @@
+﻿@model wmbaApp.Models.Team
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Team</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TmName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TmName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TmAbbreviation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TmAbbreviation)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Division)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Division.DivName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Players)
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Players.Count()
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DivisionCoaches)
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                int coachCount = Model.DivisionCoaches.Count;
+                if (coachCount > 0)
+                {
+                    string firstCoach = Model.DivisionCoaches.FirstOrDefault().Coach.FullName;
+                    if (coachCount > 1)
+                    {
+                        string coachList = "";
+                        var c = Model.DivisionCoaches.ToList();
+                        for (int i = 1; i < coachCount; i++)
+                        {
+                            coachList += c[i].Coach.FullName + " <br />";
+                        }
+                        <a class="" role="button" data-bs-toggle="collapse" href="#collapseCoach@(Model.ID)"
+                           aria-expanded="false" aria-controls="collapseCoach@(Model.ID)">
+                            @firstCoach <span class="badge bg-info">@coachCount</span>
+                        </a>
+                        <div class="collapse" id="collapseCoach@(Model.ID)">
+                            @Html.Raw(coachList)
+                        </div>
+                    }
+                    else
+                    {
+                        @firstCoach
+                    }
+                }
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <script>
+        GenerateContextHelp(["<p>This page shows you a team's details.</p>",
+            "<p>Click the Back to Teams list button to go back to the teams list.</p>"]);
+    </script>
+}

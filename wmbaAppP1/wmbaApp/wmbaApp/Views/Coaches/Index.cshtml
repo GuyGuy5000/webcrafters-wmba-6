@@ -1,0 +1,159 @@
+﻿@model IEnumerable<wmbaApp.Models.Coach>
+
+<partial name="_ViewHeading" />
+
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search @ViewData["numberFilters"]
+        </button>
+        <br />
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by Teams:</label>
+                        @Html.DropDownList("DivisionID", null, "All Divsion", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by Teams:</label>
+                        @Html.DropDownList("TeamID", null, "All Teams", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Search Player First/Last Name/Team/Team Abbrv:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+
+                <style>
+                    .clickable-header {
+                        cursor: pointer;
+                        padding: 8px 13px;
+                        background-color: #001F3F;
+                        color: #fff;
+                        border: 1px solid #001F3F;
+                        border-radius: 5px;
+                        display: inline-block;
+                    }
+
+                    .hover:hover {
+                        background-color: #4CBB17;
+                        border-color: #001F3F;
+                    }
+
+                </style>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <input type="submit" name="actionButton" value="Name" class="btn btn-toolbar" title="Sort by Full Name" />
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Email" class="btn btn-toolbar" title="Sort by Email" />
+                </th>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="clickable-header">
+                        Team
+                    </div>
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Phone" class="btn btn-toolbar" title="Sort by Phone" />
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        Division
+                    </div>
+                </th>
+             
+                <th style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
+                        <strong>&#x270D; Create New</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.CoachEmail)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.CoachPhone)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @{
+                            string Division = "Not assigned";
+                            if (item.DivisionCoaches.FirstOrDefault().Division != null)
+                                Division = item.DivisionCoaches.FirstOrDefault().Division.DivName;
+                            @Html.Raw(Division)
+                        }
+                    </td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                    @{
+                        int teamCount = item.DivisionCoaches.Count;
+                        if (teamCount > 0)
+                        {
+                            string firstTeam = item.DivisionCoaches.FirstOrDefault().Team.TmName;
+                            if (teamCount > 1)
+                            {
+                                string teamList = "";
+                                var c = item.DivisionCoaches.ToList();
+                                for (int i = 1; i < teamCount; i++)
+                                {
+                                    teamList += c[i].Team.TmName + " <br />";
+                                }
+                                <a class="" role="button" data-bs-toggle="collapse" href="#collapseCoach@(item.ID)"
+                                   aria-expanded="false" aria-controls="collapseCoach@(item.ID)">
+                                    @firstTeam <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Teams">@teamCount</span>
+                                </a>
+                                <div class="collapse" id="collapseCoach@(item.ID)">
+                                    @Html.Raw(teamList)
+                                </div>
+                            }
+                            else
+                            {
+                                @firstTeam
+                            }
+                        }
+                    }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            &#x270E;
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            &#x1F50E;
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            &#x274C;
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+
+@section Scripts {
+    <script>
+        GenerateContextHelp(["<p>This page lists all coaches you have access to. From here you can create, edit, and delete coaches.</p>",
+            "<p>Click one of the three buttons in a team's row to edit, view, or delete that coach.</p>",
+           ]);
+    </script>
+}

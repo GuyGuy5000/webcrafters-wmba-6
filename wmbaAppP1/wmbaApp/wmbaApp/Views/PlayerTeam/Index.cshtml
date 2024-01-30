@@ -1,0 +1,91 @@
+﻿@model IEnumerable<wmbaApp.Models.Player>
+
+@{
+    wmbaApp.Models.Team team = (wmbaApp.Models.Team)ViewBag.Team;
+    <partial name="_TeamDetails" model="team" />
+    ViewData["Title"] = ViewData["ControllerFriendlyName"];
+}
+
+<h2>Players</h2>
+<form asp-action="Index" method="get">
+    <input type="hidden" name="TeamID" value="@team.ID" />
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search @ViewData["numberFilters"]
+        </button>
+        <br />
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by name:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" asp-route-TeamID="@team.ID" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Player Full Name" class="btn btn-toolbar" />
+                </th>
+                <th class="d-none d-sm-table-cell">
+                    <input type="submit" value="Jersey Number" class="btn btn-toolbar" disabled/>
+                </th>
+                <th style="min-width:120px">
+                    <a asp-action="Create" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Add a new player to this team">
+                        <strong>&#x270D; Add New Player</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            &#x270E;
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            &#x1F50E;
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            &#x274C;
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+    <script>
+        GenerateContextHelp(["<p>This page lists all players in a team. From here you can create, edit, and delete players.</p>",
+            "<p>Click one of the three buttons in a player's row to edit, view, or delete that player.</p>",
+            "<p>To look for a specific player, use the Filter/Search button. Enter the information you are looking for and click the Filter button.</p>",
+            "<p>Click a table heading to sort by that heading in ascending order. Click the same heading again to sort by descending order.</p>"]);
+    </script>
+}

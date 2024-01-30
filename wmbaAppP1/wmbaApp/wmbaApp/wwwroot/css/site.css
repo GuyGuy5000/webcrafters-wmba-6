@@ -1,0 +1,1028 @@
+/*Done By: Emmanuel James
+ Last Modified: 2024/01/23
+/*Genereic Css*/
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 1299px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background-image: url()
+}
+
+
+.display-4 {
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    font-size: 18px;
+}
+
+.img-player {
+    height: 300px;
+    width: 380px;
+}
+/*Genereic Css End*/
+
+
+
+
+/*Welland Minor Css Home Page Start*/
+
+
+body {
+    margin: 0;
+}
+
+
+.navbar {
+    background-color: #4CBB17;
+}
+
+    .navbar a {
+        font-size: 20px;
+    }
+
+li a:hover {
+    color: white;
+}
+
+.dropdown-menu a:hover {
+    background-color: #4CBB17; 
+    color: #fff;
+}
+/********Logo********/
+.logo {
+    width: 150px;
+    height: 200px;
+}
+
+
+
+.secondLogo {
+    width: 60px;
+    height: 60px;
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 769px) {
+    #logo {
+        width: 30%;
+        animation: rotateAnimation 12s linear forwards; /* Rotate the image twice over 5 seconds */
+    }
+
+    .error {
+        padding-top: 80px;
+        font-size: 14px;
+    }
+
+        .error h1 {
+            font-size: 12px;
+        }
+}
+
+/********Logo Ends********/
+/******Header Starts**********/
+.header {
+    background-color: #fff;
+    color: #001F3F;
+    padding: 4px 12px;
+    margin: 4px;
+    font-size: 20px;
+    font-weight: 700;
+    height: 40px;
+    margin-top: 100px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.header {
+    animation: fadeIn 1s ease-in-out;
+}
+
+.innerHeader {
+    font-family: italic;
+}
+
+.text-center {
+    text-align: center;
+    background-color: #fff;
+}
+
+.welcome {
+    position: absolute;
+    top: 20%;
+    margin: 0 auto;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #001F3F;
+}
+
+
+
+
+.innerHeader {
+    font-size: 45px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.col-md-12 {
+    display: inline-flex;
+}
+
+
+.welcomeSpan {
+    background-color: #4CBB17;
+    color: #001F3F;
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 33px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-100px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.header {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+
+
+.logo {
+    margin: 10px 0;
+}
+
+
+@media only screen and (max-width: 1299px) {
+    .header {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 769px) {
+    .header {
+        font-size: 10px;
+        margin-bottom: 10px;
+        text-align: center;
+        border-radius: 5px;
+        padding: 50px;
+    }
+}
+
+
+
+/******Header Ends**********/
+
+
+/******Context help starts*********/
+.help-icon {
+    align-items: center;
+    background-color: #000;
+    border-radius: 100%;
+    cursor: pointer;
+    height: 30px;
+    justify-content: center;
+    margin-bottom: 20px;
+    width: 28px;
+    z-index: 1000;
+}
+
+.icon {
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    margin-left: 8px;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        right: -300px;
+    }
+
+    100% {
+        opacity: 1;
+        right: -105px;
+    }
+}
+
+.help-box {
+    background-color: #FFF;
+    border: solid 3px #000;
+    border-radius: 9px;
+    box-shadow: 0 0 1px rgba(4, 98, 251);
+    display: none;
+    right: -105px;
+    padding: 17px;
+    position: fixed;
+    top: 105px;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    width: 300px;
+    z-index: 1000;
+    animation: fadeIn 0.4s;
+}
+
+#nextBtn,
+#skipBtn {
+    background-color: rgba(255, 255, 255, 1.0);
+    border-radius: 6px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    margin-right: 10px;
+    padding: 5px 10px;
+}
+
+.help-box p {
+    font-size: 14px;
+}
+
+.help-content {
+    margin-bottom: 10px;
+}
+
+.help-actions {
+    text-align: right;
+}
+
+.context-help {
+    background-color: #38F;
+    color: #FFF;
+    cursor: help;
+    display: inline;
+    padding: 1px 5px;
+    border-radius: 100%;
+}
+
+/******Context help ends*********/
+
+
+
+/******H2 and Icon Animation Starts**********/
+.firstSection h2 {
+    animation: fadeIn 1s ease-in-out;
+}
+
+
+
+.games h2 {
+    animation: fadeIn 1s ease-in-out;
+}
+
+
+i:hover {
+    transform: translateY(-7px);
+}
+
+
+
+
+@media only screen and (min-width: 320px) and (max-width: 1299px) {
+    h1 {
+        font-size: 15px;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+    }
+
+
+
+    .welcomeSpan {
+        background-color: #4CBB17;
+        color: #001F3F;
+        padding: 1px 2px;
+        margin: 5px;
+        font-size: 10px;
+        display: inline-block;
+    }
+
+    .innerHeader {
+        font-family: italic;
+        font-size: 16px;
+    }
+
+    .header {
+        background-color: #4CBB17;
+        color: #001F3F;
+        padding: 4px 12px 51px;
+        margin: 4px;
+        height: 40px;
+        margin-top: 10px;
+        margin-left: 30px;
+        margin-right: 30px;
+    }
+
+        .header h1 {
+            font-size: 10px;
+        }
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 1299px) {
+    .innerHeader {
+        font-family: italic;
+        font-size: 30px;
+        margin-top: 25px;
+    }
+}
+
+/******Header and Icon Ends**********/
+
+
+
+div {
+    position: relative;
+}
+
+
+/******Button Starts**********/
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #001F3F;
+    color: #fff;
+    border-radius: 5px;
+}
+
+    .btn:hover {
+        background-color: #F1A41D;
+    }
+
+
+/******Button Ends**********/
+
+
+/******startGameSection Starts**********/
+/* Styles for larger screens */
+.startGameSection {
+    background-color: #4CBB17;
+    color: #001F3F;
+    text-align: center;
+    margin-top: -30px;
+    margin-bottom: 120px;
+    border-radius: 5px;
+    margin-bottom: 50px;
+    width: 100%;
+    z-index: 100;
+}
+
+    .startGameSection a {
+        margin: 0 auto;
+        margin-bottom: 20px;
+        display: inline-block;
+        margin-top: 20px;
+    }
+
+    .startGameSection h2 {
+        margin-top: 30px;
+        padding-top: 20px;
+        font-weight: 700;
+    }
+
+    .startGameSection p,
+    .startGameSection h2 {
+        margin-left: 20px;
+    }
+
+/* Styles for tablet and mobile screens */
+.PLAY {
+    display: none;
+    background-color: #4CBB17;
+    color: #001F3F;
+    text-align: center;
+    margin-top: -30px;
+    margin-bottom: 60px;
+    border-radius: 5px;
+    margin-bottom: 50px;
+    width: 100%;
+    z-index: 100;
+}
+
+    .PLAY a {
+        margin: 20px auto;
+        display: inline-block;
+    }
+
+    .PLAY h2 {
+        margin-top: 30px;
+        font-weight: 700;
+    }
+
+    .PLAY p,
+    .PLAY h2 {
+        margin-left: 20px;
+    }
+
+
+@media only screen and (max-width: 768px) {
+
+    .PLAY {
+        display: block;
+    }
+
+
+    .startGameSection {
+        display: none;
+    }
+}
+
+
+
+
+/******startGameSection Ends**********/
+
+
+
+
+
+
+
+/******coachCorner Starts**********/
+.coachCorner .txtCoach {
+    margin-bottom: 130px;
+    font-weight: 700;
+}
+
+.txtCoach {
+    margin-top: 170px;
+    text-align: center;
+}
+
+
+.coachCorner {
+    width: 425px;
+    background-color: #4CBB17;
+    color: #001F3F;
+    height: 785px;
+    position: absolute;
+    left: 512px;
+}
+
+
+.coachCorner, p i {
+    text-align: center;
+}
+
+.bGame {
+    width: 100%;
+}
+
+.blockquote {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 850px;
+    margin: 0 auto;
+    height: 400px;
+    text-align: center;
+}
+
+    .blockquote img {
+        height: 400px;
+        width: 450px;
+    }
+
+.coachQuote {
+    background-color: #4CBB17;
+    border-radius: 5px;
+}
+
+    .coachQuote h2 {
+        margin-top: 90px;
+    }
+
+        .coachQuote h2 #quoteIcon {
+            color: #fff;
+            margin-right: 4px;
+        }
+
+
+
+@media only screen and (min-width: 320px) and (max-width: 1299px) {
+    .coachCorner {
+        display: none;
+    }
+
+    .bGame, .coach {
+        display: none;
+    }
+
+    .blockquote {
+        display: grid;
+        grid-template-columns: 1fr;
+        width: auto;
+        margin: 0 auto;
+        height: auto;
+        text-align: center;
+    }
+
+        .blockquote h2 {
+            font-size: 14px;
+        }
+
+        .blockquote img {
+            width: 100%;
+            height: auto;
+        }
+
+    .coachQuote {
+        background-color: #4CBB17;
+        border-radius: 5px;
+    }
+
+        .coachQuote h2 {
+            margin-top: 20px;
+        }
+}
+
+
+
+
+
+
+/********Inner Section Starts**********/
+
+body {
+    margin: 0;
+}
+
+.center-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.smallGallery {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 80%;
+}
+
+
+.innerSection h2 {
+    animation: fadeIn 1s ease-in-out;
+}
+
+
+
+.innerSection {
+    background-color: #fff;
+}
+
+
+
+    .innerSection .innerSectionChild {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 400px;
+        text-align: center;
+    }
+
+.innerSectionChild img {
+    width: 100%;
+    margin-top: 1300px;
+}
+
+@media only screen and (min-width: 1299px) and (max-width:1690px ) {
+    .innerSectionChild img {
+        width: 100%;
+        margin-top: 1300px;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width:1299px ) {
+    .innerSectionChild img {
+        width: 100%;
+        position: relative;
+        top: -480px;
+       
+    }
+
+    .smallGallery {
+        top: 100px;
+    }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 769px) {
+    .innerSectionChild img {
+        width: 100%;
+        margin-top: 0px;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1280px) {
+    .innerSectionChild img {
+        width: 100%;
+        margin-top: 1300px;
+    }
+}
+
+@keyframes rotateAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+    /* Rotate twice (360deg * 2) */
+}
+
+.innerSection .innerSectionChild img {
+    animation: rotateAnimation 12s linear forwards; /* Rotate the image twice over 5 seconds */
+}
+
+
+#icon1, #icon2 {
+    animation: rotateAnimation 5s linear infinite;
+}
+
+@keyframes rotateAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(720deg);
+    }
+}
+
+#DfirstImg {
+    background-color: #4CBB17;
+    text-align: center;
+}
+
+
+
+    #DfirstImg h4 {
+        margin-top: 40px;
+        margin-bottom: 50px;
+        font-weight: 700;
+    }
+
+
+@media only screen and (min-width: 769px) and (max-width: 1000px) {
+    #DfirstImg p {
+        font-size: 11px;
+        margin-bottom: -10px;
+        margin-top: 10px;
+    }
+
+    #DfirstImg h4 {
+        font-size: 17px;
+        margin-top: 30px;
+        margin-bottom: 70px;
+    }
+
+    #DfirstImg a {
+        font-size: 11px;
+        margin-top: -80px;
+    }
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 1299px) {
+    .innerSection .innerSectionChild img {
+        width: 70%;
+    }
+}
+/********Inner Section Ends**********/
+
+.smallGallery {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    position: absolute;
+    left: 50%;
+    margin-top: 650px;
+    transform: translate(-50%, -50%);
+    max-width: 80%; /* Adjust the max-width as needed */
+}
+
+    .smallGallery .firstImg,
+    #SsecondImg,
+    #DsecondImg,
+    .secondImg {
+        width: 90%;
+        height: 50%;
+    }
+
+/* Add a container to center the smallGallery on the page */
+
+
+@media only screen and (min-width: 769px) and (max-width:1299px ) {
+    .smallGallery {
+        display: grid;
+        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+        position: absolute;
+        left: 50%;
+        margin-top: 290px;
+        transform: translate(-50%, -50%);
+        max-width: 80%; /* Adjust the max-width as needed */
+    }
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 769px) {
+    .smallGallery {
+        display: none;
+    }
+}
+
+
+@media only screen and (min-width: 13.3in) and (max-width: 16in) {
+    .smallGallery .firstImg,
+    #SsecondImg,
+    #DsecondImg,
+    .secondImg {
+        width: 90%;
+        height: 70%;
+    }
+
+    .smallGallery {
+        display: grid;
+        grid-template-rows: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+        position: absolute;
+        left: 50%;
+        margin-top: 450px;
+        transform: translate(-50%, -50%);
+        max-width: 80%; /* Adjust the max-width as needed */
+    }
+}
+
+
+
+.smallGallery img:hover {
+    transform: scale(0.9);
+}
+
+.smallGallery .firstImg,
+#SsecondImg,
+#DsecondImg,
+.secondImg {
+    width: 90%;
+    height: 70%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+
+
+
+
+
+/********smallGallery Ends**********/
+
+
+
+
+/********coachSection Starts**********/
+.coachSection {
+    position: relative;
+    margin: 0 auto;
+    width: 950px;
+    background-color: #4CBB17;
+    color: #001F3F;
+    height: 263px;
+    margin-top: -130px;
+}
+
+    .coachSection h2 {
+        margin-top: 190px;
+        margin-left: 20px;
+        font-weight: 700;
+    }
+
+    .coachSection a {
+        margin-top: 10px;
+        margin-left: 340px;
+        margin-right: 30px;
+    }
+
+
+#bat {
+    margin-top: -120px;
+    margin-bottom: 50px;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 1299px) {
+    .coachSection {
+        display: none;
+    }
+
+        .coachSection h2 {
+            margin-top: 190px;
+            margin-left: 20px;
+            font-weight: 700;
+        }
+
+        .coachSection a {
+            margin-top: 180px;
+            margin-left: 200px;
+            margin-right: 30px;
+        }
+
+
+    #bat {
+        margin-top: -120px;
+        margin-bottom: 50px;
+    }
+}
+
+/********coachSection Ends**********/
+
+
+
+
+/********upcomingGames Starts**********/
+.upcomingGames h1 {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 50px;
+    font-weight: 700;
+}
+
+.Highlight h1 {
+    text-align: center;
+    margin-top: 100px;
+    font-size: 50px;
+    font-weight: 700;
+}
+
+
+.upcomingGames, h1 i {
+    color: #001F3F;
+}
+
+.games {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 70px;
+    gap: 90px;
+}
+
+.gameInfo {
+    text-align: center;
+}
+
+
+.games h2, p {
+    font-weight: 700;
+    color: #001F3F;
+}
+
+
+
+.games .gameInfo {
+    display: block;
+}
+
+@media only screen and (min-width: 769px) and (max-width: 1299px) {
+    .games, .upcomingGames {
+        position: relative;
+        top: -400px;
+    }
+
+    .games {
+        margin-bottom: -290px;
+    }
+}
+
+.schedule {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+
+
+@media only screen and (min-width: 320px) and (max-width: 800px) {
+    .upcomingGames h1 {
+        font-size: 18px;
+    }
+
+    .Highlight h1 {
+        font-size: 18px;
+    }
+}
+
+
+
+
+/********upcomingGames Ends**********/
+
+
+
+
+
+/******Help Icon Starts************/
+.helpIconContainer {
+    align-items: center;
+    background-color: #000;
+    border-radius: 100%;
+    cursor: pointer;
+    display: flex;
+    height: 48px;
+    justify-content: center;
+    margin-top: 5px;
+    margin-left: 8px;
+    width: 48px;
+    color: #fff;
+    font-size: 27px;
+}
+
+.icon {
+}
+
+.fa-question {
+    color: #fff;
+}
+
+.helpIcon h2 {
+    text-align: center;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    font-size: 40px;
+    font-weight: 500;
+    color: #001F3F;
+    display: flex;
+    justify-content: center;
+}
+
+@media only screen and (min-width: 320px) and (max-width: 1299px) {
+    .helpIcon h2 {
+        font-size: 15px;
+    }
+
+    .helpIconContainer {
+        align-items: center;
+        background-color: #000;
+        border-radius: 100%;
+        cursor: pointer;
+        display: flex;
+        height: 30px;
+        justify-content: center;
+        margin-top: -4px;
+        margin-left: 8px;
+        width: 30px;
+        color: #fff;
+        font-size: 14px;
+    }
+}
+/******Help Icon Ends************/
+
+
+
+/******Footer Starts************/
+footer {
+    background-color: #4CBB17;
+    height: 40px;
+    font-weight: 700;
+    margin-bottom: -40px;
+}
+
+
+/******Footer Ends************/
+
+
+
+

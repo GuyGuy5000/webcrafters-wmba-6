@@ -1,0 +1,111 @@
+﻿@model wmbaApp.Models.Player
+
+<partial name="_ViewHeading" />
+<hr />
+@{
+var hasPicture = (Model.PlayerPhoto?.Content != null);
+    if (hasPicture)
+        {
+            @:<div>
+                string imageBase64 = Convert.ToBase64String(Model.PlayerPhoto.Content);
+                string imageSrc = string.Format("data:" + Model.PlayerPhoto.MimeType + ";base64,{0}", imageBase64);
+                <img src="@imageSrc" alt="Display Picture of @Model.FullName" title="Display Picture of @Model.FullName" class="img-fluid rounded" />
+            @:</div><hr />
+        }
+    }
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div>
+                @{
+                    if (hasPicture)
+                    {
+                        <div class="row">
+                            <div class="form-check m-3">
+                                <input class="form-check-input" type="checkbox" id="chkPicture" name="chkPicture">
+                                <label class="form-check-label" for="chkRemoveImage">
+                                    <strong>Check to remove Photo</strong>
+                                </label>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+            @* adding a picture *@
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label custom-file-label">Picture File:</label>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" name="thePicture" id="thePicture">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="PlyrFirstName" class="control-label"></label>
+                <input asp-for="PlyrFirstName" class="form-control" />
+                <span asp-validation-for="PlyrFirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrLastName" class="control-label"></label>
+                <input asp-for="PlyrLastName" class="form-control" />
+                <span asp-validation-for="PlyrLastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrJerseyNumber" class="control-label"></label>
+                <input asp-for="PlyrJerseyNumber" class="form-control" />
+                <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrDOB" class="control-label"></label>
+                <input asp-for="PlyrDOB" class="form-control" />
+                <span asp-validation-for="PlyrDOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TeamID" class="control-label"></label>
+                <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
+                    <option value="">No Team Assigned to Player</option>
+                </select>
+                <span asp-validation-for="TeamID" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+@*                 <label class="control-label">@Html.DisplayNameFor(model => model.PlayerPositions)</label> *@
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Player Position</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+                            <strong>-</strong>
+                        </button>
+                        @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label"> Available Positions</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+                            <strong>+</strong>
+                        </button>
+                        @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div>
+    <a asp-action="Index">Back to Players List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/multiselect.js"></script>
+}
