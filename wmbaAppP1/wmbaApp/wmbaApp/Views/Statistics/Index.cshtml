@@ -1,0 +1,188 @@
+﻿@using wmbaApp.Utilities;
+@model IEnumerable<wmbaApp.Models.Statistic>
+@using wmbaApp.Models;
+<partial name="_ViewHeading" />
+
+<a asp-action="DownloadStatisticsReport" class="btn btn-info float-end d-none d-lg-table-cell">Download Revenue Report</a>
+<form asp-action="Index" method="get">
+    <table class="table mt-3">
+        <thead>
+            <tr>
+
+                <style>
+                    .clickable-header {
+                        cursor: pointer;
+                        padding: 8px 13px;
+                        background-color: #001F3F;
+                        color: #fff;
+                        border: 1px solid #001F3F;
+                        border-radius: 5px;
+                        display: inline-block;
+                    }
+
+                </style>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="clickable-header">
+                        Player
+                    </div>
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsGP
+                    </div>
+                </th>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="clickable-header">
+                        StatsPA
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsAB
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsAVG
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsOBP
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsOPS
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsSLG
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsH
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsR
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsK
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsHR
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsRBI
+                    </div>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        StatsBB
+                    </div>
+                </th>
+
+
+
+                <th style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a Players Statistics">
+                        <strong>&#x270D; Create </strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.Players.FirstOrDefault().FullName)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsGP)
+                    </td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsPA)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsAB)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsAVG)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsOBP)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsOPS)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsSLG)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsH)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsR)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsK)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsHR)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsRBI)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsBB)
+                    </td>
+                    <td>
+                      
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title=" @ViewData["ControllerFriendlyName"] Detail">
+                            &#x270E;
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            &#x274C;
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script>
+        GenerateContextHelp(["<p>This page lists all players statistics you have access to. From here you can create, edit, and delete statistics.</p>",
+            "<p>Click one of the three buttons in a team's row to edit, view, or delete that players statistics.</p>"]);
+    </script>
+}

@@ -1,0 +1,58 @@
+﻿@model wmbaApp.Models.Team
+
+<partial name="_ViewHeading" />
+
+<hr />
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ID" />
+
+    <div class="row">
+        <div class="col-md-4">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="TmName" class="control-label"></label>
+                <input asp-for="TmName" class="form-control" placeholder="Ex: Green Jr. Jackfish"/>
+                <span asp-validation-for="TmName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TmAbbreviation" class="control-label"></label>
+                <input asp-for="TmAbbreviation" class="form-control" placeholder="Ex: GJF"/>
+                <span asp-validation-for="TmAbbreviation" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DivisionID" class="control-label"></label>
+                <div class="input-group mb-3">
+@*                     <div class="input-group-prepend">
+                        <button class="btn btn-outline-secondary" id="nowAddDivision" data-bs-toggle="modal" data-bs-target="#addDivisionCoachModal" type="button">&#x2795;</button>
+                    </div> *@
+                    <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID">
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div>
+    <partial name="_BackToList" />
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        GenerateContextHelp(["<p>This page lets you edit a team.</p>",
+            "<p>Enter valid information into each field and click the Save button to save your changes.</p>",
+            "<p>Click the Back to Teams list button to go back to the teams list.</p>"]);
+    </script>
+}

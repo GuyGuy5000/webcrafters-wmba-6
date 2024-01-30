@@ -1,0 +1,155 @@
+﻿ <!-- Done By: Emmanuel James -->
+<!-- Last Modified: 2024/01/23 -->
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container-fluid text-center d-flex align-items-center justify-content-center">
+    <div class="row">
+        <div class="col-md-12">
+            <div>
+                <h1 class="header text-md">THE OFFICIAL HOME OF </h1>
+            </div>
+            <img class="logo img-fluid" src="~/Image/Main.png" alt="Welland Minor Baseball Logo" tabindex="6">
+            <div>
+                <h1 class="header text-md"> WELLAND MINOR BASEBALL</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="firstSection">
+    <div class="welcome">
+        <h2 class="innerHeader">~ Welcome ~</h2>
+        <h2 class="welcomeSpan">ENTERING WELLAND MINOR TERRITORY</h2>
+    </div>
+
+    <img class="img-fluid" src="~/Image/Kids.png" alt="Kids Playing Baseball" tabindex="8">
+</div>
+<div class="startGameSection">
+    <h2>CREATE A GAME</h2>
+    <p>Create your players, teams and divisions.</p>
+    <p class="link">
+
+        <a asp-controller="Teams" asp-action="Create" target="_blank" class="btn">CREATE TEAM <i class="fa-solid fa-angles-right" tabindex="7"></i></a>
+    </p>
+</div>
+
+<div class="PLAY">
+    <h2>START A GAME</h2>
+    <p>Select your players, teams and divisions.</p>
+    <p class="link">
+
+        <a asp-controller="Home" asp-action="UnderConstruction" class="btn">START <i class="fa-solid fa-angles-right" tabindex="7"></i></a>
+    </p>
+</div>
+<div class="innerSection">
+
+    <div class="innerChildSection">
+
+        <div class="smallGallery">
+            <div class="firstImg img-fluid" id="DfirstImg">
+                <h4>Hello Admin, do you want to know how your players are performing?</h4>
+                <p>
+                    <a asp-controller="Statistics" asp-action="Index" target="_blank" class="btn">VIEW STATS <i class="fa-solid fa-angles-right" tabindex="7"></i></a>
+                </p>
+            </div>
+            <img class="secondImg img-fluid" id="pitcherImg" src="~/Image/Pitcher (2).jpg" alt="Pitcher" tabindex="11">
+            <img class="firstImg img-fluid" id="DsecondImg" src="~/Image/Player-Aims.jpg" alt="Player Aiming" tabindex="12">
+
+            <img class="secondImg img-fluid" id="SsecondImg" src="~/Image/WMBA.png" alt="WMBA Logo" tabindex="13">
+        </div>
+    </div>
+
+    <div class="innerSectionChild">
+        <div>
+            <img id="innerLogo" src="~/Image/Main.png" alt="Inner Logo" tabindex="14">
+        </div>
+    </div>
+
+    <div class="upcomingGames">
+        <h1><i id="icon1" class="fa-solid fa-baseball"></i> UPCOMING GAMES <i id="icon2" class="fa-solid fa-baseball"></i></h1>
+    </div>
+
+    <div>
+    </div>
+
+    <div class="games" tabindex="15">
+        <div class="gameInfo">
+            <h2>WMBA</h2>
+            <p>Vs</p>
+            <h2>Blue Jays</h2>
+            <p>Venue: Toronto<br /> Time: 5:00pm</p>
+        </div>
+
+
+        <div class="gameInfo">
+            <h2>WMBA</h2>
+            <p>Vs</p>
+            <h2>Blue Jays</h2>
+            <p>Venue: Toronto<br /> Time: 5:00pm</p>
+        </div>
+
+        <div class="gameInfo">
+            <h2>WMBA</h2>
+            <p>Vs</p>
+            <h2>Blue Jays</h2>
+            <p>Venue: Toronto<br /> Time: 5:00pm</p>
+        </div>
+
+        <div class="gameInfo">
+            <h2>WMBA</h2>
+            <p>Vs</p>
+            <h2>Blue Jays</h2>
+            <p>Venue: Toronto<br /> Time: 5:00pm</p>
+        </div>
+
+
+    </div>
+    <p class="schedule">
+        <a asp-controller="Teams" asp-action="Index" target="_blank" class="btn">FULL SCHEDULE<i class="fa-solid fa-angles-right" tabindex="16"></i></a>
+    </p>
+
+    <div class="coachCorner">
+        <h2 class="txtCoach">COACH'S CORNER</h2>
+        <i id="bat" class="fa-solid fa-baseball-bat-ball fa-4x"></i>
+        <p>Select your players, teams and divisions.</p>
+        <p>
+            <a href="#" target="_blank" class="btn">MORE INFO <i class="fa-solid fa-angles-right" tabindex="17"></i></a>
+        </p>
+    </div>
+    <img class="bGame img-fluid" src="~/Image/NewGame.jpg" alt="New Game" tabindex="18">
+
+    <div class="blockquote">
+        <div>
+            <img class="coach img-fluid" src="~/Image/coach.jpg" alt="Coach" tabindex="19">
+        </div>
+        <div class="coachQuote">
+            <h2>
+                <i id="quoteIcon" class="fa-solid fa-quote-left"></i>
+                IT TAKES DETERMINATION <br /> AND DRIVE,<br /> IT'S NOT JUST A GAME, <br /> IT'S A WAY OF LIFE.
+                <i id="quoteIcon" class="fa-solid fa-quote-right"></i>
+            </h2>
+        </div>
+    </div>
+
+    <div class="Highlight">
+        <h1><i class="fa-solid fa-trophy"></i> HIGHLIGHT REEL <i class="fa-solid fa-trophy"></i></h1>
+    </div>
+
+    <div id="vimeoPlayer" style="padding:52.67% 0 0 0;position:relative;">
+        <iframe id="videoFrame" src="https://player.vimeo.com/video/905088734?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Team"></iframe>
+    </div>
+    <script src="https://player.vimeo.com/api/player.js"></script>
+
+  
+   
+
+</div>
+@section Scripts {
+    <script>
+        GenerateContextHelp(["<p>This is the homepage help icon. Each page contains a help icon that provides contextual help for that page.</p>",
+            "<p>You can get help via clicking the help icon located in the navigation bar or pressing alt + h.</p>",
+            "<p>The navigation bar at the top of the page will allow you to navigate through each section of the website.</p>"]);
+    </script>
+}

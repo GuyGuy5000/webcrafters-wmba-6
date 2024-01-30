@@ -1,0 +1,72 @@
+﻿@using wmbaApp.Utilities;
+@model IEnumerable<wmbaApp.Models.Division>
+
+<partial name="_ViewHeading" />
+
+<form asp-action="Index" method="get">
+    <table class="table mt-3">
+
+        <thead>
+            <style>
+                .clickable-header {
+                    cursor: pointer;
+                    padding: 8px 13px;
+                    background-color: #001F3F;
+                    color: #fff;
+                    border: 1px solid #001F3F;
+                    border-radius: 5px;
+                    display: inline-block;
+                }
+
+            </style>
+            <tr>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="clickable-header">
+                        Division
+                    </div>
+                </th>
+
+                <th style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a new Division">
+                        <strong>&#x270D; Create New Division</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DivName)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            &#x270E;
+                        </a>
+                        <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            &#x1F50E;
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            &#x274C;
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script>
+        GenerateContextHelp(["<p>This page lists all Divisions you have access to. From here you can create, edit, and delete Divisions.</p>",
+            "<p>Click one of the three buttons in a team's row to edit, view, or delete that division.</p>"]);
+    </script>
+}

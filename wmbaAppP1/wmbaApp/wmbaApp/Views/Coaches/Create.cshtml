@@ -1,0 +1,48 @@
+﻿@model wmbaApp.Models.Coach
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Coach</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CoachFirstName" class="control-label"></label>
+                <input asp-for="CoachFirstName" class="form-control" />
+                <span asp-validation-for="CoachFirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CoachLastName" class="control-label"></label>
+                <input asp-for="CoachLastName" class="form-control" />
+                <span asp-validation-for="CoachLastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CoachEmail" class="control-label"></label>
+                <input asp-for="CoachEmail" class="form-control" />
+                <span asp-validation-for="CoachEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CoachPhone" class="control-label"></label>
+                <input asp-for="CoachPhone" class="form-control" />
+                <span asp-validation-for="CoachPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

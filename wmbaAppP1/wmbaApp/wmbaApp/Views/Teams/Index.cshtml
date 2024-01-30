@@ -1,0 +1,227 @@
+﻿@using wmbaApp.Utilities;
+@model IEnumerable<wmbaApp.Models.Team>
+<partial name="_ViewHeading" />
+
+
+
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search @ViewData["numberFilters"]
+        </button>
+        <br />
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by Divisions:</label>
+                        @Html.DropDownList("DivisionID", null, "All Divisions", htmlAttributes: new { @class = "form-control" })
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label">Search Team Name/Team ABBR:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+
+                <style>
+                    .clickable-header {
+                        cursor: pointer;
+                        padding: 8px 13px;
+                        background-color: #001F3F;
+                        color: #fff;
+                        border: 1px solid #001F3F;
+                        border-radius: 5px;
+                        display: inline-block;
+                    }
+
+                    .hover:hover {
+                        background-color: #4CBB17;
+                        border-color: #001F3F;
+                    }
+
+                </style>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <input type="submit" name="actionButton" value="Team" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Team Name" />
+                </th>
+                <!-- ABBR -->
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        ABBR
+                    </div>
+                </th>
+                <!-- Coaches -->
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        Coaches
+                    </div>
+                </th>
+                <!-- Players - Visible on Phones and Tablets -->
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        Players
+                    </div>
+                </th>
+                <!-- Upcoming Games -->
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        Upcoming Games
+                    </div>
+                </th>
+                <!-- Division -->
+                <th class="d-none d-md-table-cell">
+                    <input type="submit" value="Division" name="actionButton" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Division Name" />
+                </th>
+                <!-- Create New Team -->
+                <th style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a new team">
+                        <strong>&#x270D; Create  Team</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.TmName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.TmAbbreviation)</td>
+                    <td class="d-none d-xxl-table-cell">
+                        @{
+                            int coachCount = item.DivisionCoaches.Count;
+                            if (coachCount > 0)
+                            {
+                                string firstCoach = item.DivisionCoaches.FirstOrDefault().Coach.FullName;
+                                if (coachCount > 1)
+                                {
+                                    string coachList = "";
+                                    var c = item.DivisionCoaches.ToList();
+                                    for (int i = 1; i < coachCount; i++)
+                                    {
+                                        coachList += c[i].Coach.FullName + " <br />";
+                                    }
+                                    <a class="" role="button" data-bs-toggle="collapse" href="#collapseCoach@(item.ID)"
+                                       aria-expanded="false" aria-controls="collapseCoach@(item.ID)">
+                                        @firstCoach <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Coaches">@coachCount</span>
+                                    </a>
+                                    <div class="collapse" id="collapseCoach@(item.ID)">
+                                        @Html.Raw(coachList)
+                                    </div>
+                                }
+                                else
+                                {
+                                    @firstCoach
+                                }
+                            }
+                        }
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @{
+                            int playerCount = item.Players.Count;
+                            if (playerCount > 0)
+                            {
+                                string firstPlayer = item.Players.FirstOrDefault()?.FullName;
+                                if (playerCount > 1)
+                                {
+                                    string playerList = "";
+                                    var c = item.Players.Skip(1).ToList();
+                                    for (int i = 0; i < playerCount - 1; i++)
+                                    {
+                                        playerList += c[i].FullName + " <br />";
+                                    }
+                                    <a class="" role="button" data-bs-toggle="collapse" href="#collapsePlayers@(item.ID)"
+                                       aria-expanded="false" aria-controls="collapsePlayers@(item.ID)">
+                                        @firstPlayer <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Players">@playerCount</span>
+                                    </a>
+                                    <div class="collapse" id="collapsePlayers@(item.ID)" style="background-color: #4CBB17; color: #fff;">
+                                        @Html.Raw(playerList)
+                                    </div>
+                                }
+                                else
+                                {
+                                    <a class="" role="button" data-bs-toggle="collapse" href="#collapsePlayers@(item.ID)"
+                                       aria-expanded="false" aria-controls="collapsePlayers@(item.ID)">
+                                        @firstPlayer <span class="badge bg-info">@playerCount</span>
+                                    </a>
+                                }
+                            }
+                            else
+                            {
+                                <span>No Players</span>
+                            }
+                        }
+                    </td>
+
+                    <td class="d-none d-xxl-table-cell">
+                        @{
+                            int gameCount = item.GameTeams.Count;
+                            string firstGame = "";
+                            string gameSummary = "";
+                            if (gameCount > 0)
+                            {
+                                foreach (GameMatchup matchup in (List<GameMatchup>)ViewData["Matchups"])
+                                {
+                                    if (matchup.teamOne.TmName == item.TmName)
+                                    {
+                                        firstGame = matchup.AbbreviationVersus;
+                                        gameSummary = matchup.game.Summary;
+                                    }
+                                }
+                                <a class="" role="button" data-bs-toggle="collapse" href="#collapseGames@(item.ID)"
+                                   aria-expanded="false" aria-controls="collapseGames@(item.ID)" data-bs-toggle="tooltip" title="Number of Games">
+                                    @firstGame <span class="badge bg-info" style="background-color: #4CBB17; color: #fff;"> Details</span>
+                                </a>
+                                <div class="collapse" id="collapseGames@(item.ID)" style="background-color: #4CBB17; color: #fff;">
+                                    @Html.Raw(gameSummary)
+                                </div>
+                            }
+                        }
+                    </td>
+
+                    <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            &#x270E;
+                        </a>
+                        <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            &#x1F50E;
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            &#x274C;
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+    <script>
+        GenerateContextHelp(["<p>This page lists all teams you have access to. From here you can create, edit, and delete teams.</p>",
+            "<p>Click one of the three buttons in a team's row to edit, view, or delete that team.</p>",
+            "<p>To look for a specific team, use the Filter/Search button. Enter the information you are looking for and click the Filter button.</p>",
+            "<p>Click a table heading to sort by that heading in ascending order. Click the same heading again to sort by descending order.</p>"]);
+    </script>
+}

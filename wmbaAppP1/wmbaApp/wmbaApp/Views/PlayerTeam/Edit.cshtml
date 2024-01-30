@@ -1,0 +1,53 @@
+﻿@model wmbaApp.Models.Player
+
+@{
+    wmbaApp.Models.Team team = (wmbaApp.Models.Team)ViewBag.Team;
+    <partial name="_TeamDetails" model="team" />
+    ViewData["Title"] = ViewData["ControllerFriendlyName"];
+}
+
+<h4>Player</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="PlyrFirstName" class="control-label"></label>
+                <input asp-for="PlyrFirstName" class="form-control" placeholder="Ex: John" />
+                <span asp-validation-for="PlyrFirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrLastName" class="control-label"></label>
+                <input asp-for="PlyrLastName" class="form-control" placeholder="Ex: Doe" />
+                <span asp-validation-for="PlyrLastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrJerseyNumber" class="control-label"></label>
+                <input asp-for="PlyrJerseyNumber" class="form-control" placeholder="Ex: 12" />
+                <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrDOB" class="control-label"></label>
+                <input asp-for="PlyrDOB" class="form-control" />
+                <span asp-validation-for="PlyrDOB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-route-TeamID="@team.ID" type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <partial name="_BackToList" />
+</div>
+
+@section Scripts {
+    <script>
+        GenerateContextHelp(["<p>This page lets you edit a player.</p>",
+            "<p>Enter valid information into each field and click the Save button to save your changes.</p>",
+            "<p>Click the Back to PLayers list button to go back to the players list.</p>"]);
+    </script>
+}
