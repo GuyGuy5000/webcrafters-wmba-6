@@ -25,6 +25,12 @@ namespace wmbaApp.Data
         public DbSet<Position> Positions { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
 
+<<<<<<< Updated upstream
+=======
+
+        public DbSet<UploadedFile> UploadedFiles { get; set; }
+
+>>>>>>> Stashed changes
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Unique constraint for division names
@@ -35,11 +41,6 @@ namespace wmbaApp.Data
             //Unique constraint for team names
             modelBuilder.Entity<Team>()
                 .HasIndex(t => t.TmName)
-                .IsUnique();
-
-            //Unique constraint for team abbreviations
-            modelBuilder.Entity<Team>()
-                .HasIndex(t => t.TmAbbreviation)
                 .IsUnique();
 
             //Unique constraint for position names

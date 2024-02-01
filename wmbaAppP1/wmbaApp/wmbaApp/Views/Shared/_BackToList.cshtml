@@ -1,7 +1,7 @@
 ﻿@{
     if (TempData.ContainsKey("Lookup"))
     {
-        <a asp-controller="Lookup" asp-action="Index" asp-route-Tab="@TempData["Lookup"]-Tab">Back to the Lookup List</a>
+        <a asp-controller="Lookup" asp-action="Index" asp-route-Tab="@TempData["Lookup"]-Tab">Back to Lookup List</a>
     }
     else
     {
@@ -9,16 +9,16 @@
         {
             if (ViewData.ContainsKey("returnURL"))
             {
-                <a href='@ViewData["returnURL"]'>Back to the @ViewData["ControllerFriendlyName"] List</a>
+                <a href='@ViewData["returnURL"]'>Back to @ViewData["ControllerFriendlyName"]</a>
             }
             else
             {
-                <a asp-action="Index">Back to the @ViewData["ControllerFriendlyName"] List</a>
+                <a asp-action="Index">Back to @ViewData["ControllerFriendlyName"]</a>
             }
         }
         else
         {
-            <a asp-action="Index">Back to the List</a>
+            <a asp-action="Index">Back to List</a>
         }
     }
 
