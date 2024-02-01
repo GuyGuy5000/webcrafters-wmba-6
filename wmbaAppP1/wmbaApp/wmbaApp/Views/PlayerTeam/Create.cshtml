@@ -25,19 +25,25 @@
                 <span asp-validation-for="PlyrLastName" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="PlyrMemberID" class="control-label"></label>
+                <input asp-for="PlyrMemberID" class="form-control" placeholder="Ex: 1ca5f32" />
+                <span asp-validation-for="PlyrMemberID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="PlyrJerseyNumber" class="control-label"></label>
                 <input asp-for="PlyrJerseyNumber" class="form-control" placeholder="Ex: 12" />
                 <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input asp-route-TeamID="@team.ID" type="submit" value="Create" class="btn btn-primary" />
+                <input asp-route-TeamID="@team.ID" type="submit" name="submitButton" value="Add player" class="btn btn-primary" />
+                <input asp-route-TeamID="@team.ID" type="submit" name="submitButton" value="Add player and finish" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index" asp-route-TeamID="@team.ID">Back to players list</a>
+    <partial name="_BackToList" />
 </div>
 
 

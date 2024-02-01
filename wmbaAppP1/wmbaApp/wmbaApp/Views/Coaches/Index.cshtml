@@ -58,23 +58,22 @@
                 <th class="d-sm-table-cell d-md-table-cell">
                     <input type="submit" name="actionButton" value="Name" class="btn btn-toolbar" title="Sort by Full Name" />
                 </th>
-                <th class="d-none d-lg-table-cell">
-                    <input type="submit" name="actionButton" value="Email" class="btn btn-toolbar" title="Sort by Email" />
-                </th>
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="clickable-header">
                         Team
                     </div>
                 </th>
                 <th class="d-none d-lg-table-cell">
-                    <input type="submit" name="actionButton" value="Phone" class="btn btn-toolbar" title="Sort by Phone" />
-                </th>
-                <th class="d-none d-lg-table-cell">
                     <div class="clickable-header">
                         Division
                     </div>
                 </th>
-             
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Email" class="btn btn-toolbar" title="Sort by Email" />
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Phone" class="btn btn-toolbar" title="Sort by Phone" />
+                </th>
                 <th style="min-width:120px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
                         <strong>&#x270D; Create New</strong>
@@ -89,11 +88,34 @@
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.FullName)
                     </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.CoachEmail)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.CoachPhone)
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @{
+                            int teamCount = item.DivisionCoaches.Count;
+                            if (teamCount > 0)
+                            {
+                                string firstTeam = item.DivisionCoaches.FirstOrDefault().Team.TmName;
+                                if (teamCount > 1)
+                                {
+                                    string teamList = "";
+                                    var c = item.DivisionCoaches.ToList();
+                                    for (int i = 1; i < teamCount; i++)
+                                    {
+                                        teamList += c[i].Team.TmName + " <br />";
+                                    }
+                                    <a class="" role="button" data-bs-toggle="collapse" href="#collapseCoach@(item.ID)"
+                                       aria-expanded="false" aria-controls="collapseCoach@(item.ID)">
+                                        @firstTeam <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Teams">@teamCount</span>
+                                    </a>
+                                    <div class="collapse" id="collapseCoach@(item.ID)">
+                                        @Html.Raw(teamList)
+                                    </div>
+                                }
+                                else
+                                {
+                                    @firstTeam
+                                }
+                            }
+                        }
                     </td>
                     <td class="d-none d-lg-table-cell">
                         @{
@@ -103,34 +125,11 @@
                             @Html.Raw(Division)
                         }
                     </td>
-                    <td class="d-sm-table-cell d-md-table-cell">
-                    @{
-                        int teamCount = item.DivisionCoaches.Count;
-                        if (teamCount > 0)
-                        {
-                            string firstTeam = item.DivisionCoaches.FirstOrDefault().Team.TmName;
-                            if (teamCount > 1)
-                            {
-                                string teamList = "";
-                                var c = item.DivisionCoaches.ToList();
-                                for (int i = 1; i < teamCount; i++)
-                                {
-                                    teamList += c[i].Team.TmName + " <br />";
-                                }
-                                <a class="" role="button" data-bs-toggle="collapse" href="#collapseCoach@(item.ID)"
-                                   aria-expanded="false" aria-controls="collapseCoach@(item.ID)">
-                                    @firstTeam <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Teams">@teamCount</span>
-                                </a>
-                                <div class="collapse" id="collapseCoach@(item.ID)">
-                                    @Html.Raw(teamList)
-                                </div>
-                            }
-                            else
-                            {
-                                @firstTeam
-                            }
-                        }
-                    }
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.CoachEmail)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.CoachPhone)
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">

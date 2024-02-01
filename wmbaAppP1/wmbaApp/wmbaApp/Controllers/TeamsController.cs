@@ -33,7 +33,7 @@ namespace wmbaApp.Controllers
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Name", "ABBR", "Division", "Coaches", "Players" };
+            string[] sortOptions = new[] { "Team", "Division", "Coaches" };
             PopulateDropDownLists();
 
             var teams = _context.Teams
@@ -52,9 +52,7 @@ namespace wmbaApp.Controllers
 
             if (!System.String.IsNullOrEmpty(SearchString))
             {
-                teams = teams.Where(p => p.TmName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.TmAbbreviation.ToUpper().Contains(SearchString.ToUpper())
-                                       );
+                teams = teams.Where(p => p.TmName.ToUpper().Contains(SearchString.ToUpper()));
 
                 numberFilters++;
             }
@@ -85,7 +83,7 @@ namespace wmbaApp.Controllers
                 }
             }
             //Now we know which field and direction to sort by
-            if (sortField == "Name")
+            if (sortField == "Team")
             {
 
                 if (sortDirection == "asc")
@@ -97,19 +95,6 @@ namespace wmbaApp.Controllers
                 {
                     teams = teams
                         .OrderByDescending(p => p.TmName);
-                }
-            }
-            else if (sortField == "ABBR")
-            {
-                if (sortDirection == "asc")
-                {
-                    teams = teams
-                      .OrderBy(p => p.TmAbbreviation);
-                }
-                else
-                {
-                    teams = teams
-                       .OrderByDescending(p => p.TmAbbreviation);
                 }
             }
             else if (sortField == "Division")
@@ -127,9 +112,6 @@ namespace wmbaApp.Controllers
 
                 }
             }
-
-            //Gets matchups from teams query
-            ViewData["Matchups"] = GameMatchup.GetMatchups(_context, teams.ToArray());
 
             //Set sort for next time
             ViewData["sortField"] = sortField;
@@ -261,7 +243,7 @@ namespace wmbaApp.Controllers
             }
 
             if (await TryUpdateModelAsync<Team>(teamToUpdate, "",
-                t => t.TmName, t => t.TmAbbreviation, t => t.DivisionID))
+                t => t.TmName, t => t.DivisionID))
             {
                 try
                 {

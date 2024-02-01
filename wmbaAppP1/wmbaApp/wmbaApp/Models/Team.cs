@@ -14,7 +14,7 @@ namespace wmbaApp.Models
         {
             get
             {
-                return $"{TmName} ({TmAbbreviation?.ToUpper()}), Players: {Players.Count}";
+                return $"{TmName}, Players: {Players.Count}";
             }
         }
         #endregion
@@ -24,10 +24,6 @@ namespace wmbaApp.Models
         [Required(ErrorMessage = "Team name is required")]
         [StringLength(80, ErrorMessage = "Team name must be less than 80 characters.")]
         public string TmName { get; set; }
-        [Display(Name = "Team ABBV")]
-        [StringLength(3, ErrorMessage = "Team abbreviation is limited to 3 characters.")]
-        public string TmAbbreviation { get; set; }
-
         [Display(Name = "Division")]
         public int DivisionID { get; set; }
         public Division Division { get; set; }

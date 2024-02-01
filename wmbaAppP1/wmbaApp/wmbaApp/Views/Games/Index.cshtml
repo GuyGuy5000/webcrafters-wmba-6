@@ -52,6 +52,12 @@
                         border-color: #001F3F;
                     }
                 </style>
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        Teams
+                    </div>
+                </th>
+                
                 <th class="d-sm-table-cell d-md-table-cell">
                     <input type="submit" name="actionButton" value=" Time" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Start Time" />
                 </th>
@@ -65,8 +71,6 @@
                 </th>
 
 
-
-
                 <th style="min-width:120px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a New Game">
                         <strong>&#x270D; Create Game</strong>
@@ -78,6 +82,23 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td class="d-none d-xxl-table-cell">
+                        @{
+                            int gameCount = item.GameTeams.Count;
+                            string firstGame = "";
+                            if (gameCount > 0)
+                            {
+                                foreach (GameMatchup matchup in (List<GameMatchup>)ViewData["Matchups"])
+                                {
+                                    if (matchup.game.ID == item.ID)
+                                    {
+                                        firstGame = matchup.FullVersus;
+                                    }
+                                }
+                                @firstGame
+                            }
+                        }
+                    </td>
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.GameStartTime)
                     </td>

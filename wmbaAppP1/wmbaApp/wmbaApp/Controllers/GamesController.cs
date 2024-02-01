@@ -26,8 +26,6 @@ namespace wmbaApp.Controllers
         public async Task<IActionResult> Index(string SearchString, int? ID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
-
-
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
             int numberFilters = 0;
@@ -127,7 +125,8 @@ namespace wmbaApp.Controllers
                 }
             }
 
-           
+            //Gets matchups from teams query
+            ViewData["Matchups"] = GameMatchup.GetMatchups(_context, _context.Teams.Include(t => t.GameTeams).ThenInclude(gt => gt.Game).ToArray());
 
             //Set sort for next time
             ViewData["sortField"] = sortField;
@@ -171,15 +170,15 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,GameStartTime,GameEndTime,GameLocation")] Game game)
+        public async Task<IActionResult> Create([Bind("ID,GameStartTime,GameEndTime,GameLocation")] Game game, int? HomeTeamID, int? AwayTeamID)
         {
             PopulateDropDownLists();
             if (ModelState.IsValid)
             {
                 try
                 {
-
                     _context.Add(game);
+                    CreateGameTeams(HomeTeamID, AwayTeamID);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
@@ -194,7 +193,10 @@ namespace wmbaApp.Controllers
                         //check which field triggered the error
                         if (dex.InnerException.Message.Contains("GameStartTime"))
                             ModelState.AddModelError("GameStartTime", "A game with this start time already exists. Please choose a different time."); //pass a message to the field that triggered the error
-                        
+                        if (dex.InnerException.Message.Contains("Foreign Key"))
+                            ModelState.AddModelError("", "A game cannot have the same team on both sides. Please choose two different teams."); //pass a message to the field that triggered the error
+
+
                     }
                     else
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
@@ -206,22 +208,23 @@ namespace wmbaApp.Controllers
         // GET: Games/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            PopulateDropDownLists();
             if (id == null || _context.Games == null)
             {
                 return NotFound();
             }
 
-            var games = await _context.Games
+            var game = await _context.Games
                  .Include(t => t.GameTeams)
                  .AsNoTracking()
             .FirstOrDefaultAsync(m => m.ID == id);
 
-            if (games == null)
+            PopulateDropDownLists(game);
+
+            if (game == null)
             {
                 return NotFound();
             }
-            return View(games);
+            return View(game);
         }
 
         // POST: Games/Edit/5
@@ -231,11 +234,11 @@ namespace wmbaApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id)
         {
-            PopulateDropDownLists();
             var gamesToUpdate = await _context.Games
                 .Include(t => t.GameTeams)
-               
-           .FirstOrDefaultAsync(m => m.ID == id);
+                .FirstOrDefaultAsync(m => m.ID == id);
+            
+            PopulateDropDownLists(gamesToUpdate);
 
             if (gamesToUpdate == null)
             {
@@ -290,7 +293,7 @@ namespace wmbaApp.Controllers
 
             var game = await _context.Games
                 .Include(g => g.GameTeams)
-                 .AsNoTracking()
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -331,12 +334,35 @@ namespace wmbaApp.Controllers
             }
         }
 
+        private void CreateGameTeams( int? HomeTeamID, int? AwayTeamID)
+        {
+            int gameID = _context.Games.Count() + 1;
+            _context.GameTeams.AddRange(
+                new GameTeam
+                {
+                    GameID = gameID,
+                    TeamID = HomeTeamID.Value,
+                    GmtmLineup = "TBA"
+                },
+                new GameTeam
+                {
+                    GameID = gameID,
+                    TeamID = AwayTeamID.Value,
+                    GmtmLineup = "TBA"
+                });
+            _context.SaveChanges();
+        }
+
         private SelectList GameSelectList(int? selectedId)
         {
             return new SelectList(_context.Games, "ID", "GameLocation", selectedId);
         }
+        private SelectList TeamSelectList(int? selectedId)
+            => new(_context.Teams, "ID", "TmName", selectedId);
         private void PopulateDropDownLists(Game game = null)
         {
+            ViewData["HomeTeamID"] = TeamSelectList(null);
+            ViewData["AwayTeamID"] = TeamSelectList(null);
             ViewData["ID"] = GameSelectList(game?.ID);
         }
 

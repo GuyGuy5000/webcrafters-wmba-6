@@ -21,12 +21,15 @@ namespace wmbaApp.Utilities
 
         public string FullVersus
         {
-            get => $"{teamOne.TmName} VS. {teamTwo.TmName}";
-        }
-
-        public string AbbreviationVersus
-        {
-            get => $"{teamOne.TmAbbreviation} VS. {teamTwo.TmAbbreviation}";
+            get
+            {
+                if (!String.IsNullOrEmpty(this?.teamOne.TmName) && !String.IsNullOrEmpty(this?.teamTwo.TmName))
+                    return $"{teamOne.TmName} VS. {teamTwo.TmName}";
+                else if (!String.IsNullOrEmpty(this?.teamOne.TmName))
+                    return $"{teamOne.TmName} VS.TBA";
+                else
+                    return $"TBA VS. {teamTwo.TmName}";
+            }
         }
 
         public string Score
@@ -36,6 +39,9 @@ namespace wmbaApp.Utilities
 
         public GameMatchup(WmbaContext context, GameTeam gameTeam)
         {
+            if (gameTeam == null)
+                throw new Exception("A GameTeam must be provided");
+
             _context = context;
             int gameID = gameTeam.GameID; //gameID
             int teamID = gameTeam.TeamID; //teamID
@@ -61,7 +67,13 @@ namespace wmbaApp.Utilities
         public Team[] GetTeams()
             => new Team[] { teamOne, teamTwo };
 
-        public static List<GameMatchup> GetMatchups(WmbaContext context,Team[] teams)
+        /// <summary>
+        /// gets the most recent matchups based on a teams array.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="teams"></param>
+        /// <returns></returns>
+        public static List<GameMatchup> GetMatchups(WmbaContext context, Team[] teams)
         {
             List<GameMatchup> gameMatchups = new();
             foreach (Team team in teams) //each team has a list of games
@@ -74,6 +86,53 @@ namespace wmbaApp.Utilities
             return gameMatchups;
         }
 
-        
+        /// <summary>
+        /// Updates a game with the given team IDs
+        /// </summary>
+        /// <param name="gameToUpdate"></param>
+        /// <param name="HomeTeamID"></param>
+        /// <param name="AwayTeamID"></param>
+        public void UpdateGameTeams(int? HomeTeamID, int? AwayTeamID)
+        {
+            foreach (Game game in _context.Games) //looks through games in the db
+                if (game.ID == this.game.ID) //finds the correct record
+                {
+                    if (HomeTeamID.HasValue) //if a home team was provided
+                    {
+                        if (HomeTeamID != this.teamOne?.ID) //if the ID provided is different to the current ID
+                        {
+                            //add new team as a GameTeam record
+                            this.game.GameTeams.Add(
+                                new GameTeam
+                                {
+                                    GameID = this.game.ID,
+                                    TeamID = HomeTeamID.Value,
+                                });
+
+                            //find and remove old team
+                            GameTeam teamToRemove = this.game.GameTeams.FirstOrDefault(gt => gt.TeamID == teamOne?.ID);
+                            if (teamToRemove != null)
+                                _context.Remove(teamToRemove);
+                            this.teamOne = _context.Teams.FirstOrDefault(t => t.ID == HomeTeamID);
+                        }
+                        if (AwayTeamID != this.teamTwo?.ID) //if the ID provided is different to the current ID
+                        {
+                            //add new team as a GameTeam record
+                            this.game.GameTeams.Add(
+                                new GameTeam
+                                {
+                                    GameID = this.game.ID,
+                                    TeamID = AwayTeamID.Value,
+                                });
+
+                            //find and remove old team
+                            GameTeam teamToRemove = this.game.GameTeams.FirstOrDefault(gt => gt.TeamID == teamTwo.ID);
+                            if (teamToRemove != null)
+                                _context.Remove(teamToRemove);
+                            this.teamOne = _context.Teams.FirstOrDefault(t => t.ID == HomeTeamID);
+                        }
+                    }
+                }
+        }
     }
 }

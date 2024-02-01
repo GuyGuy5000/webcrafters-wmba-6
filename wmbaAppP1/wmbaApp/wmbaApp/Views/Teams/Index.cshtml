@@ -37,7 +37,6 @@
     <table class="table mt-3">
         <thead>
             <tr>
-
                 <style>
                     .clickable-header {
                         cursor: pointer;
@@ -59,28 +58,10 @@
                 <th class="d-sm-table-cell d-md-table-cell">
                     <input type="submit" name="actionButton" value="Team" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Team Name" />
                 </th>
-                <!-- ABBR -->
-                <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
-                        ABBR
-                    </div>
-                </th>
                 <!-- Coaches -->
                 <th class="d-none d-lg-table-cell">
                     <div class="clickable-header">
                         Coaches
-                    </div>
-                </th>
-                <!-- Players - Visible on Phones and Tablets -->
-                <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
-                        Players
-                    </div>
-                </th>
-                <!-- Upcoming Games -->
-                <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
-                        Upcoming Games
                     </div>
                 </th>
                 <!-- Division -->
@@ -100,7 +81,6 @@
             {
                 <tr>
                     <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.TmName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.TmAbbreviation)</td>
                     <td class="d-none d-xxl-table-cell">
                         @{
                             int coachCount = item.DivisionCoaches.Count;
@@ -130,69 +110,6 @@
                             }
                         }
                     </td>
-                    <td class="d-none d-lg-table-cell">
-                        @{
-                            int playerCount = item.Players.Count;
-                            if (playerCount > 0)
-                            {
-                                string firstPlayer = item.Players.FirstOrDefault()?.FullName;
-                                if (playerCount > 1)
-                                {
-                                    string playerList = "";
-                                    var c = item.Players.Skip(1).ToList();
-                                    for (int i = 0; i < playerCount - 1; i++)
-                                    {
-                                        playerList += c[i].FullName + " <br />";
-                                    }
-                                    <a class="" role="button" data-bs-toggle="collapse" href="#collapsePlayers@(item.ID)"
-                                       aria-expanded="false" aria-controls="collapsePlayers@(item.ID)">
-                                        @firstPlayer <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Players">@playerCount</span>
-                                    </a>
-                                    <div class="collapse" id="collapsePlayers@(item.ID)" style="background-color: #4CBB17; color: #fff;">
-                                        @Html.Raw(playerList)
-                                    </div>
-                                }
-                                else
-                                {
-                                    <a class="" role="button" data-bs-toggle="collapse" href="#collapsePlayers@(item.ID)"
-                                       aria-expanded="false" aria-controls="collapsePlayers@(item.ID)">
-                                        @firstPlayer <span class="badge bg-info">@playerCount</span>
-                                    </a>
-                                }
-                            }
-                            else
-                            {
-                                <span>No Players</span>
-                            }
-                        }
-                    </td>
-
-                    <td class="d-none d-xxl-table-cell">
-                        @{
-                            int gameCount = item.GameTeams.Count;
-                            string firstGame = "";
-                            string gameSummary = "";
-                            if (gameCount > 0)
-                            {
-                                foreach (GameMatchup matchup in (List<GameMatchup>)ViewData["Matchups"])
-                                {
-                                    if (matchup.teamOne.TmName == item.TmName)
-                                    {
-                                        firstGame = matchup.AbbreviationVersus;
-                                        gameSummary = matchup.game.Summary;
-                                    }
-                                }
-                                <a class="" role="button" data-bs-toggle="collapse" href="#collapseGames@(item.ID)"
-                                   aria-expanded="false" aria-controls="collapseGames@(item.ID)" data-bs-toggle="tooltip" title="Number of Games">
-                                    @firstGame <span class="badge bg-info" style="background-color: #4CBB17; color: #fff;"> Details</span>
-                                </a>
-                                <div class="collapse" id="collapseGames@(item.ID)" style="background-color: #4CBB17; color: #fff;">
-                                    @Html.Raw(gameSummary)
-                                </div>
-                            }
-                        }
-                    </td>
-
                     <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">

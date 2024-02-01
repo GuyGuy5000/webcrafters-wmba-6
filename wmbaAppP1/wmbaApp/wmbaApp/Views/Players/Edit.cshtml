@@ -29,6 +29,28 @@
                 </select>
                 <span asp-validation-for="TeamID" class="text-danger"></span>
             </div>
+<<<<<<< Updated upstream
+=======
+
+            <div class="form-group">
+                @*                 <label class="control-label">@Html.DisplayNameFor(model => model.PlayerPositions)</label> *@
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label class="control-label">Player Position</label> <button type="button" id="btnRight" class="btn btn-danger btn-sm">
+                            <strong>-</strong>
+                        </button>
+                        @Html.ListBox("selectedOptions", (MultiSelectList)ViewBag.selOpts, new { @size = 10, @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label class="control-label"> Available Positions</label> <button type="button" id="btnLeft" class="btn btn-success btn-sm">
+                            <strong>+</strong>
+                        </button>
+                        @Html.ListBox("availOptions", (MultiSelectList)ViewBag.availOpts, new { @size = 10, @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+>>>>>>> Stashed changes
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -42,5 +64,16 @@
 </div>
 
 @section Scripts {
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+=======
+=======
+>>>>>>> Stashed changes
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/multiselect.js"></script>
+}
+>>>>>>> Stashed changes
