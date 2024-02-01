@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using wmbaApp.Models;
 using wmbaApp.ViewModels;
 
@@ -25,12 +25,9 @@ namespace wmbaApp.Data
         public DbSet<Position> Positions { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
 
-<<<<<<< Updated upstream
-=======
 
         public DbSet<UploadedFile> UploadedFiles { get; set; }
 
->>>>>>> Stashed changes
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Unique constraint for division names
@@ -103,12 +100,6 @@ namespace wmbaApp.Data
             modelBuilder.Entity<PlayerPosition>()
                 .HasIndex(pp => new { pp.PlayerID })
                 .IsUnique();
-
-            //Unique composite PK for Player Jersey Number
-            modelBuilder.Entity<Player>()
-                .HasIndex(pp => new { pp.PlyrJerseyNumber, pp.TeamID })
-                .IsUnique();
-
         }
     }
 }

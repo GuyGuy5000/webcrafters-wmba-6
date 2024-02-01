@@ -1,4 +1,4 @@
-@model wmbaApp.Models.Player
+﻿@model wmbaApp.Models.Player
 
 <partial name="_ViewHeading" />
 <hr />
@@ -29,8 +29,6 @@
                 </select>
                 <span asp-validation-for="TeamID" class="text-danger"></span>
             </div>
-<<<<<<< Updated upstream
-=======
 
             <div class="form-group">
                 @*                 <label class="control-label">@Html.DisplayNameFor(model => model.PlayerPositions)</label> *@
@@ -50,7 +48,6 @@
                 </div>
             </div>
 
->>>>>>> Stashed changes
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -64,16 +61,8 @@
 </div>
 
 @section Scripts {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
-=======
-=======
->>>>>>> Stashed changes
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script src="~/js/multiselect.js"></script>
 }
->>>>>>> Stashed changes

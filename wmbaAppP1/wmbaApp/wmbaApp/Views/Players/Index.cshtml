@@ -1,4 +1,4 @@
-@model IEnumerable<wmbaApp.Models.Player>
+﻿@model IEnumerable<wmbaApp.Models.Player>
 
 <partial name="_ViewHeading" />
 <form asp-action="Index" method="get">
@@ -18,7 +18,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="control-label">Search Player First/Last Name</label>
+                        <label class="control-label">Search Player First/Last Name/Team/Team Abbrv:</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
                     <div class="col-md-4 align-self-end">
@@ -32,6 +32,8 @@
     <table class="table">
         <thead>
             <tr>
+
+
                 <style>
                     .clickable-header {
                         cursor: pointer;
@@ -50,15 +52,7 @@
 
                 </style>
                 <th class="d-sm-table-cell d-md-table-cell">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                    <input type="submit" name="actionButton" value="Player Full Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
-=======
                     <input type="submit" name="actionButton" value="Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
->>>>>>> Stashed changes
-=======
-                    <input type="submit" name="actionButton" value="Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
->>>>>>> Stashed changes
                 </th>
                 <th class="d-none d-lg-table-cell">
                     <div class="clickable-header">
@@ -70,17 +64,11 @@
                         Team
                     </div>
                 </th>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="clickable-header">
                         Division
                     </div>
                 </th>
->>>>>>> Stashed changes
                 <th style="min-width:120px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
                         <strong>&#x270D; Create New</strong>
@@ -98,24 +86,12 @@
                     <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
                     </td>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                    <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.Team.TmName)</td>
-=======
-                    <td class="d-sm-table-cell d-md-table-cell">
-                        @Html.DisplayFor(modelItem => item.Team.TmName)
-=======
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.Team.TmName)
                     </td>
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.Team.Division.DivName)
->>>>>>> Stashed changes
                     </td>
-                    <td class="d-sm-table-cell d-md-table-cell">
-                        @Html.DisplayFor(modelItem => item.Team.Division.DivName)
-                    </td>
->>>>>>> Stashed changes
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             &#x270E;
