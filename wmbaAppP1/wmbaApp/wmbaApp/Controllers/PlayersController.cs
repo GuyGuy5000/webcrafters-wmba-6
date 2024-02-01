@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -41,22 +41,9 @@ namespace wmbaApp.Controllers
             PopulateDropDownLists();
 
             var players = _context.Players
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-            .Include(t => t.Team)
-            .Include(t => t.Statistics)
-           .AsNoTracking();
-=======
                 .Include(t => t.Team).ThenInclude(t => t.Division)
                 .Include(t => t.Statistics)
                 .AsNoTracking();
->>>>>>> Stashed changes
-=======
-                .Include(t => t.Team).ThenInclude(t => t.Division)
-                .Include(t => t.Statistics)
-                .AsNoTracking();
->>>>>>> Stashed changes
 
             //Add as many filters as needed
             if (TeamID.HasValue)
@@ -69,12 +56,8 @@ namespace wmbaApp.Controllers
             {
                 players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
-<<<<<<< Updated upstream
-                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper()));
-=======
                                        || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
                                        );
->>>>>>> Stashed changes
 
                 numberFilters++;
             }
@@ -128,7 +111,6 @@ namespace wmbaApp.Controllers
                         .OrderByDescending(p => p.Team);
                 }
             }
-
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
 
@@ -137,6 +119,7 @@ namespace wmbaApp.Controllers
             var pagedData = await PaginatedList<Player>.CreateAsync(players.AsNoTracking(), page ?? 1, pageSize);
 
             return View(pagedData);
+
         }
 
 
@@ -175,7 +158,7 @@ namespace wmbaApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber," +
-            "TeamID,StatisticID")] Player player)
+            "PlyrDOB,TeamID,StatisticID")] Player player, IFormFile thePicture, string[] selectedOptions)
         {
             try
             {
@@ -191,16 +174,9 @@ namespace wmbaApp.Controllers
             {
                 ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
             }
-            catch (DbUpdateException dex)
+            catch (DbUpdateException)
             {
-                if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed: Players.PlyrJerseyNumber"))
-                {
-                    ModelState.AddModelError("PlyrJerseyNumber", "Cannot have different players with same Jersey Number.");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                }
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
             PopulateDropDownLists(player);
@@ -216,13 +192,6 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-                .Include(p=>p.Team)
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
                 .FirstOrDefaultAsync(f => f.ID == id);
 
             if (player == null)
@@ -239,22 +208,9 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-        public async Task<IActionResult> Edit(int id)
-        {
-            var playerToUpdate = await _context.Players
-                .Include(p=>p.Team)
-=======
         public async Task<IActionResult> Edit(int id, string[] selectedOptions)
         {
             var playerToUpdate = await _context.Players
->>>>>>> Stashed changes
-=======
-        public async Task<IActionResult> Edit(int id, string[] selectedOptions)
-        {
-            var playerToUpdate = await _context.Players
->>>>>>> Stashed changes
             .FirstOrDefaultAsync(m => m.ID == id);
 
             if (playerToUpdate == null)
@@ -262,13 +218,7 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
 
->>>>>>> Stashed changes
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
                 t => t.PlyrFirstName, t => t.PlyrLastName, t => t.TeamID, t => t.PlyrJerseyNumber,
                 t => t.StatisticID))
@@ -290,19 +240,11 @@ namespace wmbaApp.Controllers
                         throw;
                     }
                 }
-                catch (DbUpdateException dex)
+                catch (DbUpdateException)
                 {
-                    if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed: Players.PlyrJerseyNumber"))
-                    {
-                        ModelState.AddModelError("PlyrJerseyNumber", "Cannot have different players with same Jersey Number in the same team.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                    }
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
             }
-
             PopulateDropDownLists(playerToUpdate);
             return View(playerToUpdate);
         }
@@ -316,7 +258,6 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-                .Include(p=>p.Team)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
             {
@@ -335,9 +276,7 @@ namespace wmbaApp.Controllers
             {
                 return Problem("Entity set 'WmbaContext.Players' is null.");
             }
-
             var player = await _context.Players.FindAsync(id);
-
             if (player != null)
             {
                 _context.Players.Remove(player);
@@ -363,11 +302,6 @@ namespace wmbaApp.Controllers
             ViewData["StatisticID"] = StatisticSelectList(player?.StatisticID);
         }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
         //#region PositionCheckboxes
         //private void PopulateAssignedPositionCheckboxes(Player player)
         //{
@@ -455,10 +389,6 @@ namespace wmbaApp.Controllers
         //    }
         //}
         //#endregion
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.ID == id);
