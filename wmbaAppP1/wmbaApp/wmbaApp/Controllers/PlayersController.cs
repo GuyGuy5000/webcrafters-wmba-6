@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -43,9 +43,7 @@ namespace wmbaApp.Controllers
             var players = _context.Players
 
             .Include(t => t.Team)
-            .Include(t => t.PlayerPositions).ThenInclude(p => p.Position)
             .Include(t => t.Statistics)
-            .Include(c => c.PlayerThumbnail)
            .AsNoTracking();
 
             //Add as many filters as needed
@@ -59,9 +57,7 @@ namespace wmbaApp.Controllers
             {
                 players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.Team.TmAbbreviation.ToUpper().Contains(SearchString.ToUpper())
-                                       );
+                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper()));
 
                 numberFilters++;
             }
@@ -115,6 +111,7 @@ namespace wmbaApp.Controllers
                         .OrderByDescending(p => p.Team);
                 }
             }
+
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
 
@@ -123,7 +120,6 @@ namespace wmbaApp.Controllers
             var pagedData = await PaginatedList<Player>.CreateAsync(players.AsNoTracking(), page ?? 1, pageSize);
 
             return View(pagedData);
-
         }
 
 
@@ -137,9 +133,7 @@ namespace wmbaApp.Controllers
 
             var player = await _context.Players
                 .Include(p => p.Team)
-                .Include(c => c.PlayerPhoto)
                 .Include(p => p.Statistics)
-                .Include(p => p.PlayerPositions).ThenInclude(p => p.Position)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
@@ -155,7 +149,6 @@ namespace wmbaApp.Controllers
         {
             Player player = new Player();
             PopulateDropDownLists(player);
-            PopulateAssignedPositionCheckboxes(player);
             return View(player);
         }
 
@@ -165,25 +158,12 @@ namespace wmbaApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber," +
-            "PlyrDOB,TeamID,StatisticID")] Player player, IFormFile thePicture, string[] selectedOptions)
+            "TeamID,StatisticID")] Player player)
         {
             try
             {
-                if (selectedOptions != null)
-                {
-                    foreach (var condition in selectedOptions)
-                    {
-                        var positionToAdd = new PlayerPosition { PlayerID = player.ID, PositionID = int.Parse(condition) };
-                        player.PlayerPositions.Add(positionToAdd);
-                    }
-                }
-                if (selectedOptions.Length > 1)
-                {
-                    ModelState.AddModelError("", "You are allowed to choose only one position for a player.");
-                }
                 if (ModelState.IsValid)
                 {
-                    await AddPicture(player, thePicture);
                     _context.Add(player);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Details", new { player.ID });
@@ -194,13 +174,19 @@ namespace wmbaApp.Controllers
             {
                 ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException dex)
             {
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed: Players.PlyrJerseyNumber"))
+                {
+                    ModelState.AddModelError("PlyrJerseyNumber", "Cannot have different players with same Jersey Number.");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
             }
 
             PopulateDropDownLists(player);
-            PopulateAssignedPositionCheckboxes(player);
             return View(player);
         }
 
@@ -213,7 +199,7 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-                .Include(f => f.PlayerPositions).ThenInclude(f => f.Position)
+                .Include(p=>p.Team)
                 .FirstOrDefaultAsync(f => f.ID == id);
 
             if (player == null)
@@ -222,7 +208,6 @@ namespace wmbaApp.Controllers
             }
 
             PopulateDropDownLists(player);
-            PopulateAssignedPositionLists(player);
             return View(player);
         }
 
@@ -231,10 +216,10 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string[] selectedOptions, string chkPicture, IFormFile thePicture)
+        public async Task<IActionResult> Edit(int id)
         {
             var playerToUpdate = await _context.Players
-            .Include(t => t.PlayerPositions).ThenInclude(dr => dr.Position)
+                .Include(p=>p.Team)
             .FirstOrDefaultAsync(m => m.ID == id);
 
             if (playerToUpdate == null)
@@ -242,28 +227,12 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
-            UpdatePlayerPositionsListboxes(selectedOptions, playerToUpdate);
-
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
-                t => t.PlyrFirstName, t => t.PlyrLastName, t => t.TeamID, t => t.PlyrJerseyNumber, t => t.PlyrDOB,
+                t => t.PlyrFirstName, t => t.PlyrLastName, t => t.TeamID, t => t.PlyrJerseyNumber,
                 t => t.StatisticID))
             {
                 try
                 {
-                    if (chkPicture != null)
-                    {
-                        //checking if we have PlayerThumbnail if yes? delete IT
-                        //also check if the foreign key matches the ID of the Customer
-
-                        playerToUpdate.PlayerThumbnail = _context.PlayerThumbnails.Where(p => p.PlayerID == playerToUpdate.ID).FirstOrDefault();
-                        //Then, setting them to null will cause them to be deleted from the database.
-                        playerToUpdate.PlayerPhoto = null;
-                        playerToUpdate.PlayerThumbnail = null;
-                    }
-                    else
-                    {
-                        await AddPicture(playerToUpdate, thePicture);
-                    }
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Details", new { playerToUpdate.ID });
@@ -279,13 +248,20 @@ namespace wmbaApp.Controllers
                         throw;
                     }
                 }
-                catch (DbUpdateException)
+                catch (DbUpdateException dex)
                 {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                    if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed: Players.PlyrJerseyNumber"))
+                    {
+                        ModelState.AddModelError("PlyrJerseyNumber", "Cannot have different players with same Jersey Number in the same team.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                    }
                 }
             }
+
             PopulateDropDownLists(playerToUpdate);
-            PopulateAssignedPositionLists(playerToUpdate);
             return View(playerToUpdate);
         }
 
@@ -298,6 +274,7 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
+                .Include(p=>p.Team)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
             {
@@ -316,7 +293,9 @@ namespace wmbaApp.Controllers
             {
                 return Problem("Entity set 'WmbaContext.Players' is null.");
             }
+
             var player = await _context.Players.FindAsync(id);
+
             if (player != null)
             {
                 _context.Players.Remove(player);
@@ -340,138 +319,6 @@ namespace wmbaApp.Controllers
         {
             ViewData["TeamID"] = TeamSelectList(player?.TeamID);
             ViewData["StatisticID"] = StatisticSelectList(player?.StatisticID);
-        }
-
-        private void PopulateAssignedPositionCheckboxes(Player player)
-        {
-            //For this to work, you must have Included the FunctionRooms 
-            //in the Function
-            var allOptions = _context.Positions;
-            var currentOptionIDs = new HashSet<int>(player.PlayerPositions.Select(b => b.PositionID));
-            var checkBoxes = new List<CheckOptionVM>();
-            foreach (var option in allOptions)
-            {
-                checkBoxes.Add(new CheckOptionVM
-                {
-                    ID = option.ID,
-                    DisplayText = option.PosName,
-                    Assigned = currentOptionIDs.Contains(option.ID)
-                });
-            }
-            ViewData["PositionOptions"] = checkBoxes;
-        }
-
-        //For the posiionList
-        private void PopulateAssignedPositionLists(Player player)
-        {
-            //For this to work, you must have Included the child collection in the parent object
-            var allOptions = _context.Positions;
-            var currentOptionsHS = new HashSet<int>(player.PlayerPositions.Select(b => b.PositionID));
-            //Instead of one list with a boolean, we will make two lists
-            var selected = new List<ListOptionVM>();
-            var available = new List<ListOptionVM>();
-            foreach (var r in allOptions)
-            {
-                if (currentOptionsHS.Contains(r.ID))
-                {
-                    selected.Add(new ListOptionVM
-                    {
-                        ID = r.ID,
-                        DisplayText = r.PosName
-                    });
-                }
-                else
-                {
-                    available.Add(new ListOptionVM
-                    {
-                        ID = r.ID,
-                        DisplayText = r.PosName
-                    });
-                }
-            }
-
-            ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-            ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-        }
-
-        private void UpdatePlayerPositionsListboxes(string[] selectedOptions, Player playerToUpdate)
-        {
-            if (selectedOptions == null)
-            {
-                playerToUpdate.PlayerPositions = new List<PlayerPosition>();
-                return;
-            }
-
-            var selectedOptionsHS = new HashSet<string>(selectedOptions);
-            var currentOptionsHS = new HashSet<int>(playerToUpdate.PlayerPositions.Select(b => b.PositionID));
-            foreach (var r in _context.Positions)
-            {
-                if (selectedOptionsHS.Contains(r.ID.ToString()))//it is selected
-                {
-                    if (!currentOptionsHS.Contains(r.ID))
-                    {
-                        playerToUpdate.PlayerPositions.Add(new PlayerPosition
-                        {
-                            PositionID = r.ID,
-                            PlayerID = playerToUpdate.ID
-                        });
-                    }
-                }
-                else //not selected
-                {
-                    if (currentOptionsHS.Contains(r.ID))
-                    {
-                        PlayerPosition positionToRemove = playerToUpdate.PlayerPositions.FirstOrDefault(d => d.PositionID == r.ID);
-                        _context.Remove(positionToRemove);
-                    }
-                }
-            }
-        }
-
-        private async Task AddPicture(Player customer, IFormFile thePicture)
-        {
-
-            if (thePicture != null) //saving the pictures to the Customer
-            {
-                string mimeType = thePicture.ContentType;
-                long fileLength = thePicture.Length;
-                if (!(mimeType == "" || fileLength == 0))//identifies a file was found
-                {
-                    if (mimeType.Contains("image"))
-                    {
-                        using var memoryStream = new MemoryStream();
-                        await thePicture.CopyToAsync(memoryStream);
-                        var pictureArray = memoryStream.ToArray();//Gives us the Byte[]
-
-
-                        if (customer.PlayerPhoto != null) //Assuming a customerPicture is not null
-                        {
-                            ////////////////////////HOW WE WANT THE USER TO SEE THE IMAGE ON THE SCREEN EITHER THE SIZE WE WANT OR THE ORIZINAL MAX SIZE
-                            customer.PlayerPhoto.Content = ImageResizer.shrinkImageWebp(pictureArray, 500, 600);
-                            // customer.PlayerPhoto.Content = pictureArray;  //SHOWS IN IMAGE MAXIMUM SIZE
-
-
-
-                            //Getting the thumbnail to update it
-                            customer.PlayerThumbnail = _context.PlayerThumbnails.Where(p => p.PlayerID == customer.ID).FirstOrDefault();
-                            customer.PlayerThumbnail.Content = ImageResizer.shrinkImageWebp(pictureArray, 75, 90);
-                        }
-                        else //No pictures saved so start new
-                        {
-                            customer.PlayerPhoto = new PlayerPhoto
-                            {
-                                Content = ImageResizer.shrinkImageWebp(pictureArray, 500, 600),
-                                MimeType = "image/webp"
-                            };
-                            customer.PlayerThumbnail = new PlayerThumbnail
-                            {
-                                Content = ImageResizer.shrinkImageWebp(pictureArray, 75, 90),
-                                MimeType = "image/webp"
-                            };
-                        }
-                    }
-                }
-            }
         }
 
         private bool PlayerExists(int id)
