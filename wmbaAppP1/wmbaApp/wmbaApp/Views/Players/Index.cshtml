@@ -1,4 +1,4 @@
-﻿@model IEnumerable<wmbaApp.Models.Player>
+@model IEnumerable<wmbaApp.Models.Player>
 
 <partial name="_ViewHeading" />
 <form asp-action="Index" method="get">
@@ -18,7 +18,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="control-label">Search Player First/Last Name/Team/Team Abbrv:</label>
+                        <label class="control-label">Search Player First/Last Name</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
                     <div class="col-md-4 align-self-end">
@@ -32,8 +32,6 @@
     <table class="table">
         <thead>
             <tr>
-
-
                 <style>
                     .clickable-header {
                         cursor: pointer;
@@ -51,19 +49,8 @@
                     }
 
                 </style>
-
-                <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
-                        Profile Picture
-                    </div>
-                </th>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <input type="submit" name="actionButton" value=" Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
-                </th>
-                <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
-                        Date of Birth
-                    </div>
+                    <input type="submit" name="actionButton" value="Player Full Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
                 </th>
                 <th class="d-none d-lg-table-cell">
                     <div class="clickable-header">
@@ -73,11 +60,6 @@
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="clickable-header">
                         Team
-                    </div>
-                </th>
-                <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
-                        Position
                     </div>
                 </th>
                 <th style="min-width:120px">
@@ -91,55 +73,13 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td class="d-none d-lg-table-cell">
-                        @{
-                            if (item.PlayerThumbnail?.Content != null)
-                            {
-                                string imageBase64 = Convert.ToBase64String(item.PlayerThumbnail.Content);
-                                string imageSrc = string.Format("data:" + item.PlayerThumbnail.MimeType + ";base64,{0}", imageBase64);
-                                <img src="@imageSrc" alt="Display Picture for @item.FullName" title="Display Picture of @item.FullName" class="img-fluid rounded" />
-                            }
-                        }
-                    </td>
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.FullName)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.PlyrDOB)
                     </td>
                     <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
                     </td>
                     <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.Team.TmName)</td>
-                    <td class="d-none d-lg-table-cell">
-                        @{
-                            int positionCount = item.PlayerPositions.Count;
-                            if (positionCount > 0)
-                            {
-                                string firstPosition = item.PlayerPositions.FirstOrDefault().Position.PosName;
-                                if (positionCount > 1)
-                                {
-                                    string positionList = "";
-                                    var c = item.PlayerPositions.ToList();
-                                    for (int i = 1; i < positionCount; i++)
-                                    {
-                                        positionList += c[i].Position.PosName + " <br />";
-                                    }
-                                    <a class="" role="button" data-bs-toggle="collapse" href="#collapsePosition@(item.ID)"
-                                       aria-expanded="false" aria-controls="collapsePosition@(item.ID)">
-                                        @firstPosition <span class="badge bg-info">@positionCount</span>
-                                    </a>
-                                    <div class="collapse" id="collapsePosition@(item.ID)">
-                                        @Html.Raw(positionList)
-                                    </div>
-                                }
-                                else
-                                {
-                                    @firstPosition
-                                }
-                            }
-                        }
-                    </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             &#x270E;
