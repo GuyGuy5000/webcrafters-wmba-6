@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using wmbaApp.Models;
 using wmbaApp.ViewModels;
 
@@ -24,11 +24,6 @@ namespace wmbaApp.Data
         public DbSet<PlayerPosition> PlayerPositions { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
-
-
-        public DbSet<UploadedFile> UploadedFiles { get; set; }
-        public DbSet<PlayerPhoto> PlayerPhotos { get; set; }
-        public DbSet<PlayerThumbnail> PlayerThumbnails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -107,6 +102,12 @@ namespace wmbaApp.Data
             modelBuilder.Entity<PlayerPosition>()
                 .HasIndex(pp => new { pp.PlayerID })
                 .IsUnique();
+
+            //Unique composite PK for Player Jersey Number
+            modelBuilder.Entity<Player>()
+                .HasIndex(pp => new { pp.PlyrJerseyNumber, pp.TeamID })
+                .IsUnique();
+
         }
     }
 }
