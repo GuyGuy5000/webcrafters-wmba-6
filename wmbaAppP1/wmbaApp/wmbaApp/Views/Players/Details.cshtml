@@ -1,19 +1,9 @@
-﻿@model wmbaApp.Models.Player
+@model wmbaApp.Models.Player
 
 <partial name="_ViewHeading" />
 
 <div>
     <hr />
-    @{
-        if (Model.PlayerPhoto?.Content != null)
-        {
-            @:<div>
-                string imageBase64 = Convert.ToBase64String(Model.PlayerPhoto.Content);
-                string imageSrc = string.Format("data:" + Model.PlayerPhoto.MimeType + ";base64,{0}", imageBase64);
-                <img src="@imageSrc" alt="Display Picture of @Model.FullName" title="Display Picture of @Model.FullName" class="img-player" />
-            @:</div><hr />
-        }
-    }
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.PlyrFirstName)
@@ -33,50 +23,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.PlyrJerseyNumber)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PlyrDOB)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PlyrDOB)
-        </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TeamID)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Team.TmName)
         </dd>
-        <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.PlayerPositions)
-        </dt>
-                <dd class="col-sm-10">
-                    @{
-                        int positionCount = Model.PlayerPositions.Count;
-                        if (positionCount > 0)
-                        {
-                            string firstPosition = Model.PlayerPositions.FirstOrDefault().Position.PosName;
-                            if (positionCount > 1)
-                            {
-                                string positionList = "";
-                                var c = Model.PlayerPositions.ToList();
-                                for (int i = 1; i < positionCount; i++)
-                                {
-                                    positionList += c[i].Position.PosName + " <br />";
-                                }
-                                <a class="" role="button" data-bs-toggle="collapse" href="#collapsePosition@(Model.ID)"
-                                   aria-expanded="false" aria-controls="collapsePosition@(Model.ID)">
-                                    @firstPosition <span class="badge bg-info">@positionCount</span>
-                                </a>
-                                <div class="collapse" id="collapsePosition@(Model.ID)">
-                                    @Html.Raw(positionList)
-                                </div>
-                            }
-                            else
-                            {
-                                @firstPosition
-                            }
-                        }
-                    }
-                </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.StatisticID)
         </dt>
@@ -131,7 +83,6 @@
         </tr>
     </thead>
     <tbody>
-        @{
             <tr>
                 <td class="d-sm-table-cell d-md-table-cell">
                     @Html.DisplayFor(modelItem => modelItem.Statistics.StatsGP)
@@ -173,7 +124,6 @@
                     @Html.DisplayFor(modelItem => modelItem.Statistics.StatsBB)
                 </td>
             </tr>
-        }
     </tbody>
 </table>
 
