@@ -35,7 +35,7 @@ namespace wmbaApp.Controllers
             //NOTE: make sure this array has matching values to the column headings
             PopulateDropDownLists();
             string[] sortOptions = new[] { "Start Time", "End Time", "Location" };
-           
+
 
             var games = _context.Games
                 .Include(t => t.GameTeams)
@@ -50,7 +50,7 @@ namespace wmbaApp.Controllers
             if (!System.String.IsNullOrEmpty(SearchString))
             {
                 games = games.Where(p => p.GameLocation.ToUpper().Contains(SearchString.ToUpper())
-                                      
+
                                        );
 
                 numberFilters++;
@@ -178,13 +178,20 @@ namespace wmbaApp.Controllers
                 try
                 {
                     _context.Add(game);
-                    CreateGameTeams(HomeTeamID, AwayTeamID);
                     await _context.SaveChangesAsync();
+                    CreateGameTeams(game, HomeTeamID, AwayTeamID);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (RetryLimitExceededException /* dex */)
                 {
                     ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    if (ex.Message.Contains("another instance with the same key value"))
+                    {
+                        ModelState.AddModelError("", "A game cannot have the same team on both sides. Please choose two different teams."); //pass a message to the field that triggered the error
+                    }
                 }
                 catch (DbUpdateException dex)
                 {
@@ -193,11 +200,8 @@ namespace wmbaApp.Controllers
                         //check which field triggered the error
                         if (dex.InnerException.Message.Contains("GameStartTime"))
                             ModelState.AddModelError("GameStartTime", "A game with this start time already exists. Please choose a different time."); //pass a message to the field that triggered the error
-                        if (dex.InnerException.Message.Contains("Foreign Key"))
-                            ModelState.AddModelError("", "A game cannot have the same team on both sides. Please choose two different teams."); //pass a message to the field that triggered the error
-
-
                     }
+                    
                     else
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
@@ -237,7 +241,7 @@ namespace wmbaApp.Controllers
             var gamesToUpdate = await _context.Games
                 .Include(t => t.GameTeams)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            
+
             PopulateDropDownLists(gamesToUpdate);
 
             if (gamesToUpdate == null)
@@ -280,7 +284,7 @@ namespace wmbaApp.Controllers
             }
 
 
-            return RedirectToAction("Details", new { gamesToUpdate.ID});
+            return RedirectToAction("Details", new { gamesToUpdate.ID });
         }
 
         // GET: Games/Delete/5
@@ -334,9 +338,9 @@ namespace wmbaApp.Controllers
             }
         }
 
-        private void CreateGameTeams( int? HomeTeamID, int? AwayTeamID)
+        private void CreateGameTeams(Game game, int? HomeTeamID, int? AwayTeamID)
         {
-            int gameID = _context.Games.Count() + 1;
+            int gameID = game.ID;
             _context.GameTeams.AddRange(
                 new GameTeam
                 {
@@ -368,7 +372,7 @@ namespace wmbaApp.Controllers
 
         private bool GameExists(int id)
         {
-          return _context.Games.Any(e => e.ID == id);
+            return _context.Games.Any(e => e.ID == id);
         }
     }
 }

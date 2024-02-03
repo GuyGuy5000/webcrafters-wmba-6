@@ -40,6 +40,11 @@ namespace wmbaApp.Data
                 .HasIndex(t => t.TmName)
                 .IsUnique();
 
+            //Unique constraint for player member ID
+            modelBuilder.Entity<Player>()
+                .HasIndex(p => p.PlyrMemberID)
+                .IsUnique();
+
             //Unique constraint for position names
             modelBuilder.Entity<Position>()
                 .HasIndex(p => p.PosName)
