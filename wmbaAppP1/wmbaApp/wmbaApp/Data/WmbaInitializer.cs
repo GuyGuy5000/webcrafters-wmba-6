@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using wmbaApp.Models;
 
@@ -130,7 +130,6 @@ namespace wmbaApp.Data
                                     PlyrFirstName = firstNames[random.Next(0, firstNames.Length - 1)],
                                     PlyrLastName = lastNames[random.Next(0, lastNames.Length - 1)],
                                     PlyrJerseyNumber = (random.Next(2) == 1) ? i : null,
-                                    PlyrDOB = DateTime.Now.AddYears(-random.Next(3, 40)).AddDays(-random.Next(365 * 3)), //Age between 3 years and 40years
                                     TeamID = team.ID
                                 });
                         }
