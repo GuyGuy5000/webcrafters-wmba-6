@@ -25,6 +25,10 @@ namespace wmbaApp.Data
         public DbSet<Position> Positions { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
 
+        public DbSet<InActivePlayer> InActivePlayers { get; set; }
+
+        public DbSet<UploadedFile> UploadedFiles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //Unique constraint for division names
@@ -37,9 +41,9 @@ namespace wmbaApp.Data
                 .HasIndex(t => t.TmName)
                 .IsUnique();
 
-            //Unique constraint for team abbreviations
-            modelBuilder.Entity<Team>()
-                .HasIndex(t => t.TmAbbreviation)
+            //Unique constraint for player member ID
+            modelBuilder.Entity<Player>()
+                .HasIndex(p => p.PlyrMemberID)
                 .IsUnique();
 
             //Unique constraint for position names
@@ -102,12 +106,6 @@ namespace wmbaApp.Data
             modelBuilder.Entity<PlayerPosition>()
                 .HasIndex(pp => new { pp.PlayerID })
                 .IsUnique();
-
-            //Unique composite PK for Player Jersey Number
-            modelBuilder.Entity<Player>()
-                .HasIndex(pp => new { pp.PlyrJerseyNumber, pp.TeamID })
-                .IsUnique();
-
         }
     }
 }
