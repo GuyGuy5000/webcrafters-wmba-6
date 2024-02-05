@@ -362,7 +362,7 @@ namespace wmbaApp.Controllers
             return new SelectList(_context.Games, "ID", "GameLocation", selectedId);
         }
         private SelectList TeamSelectList(int? selectedId)
-            => new(_context.Teams, "ID", "TmName", selectedId);
+            => new(_context.Teams.Where(t => t.IsActive), "ID", "TmName", selectedId);
         private void PopulateDropDownLists(Game game = null)
         {
             ViewData["HomeTeamID"] = TeamSelectList(null);

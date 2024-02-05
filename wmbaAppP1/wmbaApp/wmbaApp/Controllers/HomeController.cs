@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using wmbaApp.Data;
 using wmbaApp.Models;
@@ -171,6 +172,7 @@ namespace wmbaApp.Controllers
         }
         private void ImportTeamExcel(ExcelPackage excel)
         {
+            Collection<string> importedTeams = new();
             string feedBack = "";
             var workSheet = excel.Workbook.Worksheets[0];
             var start = workSheet.Dimension.Start;
@@ -182,7 +184,7 @@ namespace wmbaApp.Controllers
             {
                 Team t = new();
 
-                if (!feedBack.Contains(workSheet.Cells[row, 8].Text)) //check to see if a team was already imported
+                if (!importedTeams.Contains(workSheet.Cells[row, 8].Text)) //check to see if a team was already imported
                     try
                     {
                         int? divID = _context.Divisions.FirstOrDefault(d => d.DivName == workSheet.Cells[row, 6].Text.ToUpper())?.ID;
@@ -193,6 +195,7 @@ namespace wmbaApp.Controllers
                         _context.Teams.Add(t);
                         _context.SaveChanges();
                         successCount++;
+                        importedTeams.Add(t.TmName);
                     }
                     catch (DbUpdateException dex)
                     {

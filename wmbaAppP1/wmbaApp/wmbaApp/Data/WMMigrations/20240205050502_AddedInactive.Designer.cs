@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wmbaApp.Data;
 
@@ -10,9 +11,11 @@ using wmbaApp.Data;
 namespace wmbaApp.Data.WMMigrations
 {
     [DbContext(typeof(WmbaContext))]
-    partial class WmbaContextModelSnapshot : ModelSnapshot
+    [Migration("20240205050502_AddedInactive")]
+    partial class AddedInactive
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -7,7 +7,7 @@
 }
 
 <h2>Players</h2>
-<form asp-action="Index" method="get">
+<form asp-action="InactiveIndex" method="get">
     <input type="hidden" name="TeamID" value="@team.ID" />
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
@@ -26,14 +26,14 @@
                     </div>
                     <div class="col-md-4 align-self-end">
                         <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
-                        <a asp-action="Index" asp-route-TeamID="@team.ID" class="btn btn-outline-dark">Clear</a>
+                        <a asp-action="InactiveIndex" asp-route-TeamID="@team.ID" class="btn btn-outline-dark">Clear</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <br />
-    <a asp-action="InactiveIndex" asp-route-TeamID="@team.ID" class="btn btn-outline-dark">Currently viewing: active players</a>
+    <a asp-action="Index" asp-route-TeamID="@team.ID" class="btn btn-outline-dark">Currently viewing: inactive players</a>
     <table class="table">
         <thead>
             <tr>
@@ -41,7 +41,7 @@
                     <input type="submit" name="actionButton" value="Player Full Name" class="btn btn-toolbar" />
                 </th>
                 <th class="d-none d-sm-table-cell">
-                    <input type="submit" value="Jersey Number" class="btn btn-toolbar" disabled/>
+                    <input type="submit" value="Jersey Number" class="btn btn-toolbar" disabled />
                 </th>
                 <th style="min-width:120px">
                     <a asp-action="Create" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Add a new player to this team">
@@ -61,14 +61,11 @@
                         @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit Player">
-                            &#x270E;
-                        </a>
                         <a asp-action="Details" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Player Details">
                             &#x1F50E;
                         </a>
-                        <a asp-action="MakeInactive" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Deactivate Player">
-                            &#x274C;
+                        <a asp-action="MakeActive" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Reactivate Player">
+                            &#10004;
                         </a>
                     </td>
                 </tr>

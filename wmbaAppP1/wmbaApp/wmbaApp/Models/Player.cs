@@ -43,6 +43,8 @@ namespace wmbaApp.Models
         [Display(Name = "Member ID")]
         [RegularExpression("^([A-Z]|[0-9]){8}$", ErrorMessage = "Member ID is an 8 character consisting of letters and numbers.")]
         public string PlyrMemberID { get; set; }
+        [Display(Name = "Active")]
+        public bool IsActive { get; set; } = true;
         [Display(Name = "Team")]
         public int TeamID { get; set; }
         public Team Team { get; set; }

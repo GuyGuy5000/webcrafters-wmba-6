@@ -24,6 +24,8 @@ namespace wmbaApp.Models
         [Required(ErrorMessage = "Team name is required")]
         [StringLength(80, ErrorMessage = "Team name must be less than 80 characters.")]
         public string TmName { get; set; }
+        [Display(Name = "Active")]
+        public bool IsActive { get; set; } = true;
         [Display(Name = "Division")]
         public int DivisionID { get; set; }
         public Division Division { get; set; }

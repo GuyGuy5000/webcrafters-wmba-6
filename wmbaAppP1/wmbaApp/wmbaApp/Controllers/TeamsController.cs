@@ -41,6 +41,7 @@ namespace wmbaApp.Controllers
             .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
             .Include(t => t.Players)
             .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+            .Where(t => t.IsActive)
             .AsNoTracking();
 
             //Add as many filters as needed
@@ -125,6 +126,112 @@ namespace wmbaApp.Controllers
             return View(pagedData);
         }
 
+        // GET: Teams
+        public async Task<IActionResult> InactiveIndex(string SearchString, int? DivisionID,
+             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
+        {
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+            //Then in each "test" for filtering, add to the count of Filters applied
+
+            //List of sort options.
+            //NOTE: make sure this array has matching values to the column headings
+            string[] sortOptions = new[] { "Team", "Division", "Coaches" };
+            PopulateDropDownLists();
+
+            var teams = _context.Teams
+            .Include(t => t.Division)
+            .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+            .Include(t => t.Players)
+            .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+            .Where(t => !t.IsActive)
+            .AsNoTracking();
+
+            //Add as many filters as needed
+            if (DivisionID.HasValue)
+            {
+                teams = teams.Where(t => t.DivisionID == DivisionID);
+                numberFilters++;
+            }
+
+            if (!System.String.IsNullOrEmpty(SearchString))
+            {
+                teams = teams.Where(p => p.TmName.ToUpper().Contains(SearchString.ToUpper()));
+
+                numberFilters++;
+            }
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+                //Keep the Bootstrap collapse open
+                //@ViewData["ShowFilter"] = " show";
+            }
+
+            //Before we sort, see if we have called for a change of filtering or sorting
+            if (!System.String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+
+                if (sortOptions.Contains(actionButton))//Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton;//Sort by the button clicked
+                }
+            }
+            //Now we know which field and direction to sort by
+            if (sortField == "Team")
+            {
+
+                if (sortDirection == "asc")
+                {
+                    teams = teams
+                        .OrderBy(p => p.TmName);
+                }
+                else
+                {
+                    teams = teams
+                        .OrderByDescending(p => p.TmName);
+                }
+            }
+            else if (sortField == "Division")
+            {
+                if (sortDirection == "asc")
+                {
+                    teams = teams
+                       .OrderBy(p => p.Division.DivName);
+
+                }
+                else
+                {
+                    teams = teams
+                       .OrderByDescending(p => p.Division.DivName);
+
+                }
+            }
+
+            //Set sort for next time
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Team>.CreateAsync(teams.AsNoTracking(), page ?? 1, pageSize);
+
+            // Change the return statement to use the pagedData
+            return View(pagedData);
+        }
+
+
+
         // GET: Teams/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -172,7 +279,7 @@ namespace wmbaApp.Controllers
                     if (!String.IsNullOrEmpty(submitButton))
                     {
                         if (submitButton == "Create and add players")
-                            return RedirectToAction("Create", "PlayerTeam", new { TeamID = team.ID});
+                            return RedirectToAction("Create", "PlayerTeam", new { TeamID = team.ID });
                         else
                             return RedirectToAction("Index", "PlayerTeam", new { TeamID = team.ID });
                     }
@@ -273,7 +380,7 @@ namespace wmbaApp.Controllers
                     }
                     else
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                        return View(teamToUpdate);
+                    return View(teamToUpdate);
                 }
             }
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName", teamToUpdate.DivisionID);
@@ -281,57 +388,177 @@ namespace wmbaApp.Controllers
             return RedirectToAction("Details", new { teamToUpdate.ID });
         }
 
-        // GET: Teams/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        //// GET: Teams/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null || _context.Teams == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var team = await _context.Teams
+        //     .Include(t => t.Division)
+        //     .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+        //     .Include(t => t.Players)
+        //     .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+        //     .AsNoTracking()
+        //     .FirstOrDefaultAsync(m => m.ID == id);
+
+        //    if (team == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(team);
+        //}
+
+        //// POST: Teams/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Teams == null)
+        //    {
+        //        return Problem("Entity set 'WmbaContext.Teams'  is null.");
+        //    }
+        //    var team = await _context.Teams.FindAsync(id);
+        //    try
+        //    {
+        //        if (team != null)
+        //            _context.Teams.Remove(team);
+
+        //        await _context.SaveChangesAsync();
+        //        return Redirect(ViewData["returnURL"].ToString());
+        //    }
+        //    catch (DbUpdateException dex)
+        //    {
+        //        if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
+        //            ModelState.AddModelError("FK", $"Unable to delete a team that has players. Reassign or delete the players assigned to this team.");
+        //        else
+        //            //Note: there is really no reason a delete should fail if you can "talk" to the database.
+        //            ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+        //        return View("Delete", team);
+        //    }
+        //}
+
+        // GET: Teams/Inactive/5
+        public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Teams == null)
-            {
                 return NotFound();
-            }
 
             var team = await _context.Teams
-             .Include(t => t.Division)
-             .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
-             .Include(t => t.Players)
-             .Include(t => t.GameTeams).ThenInclude(t => t.Game)
-             .AsNoTracking()
-             .FirstOrDefaultAsync(m => m.ID == id);
+                     .Include(t => t.Division)
+                     .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                     .Include(t => t.Players)
+                     .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync(m => m.ID == id);
 
             if (team == null)
-            {
                 return NotFound();
-            }
 
             return View(team);
         }
 
-        // POST: Teams/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Teams/Inactive/5
+        [HttpPost, ActionName("MakeInactive")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> MakeInactiveConfirmed(int id, string deactivate)
         {
             if (_context.Teams == null)
             {
-                return Problem("Entity set 'WmbaContext.Teams'  is null.");
+                return Problem("Entity set 'WmbaContext.Players' is null.");
             }
-            var team = await _context.Teams.FindAsync(id);
-            try
-            {
-                if (team != null)
-                    _context.Teams.Remove(team);
+            var team = await _context.Teams
+                     .Include(t => t.Division)
+                     .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                     .Include(t => t.Players)
+                     .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync(m => m.ID == id);
 
-                await _context.SaveChangesAsync();
-                return Redirect(ViewData["returnURL"].ToString());
-            }
-            catch (DbUpdateException dex)
+            if (deactivate == "Deactivate team and active players")
             {
-                if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
-                    ModelState.AddModelError("FK", $"Unable to delete a team that has players. Reassign or delete the players assigned to this team.");
-                else
-                    //Note: there is really no reason a delete should fail if you can "talk" to the database.
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                return View("Delete", team);
+                foreach (Player p in team.Players)
+                {
+                    if (p.IsActive)
+                        p.IsActive = false;
+                    _context.Players.Update(p);
+                }
             }
+            else
+            {
+                int activePlayers = 0;
+                foreach (Player p in team.Players)
+                {
+                    if (p.IsActive)
+                        activePlayers++;
+                }
+                if (activePlayers > 0)
+                {
+                    ModelState.AddModelError("FK", $"Unable to deactivate a team that has active players. Reassign or deactivate the players assigned to this team.");
+                    return View(team);
+                }
+            }
+
+            
+
+            if (team != null)
+            {
+                team.IsActive = false;
+                _context.Teams.Update(team);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Teams/Active/5
+        public async Task<IActionResult> MakeActive(int? id)
+        {
+            if (id == null || _context.Teams == null)
+                return NotFound();
+
+            var team = await _context.Teams
+                     .Include(t => t.Division)
+                     .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                     .Include(t => t.Players)
+                     .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (team == null)
+                return NotFound();
+
+            return View(team);
+        }
+
+        // POST: Teams/Active/5
+        [HttpPost, ActionName("MakeActive")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MakeActiveConfirmed(int id)
+        {
+            if (_context.Teams == null)
+            {
+                return Problem("Entity set 'WmbaContext.Players' is null.");
+            }
+            var team = await _context.Teams
+                     .Include(t => t.Division)
+                     .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                     .Include(t => t.Players)
+                     .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                     .AsNoTracking()
+                     .FirstOrDefaultAsync(m => m.ID == id);
+            
+            if (team != null)
+            {
+                team.IsActive = true;
+                _context.Teams.Update(team);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         #region SelectLists

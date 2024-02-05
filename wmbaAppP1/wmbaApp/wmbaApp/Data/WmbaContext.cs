@@ -30,6 +30,18 @@ namespace wmbaApp.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //include collation for case-insensitive unique constraints
+            modelBuilder.UseCollation("NOCASE");
+
+            //set case-insensitive collation for division names so that unique constraints
+            modelBuilder.Entity<Division>()
+                .Property(d => d.DivName)
+                .UseCollation("NOCASE");
+
+            modelBuilder.Entity<Team>()
+                .Property(t => t.TmName)
+                .UseCollation("NOCASE");
+
             //Unique constraint for division names
             modelBuilder.Entity<Division>()
                 .HasIndex(d => d.DivName)
