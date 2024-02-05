@@ -1,4 +1,4 @@
-@model wmbaApp.Models.Player
+﻿@model wmbaApp.Models.Player
 
 <partial name="_ViewHeading" />
 <div>
@@ -80,49 +80,52 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsGP)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsPA)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsAB)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsAVG)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsOBP)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsOPS)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsSLG)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsH)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsR)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsK)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsHR)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsRBI)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => modelItem.Statistics.StatsBB)
-                </td>
-            </tr>
+            @{
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsGP)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsPA)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsAB)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsAVG)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsOBP)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsOPS)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsSLG)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsH)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsR)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsK)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsHR)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsRBI)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsBB)
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
+
     @{
         if (!ViewData.ModelState.IsValid)
         {
@@ -138,7 +141,7 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to Players List</a>
+        <a asp-action="Index">Back to List</a>
     </form>
 </div>
 

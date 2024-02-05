@@ -1,4 +1,4 @@
-@model IEnumerable<wmbaApp.Models.Player>
+﻿@model IEnumerable<wmbaApp.Models.Player>
 
 <partial name="_ViewHeading" />
 <form asp-action="Index" method="get">
@@ -18,7 +18,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="control-label">Search Player First/Last Name</label>
+                        <label class="control-label">Search Player First/Last Name/Team/Team Abbrv:</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
                     <div class="col-md-4 align-self-end">
@@ -32,6 +32,8 @@
     <table class="table">
         <thead>
             <tr>
+
+
                 <style>
                     .clickable-header {
                         cursor: pointer;
@@ -50,7 +52,7 @@
 
                 </style>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <input type="submit" name="actionButton" value="Player Full Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
+                    <input type="submit" name="actionButton" value="Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
                 </th>
                 <th class="d-none d-lg-table-cell">
                     <div class="clickable-header">
@@ -60,6 +62,11 @@
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="clickable-header">
                         Team
+                    </div>
+                </th>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="clickable-header">
+                        Division
                     </div>
                 </th>
                 <th style="min-width:120px">
@@ -79,7 +86,12 @@
                     <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
                     </td>
-                    <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.Team.TmName)</td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.Team.TmName)
+                    </td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.Team.Division.DivName)
+                    </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             &#x270E;

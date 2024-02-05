@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -41,10 +41,9 @@ namespace wmbaApp.Controllers
             PopulateDropDownLists();
 
             var players = _context.Players
-
-            .Include(t => t.Team)
-            .Include(t => t.Statistics)
-           .AsNoTracking();
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .AsNoTracking();
 
             //Add as many filters as needed
             if (TeamID.HasValue)
@@ -57,7 +56,8 @@ namespace wmbaApp.Controllers
             {
                 players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper()));
+                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
+                                       );
 
                 numberFilters++;
             }
@@ -111,7 +111,6 @@ namespace wmbaApp.Controllers
                         .OrderByDescending(p => p.Team);
                 }
             }
-
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
 
@@ -120,6 +119,7 @@ namespace wmbaApp.Controllers
             var pagedData = await PaginatedList<Player>.CreateAsync(players.AsNoTracking(), page ?? 1, pageSize);
 
             return View(pagedData);
+
         }
 
 
@@ -158,7 +158,7 @@ namespace wmbaApp.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber," +
-            "TeamID,StatisticID")] Player player)
+            "PlyrDOB,TeamID,StatisticID")] Player player, IFormFile thePicture, string[] selectedOptions)
         {
             try
             {
@@ -174,16 +174,9 @@ namespace wmbaApp.Controllers
             {
                 ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
             }
-            catch (DbUpdateException dex)
+            catch (DbUpdateException)
             {
-                if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed: Players.PlyrJerseyNumber"))
-                {
-                    ModelState.AddModelError("PlyrJerseyNumber", "Cannot have different players with same Jersey Number.");
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                }
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
             PopulateDropDownLists(player);
@@ -199,7 +192,6 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-                .Include(p=>p.Team)
                 .FirstOrDefaultAsync(f => f.ID == id);
 
             if (player == null)
@@ -216,16 +208,16 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, string[] selectedOptions)
         {
             var playerToUpdate = await _context.Players
-                .Include(p=>p.Team)
             .FirstOrDefaultAsync(m => m.ID == id);
 
             if (playerToUpdate == null)
             {
                 return NotFound();
             }
+
 
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
                 t => t.PlyrFirstName, t => t.PlyrLastName, t => t.TeamID, t => t.PlyrJerseyNumber,
@@ -248,19 +240,11 @@ namespace wmbaApp.Controllers
                         throw;
                     }
                 }
-                catch (DbUpdateException dex)
+                catch (DbUpdateException)
                 {
-                    if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed: Players.PlyrJerseyNumber"))
-                    {
-                        ModelState.AddModelError("PlyrJerseyNumber", "Cannot have different players with same Jersey Number in the same team.");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                    }
+                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
             }
-
             PopulateDropDownLists(playerToUpdate);
             return View(playerToUpdate);
         }
@@ -274,7 +258,6 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-                .Include(p=>p.Team)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
             {
@@ -293,9 +276,7 @@ namespace wmbaApp.Controllers
             {
                 return Problem("Entity set 'WmbaContext.Players' is null.");
             }
-
             var player = await _context.Players.FindAsync(id);
-
             if (player != null)
             {
                 _context.Players.Remove(player);
@@ -321,6 +302,93 @@ namespace wmbaApp.Controllers
             ViewData["StatisticID"] = StatisticSelectList(player?.StatisticID);
         }
 
+        //#region PositionCheckboxes
+        //private void PopulateAssignedPositionCheckboxes(Player player)
+        //{
+        //    //For this to work, you must have Included the FunctionRooms 
+        //    //in the Function
+        //    var allOptions = _context.Positions;
+        //    var currentOptionIDs = new HashSet<int>(player.PlayerPositions.Select(b => b.PositionID));
+        //    var checkBoxes = new List<CheckOptionVM>();
+        //    foreach (var option in allOptions)
+        //    {
+        //        checkBoxes.Add(new CheckOptionVM
+        //        {
+        //            ID = option.ID,
+        //            DisplayText = option.PosName,
+        //            Assigned = currentOptionIDs.Contains(option.ID)
+        //        });
+        //    }
+        //    ViewData["PositionOptions"] = checkBoxes;
+        //}
+
+        ////For the posiionList
+        //private void PopulateAssignedPositionLists(Player player)
+        //{
+        //    //For this to work, you must have Included the child collection in the parent object
+        //    var allOptions = _context.Positions;
+        //    var currentOptionsHS = new HashSet<int>(player.PlayerPositions.Select(b => b.PositionID));
+        //    //Instead of one list with a boolean, we will make two lists
+        //    var selected = new List<ListOptionVM>();
+        //    var available = new List<ListOptionVM>();
+        //    foreach (var r in allOptions)
+        //    {
+        //        if (currentOptionsHS.Contains(r.ID))
+        //        {
+        //            selected.Add(new ListOptionVM
+        //            {
+        //                ID = r.ID,
+        //                DisplayText = r.PosName
+        //            });
+        //        }
+        //        else
+        //        {
+        //            available.Add(new ListOptionVM
+        //            {
+        //                ID = r.ID,
+        //                DisplayText = r.PosName
+        //            });
+        //        }
+        //    }
+
+        //    ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+        //    ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
+        //}
+
+        //private void UpdatePlayerPositionsListboxes(string[] selectedOptions, Player playerToUpdate)
+        //{
+        //    if (selectedOptions == null)
+        //    {
+        //        playerToUpdate.PlayerPositions = new List<PlayerPosition>();
+        //        return;
+        //    }
+
+        //    var selectedOptionsHS = new HashSet<string>(selectedOptions);
+        //    var currentOptionsHS = new HashSet<int>(playerToUpdate.PlayerPositions.Select(b => b.PositionID));
+        //    foreach (var r in _context.Positions)
+        //    {
+        //        if (selectedOptionsHS.Contains(r.ID.ToString()))//it is selected
+        //        {
+        //            if (!currentOptionsHS.Contains(r.ID))
+        //            {
+        //                playerToUpdate.PlayerPositions.Add(new PlayerPosition
+        //                {
+        //                    PositionID = r.ID,
+        //                    PlayerID = playerToUpdate.ID
+        //                });
+        //            }
+        //        }
+        //        else //not selected
+        //        {
+        //            if (currentOptionsHS.Contains(r.ID))
+        //            {
+        //                PlayerPosition positionToRemove = playerToUpdate.PlayerPositions.FirstOrDefault(d => d.PositionID == r.ID);
+        //                _context.Remove(positionToRemove);
+        //            }
+        //        }
+        //    }
+        //}
+        //#endregion
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.ID == id);

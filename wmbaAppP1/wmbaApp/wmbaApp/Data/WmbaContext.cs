@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using wmbaApp.Models;
 using wmbaApp.ViewModels;
 
@@ -25,7 +25,9 @@ namespace wmbaApp.Data
         public DbSet<Position> Positions { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
 
+
         public DbSet<InActivePlayer> InActivePlayers { get; set; }
+
 
         public DbSet<UploadedFile> UploadedFiles { get; set; }
 

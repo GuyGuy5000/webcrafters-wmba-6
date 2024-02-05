@@ -1,12 +1,13 @@
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using wmbaApp.Models;
 
 namespace wmbaApp.Data
 {
     /// <summary>
     /// A class for initializing the database and populating it with some data
-    /// - Nadav Hilu, Esmael Sandoqa
+    /// - Nadav Hilu, Esmael Sandoqa, Farooq Jidelola
     /// </summary>
     public static class WmbaInitializer
     {
@@ -35,7 +36,7 @@ namespace wmbaApp.Data
                 }
 
                 //Teams seed data
-                string[] teams = { "Bananas", "Dragons", "Firefrogs", "Rockhounds", "Tincaps", "Bisons", "Bats", "Mudhens", "Iron Birds", "Green Jackets", "Anchors", "Aces", "Bees", "Blue Rocks", "Mariners", "Woodpeckers", "Rockies", "Pirates", "Green Jr Jackfish", "Navy Mustangs" };
+                string[] teams = { "Bananas", "Dragons", "Firefrogs", "Rockhounds", "Tin Caps", "Bisons", "Bats", "Mudhens", "Iron Birds", "Green Jackets", "Anchors", "Aces", "Bees", "Blue Rocks", "Mariners", "Woodpeckers", "Rockies", "Pirates", "Green Jr Jackfish", "Navy Mustangs" };
                 //add teams if none exist
                 if (!context.Teams.Any())
                 {
@@ -47,30 +48,24 @@ namespace wmbaApp.Data
                             context.Teams.AddRange(
                                 new Team
                                 {
-                                    TmName = $"{d.DivName} Welland {teams[teamsRemaining - 1]}",
-                                    TmAbbreviation = $"T{teamsRemaining}",
+                                    TmName = $"{teams[teamsRemaining - 1]}",
                                     DivisionID = d.ID
                                 },
                                 new Team
                                 {
-                                    TmName = $"{d.DivName} Welland {teams[teamsRemaining - 2]}",
-                                    TmAbbreviation = $"T{teamsRemaining - 1}",
+                                    TmName = $"{teams[teamsRemaining - 2]}",
                                     DivisionID = d.ID
                                 },
                                 new Team
                                 {
-                                    TmName = $"{d.DivName} Welland {teams[teamsRemaining - 3]}",
-                                    TmAbbreviation = $"T{teamsRemaining - 2}",
+                                    TmName = $"{teams[teamsRemaining - 3]}",
                                     DivisionID = d.ID
                                 },
                                 new Team
                                 {
-                                    TmName = $"{d.DivName} Welland {teams[teamsRemaining - 4]}",
-                                    TmAbbreviation = $"T{teamsRemaining - 3}",
+                                    TmName = $"{teams[teamsRemaining - 4]}",
                                     DivisionID = d.ID
-                                }
-
-                                );
+                                });
                         teamsRemaining -= 4;
                     }
                     context.SaveChanges();
@@ -83,8 +78,7 @@ namespace wmbaApp.Data
                 if (!context.Coaches.Any())
                 {
                     int teamsCount = context.Teams.Count();
-                    //will only create coaches for half of the teams so that some teams remain unassigned (change i+=2 to i++ to create remaining coaches).
-                    for (int i = 0; i < teamsCount; i += 2)
+                    for (int i = 0; i <= teamsCount; i++)
                     {
                         context.Coaches.Add(
                             new Coach
@@ -99,19 +93,24 @@ namespace wmbaApp.Data
                 //DivisionCoach seed data
                 if (!context.DivisionCoaches.Any())
                 {
+                    Coach[] coachesArray = context.Coaches.ToArray();
                     Division[] divisionsArray = context.Divisions.ToArray();
-                    foreach (Coach coach in context.Coaches.ToList())
+                    int coachCounter = 0;
+
+                    foreach (Division division in divisionsArray)
                     {
-                        Division divisionID = divisionsArray[random.Next(divisionsArray.Length)]; //Get a division
-                        Team[] teamsArray = context.Teams.Where(t => t.DivisionID == divisionID.ID).ToArray(); //get teams from selected division
-                        Team teamID = teamsArray.Where(t => t.DivisionID == divisionID.ID).ToArray()[random.Next(teamsArray.Length)]; //select a random team from teamsArray
-                        context.DivisionCoaches.Add(
-                            new DivisionCoach
-                            {
-                                CoachID = coach.ID,
-                                DivisionID = divisionID.ID,
-                                TeamID = teamID.ID
-                            });
+                        Team[] teamsArray = context.Teams.Where(t => t.DivisionID == division.ID).ToArray(); //get teams from selected division
+                        foreach (Team team in teamsArray)
+                        {
+                            context.DivisionCoaches.Add(
+                                 new DivisionCoach
+                                 {
+                                     CoachID = coachesArray[coachCounter].ID,
+                                     DivisionID = division.ID,
+                                     TeamID = team.ID
+                                 });
+                            coachCounter++;
+                        }
                     }
                     context.SaveChanges();
                 }

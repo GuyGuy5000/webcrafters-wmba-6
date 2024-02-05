@@ -1,4 +1,4 @@
-@model wmbaApp.Models.Player
+﻿@model wmbaApp.Models.Player
 
 <partial name="_ViewHeading" />
 
@@ -34,7 +34,6 @@
         </dt>
     </dl>
 </div>
-
 
 @* Stats table *@
 <table class="table">
@@ -83,6 +82,7 @@
         </tr>
     </thead>
     <tbody>
+        @{
             <tr>
                 <td class="d-sm-table-cell d-md-table-cell">
                     @Html.DisplayFor(modelItem => modelItem.Statistics.StatsGP)
@@ -124,6 +124,7 @@
                     @Html.DisplayFor(modelItem => modelItem.Statistics.StatsBB)
                 </td>
             </tr>
+        }
     </tbody>
 </table>
 

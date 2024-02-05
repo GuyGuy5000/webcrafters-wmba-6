@@ -13,6 +13,26 @@
             <img class="logo img-fluid" src="~/Image/Main.png" alt="Welland Minor Baseball Logo" tabindex="6">
             <div>
                 <h1 class="header text-md"> WELLAND MINOR BASEBALL</h1>
+
+                <!--IMPORT TEAMS-->
+                <div class="form-group">
+                    <form asp-action="ImportTeams" method="post" enctype="multipart/form-data">
+                        <label class="control-label custom-file-label">IMPORT TEAMS:</label>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" name="theFile" id="the file" accept=".csv,.xlsx">
+                        </div>
+                        <img src="~/Image//import-screenshot.png" alt="example of an excel import file"/>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        @Html.Raw(TempData["TeamImportFeedback"])
+                        <br />
+                        @Html.Raw(TempData["PlayerImportFeedback"])
+                        <div class="form-group">
+                            <input type="submit" value="Upload" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </div>
+                <!--IMPORT TEAMS-->
+
             </div>
         </div>
     </div>

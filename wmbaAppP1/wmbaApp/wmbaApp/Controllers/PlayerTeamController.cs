@@ -38,7 +38,6 @@ namespace wmbaApp.Controllers
 
             var players = _context.Players
             .Include(t => t.Team)
-            .Include(t => t.PlayerPositions).ThenInclude(p => p.Position)
             .Include(t => t.Statistics)
             .AsNoTracking();
 
@@ -53,7 +52,6 @@ namespace wmbaApp.Controllers
                 players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.Team.TmAbbreviation.ToUpper().Contains(SearchString.ToUpper())
                                        );
 
                 numberFilters++;
@@ -185,7 +183,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber,PlyrDOB,TeamID,StatsID")] Player player, int? TeamID)
+        public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber,PlyrDOB,TeamID,StatsID")] Player player, int? TeamID, string submitButton = "")
         {
             var team = await _context.Teams
                 .Include(t => t.Division)
@@ -207,7 +205,13 @@ namespace wmbaApp.Controllers
                 {
                     _context.Add(player);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Create", new { TeamID = team.ID });
+                    if (!String.IsNullOrEmpty(submitButton))
+                    {
+                        if (submitButton == "Add player")
+                            return RedirectToAction("Create", new { TeamID = team.ID });
+                        if (submitButton == "Add player and finish")
+                            return RedirectToAction("Create", new { TeamID = team.ID });
+                    }
                 }
             }
             catch (RetryLimitExceededException /* dex */)
@@ -350,7 +354,6 @@ namespace wmbaApp.Controllers
             }
             var player = await _context.Players
                 .Include(t => t.Team)
-                .Include(t => t.PlayerPositions).ThenInclude(dr => dr.Position)
                 .Include(t => t.Statistics)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
