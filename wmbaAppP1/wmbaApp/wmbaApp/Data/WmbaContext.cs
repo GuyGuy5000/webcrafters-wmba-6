@@ -26,6 +26,9 @@ namespace wmbaApp.Data
         public DbSet<Statistic> Statistics { get; set; }
 
 
+        public DbSet<InActivePlayer> InActivePlayers { get; set; }
+
+
         public DbSet<UploadedFile> UploadedFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
