@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wmbaApp.Data;
 
@@ -10,9 +11,11 @@ using wmbaApp.Data;
 namespace wmbaApp.Data.WMMigrations
 {
     [DbContext(typeof(WmbaContext))]
-    partial class WmbaContextModelSnapshot : ModelSnapshot
+    [Migration("20240203042120_FixedUniqueConstraint")]
+    partial class FixedUniqueConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,9 +139,6 @@ namespace wmbaApp.Data.WMMigrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("PlyrFirstName")
@@ -267,9 +267,6 @@ namespace wmbaApp.Data.WMMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("DivisionID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TmName")

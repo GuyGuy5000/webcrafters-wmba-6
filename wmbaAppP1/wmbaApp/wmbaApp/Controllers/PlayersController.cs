@@ -27,7 +27,7 @@ namespace wmbaApp.Controllers
 
         // GET: Players
         public async Task<IActionResult> Index(string SearchString, int? TeamID,
-             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "Player Full Name")
+             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-secondary";
@@ -36,13 +36,14 @@ namespace wmbaApp.Controllers
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Player Full Name", "Team" };
+            string[] sortOptions = new[] { "Name", "Team" };
 
             PopulateDropDownLists();
 
             var players = _context.Players
                 .Include(t => t.Team).ThenInclude(t => t.Division)
                 .Include(t => t.Statistics)
+                .Where(t => t.IsActive)
                 .AsNoTracking();
 
             //Add as many filters as needed
@@ -84,7 +85,7 @@ namespace wmbaApp.Controllers
                 }
             }
             //Now we know which field and direction to sort by
-            if (sortField == "Player Full Name")
+            if (sortField == "Name")
             {
 
                 if (sortDirection == "asc")
@@ -119,7 +120,103 @@ namespace wmbaApp.Controllers
             var pagedData = await PaginatedList<Player>.CreateAsync(players.AsNoTracking(), page ?? 1, pageSize);
 
             return View(pagedData);
+        }
 
+        // GET: Players
+        public async Task<IActionResult> InactiveIndex(string SearchString, int? TeamID,
+             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
+        {
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+            //Then in each "test" for filtering, add to the count of Filters applied
+
+            //List of sort options.
+            //NOTE: make sure this array has matching values to the column headings
+            string[] sortOptions = new[] { "Name", "Team" };
+
+            PopulateDropDownLists();
+
+            var players = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => !t.IsActive)
+                .AsNoTracking();
+
+            //Add as many filters as needed
+            if (TeamID.HasValue)
+            {
+                players = players.Where(p => p.TeamID == TeamID);
+                numberFilters++;
+            }
+
+            if (!System.String.IsNullOrEmpty(SearchString))
+            {
+                players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
+                                       || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
+                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
+                                       );
+
+                numberFilters++;
+            }
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+            }
+            if (!System.String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+
+                if (sortOptions.Contains(actionButton))//Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton;//Sort by the button clicked
+                }
+            }
+            //Now we know which field and direction to sort by
+            if (sortField == "Name")
+            {
+
+                if (sortDirection == "asc")
+                {
+                    players = players
+                        .OrderBy(p => p.PlyrFirstName);
+                }
+                else
+                {
+                    players = players
+                        .OrderByDescending(p => p.PlyrFirstName);
+                }
+            }
+            else
+            {
+                if (sortDirection == "asc")
+                {
+                    players = players
+                        .OrderBy(p => p.Team);
+                }
+                else
+                {
+                    players = players
+                        .OrderByDescending(p => p.Team);
+                }
+            }
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+            var pagedData = await PaginatedList<Player>.CreateAsync(players.AsNoTracking(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
 
 
@@ -249,48 +346,138 @@ namespace wmbaApp.Controllers
             return View(playerToUpdate);
         }
 
-        // GET: Players/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        //// GET: Players/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null || _context.Players == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var player = await _context.Players
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+        //    if (player == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(player);
+        //}
+
+        //// POST: Players/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Players == null)
+        //    {
+        //        return Problem("Entity set 'WmbaContext.Players' is null.");
+        //    }
+        //    var player = await _context.Players.FindAsync(id);
+        //    if (player != null)
+        //    {
+        //        _context.Players.Remove(player);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+
+        // GET: Players/Inactive/5
+        public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Players == null)
-            {
                 return NotFound();
-            }
 
             var player = await _context.Players
+                .Include(p => p.Team)
+                .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
-            {
                 return NotFound();
-            }
 
             return View(player);
         }
 
-        // POST: Players/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Players/Inactive/5
+        [HttpPost, ActionName("MakeInactive")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> MakeInactiveConfirmed(int id)
         {
             if (_context.Players == null)
             {
                 return Problem("Entity set 'WmbaContext.Players' is null.");
             }
-            var player = await _context.Players.FindAsync(id);
+            var player = await _context.Players
+                .Include(p => p.Team)
+                .Include(p => p.Statistics)
+                .FirstOrDefaultAsync(p => p.ID == id);
+
             if (player != null)
             {
-                _context.Players.Remove(player);
+                player.IsActive = false;
+                _context.Players.Update(player);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Players/Active/5
+        public async Task<IActionResult> MakeActive(int? id)
+        {
+            if (id == null || _context.Players == null)
+                return NotFound();
+
+            var player = await _context.Players
+                .Include(p => p.Team)
+                .Include(p => p.Statistics)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (player == null)
+                return NotFound();
+
+            return View(player);
+        }
+
+        // POST: Players/Active/5
+        [HttpPost, ActionName("MakeActive")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MakeActiveConfirmed(int id)
+        {
+            if (_context.Players == null)
+            {
+                return Problem("Entity set 'WmbaContext.Players' is null.");
+            }
+            var player = await _context.Players
+                .Include(p => p.Team)
+                .Include(p => p.Statistics)
+                .FirstOrDefaultAsync(p => p.ID == id);
+
+            if (player != null)
+            {
+                if (player.Team.IsActive)
+                {
+                    player.IsActive = true;
+                    _context.Players.Update(player);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "This player's team is inactive. Reactivate the team or reassign this player to a different team to reactivate");
+                    return View(player);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
         #region SelectLists
         private SelectList TeamSelectList(int? selectedId)
         {
-            return new SelectList(_context.Teams, "ID", "TmName", selectedId);
+            return new SelectList(_context.Teams.Where(t => t.IsActive), "ID", "TmName", selectedId);
         }
+
         private SelectList StatisticSelectList(int? selectedId)
         {
             return new SelectList(_context.Statistics, "ID", "ID", selectedId);

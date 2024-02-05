@@ -139,7 +139,7 @@
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ID" asp-route-TeamID="@team.ID">Edit</a>
-    <partial name="_BackToList" />
+    <a asp-action="Index" asp-route-TeamID="@team.ID" type="button" class="btn btn-primary">Back to players list</a>
 </div>
 
 @section scripts{

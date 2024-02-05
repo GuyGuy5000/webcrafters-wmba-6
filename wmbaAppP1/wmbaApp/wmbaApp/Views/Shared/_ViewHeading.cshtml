@@ -6,7 +6,7 @@
             <h2 style="margin-top: 50px;" class="ms-2">@ViewData["ControllerFriendlyName"]</h2>
         </div>
     }
-    else if (ViewData["ActionName"].ToString() == "Index")
+    else if (ViewData["ActionName"].ToString() == "Index" || ViewData["ActionName"].ToString() == "InactiveIndex")
     {
         {
             <div class="text-center d-flex align-items-center justify-content-center">

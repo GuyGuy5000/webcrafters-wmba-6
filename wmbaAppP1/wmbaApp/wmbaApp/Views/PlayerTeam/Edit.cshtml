@@ -30,13 +30,10 @@
             </div>
             <div class="form-group">
                 <input asp-route-TeamID="@team.ID" type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" asp-route-TeamID="@team.ID" type="button" class="btn btn-primary">Back to players list</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <partial name="_BackToList" />
 </div>
 
 @section Scripts {
