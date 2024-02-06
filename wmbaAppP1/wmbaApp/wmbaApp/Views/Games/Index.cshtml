@@ -112,7 +112,7 @@
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             EDIT
                         </a>
-                        <a asp-controller="DivisionCoach" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                        <a asp-controller="Details" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             DETAILS
                         </a>
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
