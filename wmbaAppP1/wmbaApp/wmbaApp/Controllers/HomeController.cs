@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using wmbaApp.Data;
 using wmbaApp.Models;
+using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
@@ -26,7 +27,12 @@ namespace wmbaApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var teams = _context.Teams
+              .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+              .AsNoTracking();
+            ViewData["Matchups"] = GameMatchup.GetMatchups(_context, teams.ToArray());
+
+            return View(teams);
         }
 
         public IActionResult Privacy()
@@ -48,10 +54,15 @@ namespace wmbaApp.Controllers
         /// <returns></returns>
         public async Task<IActionResult> ImportTeams(IFormFile theFile)
         {
+            var teams = _context.Teams
+                  .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                  .AsNoTracking();
+            ViewData["Matchups"] = GameMatchup.GetMatchups(_context, teams.ToArray());
+
             if (theFile == null)
             {
                 ModelState.AddModelError("", "Upload a file to continue.");
-                return View("Index");
+                return View("Index", teams);
             }
 
             if (theFile.ContentType == "text/csv")
@@ -78,9 +89,9 @@ namespace wmbaApp.Controllers
                 ModelState.AddModelError("", "File is the wrong type. Only .CSV files are allowed");
             }
             if (!ModelState.IsValid) //if there were validation errors return to view
-                return View("Index");
+                return View("Index", teams);
 
-            return View("Index");
+            return View("Index", teams);
         }
 
 

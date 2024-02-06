@@ -20,12 +20,6 @@ html {
     min-height: 100%;
 }
 
-body {
-    margin-bottom: 60px;
-    background-image: url()
-}
-
-
 .display-4 {
     font-family: 'Arial', sans-serif;
     color: #333;
@@ -36,6 +30,7 @@ body {
     height: 300px;
     width: 380px;
 }
+
 /*Genereic Css End*/
 
 
@@ -62,7 +57,7 @@ li a:hover {
 }
 
 .dropdown-menu a:hover {
-    background-color: #4CBB17; 
+    background-color: #4CBB17;
     color: #fff;
 }
 /********Logo********/
@@ -96,6 +91,9 @@ li a:hover {
 }
 
 /********Logo Ends********/
+
+
+
 /******Header Starts**********/
 .header {
     background-color: #fff;
@@ -110,52 +108,65 @@ li a:hover {
     margin-right: 30px;
 }
 
+
+.banner {
+    margin-bottom: 30px;
+}
+
 .header {
     animation: fadeIn 1s ease-in-out;
 }
 
-.innerHeader {
-    font-family: italic;
-}
 
 .text-center {
     text-align: center;
     background-color: #fff;
 }
 
-.welcome {
-    position: absolute;
-    top: 20%;
+
+.uploadData {
+    float: left;
+}
+
+
+.gameStyle {
+    max-height: 450px;
+    max-width: 460px; /* Set the maximum height for the container */
+    overflow-y: auto; /* Add a vertical scrollbar if the content overflows */
+    border: 5px solid #4CBB17; /* Optional: Add a border for visual clarity */
+    padding: 10px; /* Optional: Add padding for spacing inside the container */
+    margin-top: -15px;
     margin: 0 auto;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    color: #001F3F;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    /* Optional: Add margin to create space below the container */
 }
 
 
 
+    .gameStyle h1 {
+        background-color: #4CBB17;
+    }
 
-.innerHeader {
-    font-size: 45px;
-    font-weight: 500;
-    margin-bottom: 10px;
+.row #gameBtn {
+    background-color: #4CBB17;
+    margin: 0 auto;
+    max-width: 460px;
+    padding: 26px;
 }
+/* Optional: Style for collapsed game items */
+.gameStyle .collapse {
+    max-height: 100px; /* Set the maximum height for collapsed items */
+    overflow-y: auto; /* Add a vertical scrollbar for collapsed items */
+    border-top: 1px solid #ddd; /* Optional: Add a border between collapsed items */
+    padding: 5px; /* Optional: Add padding for spacing inside collapsed items */
+}
+
 
 .col-md-12 {
     display: inline-flex;
 }
 
 
-.welcomeSpan {
-    background-color: #4CBB17;
-    color: #001F3F;
-    padding: 10px 20px;
-    margin: 10px;
-    font-size: 33px;
-    font-weight: 700;
-    display: inline-block;
-}
 
 
 @keyframes fadeIn {
@@ -220,10 +231,7 @@ li a:hover {
 }
 
 .icon {
-    color: #fff;
-    font-size: 20px;
-    text-align: center;
-    margin-left: 8px;
+    font-size: 70px;
 }
 
 @keyframes fadeIn {
@@ -290,16 +298,7 @@ li a:hover {
 
 
 
-/******H2 and Icon Animation Starts**********/
-.firstSection h2 {
-    animation: fadeIn 1s ease-in-out;
-}
 
-
-
-.games h2 {
-    animation: fadeIn 1s ease-in-out;
-}
 
 
 i:hover {
@@ -321,20 +320,6 @@ i:hover {
 
 
 
-    .welcomeSpan {
-        background-color: #4CBB17;
-        color: #001F3F;
-        padding: 1px 2px;
-        margin: 5px;
-        font-size: 10px;
-        display: inline-block;
-    }
-
-    .innerHeader {
-        font-family: italic;
-        font-size: 16px;
-    }
-
     .header {
         background-color: #4CBB17;
         color: #001F3F;
@@ -344,6 +329,7 @@ i:hover {
         margin-top: 10px;
         margin-left: 30px;
         margin-right: 30px;
+        margin-bottom: 40px;
     }
 
         .header h1 {
@@ -352,23 +338,99 @@ i:hover {
 }
 
 
-@media only screen and (min-width: 320px) and (max-width: 1299px) {
-    .innerHeader {
-        font-family: italic;
-        font-size: 30px;
-        margin-top: 25px;
-    }
-}
 
 /******Header and Icon Ends**********/
 
 
 
-div {
-    position: relative;
+.center-container {
+    text-align: center;
+}
+
+.startGame {
+    /* display: grid;*/
+
+    background-color: #4CBB17;
+    margin: 0 auto; /* Center the .startGame div */
+    padding: 19px;
+    margin-bottom: 40px;
+    max-width: 300px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Add box shadow */
+}
+
+.dashboard {
+    text-align: center;
+    margin: 0 auto;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.dashboards {
+    margin: 0 auto;
+    border-radius: 5px;
+    padding: 15px;
+    height: 577px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 }
 
 
+.import {
+    margin-bottom: 30px;
+}
+
+.parent {
+    padding-top: 70px;
+}
+
+.clickable-header {
+    cursor: pointer;
+    padding: 8px 13px;
+    background-color: #001F3F;
+    color: #fff;
+    border: 1px solid #001F3F;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 30px;
+    text-decoration: none;
+}
+
+    .clickable-header a {
+        text-decoration: none;
+        color: #fff;
+    }
+
+.hover:hover {
+    background-color: #4CBB17;
+    border-color: #001F3F;
+}
+
+
+@media only screen and (min-width: 320px) and (max-width: 768px) {
+    .parent {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .import {
+        max-width: 80%;
+    }
+
+    footer {
+        bottom: 40px;
+    }
+}
+
+.form-group {
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+    .form-group i {
+        margin-right: 10px;
+    }
 /******Button Starts**********/
 .btn {
     display: inline-block;
@@ -384,632 +446,38 @@ div {
     }
 
 
-/******Button Ends**********/
-
-
-/******startGameSection Starts**********/
-/* Styles for larger screens */
-.startGameSection {
+.btn-green {
     background-color: #4CBB17;
-    color: #001F3F;
-    text-align: center;
-    margin-top: -30px;
-    margin-bottom: 120px;
-    border-radius: 5px;
-    margin-bottom: 50px;
-    width: 100%;
-    z-index: 100;
+    border: solid 2px #000;
 }
 
-    .startGameSection a {
-        margin: 0 auto;
-        margin-bottom: 20px;
-        display: inline-block;
-        margin-top: 20px;
-    }
-
-    .startGameSection h2 {
-        margin-top: 30px;
-        padding-top: 20px;
-        font-weight: 700;
-    }
-
-    .startGameSection p,
-    .startGameSection h2 {
-        margin-left: 20px;
-    }
-
-/* Styles for tablet and mobile screens */
-.PLAY {
-    display: none;
-    background-color: #4CBB17;
-    color: #001F3F;
-    text-align: center;
-    margin-top: -30px;
-    margin-bottom: 60px;
-    border-radius: 5px;
-    margin-bottom: 50px;
-    width: 100%;
-    z-index: 100;
-}
-
-    .PLAY a {
-        margin: 20px auto;
-        display: inline-block;
-    }
-
-    .PLAY h2 {
-        margin-top: 30px;
-        font-weight: 700;
-    }
-
-    .PLAY p,
-    .PLAY h2 {
-        margin-left: 20px;
-    }
-
-
-@media only screen and (max-width: 768px) {
-
-    .PLAY {
-        display: block;
-    }
-
-
-    .startGameSection {
-        display: none;
-    }
-}
-
-
-
-
-/******startGameSection Ends**********/
-
-
-
-
-
-
-
-/******coachCorner Starts**********/
-.coachCorner .txtCoach {
-    margin-bottom: 130px;
-    font-weight: 700;
-}
-
-.txtCoach {
-    margin-top: 170px;
-    text-align: center;
-}
-
-
-.coachCorner {
-    width: 425px;
-    background-color: #4CBB17;
-    color: #001F3F;
-    height: 785px;
-    position: absolute;
-    left: 512px;
-}
-
-
-.coachCorner, p i {
-    text-align: center;
-}
-
-.bGame {
-    width: 100%;
-}
-
-.blockquote {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 850px;
-    margin: 0 auto;
-    height: 400px;
-    text-align: center;
-}
-
-    .blockquote img {
-        height: 400px;
-        width: 450px;
-    }
-
-.coachQuote {
-    background-color: #4CBB17;
-    border-radius: 5px;
-}
-
-    .coachQuote h2 {
-        margin-top: 90px;
-    }
-
-        .coachQuote h2 #quoteIcon {
-            color: #fff;
-            margin-right: 4px;
-        }
-
-
-
-@media only screen and (min-width: 320px) and (max-width: 1299px) {
-    .coachCorner {
-        display: none;
-    }
-
-    .bGame, .coach {
-        display: none;
-    }
-
-    .blockquote {
-        display: grid;
-        grid-template-columns: 1fr;
-        width: auto;
-        margin: 0 auto;
-        height: auto;
-        text-align: center;
-    }
-
-        .blockquote h2 {
-            font-size: 14px;
-        }
-
-        .blockquote img {
-            width: 100%;
-            height: auto;
-        }
-
-    .coachQuote {
-        background-color: #4CBB17;
-        border-radius: 5px;
-    }
-
-        .coachQuote h2 {
-            margin-top: 20px;
-        }
-}
-
-
-
-
-
-
-/********Inner Section Starts**********/
-
-body {
-    margin: 0;
-}
-
-.center-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
-
-.smallGallery {
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 80%;
-}
-
-
-.innerSection h2 {
-    animation: fadeIn 1s ease-in-out;
-}
-
-
-
-.innerSection {
-    background-color: #fff;
-}
-
-
-
-    .innerSection .innerSectionChild {
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 400px;
-        text-align: center;
-    }
-
-.innerSectionChild img {
-    width: 100%;
-    margin-top: 1300px;
-}
-
-@media only screen and (min-width: 1299px) and (max-width:1690px ) {
-    .innerSectionChild img {
-        width: 100%;
-        margin-top: 1300px;
-    }
-}
-
-@media only screen and (min-width: 769px) and (max-width:1299px ) {
-    .innerSectionChild img {
-        width: 100%;
-        position: relative;
-        top: -480px;
-       
-    }
-
-    .smallGallery {
-        top: 100px;
-    }
-}
-
-@media only screen and (min-width: 320px) and (max-width: 769px) {
-    .innerSectionChild img {
-        width: 100%;
-        margin-top: 0px;
-    }
-}
-
-@media only screen and (min-width: 769px) and (max-width: 1280px) {
-    .innerSectionChild img {
-        width: 100%;
-        margin-top: 1300px;
-    }
-}
-
-@keyframes rotateAnimation {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
-    /* Rotate twice (360deg * 2) */
-}
-
-.innerSection .innerSectionChild img {
-    animation: rotateAnimation 12s linear forwards; /* Rotate the image twice over 5 seconds */
-}
-
-
-#icon1, #icon2 {
-    animation: rotateAnimation 5s linear infinite;
-}
-
-@keyframes rotateAnimation {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(720deg);
-    }
-}
-
-#DfirstImg {
-    background-color: #4CBB17;
-    text-align: center;
-}
-
-
-
-    #DfirstImg h4 {
-        margin-top: 40px;
-        margin-bottom: 50px;
-        font-weight: 700;
-    }
-
-
-@media only screen and (min-width: 769px) and (max-width: 1000px) {
-    #DfirstImg p {
-        font-size: 11px;
-        margin-bottom: -10px;
-        margin-top: 10px;
-    }
-
-    #DfirstImg h4 {
-        font-size: 17px;
-        margin-top: 30px;
-        margin-bottom: 70px;
-    }
-
-    #DfirstImg a {
-        font-size: 11px;
-        margin-top: -80px;
-    }
-}
-
-
-@media only screen and (min-width: 320px) and (max-width: 1299px) {
-    .innerSection .innerSectionChild img {
-        width: 70%;
-    }
-}
-/********Inner Section Ends**********/
-
-.smallGallery {
-    display: grid;
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-columns: repeat(2, 1fr);
-    position: absolute;
-    left: 50%;
-    margin-top: 650px;
-    transform: translate(-50%, -50%);
-    max-width: 80%; /* Adjust the max-width as needed */
-}
-
-    .smallGallery .firstImg,
-    #SsecondImg,
-    #DsecondImg,
-    .secondImg {
-        width: 90%;
-        height: 50%;
-    }
-
-/* Add a container to center the smallGallery on the page */
-
-
-@media only screen and (min-width: 769px) and (max-width:1299px ) {
-    .smallGallery {
-        display: grid;
-        grid-template-rows: repeat(2, 1fr);
-        grid-template-columns: repeat(2, 1fr);
-        position: absolute;
-        left: 50%;
-        margin-top: 290px;
-        transform: translate(-50%, -50%);
-        max-width: 80%; /* Adjust the max-width as needed */
-    }
-}
-
-
-@media only screen and (min-width: 320px) and (max-width: 769px) {
-    .smallGallery {
-        display: none;
-    }
-}
-
-
-@media only screen and (min-width: 13.3in) and (max-width: 16in) {
-    .smallGallery .firstImg,
-    #SsecondImg,
-    #DsecondImg,
-    .secondImg {
-        width: 90%;
-        height: 70%;
-    }
-
-    .smallGallery {
-        display: grid;
-        grid-template-rows: repeat(2, 1fr);
-        grid-template-columns: repeat(2, 1fr);
-        position: absolute;
-        left: 50%;
-        margin-top: 450px;
-        transform: translate(-50%, -50%);
-        max-width: 80%; /* Adjust the max-width as needed */
-    }
-}
-
-
-
-.smallGallery img:hover {
-    transform: scale(0.9);
-}
-
-.smallGallery .firstImg,
-#SsecondImg,
-#DsecondImg,
-.secondImg {
-    width: 90%;
-    height: 70%;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-}
-
-
-
-
-
-
-/********smallGallery Ends**********/
-
-
-
-
-/********coachSection Starts**********/
-.coachSection {
-    position: relative;
-    margin: 0 auto;
-    width: 950px;
-    background-color: #4CBB17;
-    color: #001F3F;
-    height: 263px;
-    margin-top: -130px;
-}
-
-    .coachSection h2 {
-        margin-top: 190px;
-        margin-left: 20px;
-        font-weight: 700;
-    }
-
-    .coachSection a {
-        margin-top: 10px;
-        margin-left: 340px;
-        margin-right: 30px;
-    }
-
-
-#bat {
-    margin-top: -120px;
-    margin-bottom: 50px;
-}
-
-@media only screen and (min-width: 320px) and (max-width: 1299px) {
-    .coachSection {
-        display: none;
-    }
-
-        .coachSection h2 {
-            margin-top: 190px;
-            margin-left: 20px;
-            font-weight: 700;
-        }
-
-        .coachSection a {
-            margin-top: 180px;
-            margin-left: 200px;
-            margin-right: 30px;
-        }
-
-
-    #bat {
-        margin-top: -120px;
-        margin-bottom: 50px;
-    }
-}
-
-/********coachSection Ends**********/
-
-
-
-
-/********upcomingGames Starts**********/
-.upcomingGames h1 {
-    text-align: center;
-    margin-top: 100px;
-    font-size: 50px;
-    font-weight: 700;
-}
-
-.Highlight h1 {
-    text-align: center;
-    margin-top: 100px;
-    font-size: 50px;
-    font-weight: 700;
-}
-
-
-.upcomingGames, h1 i {
-    color: #001F3F;
-}
-
-.games {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: 70px;
-    gap: 90px;
-}
-
-.gameInfo {
-    text-align: center;
-}
-
-
-.games h2, p {
-    font-weight: 700;
-    color: #001F3F;
-}
-
-
-
-.games .gameInfo {
+.btn-center {
     display: block;
+    margin: 0 auto;
+    width: 282px;
 }
+/*    position: relative;
+    left: 80%;
+    top: 95px;*/
 
-@media only screen and (min-width: 769px) and (max-width: 1299px) {
-    .games, .upcomingGames {
+/*@media only screen and (min-width: 320px) and (max-width: 768px) {
+    .btn-active-toggle {
         position: relative;
-        top: -400px;
-    }
-
-    .games {
-        margin-bottom: -290px;
+        left: 26%;
+        top: 0px;
     }
 }
 
-.schedule {
-    text-align: center;
-    margin-top: 60px;
-    margin-bottom: 60px;
-}
-
-
-
-@media only screen and (min-width: 320px) and (max-width: 800px) {
-    .upcomingGames h1 {
-        font-size: 18px;
+@media only screen and (min-width: 768px) and (max-width: 1440px) {
+    .btn-active-toggle {
+        position: relative;
+        left: 33%;
+        top: 0px;
     }
-
-    .Highlight h1 {
-        font-size: 18px;
-    }
-}
+}*/
 
 
-
-
-/********upcomingGames Ends**********/
-
-
-
-
-
-/******Help Icon Starts************/
-.helpIconContainer {
-    align-items: center;
-    background-color: #000;
-    border-radius: 100%;
-    cursor: pointer;
-    display: flex;
-    height: 48px;
-    justify-content: center;
-    margin-top: 5px;
-    margin-left: 8px;
-    width: 48px;
-    color: #fff;
-    font-size: 27px;
-}
-
-.icon {
-}
-
-.fa-question {
-    color: #fff;
-}
-
-.helpIcon h2 {
-    text-align: center;
-    margin-top: 60px;
-    margin-bottom: 30px;
-    font-size: 40px;
-    font-weight: 500;
-    color: #001F3F;
-    display: flex;
-    justify-content: center;
-}
-
-@media only screen and (min-width: 320px) and (max-width: 1299px) {
-    .helpIcon h2 {
-        font-size: 15px;
-    }
-
-    .helpIconContainer {
-        align-items: center;
-        background-color: #000;
-        border-radius: 100%;
-        cursor: pointer;
-        display: flex;
-        height: 30px;
-        justify-content: center;
-        margin-top: -4px;
-        margin-left: 8px;
-        width: 30px;
-        color: #fff;
-        font-size: 14px;
-    }
-}
-/******Help Icon Ends************/
-
+/******Button Ends**********/
 
 
 /******Footer Starts************/
@@ -1017,7 +485,10 @@ footer {
     background-color: #4CBB17;
     height: 40px;
     font-weight: 700;
-    margin-bottom: -40px;
+    margin-bottom: -0px;
+    position: fixed;
+    margin-top: 20px;
+    padding-bottom: 60px;
 }
 
 

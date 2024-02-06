@@ -288,7 +288,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber,PlyrDOB,TeamID,StatsID")] Player player, int? TeamID, string submitButton = "")
+        public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber,PlyrMemberID,TeamID,StatsID")] Player player, int? TeamID, string submitButton = "")
         {
             var team = await _context.Teams
                 .Include(t => t.Division)
@@ -319,9 +319,15 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
-            catch (RetryLimitExceededException /* dex */)
+            catch (RetryLimitExceededException dex)
             {
-                ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+                if (dex.InnerException.Message.Contains("UNIQUE")) //if a UNIQUE constraint caused the exception
+                {
+                    if (dex.InnerException.Message.Contains("PlyrJerseyNumber"))
+                        ModelState.AddModelError("PlyrJerseyNumber", "A player with this member ID already exists.");
+                }
+                else
+                   ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
             }
             catch (DbUpdateException)
             {
@@ -366,33 +372,8 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber,PlyrDOB,TeamID,StatsID")] Player player, int? TeamID)
+        public async Task<IActionResult> Edit(int id, int? TeamID)
         {
-            if (id != player.ID)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(player);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PlayerExists(player.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
 
             var team = await _context.Teams
                 .Include(t => t.Division)
@@ -405,7 +386,48 @@ namespace wmbaApp.Controllers
 
             ViewBag.Team = team;
 
-            return View(player);
+            var playerToUpdate = await _context.Players
+                        .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (playerToUpdate == null)
+            {
+                return NotFound();
+            }
+
+
+            if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
+                t => t.PlyrFirstName, t => t.PlyrLastName, t => t.TeamID, t => t.PlyrJerseyNumber, t => t.PlyrMemberID,
+                t => t.StatisticID))
+            {
+                try
+                {
+                    _context.Update(playerToUpdate);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { playerToUpdate.ID, TeamID = team.ID });
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PlayerExists(playerToUpdate.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                catch (DbUpdateException dex)
+                {
+                    if (dex.InnerException.Message.Contains("UNIQUE")) //if a UNIQUE constraint caused the exception
+                    {
+                        if (dex.InnerException.Message.Contains("PlyrJerseyNumber"))
+                            ModelState.AddModelError("PlyrJerseyNumber", "A player with this jersey number already exists.");
+                    }
+                    else
+                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+            }
+            return View(playerToUpdate);
         }
 
         //// GET: PlayerTeam/Delete/5
@@ -492,7 +514,7 @@ namespace wmbaApp.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
-             ViewBag.Team = team;
+            ViewBag.Team = team;
 
             if (id == null || _context.Players == null)
                 return NotFound();
@@ -542,7 +564,7 @@ namespace wmbaApp.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction("InactiveIndex", new { TeamID = team.ID});
+                return RedirectToAction("Index", new { TeamID = team.ID });
             }
             catch (DbUpdateException)
             {
@@ -619,7 +641,7 @@ namespace wmbaApp.Controllers
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index", new { TeamID = team.ID });
+            return RedirectToAction("InactiveIndex", new { TeamID = team.ID });
         }
 
         private bool PlayerExists(int id)

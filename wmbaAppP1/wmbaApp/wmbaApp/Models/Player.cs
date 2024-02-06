@@ -41,7 +41,8 @@ namespace wmbaApp.Models
         [Range(1,99, ErrorMessage = "Jeersey numbers are between 1 and 99")]
         public int? PlyrJerseyNumber { get; set; }
         [Display(Name = "Member ID")]
-        [RegularExpression("^([A-Z]|[0-9]){8}$", ErrorMessage = "Member ID is an 8 character consisting of letters and numbers.")]
+        [RegularExpression("^.{8}$", ErrorMessage = "Member ID is 8 characters consisting of letters and numbers.")]
+        [Required(ErrorMessage = "Member ID is required")]
         public string PlyrMemberID { get; set; }
         [Display(Name = "Active")]
         public bool IsActive { get; set; } = true;

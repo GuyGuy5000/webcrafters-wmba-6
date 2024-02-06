@@ -9,6 +9,7 @@
             <div class="form-group">
                 <label asp-for="TmName" class="control-label"></label>
                 <input asp-for="TmName" class="form-control" placeholder="Ex: Green Jr. Jackfish" />
+                <br />
                 <span asp-validation-for="TmName" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -16,26 +17,20 @@
                 <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID">
                     <option value="">Select a Division</option>
                 </select>
+                <br />
                 <span asp-validation-for="DivisionID" class="text-danger"></span>
             </div>
             <br />
             <div class="form-group">
                 <input type="submit" name="submitButton" value="Create and add players" class="btn btn-primary" />
                 <input type="submit" name="submitButton" value="Create" class="btn btn-primary" />
+                <a asp-action="Index" type="button" class="btn btn-primary">Back to Teams list</a>
             </div>
         </form>
     </div>
-</div>
-<div>
-    <partial name="_BackToList" />
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        GenerateContextHelp(["<p>This page lets you create a team.</p>",
-            "<p>Enter valid information into each field and click the Create button to save your changes.</p>",
-            "<p>Click the Back to Teams list button to go back to the teams list.</p>"]);
-    </script>
 }

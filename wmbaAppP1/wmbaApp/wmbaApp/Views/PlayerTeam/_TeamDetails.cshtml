@@ -2,7 +2,7 @@
 
 
 <div>
-    <h4>Team</h4>
+    <h3>Current Team</h3>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -18,7 +18,7 @@
             @Html.DisplayFor(model => model.Division.DivName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Players)
+            @Html.Raw("Active PLayers")
         </dt>
         <dd class="col-sm-10">
             @{
@@ -57,7 +57,7 @@
             }
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DivisionCoaches)
+            @Html.Raw("Team Coaches")
         </dt>
         <dd class="col-sm-10">
             @{

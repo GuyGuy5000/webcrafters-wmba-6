@@ -31,22 +31,18 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
+                        <div display="flex">
+                            <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
+                            <a asp-action="Index" type="button" class="btn btn-primary">Back to Teams list</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </form>
-<div>
-    <partial name="_BackToList" />
-</div>
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        GenerateContextHelp(["<p>This page lets you edit a team.</p>",
-            "<p>Enter valid information into each field and click the Save button to save your changes.</p>",
-            "<p>Click the Back to Teams list button to go back to the teams list.</p>"]);
-    </script>
 }
