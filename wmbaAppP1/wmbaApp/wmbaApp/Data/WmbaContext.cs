@@ -26,7 +26,10 @@ namespace wmbaApp.Data
         public DbSet<Statistic> Statistics { get; set; }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/Nadav
         public DbSet<UploadedFile> UploadedFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
