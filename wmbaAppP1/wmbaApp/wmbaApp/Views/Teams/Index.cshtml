@@ -7,7 +7,7 @@
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    <a asp-action="InactiveIndex" class="btn btn-green btn-outline-dark btn-center mt-xl-5" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
+    <a asp-action="InactiveIndex" class="btn btn-green btn-outline-dark btn-center" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
     <br />
     <div class="form-horizontal">
         <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
