@@ -1,4 +1,4 @@
-﻿/// <summary>
+/// <summary>
 /// Lineup
 /// Farooq Jidelola
 /// </summary>
