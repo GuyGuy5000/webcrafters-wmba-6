@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 ﻿@using wmbaApp.Utilities;
 @using wmbaApp.ViewModels;
+=======
+﻿@using wmbaApp.ViewModels
+@using wmbaApp.Utilities;
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 @model IEnumerable<wmbaApp.Models.Game>
 <partial name="_ViewHeading" />
 
@@ -108,12 +113,21 @@
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             EDIT
                         </a>
+<<<<<<< HEAD
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Details @ViewData["ControllerFriendlyName"]">
                             DETAILS
                         </a>
                         @*   <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                     DELETE
                     </a> *@
+=======
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            DETAILS
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            DELETE
+                        </a>
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
                         @{
                             List<GameMatchup> matchups = (List<GameMatchup>)ViewData["Matchups"];
                             string homeTeamName = matchups.FirstOrDefault(m => m.game.ID == item.ID).teamOne.TmName;

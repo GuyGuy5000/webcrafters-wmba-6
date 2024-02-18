@@ -6,10 +6,15 @@ namespace wmbaApp.ViewModels
     {
         public List<PlayerScoreKeepingVM> Players { get; set; }
         public int CurrentBatter { get; set; } = 0;
+<<<<<<< HEAD
+=======
+        public bool CurrentlyBatting { get; set; } = true;
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 
         public int TotalRunsThisInning
             => Players.Sum(p => p.Runs);
         public int TotalOutsThisInning
+<<<<<<< HEAD
         {
             get
             {
@@ -32,6 +37,13 @@ namespace wmbaApp.ViewModels
                 return Players[CurrentBatter];
             }
         }
+=======
+            => Players.Sum(p => p.Outs);
+
+        //gets the players on each base including home base
+        public PlayerScoreKeepingVM Batter
+            => Players[CurrentBatter];
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         public PlayerScoreKeepingVM PlayerOnFirst
             => Players.FirstOrDefault(p => p.FirstBase && p != this.Batter);
         public PlayerScoreKeepingVM PlayerOnSecond
@@ -39,13 +51,20 @@ namespace wmbaApp.ViewModels
         public PlayerScoreKeepingVM PlayerOnThird
             => Players.FirstOrDefault(p => p.ThirdBase && p != this.Batter);
 
+<<<<<<< HEAD
         //constructor for JSON serialization
+=======
+        //unloaded inning constructor for debugging
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         public InningScoreKeepingVM()
         {
 
         }
 
+<<<<<<< HEAD
         //constructor for debugging
+=======
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         public InningScoreKeepingVM(string debug)
         {
             this.Players = new List<PlayerScoreKeepingVM>()

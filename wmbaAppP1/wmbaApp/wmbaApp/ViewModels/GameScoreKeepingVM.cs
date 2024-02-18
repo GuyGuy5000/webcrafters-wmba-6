@@ -6,7 +6,11 @@
     /// </summary>
     public class GameScoreKeepingVM
     {
+<<<<<<< HEAD
         public int GameID { get; set; }
+=======
+        public int GameID {  get; set; }
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         public string HomeTeamName { get; set; }
         public string AwayTeamName { get; set; }
         public int HomeTeamScore { get; set; } = 0;

@@ -1,8 +1,17 @@
+<<<<<<< HEAD
 ﻿@model wmbaApp.ViewModels.InningScoreKeepingVM
 
 
 <!--Stores the current inning's data-->
 <input type="hidden" id="inningScoreKeepingJSON" value='@Json.Serialize(Model)' />
+=======
+﻿@* @model IEnumerable<wmbaApp.ViewModels.PlayerScoreKeepingVM> *@
+@model wmbaApp.ViewModels.InningScoreKeepingVM
+
+
+<!--Stores the current inning's data-->
+<input type="hidden" id="inningScoreKeeping" value='@Json.Serialize(Model)' />
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 
 <section>
     <div class="diamond-container">
@@ -52,18 +61,26 @@
         <!--Player on base prompts-->
         @{
             //check if any runners are on base
+<<<<<<< HEAD
             bool handleThirdBase = (bool)TempData.Peek("HandleThirdBase");
             bool handleSecondBase = (bool)TempData.Peek("HandleSecondBase");
             bool handleFirstBase = (bool)TempData.Peek("HandleFirstBase");
 
             //if a player is on base and is flagged to be handled
             if (Model.PlayerOnThird != null && handleThirdBase)
+=======
+            if (Model.PlayerOnThird != null && (bool)TempData["HandleThirdBase"])
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
             {
                 <div class="player-on-base-prompt third-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnThird.Name advance to home base?</p>
                     <button name="playerOnBase" id="thirdBaseSafe" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
                     @{
+<<<<<<< HEAD
                         if (!Model.Batter.ThirdBase) //force play actions disabled if batter hits a triple
+=======
+                        if (!Model.Batter.ThirdBase)
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
                         {
                             <button name="playerOnBase" id="thirdBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
                         }
@@ -71,7 +88,11 @@
                     <button name="playerOnBase" id="thirdBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
                 </div>
             }
+<<<<<<< HEAD
             else if (Model.PlayerOnSecond != null && handleSecondBase)
+=======
+            else if (Model.PlayerOnSecond != null && (bool)TempData["HandleSecondBase"])
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
             {
                 <div class="player-on-base-prompt second-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnSecond.Name advance?</p>
@@ -101,6 +122,7 @@
                     <button name="playerOnBase" id="secondBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
                 </div>
             }
+<<<<<<< HEAD
             else if (Model.PlayerOnFirst != null && handleFirstBase)
             {
                 <div class="player-on-base-prompt first-base-prompt">
@@ -325,6 +347,13 @@
                 </tr>
             </table>
         </div>
+=======
+        }
+
+
+        <!--Player on base prompts-->
+
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
     </div>
 </section>
 
@@ -334,8 +363,14 @@
 =======
 
 <style>
+<<<<<<< HEAD
     /*Baseball diamond and players*/
+<<<<<<< HEAD
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+=======
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
     .diamond-container {
         background-image: url(../../Image/baseball-diamond.png);
         background-position: center;
@@ -390,6 +425,7 @@
         width: 140px;
     }
 
+<<<<<<< HEAD
     .batter-prompt {
         background: rgba(255,255,255,0.8);
         border: 2px solid #000;
@@ -458,6 +494,24 @@
         margin: 5px 0;
         width: 100px;
     }
+=======
+        .player-on-base-prompt button {
+            border: 0;
+            border-top: 2px solid #000;
+            border-bottom: 2px solid #000;
+            font-weight: 600;
+            height: 28px;
+            margin: 1px 0 1px 0;
+            width: 100%;
+        }
+
+            .player-on-base-prompt button:hover {
+                font-weight: 800;
+                height: 29px;
+                margin: 2px 0 2px 0;
+                width: 100%;
+            }
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 
 <<<<<<< HEAD
     .btn-close-batter-prompt{
@@ -561,11 +615,14 @@
         top: 310px;
     }
 
+<<<<<<< HEAD
     .first-base-prompt {
         left: 390px;
         top: -219px;
     }
 
+=======
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
     .second-base-prompt {
         left: 283px;
         top: -342px;
@@ -577,8 +634,11 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*Inning tracker*/
 =======
+=======
+>>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
     /*Inning tracker CSS*/
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
     .inning-tracker-container {
@@ -721,6 +781,8 @@
 
 
 
+=======
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
     /* Tablet */
     @@media only screen and (min-width: 427px) and (max-width: 768px) {
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
@@ -747,6 +809,7 @@
             width: 140px;
         }
 
+<<<<<<< HEAD
         .batter-prompt {
             left: 83px;
             top: -312px;
@@ -769,6 +832,8 @@
             width: 32px;
         }
 
+=======
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         .first-base {
             left: 256px;
             top: 177px;
@@ -824,11 +889,14 @@
             top: 130px;
         }
 
+<<<<<<< HEAD
         .first-base-prompt {
             left: 188px;
             top: -255px;
         }
 
+=======
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         .second-base-prompt {
             left: 128px;
             top: -298px;
@@ -921,6 +989,7 @@
                     margin: 2px 0 2px 0;
                 }
 
+<<<<<<< HEAD
         .batter-prompt {
             left: 32px;
             top: -360px;
@@ -939,6 +1008,8 @@
             width: 9px;
         }
 
+=======
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         .first-base {
             left: 193px;
             top: 132px;
@@ -994,11 +1065,14 @@
             top: 95px;
         }
 
+<<<<<<< HEAD
         .first-base-prompt {
             left: 125px;
             top: -235px;
         }
 
+=======
+>>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         .second-base-prompt {
             left: 80px;
             top: -266px;
