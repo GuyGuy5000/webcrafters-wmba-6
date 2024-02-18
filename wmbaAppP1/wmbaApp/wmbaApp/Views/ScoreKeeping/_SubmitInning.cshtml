@@ -1,0 +1,15 @@
+﻿@model wmbaApp.ViewModels.GameScoreKeepingVM
+
+<form asp-controller="ScoreKeeping" asp-action="SubmitInning" id="submitInningForm">
+    <div class="text-danger validation-summary-errors"><ul id="ErrorList"></ul></div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for=""></label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Submit and save inning" id="submitInningBtn" class="btn btn-outline-secondary" />
+            </div>
+        </div>
+    </div>
+</form>

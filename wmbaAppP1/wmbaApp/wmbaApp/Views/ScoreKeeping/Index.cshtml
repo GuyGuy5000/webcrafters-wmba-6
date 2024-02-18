@@ -1,0 +1,64 @@
+﻿@using wmbaApp.ViewModels
+@model wmbaApp.ViewModels.GameScoreKeepingVM
+
+<div id="scoreBar">
+    <partial name="_ScoreBar" model="@Model" />
+</div>
+
+<div id="BaseballDiamond">
+    <partial name="_BaseballDiamond" model="@Model.Innings[0]" />
+</div>
+
+<div id="InningsTable">
+    <partial name="_InningsTable" model="@Model" />
+</div>
+
+<input id="gameScoreKeepningJSON" type="hidden" value='@Json.Serialize(Model)' />
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("#startInning").click(function () {
+                //postback
+                $.ajax({
+                    url: "@Url.Action("StartInning", "ScoreKeeping")",
+                    data: { gameScoreKeepningJSON: $("#gameScoreKeepningJSON").val() }, //dictionary with same keys as the method's params
+                    type: "Post",
+                    success: function (result) {
+                        $("#BaseballDiamond").html(""); //reset the div
+                        $("#BaseballDiamond").html(result); // set the div to the result of the postback
+                    },
+                    error: function (result) {
+                        window.alert("This is an unhandled exception");
+                    }
+                });
+            });
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            //get all buttons for playerOnBase prompts
+            $("button[name='playerOnBase']").each(function () {
+                //assign each one a click event
+                $(`#${this.id}`).click(function () {
+                    //postback
+                    $.ajax({
+                        url: "@Url.Action("HandlePlayerOnBase", "ScoreKeeping")",
+                        data: { gameScoreKeepningJSON: $("#gameScoreKeepningJSON").val(), senderID: `${this.id}`, senderAction: `${this.value}` }, //dictionary with same keys as the method's params
+                        type: "Post",
+                        success: function (result) {
+                            $("#BaseballDiamond").html(""); //reset the div
+                            $("#BaseballDiamond").html(result); // set the div to the result of the postback
+                        },
+                        error: function (result) {
+                            window.alert("This is an unhandled exception");
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}
+
+
