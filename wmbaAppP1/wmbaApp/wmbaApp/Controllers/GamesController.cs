@@ -10,6 +10,7 @@ using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
+using wmbaApp.ViewModels;
 
 namespace wmbaApp.Controllers
 {
