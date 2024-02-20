@@ -29,6 +29,7 @@ namespace wmbaApp.ViewModels
 
         }
 
+        //constructor for debugging
         public InningScoreKeepingVM(string debug)
         {
             this.Players = new List<PlayerScoreKeepingVM>()

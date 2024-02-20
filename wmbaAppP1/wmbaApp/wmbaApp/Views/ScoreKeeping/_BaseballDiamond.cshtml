@@ -3,7 +3,7 @@
 
 
 <!--Stores the current inning's data-->
-<input type="hidden" id="inningScoreKeeping" value='@Json.Serialize(Model)' />
+<input type="hidden" id="inningScoreKeepingJSON" value='@Json.Serialize(Model)' />
 
 <section>
     <div class="diamond-container">
@@ -53,7 +53,11 @@
         <!--Player on base prompts-->
         @{
             //check if any runners are on base
-            if (Model.PlayerOnThird != null && (bool)TempData["HandleThirdBase"])
+            bool handleThirdBase = (bool)TempData.Peek("HandleThirdBase");
+            bool handleSecondBase = (bool)TempData.Peek("HandleSecondBase");
+            bool handleFirstBase = (bool)TempData.Peek("HandleFirstBase");
+
+            if (Model.PlayerOnThird != null && handleThirdBase)
             {
                 <div class="player-on-base-prompt third-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnThird.Name advance to home base?</p>
@@ -67,7 +71,7 @@
                     <button name="playerOnBase" id="thirdBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
                 </div>
             }
-            else if (Model.PlayerOnSecond != null && (bool)TempData["HandleSecondBase"])
+            else if (Model.PlayerOnSecond != null && handleSecondBase)
             {
                 <div class="player-on-base-prompt second-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnSecond.Name advance?</p>
@@ -97,14 +101,71 @@
                     <button name="playerOnBase" id="secondBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
                 </div>
             }
+            else if (Model.PlayerOnFirst != null && handleFirstBase)
+            {
+                <div class="player-on-base-prompt first-base-prompt">
+                    <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnFirst.Name advance?</p>
+                    @{
+                        if (Model.Batter.FirstBase) //force play actions if batter hits a single
+                        {
+                            if (Model.PlayerOnSecond == null) //no runner on second base
+                            {
+                                <button name="playerOnBase" id="firstBaseSecond" type="button" value="2nd" style="color: #2e8b43; background-color: #FFF;">Advance to 2nd &#10003;</button>
+
+                                if (Model.PlayerOnThird == null) //no runner on third base either
+                                {
+                                    <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                    <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                }
+                            }
+                        }
+                        else if (Model.Batter.SecondBase) //more limited force play actions if the batter hits a double
+                        {
+                            if (Model.PlayerOnThird == null)
+                            {
+                                <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                            }
+                        }
+                        else if (Model.Batter.ThirdBase)
+                        {
+                            <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                        }
+                        else // regular advance actions
+                        {
+                            if (Model.PlayerOnSecond == null) //no runner on second base
+                            {
+                                <button name="playerOnBase" id="firstBaseSecond" type="button" value="2nd" style="color: #2e8b43; background-color: #FFF;">Advance to 2nd &#10003;</button>
+
+                                if (Model.PlayerOnThird == null) //no runner on third base either
+                                {
+                                    <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                    <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                }
+                            }
+                            <button name="playerOnBase" id="firstBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
+                        }
+                    }
+                    <button name="playerOnBase" id="firstBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
+                </div>
+            }
         }
-
-
         <!--Player on base prompts-->
-
+        <!--Batter actions prompt-->
+        @{
+            if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
+            {
+                <div class="batter-action-button-container">
+                    <button id="btnBatterAction" type="button" class="batter-action-button" onclick="ShowBatterAction()">PITCH</button>
+                </div>
+                <div id="batterActionPrompt" class="batter-prompt">
+                    @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15" })
+                </div>
+            }
+        }
+        <!--Batter actions prompt-->
     </div>
 </section>
-
 
 <style>
     .diamond-container {
@@ -157,22 +218,67 @@
         width: 140px;
     }
 
-        .player-on-base-prompt button {
-            border: 0;
-            border-top: 2px solid #000;
-            border-bottom: 2px solid #000;
-            font-weight: 600;
-            height: 28px;
-            margin: 1px 0 1px 0;
+    .batter-prompt {
+        background: rgba(255,255,255,0.8);
+        border: 2px solid #000;
+        border-radius: 5px;
+        color: #FFF;
+        display: none;
+        font-size: 12px;
+        font-weight: 600;
+        height: auto;
+        left: 233px;
+        padding: 2px 0;
+        position: relative;
+        text-align: center;
+        top: -270px;
+        width: 250px;
+    }
+
+    #BatterActionList {
+        font-size: 14px;
+    }
+
+    .player-on-base-prompt button {
+        border: 0;
+        border-top: 2px solid #000;
+        border-bottom: 2px solid #000;
+        font-weight: 600;
+        height: 28px;
+        margin: 1px 0 1px 0;
+        width: 100%;
+    }
+
+        .player-on-base-prompt button:hover {
+            font-weight: 800;
+            height: 29px;
+            margin: 2px 0 2px 0;
             width: 100%;
         }
 
-            .player-on-base-prompt button:hover {
-                font-weight: 800;
-                height: 29px;
-                margin: 2px 0 2px 0;
-                width: 100%;
-            }
+    .batter-action-button-container {
+        background-color: #FFF;
+        border: 2px solid #000;
+        height: 60px;
+        left: 324px;
+        position: relative;
+        transform: rotate(45deg);
+        top: -68px;
+        width: 60px;
+    }
+
+    .batter-action-button {
+        background-color: rgba(0,0,0,0);
+        border: none;
+        font-weight: 600;
+        height: 60px;
+        transform: rotate(-45deg);
+        width: 60px;
+    }
+
+        .batter-action-button:hover {
+            font-weight: 800;
+        }
 
     .first-base {
         left: 463px;
@@ -236,6 +342,11 @@
         top: 310px;
     }
 
+    .first-base-prompt {
+        left: 390px;
+        top: -219px;
+    }
+
     .second-base-prompt {
         left: 283px;
         top: -342px;
@@ -269,6 +380,28 @@
             font-size: 10px;
             font-weight: 600;
             width: 140px;
+        }
+
+        .batter-prompt {
+            left: 83px;
+            top: -312px;
+        }
+
+        #BatterActionList {
+            font-size: 12px;
+        }
+
+        .batter-action-button-container {
+            height: 40px;
+            left: 177px;
+            width: 40px;
+            top: -99px;
+        }
+
+        .batter-action-button {
+            font-size: 10px;
+            height: 43px;
+            width: 32px;
         }
 
         .first-base {
@@ -326,6 +459,11 @@
             top: 130px;
         }
 
+        .first-base-prompt {
+            left: 188px;
+            top: -255px;
+        }
+
         .second-base-prompt {
             left: 128px;
             top: -298px;
@@ -371,6 +509,25 @@
                     height: 26px;
                     margin: 2px 0 2px 0;
                 }
+
+        .batter-prompt {
+
+            left: 32px;
+            top: -360px;
+        }
+
+        .batter-action-button-container {
+            height: 30px;
+            left: 134px;
+            width: 30px;
+            top: -97px;
+        }
+
+        .batter-action-button {
+            font-size: 9px;
+            height: 45px;
+            width: 9px;
+        }
 
         .first-base {
             left: 193px;
@@ -425,6 +582,11 @@
         .current-batter {
             left: 126px;
             top: 95px;
+        }
+
+        .first-base-prompt {
+            left: 125px;
+            top: -235px;
         }
 
         .second-base-prompt {
