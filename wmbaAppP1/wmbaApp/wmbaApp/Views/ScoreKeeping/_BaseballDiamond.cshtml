@@ -10,8 +10,12 @@
 
 
 <!--Stores the current inning's data-->
+<<<<<<< HEAD
 <input type="hidden" id="inningScoreKeeping" value='@Json.Serialize(Model)' />
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+<input type="hidden" id="inningScoreKeepingJSON" value='@Json.Serialize(Model)' />
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
 
 <section>
     <div class="diamond-container">
@@ -62,15 +66,22 @@
         @{
             //check if any runners are on base
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
             bool handleThirdBase = (bool)TempData.Peek("HandleThirdBase");
             bool handleSecondBase = (bool)TempData.Peek("HandleSecondBase");
             bool handleFirstBase = (bool)TempData.Peek("HandleFirstBase");
 
+<<<<<<< HEAD
             //if a player is on base and is flagged to be handled
             if (Model.PlayerOnThird != null && handleThirdBase)
 =======
             if (Model.PlayerOnThird != null && (bool)TempData["HandleThirdBase"])
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+            if (Model.PlayerOnThird != null && handleThirdBase)
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
             {
                 <div class="player-on-base-prompt third-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnThird.Name advance to home base?</p>
@@ -89,10 +100,14 @@
                 </div>
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
             else if (Model.PlayerOnSecond != null && handleSecondBase)
 =======
             else if (Model.PlayerOnSecond != null && (bool)TempData["HandleSecondBase"])
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+            else if (Model.PlayerOnSecond != null && handleSecondBase)
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
             {
                 <div class="player-on-base-prompt second-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnSecond.Name advance?</p>
@@ -123,6 +138,9 @@
                 </div>
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
             else if (Model.PlayerOnFirst != null && handleFirstBase)
             {
                 <div class="player-on-base-prompt first-base-prompt">
@@ -171,6 +189,7 @@
                     <button name="playerOnBase" id="firstBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
                 </div>
             }
+<<<<<<< HEAD
         }
         <!--Player on base prompts-->
         <!--Batter actions prompt-->
@@ -348,20 +367,39 @@
             </table>
         </div>
 =======
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
         }
-
-
         <!--Player on base prompts-->
+<<<<<<< HEAD
 
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+        <!--Batter actions prompt-->
+        @{
+            if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
+            {
+                <div class="batter-action-button-container">
+                    <button id="btnBatterAction" type="button" class="batter-action-button" onclick="ShowBatterAction()">PITCH</button>
+                </div>
+                <div id="batterActionPrompt" class="batter-prompt">
+                    @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15" })
+                </div>
+            }
+        }
+        <!--Batter actions prompt-->
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
     </div>
 </section>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <style>
     /*Baseball diamond*/
 =======
 
+=======
+>>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
 <style>
 <<<<<<< HEAD
     /*Baseball diamond and players*/
@@ -426,6 +464,9 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
     .batter-prompt {
         background: rgba(255,255,255,0.8);
         border: 2px solid #000;
@@ -461,6 +502,7 @@
             font-weight: 800;
             height: 29px;
             margin: 2px 0 2px 0;
+<<<<<<< HEAD
             width: 100%;
         }
 
@@ -512,6 +554,34 @@
                 width: 100%;
             }
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+            width: 100%;
+        }
+
+    .batter-action-button-container {
+        background-color: #FFF;
+        border: 2px solid #000;
+        height: 60px;
+        left: 324px;
+        position: relative;
+        transform: rotate(45deg);
+        top: -68px;
+        width: 60px;
+    }
+
+    .batter-action-button {
+        background-color: rgba(0,0,0,0);
+        border: none;
+        font-weight: 600;
+        height: 60px;
+        transform: rotate(-45deg);
+        width: 60px;
+    }
+
+        .batter-action-button:hover {
+            font-weight: 800;
+        }
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
 
 <<<<<<< HEAD
     .btn-close-batter-prompt{
@@ -616,13 +686,19 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
     .first-base-prompt {
         left: 390px;
         top: -219px;
     }
 
+<<<<<<< HEAD
 =======
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
     .second-base-prompt {
         left: 283px;
         top: -342px;
@@ -810,6 +886,9 @@
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
         .batter-prompt {
             left: 83px;
             top: -312px;
@@ -832,8 +911,11 @@
             width: 32px;
         }
 
+<<<<<<< HEAD
 =======
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
         .first-base {
             left: 256px;
             top: 177px;
@@ -890,13 +972,19 @@
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
         .first-base-prompt {
             left: 188px;
             top: -255px;
         }
 
+<<<<<<< HEAD
 =======
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
         .second-base-prompt {
             left: 128px;
             top: -298px;
@@ -990,7 +1078,12 @@
                 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         .batter-prompt {
+=======
+        .batter-prompt {
+
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
             left: 32px;
             top: -360px;
         }
@@ -1008,8 +1101,11 @@
             width: 9px;
         }
 
+<<<<<<< HEAD
 =======
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
         .first-base {
             left: 193px;
             top: 132px;
@@ -1066,13 +1162,19 @@
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
         .first-base-prompt {
             left: 125px;
             top: -235px;
         }
 
+<<<<<<< HEAD
 =======
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
         .second-base-prompt {
             left: 80px;
             top: -266px;

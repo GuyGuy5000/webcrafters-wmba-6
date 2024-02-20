@@ -11,10 +11,14 @@
 
 <div id="BaseballDiamond">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
 =======
     <partial name="_BaseballDiamond" model="@Model.Innings[0]" />
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+    <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
 </div>
 
 <div id="InningsTable">
@@ -24,6 +28,7 @@
 <input id="gameScoreKeepningJSON" type="hidden" value='@Json.Serialize(Model)' />
 
 @section Scripts{
+<<<<<<< HEAD
 <<<<<<< HEAD
     <!--Player on base action-->
     <script type="text/javascript">
@@ -186,48 +191,41 @@
 
 }
 =======
+=======
+    <!--Player on base action-->
+>>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
     <script type="text/javascript">
-        $(function () {
-            $("#startInning").click(function () {
-                //postback
-                $.ajax({
-                    url: "@Url.Action("StartInning", "ScoreKeeping")",
-                    data: { gameScoreKeepningJSON: $("#gameScoreKeepningJSON").val() }, //dictionary with same keys as the method's params
-                    type: "Post",
-                    success: function (result) {
-                        $("#BaseballDiamond").html(""); //reset the div
-                        $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    },
-                    error: function (result) {
-                        window.alert("This is an unhandled exception");
-                    }
+        AssignClickEvent();
+        function AssignClickEvent() {
+            $("button[name='playerOnBase']").each(function () {
+                $(`#${this.id}`).click(function () {
+                    HandlePlayerOnBase(this);
                 });
             });
-        });
+        }
+        function HandlePlayerOnBase(sender) {
+            //postback
+            $.ajax({
+                url: "@Url.Action("HandlePlayerOnBase", "ScoreKeeping")",
+                data: { inningScoreKeepningJSON: $("#inningScoreKeepingJSON").val(), senderID: `${sender.id}`, senderAction: `${sender.value}` }, //dictionary with same keys as the method's params
+                type: "Post",
+                success: function (result) {
+                    $("#BaseballDiamond").html(""); //reset the div
+                    $("#BaseballDiamond").html(result); // set the div to the result of the postback
+                    AssignClickEvent();
+                },
+                error: function (result, status, err) {
+                    window.alert(result.responseText + " " + status.responseText, err.Message);
+                }
+            });
+        }
     </script>
 
+    <!--Batter action-->
     <script type="text/javascript">
-        $(function () {
-            //get all buttons for playerOnBase prompts
-            $("button[name='playerOnBase']").each(function () {
-                //assign each one a click event
-                $(`#${this.id}`).click(function () {
-                    //postback
-                    $.ajax({
-                        url: "@Url.Action("HandlePlayerOnBase", "ScoreKeeping")",
-                        data: { gameScoreKeepningJSON: $("#gameScoreKeepningJSON").val(), senderID: `${this.id}`, senderAction: `${this.value}` }, //dictionary with same keys as the method's params
-                        type: "Post",
-                        success: function (result) {
-                            $("#BaseballDiamond").html(""); //reset the div
-                            $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                        },
-                        error: function (result) {
-                            window.alert("This is an unhandled exception");
-                        }
-                    });
-                });
-            });
-        });
+        function ShowBatterAction() {
+            $('#batterActionPrompt').show();
+        }
     </script>
 }
 

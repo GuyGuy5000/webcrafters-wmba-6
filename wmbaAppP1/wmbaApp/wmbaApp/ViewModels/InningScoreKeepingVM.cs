@@ -62,9 +62,13 @@ namespace wmbaApp.ViewModels
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         //constructor for debugging
 =======
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+        //constructor for debugging
+>>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
         public InningScoreKeepingVM(string debug)
         {
             this.Players = new List<PlayerScoreKeepingVM>()
