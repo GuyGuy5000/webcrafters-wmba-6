@@ -38,13 +38,19 @@ namespace wmbaApp.Controllers
                                     new InningScoreKeepingVM(""),
                                 };
 
-            scoreKeeping.Innings[0].Players[3].FirstBase = true;
+            scoreKeeping.Innings[0].Players[1].FirstBase = true;
             scoreKeeping.Innings[0].Players[2].SecondBase = true;
-            scoreKeeping.Innings[0].Players[1].ThirdBase = true;
+            scoreKeeping.Innings[0].Players[3].ThirdBase = true;
 
             TempData["HandleFirstBase"] = true;
             TempData["HandleSecondBase"] = true;
             TempData["HandleThirdBase"] = true;
+
+            //TempData["HandleFirstBase"] = false;
+            //TempData["HandleSecondBase"] = false;
+            //TempData["HandleThirdBase"] = false;
+
+            PopulateDropDownLists();
 
             return View(scoreKeeping);
         }
@@ -55,28 +61,21 @@ namespace wmbaApp.Controllers
             GameScoreKeepingVM gameScoreKeepingVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameScoreKeepningJSON);
             InningScoreKeepingVM inning = gameScoreKeepingVM.Innings[gameScoreKeepingVM.CurrentInning];
 
-            // move this code to the hanlde batter action when it is done
-            TempData["HandleFirstBase"] = true;
-            TempData["HandleSecondBase"] = true;
-            TempData["HandleThirdBase"] = true;
-
             return PartialView("_BaseballDiamond", inning);
         }
-        public async Task<IActionResult> HandlePlayerOnBase(string gameScoreKeepningJSON, string senderID, string senderAction)
+        public async Task<IActionResult> HandlePlayerOnBase(string inningScoreKeepningJSON, string senderID, string senderAction)
         {
-            GameScoreKeepingVM gameScoreKeepingVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameScoreKeepningJSON);
-            InningScoreKeepingVM inning = gameScoreKeepingVM.Innings[gameScoreKeepingVM.CurrentInning];
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
 
-            //if third base triggered the event
-            if (senderID.Contains("thirdBase"))
+
+            if (senderID.Contains("thirdBase")) //if third base triggered the event
             {
-                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnThird.ID); //get player based on third base player ID
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnThird.ID); //get player on third base
                 //check what action occured
                 if (senderAction == "home")
                 {
                     player.AwardRun();
                     player.ThirdBase = false;
-
                 }
                 else if (senderAction == "stay")
                 {
@@ -91,13 +90,63 @@ namespace wmbaApp.Controllers
                 TempData["HandleThirdBase"] = false;
 
             }
-
-            if (inning.TotalOutsThisInning == 3)
+            else if (senderID.Contains("secondBase")) //if second base triggered the event
             {
-                InningScoreKeepingVM newInning = gameScoreKeepingVM.Innings[gameScoreKeepingVM.CurrentInning + 1]; 
-                return PartialView("_BaseballDiamond", newInning);
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnSecond.ID); //get player on second base
+                if (senderAction == "3rd")
+                {
+                    player.SecondBase = false;
+                    player.ThirdBase = true;
+                }
+                else if (senderAction == "home")
+                {
+                    player.AwardRun();
+                    player.SecondBase = false;
+                }
+                else if (senderAction == "stay")
+                {
+
+                }
+                else
+                {
+                    player.Outs++;
+                    player.SecondBase = false;
+                }
+
+                TempData["HandleSecondBase"] = false;
+            }
+            else if (senderID.Contains("firstBase"))
+            {
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnFirst.ID); //get player on second base
+                if (senderAction == "2nd")
+                {
+                    player.FirstBase = false;
+                    player.SecondBase = true;
+                }
+                else if (senderAction == "3rd")
+                {
+                    player.FirstBase = false;
+                    player.ThirdBase = true;
+                }
+                else if (senderAction == "home")
+                {
+                    player.AwardRun();
+                    player.FirstBase = false;
+                }
+                else if (senderAction == "stay")
+                {
+
+                }
+                else
+                {
+                    player.Outs++;
+                    player.FirstBase = false;
+                }
+
+                TempData["HandleFirstBase"] = false;
             }
 
+            PopulateDropDownLists();
             return PartialView("_BaseballDiamond", inning);
         }
 
@@ -115,8 +164,6 @@ namespace wmbaApp.Controllers
 
             return PartialView("_BaseballDiamond", inningScoreKeepingVM);
         }
-
-
 
 
 
@@ -191,7 +238,7 @@ namespace wmbaApp.Controllers
                     playerScoreKeeping.AddAction(AtBatOutcome.Hit);
                     break;
             }
-            
+
             playerScoreKeeping.AnalyzePlayerActions(playerScoreKeeping.AtBatActions);
 
             return PartialView("_BaseballDiamond", playerScoreKeeping);
@@ -207,7 +254,7 @@ namespace wmbaApp.Controllers
         }
         private void PopulateDropDownLists()
         {
-            ViewData["PlayerActionList"] = PlayerActionSelectList();
+            ViewData["BatterActionList"] = PlayerActionSelectList();
         }
         #endregion
     }
