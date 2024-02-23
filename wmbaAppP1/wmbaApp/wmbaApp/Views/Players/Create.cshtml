@@ -6,12 +6,6 @@
         <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label class="control-label custom-file-label">Picture File:</label>
-                <div class="input-group mb-3">
-                    <input type="file" class="form-control" name="thePicture" id="the Picture" multiple="multiple">
-                </div>
-            </div>
-            <div class="form-group">
                 <label asp-for="PlyrFirstName" class="control-label"></label>
                 <input asp-for="PlyrFirstName" class="form-control" />
                 <span asp-validation-for="PlyrFirstName" class="text-danger"></span>
@@ -27,6 +21,11 @@
                 <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="PlyrMemberID" class="control-label"></label>
+                <input asp-for="PlyrMemberID" class="form-control" />
+                <span asp-validation-for="PlyrMemberID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="TeamID" class="control-label"></label>
                 <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
                     <option value="">Assign Team to Player</option>
@@ -36,12 +35,11 @@
         </div>
         <div class="form-group">
             <input type="submit" value="Create" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-outline-dark">Back to Players List</a>
         </div>
     </form>
 </div>
-<div>
-    <a asp-action="Index">Back to Players List</a>
-</div>
+
 
 @section Scripts {
     @{

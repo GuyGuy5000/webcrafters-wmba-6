@@ -4,8 +4,10 @@
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <a asp-action="InactiveIndex" class="btn btn-green btn-center btn-outline-dark">Currently viewing: Active players</a>
+    <br />
     <div class="form-horizontal">
-        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+        <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
             Filter/Search @ViewData["numberFilters"]
         </button>
         <br />
@@ -18,7 +20,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="control-label">Search Player First/Last Name/Team/Team Abbrv:</label>
+                        <label class="control-label">Search by Player Name/Team Name:</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
                     <div class="col-md-4 align-self-end">
@@ -29,8 +31,6 @@
             </div>
         </div>
     </div>
-    <br />
-    <a asp-action="InactiveIndex" class="btn btn-outline-dark">Currently viewing: active players</a>
     <table class="table">
         <thead>
             <tr>
@@ -56,20 +56,15 @@
                 <th class="d-sm-table-cell d-md-table-cell">
                     <input type="submit" name="actionButton" value="Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
                 </th>
-                <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
-                        Jersey Number
-                    </div>
-                </th>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         Team
-                    </div>
+                    </h5>
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         Division
-                    </div>
+                    </h5>
                 </th>
                 <th style="min-width:120px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
@@ -85,9 +80,6 @@
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.FullName)
                     </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
-                    </td>
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.Team.TmName)
                     </td>
@@ -96,13 +88,13 @@
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                            &#x270E;
+                            EDIT
                         </a>
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                            &#x1F50E;
+                            DETAILS
                         </a>
                         <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
-                            &#x274C;
+                            DEACTIVATE
                         </a>
                     </td>
                 </tr>
@@ -111,17 +103,14 @@
     </table>
     <partial name="_PagingNavBar" />
 </form>
-
+<br />
+<br />
+<br />
 @section Scripts {
     <script type="text/javascript">
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
-    </script>
-    <script>
-        GenerateContextHelp(["<p>This is the homepage help icon. Each page contains a help icon that provides contextual help for that page.</p>",
-            "<p>You can get help via clicking the help icon located in the navigation bar or pressing alt + h.</p>",
-            "<p>The navigation bar at the top of the page will allow you to navigate through each section of the website.</p>"]);
     </script>
 }

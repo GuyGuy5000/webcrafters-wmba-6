@@ -32,16 +32,11 @@
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-dark">Back to Players List</a>
             </div>
         </form>
     </div>
 </div>
-
-
-<div>
-    <a asp-action="Index">Back to Players List</a>
-</div>
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

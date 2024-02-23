@@ -42,13 +42,13 @@
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                            &#x270E;
+                            EDIT
                         </a>
                         <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                            &#x1F50E;
+                            DETAILS
                         </a>
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                            &#x274C;
+                            DELETE
                         </a>
                     </td>
                 </tr>

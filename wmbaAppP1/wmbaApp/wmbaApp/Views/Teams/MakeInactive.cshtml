@@ -29,15 +29,17 @@
                 <div style="color: #F00;">@Html.ValidationSummary()</div>
                 <input type="submit" value="View Players" class="btn btn-link" />
             </form>
+            <form asp-action="MakeInactive">
+                <input type="hidden" asp-for="ID" />
+                <input type="submit" name="deactivate" value="Deactivate team and active players" class="btn btn-danger mt-2" />
+            </form>
             <br />
         }
+
     }
     <form asp-action="MakeInactive">
         <input type="hidden" asp-for="ID" />
-        <input type="submit" name="deactivate" value="Deactivate" class="btn btn-danger" />
-        <input type="submit" name="deactivate" value="Deactivate team and active players" class="btn btn-danger" />
-        <div>
-            <partial name="_BackToList" />
-        </div>
+        <input type="submit" name="deactivate" value="Deactivate" class="btn btn-danger mt-2" />
+        <a asp-action="Index" type="button" class="btn btn-primary mt-2">Back to Teams list</a>
     </form>
 </div>

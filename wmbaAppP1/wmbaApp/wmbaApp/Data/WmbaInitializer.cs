@@ -128,7 +128,8 @@ namespace wmbaApp.Data
                                 {
                                     PlyrFirstName = firstNames[random.Next(0, firstNames.Length - 1)],
                                     PlyrLastName = lastNames[random.Next(0, lastNames.Length - 1)],
-                                    PlyrJerseyNumber = (random.Next(2) == 1) ? i : null,
+                                    PlyrJerseyNumber = (random.Next(2) == 1) ? i + 1 : null,
+                                    PlyrMemberID = new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 8).Select(s => s[random.Next(s.Length)]).ToArray()),
                                     TeamID = team.ID
                                 });
                         }
@@ -167,14 +168,14 @@ namespace wmbaApp.Data
                 //Position seed data
                 string[] positions = { "Pitcher", "Infielder", "Shortstop", "First baseman", "Second baseman", "Third baseman", "Catcher", "Outfielder", "Left fielder", "Right fielder", "Center fielder", "Designated hitter", "Relief pitcher", "Pinch hitter", "Pinch runner" };
                 //add positions if none exist
-                if (!context.Positions.Any())
-                {
-                    foreach (string p in positions)
-                    {
-                        context.Positions.Add(new Models.Position { PosName = p });
-                    }
-                    context.SaveChanges();
-                }
+                //if (!context.Positions.Any())
+                //{
+                //    foreach (string p in positions)
+                //    {
+                //        context.Positions.Add(new Models.Position { PosName = p });
+                //    }
+                //    context.SaveChanges();
+                //}
 
                 //Game seed data
                 string[] locations = { "Chippawa Park Ball Diamond", "Maple Park Diamond 1", "Plymouth Park Ball Diamond", "PCMBA Rotary Complex", "Memorial Park Diamond 1", "Memorial Park Diamond 2", "Memorial Park Diamond 3", "Memorial Park Diamond 4", "Port Robinson Park Ball Diamond", "Treelawn Park Ball Diamond", "Southward Community Park Diamond 4" };

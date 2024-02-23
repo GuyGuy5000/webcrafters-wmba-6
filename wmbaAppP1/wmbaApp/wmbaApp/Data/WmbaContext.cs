@@ -21,14 +21,18 @@ namespace wmbaApp.Data
         public DbSet<GameTeam> GameTeams { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
-        public DbSet<PlayerPosition> PlayerPositions { get; set; }
-        public DbSet<Position> Positions { get; set; }
+        //public DbSet<PlayerPosition> PlayerPositions { get; set; }
+        //public DbSet<Position> Positions { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
         public DbSet<InActivePlayer> InActivePlayers { get; set; }
 >>>>>>> aa65526 (Update WmbaContext.cs with InActivePlayers DbSet)
+=======
+
+>>>>>>> a523870 (Teams, Players, and PlayerTeams controllers + views are done.)
 
         public DbSet<UploadedFile> UploadedFiles { get; set; }
 
@@ -61,10 +65,10 @@ namespace wmbaApp.Data
                 .HasIndex(p => p.PlyrMemberID)
                 .IsUnique();
 
-            //Unique constraint for position names
-            modelBuilder.Entity<Position>()
-                .HasIndex(p => p.PosName)
-                .IsUnique();
+            ////Unique constraint for position names
+            //modelBuilder.Entity<Position>()
+            //    .HasIndex(p => p.PosName)
+            //    .IsUnique();
 
             //Many to many junction table
             modelBuilder.Entity<DivisionCoach>()
@@ -74,9 +78,9 @@ namespace wmbaApp.Data
             modelBuilder.Entity<GameTeam>()
                 .HasKey(gt => new { gt.TeamID, gt.GameID });
 
-            //Many to many junction table
-            modelBuilder.Entity<PlayerPosition>()
-                .HasKey(pp => new { pp.PlayerID, pp.PositionID });
+            ////Many to many junction table
+            //modelBuilder.Entity<PlayerPosition>()
+            //    .HasKey(pp => new { pp.PlayerID, pp.PositionID });
 
             //Prevent cascade delete from division to teams
             modelBuilder.Entity<Division>()
@@ -100,12 +104,12 @@ namespace wmbaApp.Data
                 .HasForeignKey(c => c.DivisionID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Prevent cascade delete from position to player_position
-            modelBuilder.Entity<Position>()
-                .HasMany<PlayerPosition>(p => p.PlayerPositions)
-                .WithOne(pl => pl.Position)
-                .HasForeignKey(pl => pl.PositionID)
-                .OnDelete(DeleteBehavior.Restrict);
+            ////Prevent cascade delete from position to player_position
+            //modelBuilder.Entity<Position>()
+            //    .HasMany<PlayerPosition>(p => p.PlayerPositions)
+            //    .WithOne(pl => pl.Position)
+            //    .HasForeignKey(pl => pl.PositionID)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             //Unique composite PK for division_coach
             modelBuilder.Entity<DivisionCoach>()
@@ -117,10 +121,16 @@ namespace wmbaApp.Data
                 .HasIndex(gt => new { gt.TeamID, gt.GameID })
                 .IsUnique();
 
-            //Unique composite PK for game_team
-            modelBuilder.Entity<PlayerPosition>()
-                .HasIndex(pp => new { pp.PlayerID })
+            ////Unique composite PK for game_team
+            //modelBuilder.Entity<PlayerPosition>()
+            //    .HasIndex(pp => new { pp.PlayerID })
+            //    .IsUnique();
+
+            //Unique composite PK for Player Jersey Number
+            modelBuilder.Entity<Player>()
+                .HasIndex(pp => new { pp.PlyrJerseyNumber, pp.TeamID })
                 .IsUnique();
+
         }
     }
 }

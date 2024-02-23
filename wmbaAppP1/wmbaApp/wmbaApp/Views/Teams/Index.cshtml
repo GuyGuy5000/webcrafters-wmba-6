@@ -7,11 +7,12 @@
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <a asp-action="InactiveIndex" class="btn btn-green btn-outline-dark btn-center mt-xl-5" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
+    <br />
     <div class="form-horizontal">
-        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+        <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
             Filter/Search @ViewData["numberFilters"]
         </button>
-        <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
                 <div class="row">
@@ -21,7 +22,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="control-label">Search Team Name/Team ABBR:</label>
+                        <label class="control-label">Search by Team Name:</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
                     <div class="col-md-4 align-self-end">
@@ -32,8 +33,6 @@
             </div>
         </div>
     </div>
-    <br />
-    <a asp-action="InactiveIndex" class="btn btn-outline-dark">Currently viewing: active teams</a>
     <table class="table mt-3">
         <thead>
             <tr>
@@ -60,9 +59,9 @@
                 </th>
                 <!-- Coaches -->
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         Coaches
-                    </div>
+                    </h5>
                 </th>
                 <!-- Division -->
                 <th class="d-none d-md-table-cell">
@@ -113,13 +112,13 @@
                     <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                            &#x270E;
+                            EDIT
                         </a>
                         <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                            &#x1F50E;
+                            DETAILS
                         </a>
                         <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
-                            &#x274C;
+                            DEACTIVATE
                         </a>
                     </td>
                 </tr>
@@ -128,17 +127,14 @@
     </table>
     <partial name="_PagingNavBar" />
 </form>
+<div class="clickable-header">
+    <a href="@Url.Action("Index", "Home")">Back</a>
+</div>
 @section Scripts {
     <script type="text/javascript">
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
-    </script>
-    <script>
-        GenerateContextHelp(["<p>This page lists all teams you have access to. From here you can create, edit, and deactivate teams.</p>",
-            "<p>Click one of the three buttons in a team's row to edit, view, or deactivate that team.</p>",
-            "<p>To look for a specific team, use the Filter/Search button. Enter the information you are looking for and click the Filter button.</p>",
-            "<p>Click a table heading to sort by that heading in ascending order. Click the same heading again to sort by descending order.</p>"]);
     </script>
 }

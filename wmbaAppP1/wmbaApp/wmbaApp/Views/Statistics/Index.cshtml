@@ -22,93 +22,91 @@
 
                 </style>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         Player
-                    </div>
+                    </h5>
                 </th>
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsGP
-                    </div>
+                    </h5>
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsPA
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsAB
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsAVG
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsOBP
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsOPS
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsSLG
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsH
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsR
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsK
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsHR
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsRBI
-                    </div>
+                    </h5>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h5>
                         StatsBB
-                    </div>
+                    </h5>
                 </th>
-
-
 
                 <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a Players Statistics">
+@*                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a Players Statistics">
                         <strong>&#x270D; Create </strong>
-                    </a>
+                    </a> *@
                 </th>
             </tr>
         </thead>
@@ -163,9 +161,9 @@
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title=" @ViewData["ControllerFriendlyName"] Detail">
                             &#x270E;
                         </a>
-                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+@*                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                             &#x274C;
-                        </a>
+                        </a> *@
                     </td>
                 </tr>
             }
