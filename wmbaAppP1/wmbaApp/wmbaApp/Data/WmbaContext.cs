@@ -25,21 +25,7 @@ namespace wmbaApp.Data
         //public DbSet<Position> Positions { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        public DbSet<InActivePlayer> InActivePlayers { get; set; }
->>>>>>> aa65526 (Update WmbaContext.cs with InActivePlayers DbSet)
-=======
 
->>>>>>> a523870 (Teams, Players, and PlayerTeams controllers + views are done.)
-=======
->>>>>>> f24181b (Update WmbaContext.cs)
-=======
-
->>>>>>> a578be6 (Teams, Players, and PlayerTeams controllers + views are done.)
 
         public DbSet<UploadedFile> UploadedFiles { get; set; }
 
