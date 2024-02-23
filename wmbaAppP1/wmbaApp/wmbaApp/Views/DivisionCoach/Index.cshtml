@@ -7,34 +7,22 @@
         <thead>
             <tr>
 
-                <style>
-                    .clickable-header {
-                        cursor: pointer;
-                        padding: 8px 13px;
-                        background-color: #001F3F;
-                        color: #fff;
-                        border: 1px solid #001F3F;
-                        border-radius: 5px;
-                        display: inline-block;
-                    }
-
-                </style>
 
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <div class="clickable-header">
-                        Division
+                    <div >
+                        <h5> Division</h5>
                     </div>
                 </th>
 
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <div class="clickable-header">
-                        Coach
+                    <div >
+                        <h5>Coach</h5>
                     </div>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
-                        Team
+                    <div>
+                        <h5> Team</h5>
                     </div>
                 </th>
 
@@ -60,13 +48,13 @@
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.DivisionID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                            &#x270E;
+                            EDIT;
                         </a>
                         <a asp-controller="DivisionCoach" asp-action="Index" asp-route-TeamID="@item.DivisionID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                            &#x1F50E;
+                            DETAILS;
                         </a>
                         <a asp-action="Delete" asp-route-id="@item.DivisionID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                            &#x274C;
+                            DEACTIVATE;
                         </a>
                     </td>
                 </tr>

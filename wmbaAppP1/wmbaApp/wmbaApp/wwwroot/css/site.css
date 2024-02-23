@@ -45,7 +45,7 @@ body {
 
 
 .navbar {
-    background-color: #4CBB17;
+    background-color: #2e8b43;
 }
 
     .navbar a {
@@ -57,7 +57,7 @@ li a:hover {
 }
 
 .dropdown-menu a:hover {
-    background-color: #4CBB17;
+    background-color: #2e8b43;
     color: #fff;
 }
 /********Logo********/
@@ -97,7 +97,7 @@ li a:hover {
 /******Header Starts**********/
 .header {
     background-color: #fff;
-    color: #001F3F;
+    color: #17254C;
     padding: 4px 12px;
     margin: 4px;
     font-size: 20px;
@@ -128,27 +128,31 @@ li a:hover {
     float: left;
 }
 
+.arrow {
+    font-size: 22px;
+}
+
 
 .gameStyle {
     max-height: 450px;
-    max-width: 460px; /* Set the maximum height for the container */
-    overflow-y: auto; /* Add a vertical scrollbar if the content overflows */
-    border: 5px solid #4CBB17; /* Optional: Add a border for visual clarity */
-    padding: 10px; /* Optional: Add padding for spacing inside the container */
+    max-width: 460px; 
+    overflow-y: auto;
+    border: 5px solid #2e8b43; 
+    padding: 10px; 
     margin-top: -15px;
     margin: 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-    /* Optional: Add margin to create space below the container */
+
 }
 
 
 
     .gameStyle h1 {
-        background-color: #4CBB17;
+        background-color: #2e8b43;
     }
 
 .row #gameBtn {
-    background-color: #4CBB17;
+    background-color: #2e8b43;
     margin: 0 auto;
     max-width: 460px;
     padding: 26px;
@@ -210,13 +214,23 @@ li a:hover {
         border-radius: 5px;
         padding: 50px;
     }
+
+    form .impTeams {
+        font-size: 14px;
 }
 
+    .activeParent .activeHeading, filSearch {
+        font-size: 23px;
+    }
 
+    .form-horizontal .filSearch {
+        font-size: 15px;
+    }
+}
 
 /******Header Ends**********/
 
-
+/******Header Ends**********/
 /******Context help starts*********/
 .help-icon {
     align-items: center;
@@ -300,10 +314,10 @@ li a:hover {
 
 
 
-
+/*
 i:hover {
     transform: translateY(-7px);
-}
+}*/
 
 
 
@@ -321,8 +335,8 @@ i:hover {
 
 
     .header {
-        background-color: #4CBB17;
-        color: #001F3F;
+        background-color: #2e8b43;
+        color: #17254C;
         padding: 4px 12px 51px;
         margin: 4px;
         height: 40px;
@@ -347,37 +361,128 @@ i:hover {
     text-align: center;
 }
 
-.startGame {
-    /* display: grid;*/
-
-    background-color: #4CBB17;
-    margin: 0 auto; /* Center the .startGame div */
+.startGame, .startGames {
+    background-color: #2e8b43;
+    margin: 0 auto;
     padding: 19px;
     margin-bottom: 40px;
     max-width: 300px;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Add box shadow */
+    gap: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 }
+
+/* Default styles for all views */
+.startGame, .dashboards {
+    display: block; /* Display by default */
+}
+
+/* Media query to hide startGame and dashboards on tablets and phones */
+@media only screen and (max-width: 768px) {
+    .startGame  {
+        display: none; /* Hide on tablets and phones */
+    }
+    .dashboards{
+        display: flex; 
+        flex-direction: column;
+    }
+
+    .phoneviewImport,
+    .dashboards,
+    .gameStyle {
+        width: 100%; 
+        max-width: 280px;
+        margin: 0 auto; 
+    }
+
+  
+    .dashboard {
+       display: none;
+    }
+
+    .gameStyle {
+       
+        border: 2px solid #2e8b43;
+      
+    }
+}
+
+@media only screen and (min-width: 590px) and (max-width: 767px){
+    .phoneviewImport,
+    .dashboards,
+    .styleGameTbl,
+    .gameStyle {
+        width: 100%;
+        max-width: 580px;
+        margin: 0 auto;
+    }
+
+
+}
+
+@media only screen and (min-width: 320px ) and (max-width: 590px) {
+
+    .styleGameTbl
+    {
+        height: 250px;
+    }
+
+    .dashboards{
+        height: 300px;
+    }
+}
+
+
+
+
+@media only screen and (min-width: 590px) and (max-width: 767px) {
+
+    .dashboards,
+    .gameStyle {
+        width: 100%;
+        max-width: 580px;
+        margin: 0 auto;
+       
+    }
+
+
+    .hideGameBtnLaptop p{
+        margin-top: 32px;
+    }
+   
+    .dashboards h1{
+        font-size: 25px;
+    }
+}
+
+
 
 .dashboard {
     text-align: center;
     margin: 0 auto;
     border-radius: 5px;
     padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+   
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
-.dashboards {
+.container-fluid {
+    padding-bottom: 30px;
+}
+
+.dashboards, .innerDashboards {
     margin: 0 auto;
     border-radius: 5px;
     padding: 15px;
-    height: 577px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+   /* height: 577px;*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 
 .import {
     margin-bottom: 30px;
+    margin-top: 20px;
+    height: 280px;
 }
 
 .parent {
@@ -387,9 +492,9 @@ i:hover {
 .clickable-header {
     cursor: pointer;
     padding: 8px 13px;
-    background-color: #001F3F;
+    background-color: #17254C;
     color: #fff;
-    border: 1px solid #001F3F;
+    border: 1px solid #17254C;
     border-radius: 5px;
     display: inline-block;
     margin-top: 30px;
@@ -402,8 +507,8 @@ i:hover {
     }
 
 .hover:hover {
-    background-color: #4CBB17;
-    border-color: #001F3F;
+    background-color: #2e8b43;
+    border-color: #17254C;
 }
 
 
@@ -421,22 +526,340 @@ i:hover {
     footer {
         bottom: 40px;
     }
+    .wmba {
+    text-align: center;
+  
+    bottom: 60px;
+    margin-top: 0px;
 }
+    .wmba h1{
+          font-size: 30px;
+    }
+
+    .teamImport {
+        display: flex;
+        flex-direction: column;
+    }
+
+   
+
+    .dashboards {
+        margin-bottom: 40px;
+        border: 5px solid #2e8b43;   
+    }
+
+    .clickable-header{
+        display: none;
+    }
+
+    .view {
+        position: relative;
+        left: 0px; 
+    }
+
+   
+
+
+}
+
+
+.custom-fieldset {
+    border: 2px solid #000;
+    border-radius: 5px;
+    margin-bottom: 32px;
+    padding: 15px;
+}
+
+.custom-legend {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000;
+}
+
+.required-label::after {
+    content: 'Required *';
+    color: red;
+    margin-left: 10px;
+}
+
 
 .form-group {
-    margin-bottom: 15px;
-    align-items: center;
+    margin-bottom: 30px;
 }
 
-    .form-group i {
-        margin-right: 10px;
+.activeView{
+    padding: 10px;
+}
+
+
+
+
+
+
+
+
+@media only screen and (max-width: 1200px) {
+    .teamImport {
+        display: flex;
+        flex-direction: column;
     }
+    
+
+}
+
+/* Default styles for tablets and phones */
+.phoneNav {
+    background-color: #F7F7f7;
+    border-radius: 10px 10px 0 0;
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+    margin-left: -10px;
+}
+
+    .phoneNav a {
+        color: rgb(57, 69, 64);
+        float: left;
+        font-size: 10px;
+        padding: 12px 0;
+        text-align: center;
+        text-decoration: none;
+        width: 25%;
+    }
+
+    .phoneNav i {
+        font-size: 20px;
+    }
+
+    .phoneNav a:hover {
+        color: #e7995e;
+    }
+
+/* Media query to hide navigation bar on laptops */
+@media only screen and (min-width: 769px) {
+    .phoneNav, .wmba {
+        display: none; /* hide the navigation bar */
+    }
+
+    .hideGameBtnLaptop {
+        display: none;
+    }
+}
+
+
+
+.editform {
+    border: 1px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    height: 600px;
+}
+
+partial {
+    margin: 0 auto;
+    text-align: center;
+}
+legend{
+    text-align: center;
+    font-weight: 500;
+}
+
+
+fieldset {
+    padding: 20px;
+}
+
+#saveCheck{
+    font-size: 60px;
+}
+
+#icon1, #icon2 {
+    animation: rotateAnimation 5s linear infinite;
+}
+
+@keyframes rotateAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+    .teamImport {
+        display: inline-flex;
+        gap: 10px;
+}
+
+    .img-guide img {
+        width: 100%;
+    }
+
+    .img-guide {
+        border: 5px solid #2e8b43;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .imgGuide {
+        padding-top: 20px;
+    }
+
+
+
+
+
+
+
+#customModal {
+    display: none;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    max-width: 400px;
+    width: 100%;
+    border-radius: 8px;
+    height: 250px;
+}
+
+.modal-content {
+    text-align: center;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    margin-right: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+}
+
+.btn-outline-dark {
+    background-color: transparent;
+    color: #343a40;
+    border: 1px solid #343a40;
+}
+
+.labRequred{
+    margin-bottom: 35px;
+}
+
+.custom-file-label {
+    font-size: 25px;
+    font-weight: 500;
+}
+
+
+.non-button-input {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 16px; 
+    font-weight: bold;
+    cursor: pointer; 
+    font-size: 18px;
+    color: #333; 
+}
+
+
+.lbl{
+    position: relative;
+    right: 149px;
+}
+
+.btnFilterActions{
+    padding-top: 12px;
+}
+
+.btnFilter p{
+    font-size: 22px;
+}
+
+.view{
+   position: relative;
+   right: 150px;
+}
+
+.custom-hover-effect:hover {
+
+    color: #fff !important;
+    text-decoration: underline;
+}
+
+.menuEffect.active {
+    color: rgba(4, 98, 251) !important;
+    text-decoration: underline;
+}
+
+.secondLogo:hover {
+    background-color: #fff !important;
+}
+
+.menu:hover {
+    color: #fff !important;
+    text-decoration: underline;
+}
+
+
+
+
+.custom-hover-effect.active {
+    color: #fff !important;
+}
+
+.phoneIcon.active {
+    color: rgba(4, 98, 251);
+}
+
+
+.activeHeading {
+    font-size: 32px;
+    font-weight: 500;
+    margin-top: 55px;
+    margin-left: 5px;
+}
+
+
+#heading {
+    margin-bottom: 2px;
+}
+
+
+.collapse{
+    margin-top: 10px;
+}
+
+
 /******Button Starts**********/
 .btn {
     display: inline-block;
     padding: 10px 20px;
     text-decoration: none;
-    background-color: #001F3F;
+    background-color: #17254C;
     color: #fff;
     border-radius: 5px;
 }
@@ -447,7 +870,7 @@ i:hover {
 
 
 .btn-green {
-    background-color: #4CBB17;
+    background-color: #2e8b43;
     border: solid 2px #000;
 }
 
@@ -456,25 +879,6 @@ i:hover {
     margin: 0 auto;
     width: 282px;
 }
-/*    position: relative;
-    left: 80%;
-    top: 95px;*/
-
-/*@media only screen and (min-width: 320px) and (max-width: 768px) {
-    .btn-active-toggle {
-        position: relative;
-        left: 26%;
-        top: 0px;
-    }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 1440px) {
-    .btn-active-toggle {
-        position: relative;
-        left: 33%;
-        top: 0px;
-    }
-}*/
 
 
 /******Button Ends**********/
@@ -482,7 +886,7 @@ i:hover {
 
 /******Footer Starts************/
 footer {
-    background-color: #4CBB17;
+    background-color: #2e8b43;
     height: 40px;
     font-weight: 700;
     margin-bottom: -0px;

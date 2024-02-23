@@ -4,7 +4,7 @@
 <form asp-action="InactiveIndex" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    <a asp-action="Index" class="btn btn-center btn-outline-dark">Currently viewing: Inactive players</a>
+ 
     <br />
     @{
         if (Model.Count() > 0)
@@ -14,13 +14,20 @@
         }
     }
     <div class="form-horizontal">
-        <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            Filter/Search @ViewData["numberFilters"]
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>@ViewData["numberFilters"]
         </button>
         <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
                 <div class="row">
+
+                    <div class="col-md-4 activeView">
+                        <label class="control-label">Click to view Inactive Players:</label>
+                        <a asp-action="Index" class="btn btn-green btn-center btn-outline-dark lbl">Currently viewing: Inactive players</a>
+                    </div>
+
+
                     <div class="col-md-4">
                         <label class="control-label">Filter by Teams:</label>
                         @Html.DropDownList("TeamID", null, "All Teams", htmlAttributes: new { @class = "form-control" })
@@ -30,7 +37,7 @@
                         <label class="control-label">Search Player First/Last Name/Team Name:</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
-                    <div class="col-md-4 align-self-end">
+                    <div class="col-md-4 align-self-end btnFilterActions">
                         <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
                         <a asp-action="InactiveIndex" class="btn btn-outline-dark">Clear</a>
                     </div>

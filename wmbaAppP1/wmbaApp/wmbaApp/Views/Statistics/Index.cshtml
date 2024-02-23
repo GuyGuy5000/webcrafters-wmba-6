@@ -9,68 +9,57 @@
         <thead>
             <tr>
 
-                <style>
-                    .clickable-header {
-                        cursor: pointer;
-                        padding: 8px 13px;
-                        background-color: #001F3F;
-                        color: #fff;
-                        border: 1px solid #001F3F;
-                        border-radius: 5px;
-                        display: inline-block;
-                    }
-
-                </style>
+              
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         Player
-                    </h5>
+                    </h6>
                 </th>
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsGP
-                    </h5>
+                    </h6>
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsPA
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsAB
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsAVG
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsOBP
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsOPS
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsSLG
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsH
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
@@ -80,27 +69,27 @@
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsK
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsHR
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsRBI
-                    </h5>
+                    </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
+                    <h6 class="non-button-input" id="heading">
                         StatsBB
-                    </h5>
+                    </h6>
                 </th>
 
                 <th style="min-width:120px">
@@ -171,6 +160,9 @@
     </table>
     <partial name="_PagingNavBar" />
 </form>
+<div class="clickable-header">
+    <a href="@Url.Action("Index", "Home")">Back</a>
+</div>
 @section Scripts {
     <script type="text/javascript">
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -178,4 +170,6 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
+
+  
 }

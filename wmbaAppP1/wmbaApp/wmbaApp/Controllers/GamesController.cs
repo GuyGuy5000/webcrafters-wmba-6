@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
 using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
-using wmbaApp.ViewModels;
 
 namespace wmbaApp.Controllers
 {
@@ -22,6 +23,8 @@ namespace wmbaApp.Controllers
         {
             _context = context;
         }
+
+
 
         // GET: Games
         public async Task<IActionResult> Index(string SearchString, int? ID,
@@ -338,6 +341,196 @@ namespace wmbaApp.Controllers
                 return View("Delete", game);
             }
         }
+
+
+        //// GET: Players/Inactive/5
+        //public async Task<IActionResult> MakeInactive(int? id)
+        //{
+        //    if (id == null || _context.Games == null)
+        //  {
+        //        return NotFound();
+        //    }
+
+        //    var game = await _context.Games
+        //         .Include(g => g.GameTeams)
+        //      .Include(g => g.GameStartTime)
+        //       .Include(g => g.GameEndTime)
+        //        .Include(g => g.GameLocation)
+        //        .AsNoTracking()
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+        //    if (game == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(game);
+        //}
+
+        //// POST: Players/Inactive/5
+        //[HttpPost, ActionName("MakeInactive")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> MakeInactiveConfirmed(int id)
+        //{
+        //    if (_context.Games == null)
+        //    {
+        //        return Problem("This Game does not exist.");
+        //    }
+        //    var game = await _context.Games
+        //        .Include(g => g.GameTeams)
+        //      .Include(g => g.GameStartTime)
+        //       .Include(g => g.GameEndTime)
+        //        .Include(g => g.GameLocation)
+        //        .AsNoTracking()
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+
+        //    if (game != null)
+        //    {
+        //        game.IsActive = false;
+        //        _context.Games.Update(game);
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+
+        //// GET: Players/Active/5
+        //public async Task<IActionResult> MakeActive(int? id)
+        //{
+        //    if (id == null || _context.Games == null)
+        //        return NotFound();
+
+        //    var game = await _context.Games
+        //      .Include(g => g.GameTeams)
+        //      .Include(g => g.GameStartTime)
+        //       .Include(g => g.GameEndTime)
+        //        .Include(g => g.GameLocation)
+        //        .AsNoTracking()
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+        //    if (game == null)
+        //        return NotFound();
+
+        //    return View(game);
+        //}
+
+        //// POST: Players/Active/5
+        //[HttpPost, ActionName("MakeActive")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> MakeActiveConfirmed(int id)
+        //{
+        //    if (_context.Games == null)
+        //    {
+        //        return Problem("This Game does not exixst.");
+        //    }
+        //    var game = await _context.Games
+        //         .Include(g => g.GameTeams)
+        //      .Include(g => g.GameStartTime)
+        //       .Include(g => g.GameEndTime)
+        //        .Include(g => g.GameLocation)
+        //        .AsNoTracking()
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+
+        //    if (game != null)
+        //    {
+        //        if (game.IsActive)
+        //        {
+        //            game.IsActive = true;
+        //            _context.Games.Update(game);
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "This Gameis inactive. Reactivate the Game ");
+        //            return View(game);
+        //        }
+        //    }
+
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction("InactiveIndex");
+        //}
+
+        //public IActionResult DownloadInactivePlayersReport()
+        //{
+        //    // Get the data from the database
+        //    var inactiveGameData = _context.Games
+        //         .Include(g => g.GameTeams)
+        //      .Include(g => g.GameStartTime)
+        //       .Include(g => g.GameEndTime)
+        //        .Include(g => g.GameLocation)
+               
+        //        .Where(p => !p.IsActive)
+
+        //        .OrderBy(ip => ip.GameTeams) // Change to the actual property for sorting
+        //        .Select(ip => new
+        //        {
+        //            Game_ID = ip.ID,
+        //            Game_Teams = ip.GameTeams,
+        //            Game_Starts = ip.GameStartTime,
+        //            Game_Ends = ip.GameEndTime,
+        //            Location = ip.GameLocation,
+        //        })
+        //        .AsNoTracking();
+
+
+        //    // How many rows?
+        //    int numRows = inactiveGameData.Count();
+
+        //    if (numRows > 0)
+        //    {
+        //        // Create a new spreadsheet from scratch.
+        //        using (ExcelPackage excel = new())
+        //        {
+        //            var workSheet = excel.Workbook.Worksheets.Add("Inactive Players Report");
+
+        //            // Note: Cells[row, column]
+        //            workSheet.Cells[3, 1].LoadFromCollection(inactiveGameData, true);
+
+        //            // Set column styles if needed
+
+        //            // Make certain cells bold
+        //            workSheet.Cells[4, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+        //            // Autofit columns
+        //            workSheet.Cells.AutoFitColumns();
+
+        //            // Add a title and timestamp at the top of the report
+        //            workSheet.Cells[1, 1].Value = "Inactive Players Report";
+        //            using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3]) // Adjust the column count accordingly
+        //            {
+        //                Rng.Merge = true;
+        //                Rng.Style.Font.Bold = true;
+        //                Rng.Style.Font.Size = 18;
+        //                Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        //            }
+
+        //            DateTime utcDate = DateTime.UtcNow;
+        //            TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+        //            DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+        //            using (ExcelRange Rng = workSheet.Cells[2, 6]) // Adjust the column accordingly
+        //            {
+        //                Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+        //                    localDate.ToShortDateString();
+        //                Rng.Style.Font.Bold = true;
+        //                Rng.Style.Font.Size = 12;
+        //                Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+        //            }
+
+        //            // Ok, time to download the Excel
+        //            try
+        //            {
+        //                Byte[] theData = excel.GetAsByteArray();
+        //                string filename = "InActive Players Report.xlsx";
+        //                string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        //                return File(theData, mimeType, filename);
+        //            }
+        //            catch (Exception)
+        //            {
+        //                return BadRequest("Could not build and download the file.");
+        //            }
+        //        }
+        //    }
+        //    PopulateDropDownLists();
+        //    return RedirectToAction("InactiveIndex");
+        //}
+
 
         private void CreateGameTeams(Game game, int? HomeTeamID, int? AwayTeamID)
         {

@@ -268,7 +268,7 @@ namespace wmbaApp.Controllers
             {
                 _context.Coaches.Remove(coach);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -291,7 +291,7 @@ namespace wmbaApp.Controllers
 
         private bool CoachExists(int id)
         {
-          return _context.Coaches.Any(e => e.ID == id);
+            return _context.Coaches.Any(e => e.ID == id);
         }
     }
 }

@@ -1,16 +1,18 @@
-﻿@using wmbaApp.ViewModels
-@using wmbaApp.Utilities;
+﻿@using wmbaApp.Utilities;
 @model IEnumerable<wmbaApp.Models.Game>
 <partial name="_ViewHeading" />
 
 
 
 <form asp-action="Index" method="get">
+   
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <br />
     <div class="form-horizontal">
-        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            Filter/Search @ViewData["numberFilters"]
+
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>@ViewData["numberFilters"]
         </button>
         <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
@@ -37,40 +39,32 @@
         <thead>
             <tr>
 
-                <style>
-                    .clickable-header {
-                        cursor: pointer;
-                        padding: 8px 13px;
-                        background-color: #001F3F;
-                        color: #fff;
-                        border: 1px solid #001F3F;
-                        border-radius: 5px;
-                        display: inline-block;
-                    }
-
-                    .hover:hover {
-                        background-color: #4CBB17;
-                        border-color: #001F3F;
-                    }
-                </style>
+                
                 <th class="d-none d-lg-table-cell">
-                    <div class="clickable-header">
+                    <h6 class="non-button-input" id="heading">
                         Teams
+                     </h6>
+                </th>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="d-flex align-items-center">
+                        <input type="submit" name="actionButton" value=" Time" class="non-button-input" data-bs-toggle="tooltip" title="Sort Start Time" />
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" style="padding-left: 5px";></i>
                     </div>
                 </th>
-                
-                <th class="d-sm-table-cell d-md-table-cell">
-                    <input type="submit" name="actionButton" value=" Time" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Start Time" />
-                </th>
+
 
                 <th class="d-none d-lg-table-cell">
-                    <input type="submit" name="actionButton" value="End Time" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort End Time" />
+                    <input type="submit" name="actionButton" value="End Time" class="non-button-input" data-bs-toggle="tooltip" title="Sort End Time" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
                 </th>
 
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <input type="submit" name="actionButton" value="Location" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Location" />
+                    <div class="d-flex align-items-center">
+                        <input type="submit" name="actionButton" value="Location" class="non-button-input" data-bs-toggle="tooltip" title="Sort Location" />
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" style="padding-left: 5px;"></i>
+                    </div>
                 </th>
-
 
                 <th style="min-width:120px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a New Game">
@@ -114,29 +108,19 @@
                             EDIT
                         </a>
 <<<<<<< HEAD
+<<<<<<< HEAD
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
 =======
                         <a asp-controller="Details" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
 >>>>>>> a3ecf20 (Update Game Index.cshtml)
+=======
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Details @ViewData["ControllerFriendlyName"]">
+>>>>>>> 604569a (attempt to commit Emmanuel's solution)
                             DETAILS
                         </a>
-                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                      @*   <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                             DELETE
-                        </a>
-                        @{
-                            List<GameMatchup> matchups = (List<GameMatchup>)ViewData["Matchups"];
-                            string homeTeamName = matchups.FirstOrDefault(m => m.game.ID == item.ID).teamOne.TmName;
-                            string awayTeamName = matchups.FirstOrDefault(m => m.game.ID == item.ID).teamTwo.TmName;
-                            GameScoreKeepingVM scoreKeeping = new()
-                            {
-                                GameID = item.ID,
-                                HomeTeamName = homeTeamName,
-                                AwayTeamName = awayTeamName,
-                                HomeTeamScore = 0,
-                                AwayTeamScore = 0
-                            };
-                        }
-                        @Html.ActionLink("START GAME", "Index","ScoreKeeping", scoreKeeping, htmlAttributes: new { @class = "btn btn-sm btn-outline-primary" })
+                        </a> *@
                     </td>
                 </tr>
             }
@@ -144,6 +128,10 @@
     </table>
     <partial name="_PagingNavBar" />
 </form>
+
+<div class="clickable-header">
+    <a href="@Url.Action("Index", "Home")">Back</a>
+</div>
 @section Scripts {
     <script type="text/javascript">
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))

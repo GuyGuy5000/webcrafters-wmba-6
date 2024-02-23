@@ -19,8 +19,8 @@ namespace wmbaApp.Data
             try
             {
                 context.Database.EnsureDeleted();
-                //context.Database.EnsureCreated();
-                context.Database.Migrate();
+                context.Database.EnsureCreated();
+                //context.Database.Migrate();
                 Random random = new();
 
                 //Division seed data

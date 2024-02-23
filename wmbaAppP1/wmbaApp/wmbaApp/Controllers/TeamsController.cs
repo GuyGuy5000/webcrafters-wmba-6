@@ -336,7 +336,10 @@ namespace wmbaApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id)
         {
+            // Populate drop-down lists for the view
             PopulateDropDownLists();
+
+            // Retrieve the team to be edited from the database
             var teamToUpdate = await _context.Teams
                 .Include(t => t.Division)
                 .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
@@ -344,48 +347,58 @@ namespace wmbaApp.Controllers
                 .Include(t => t.GameTeams).ThenInclude(t => t.Game)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
+            // Check if the team exists
             if (teamToUpdate == null)
             {
                 return NotFound();
             }
 
-            if (await TryUpdateModelAsync<Team>(teamToUpdate, "",
-                t => t.TmName, t => t.DivisionID))
+            // Try to update the model from the form data
+            if (await TryUpdateModelAsync<Team>(teamToUpdate, "", t => t.TmName, t => t.DivisionID))
             {
-                try
+                // Check if the model state is valid
+                if (ModelState.IsValid)
                 {
-                    _context.Update(teamToUpdate);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TeamExists(teamToUpdate.ID))
+                    try
                     {
+                        // Update the team in the database
+                        _context.Update(teamToUpdate);
+                        await _context.SaveChangesAsync();
+
+                        // Redirect to the Details action for the edited team
+                        return RedirectToAction("Details", new { id = teamToUpdate.ID });
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        // Handle concurrency exception
                         return NotFound();
                     }
-                    else
+                    catch (DbUpdateException dex)
                     {
-                        throw;
-                    }
-                }
-                catch (DbUpdateException dex)
-                {
-                    if (dex.InnerException.Message.Contains("UNIQUE")) //if a UNIQUE constraint caused the exception
-                    {
-                        //check which field triggered the error
+                        // Handle other database update exceptions
+                        // Check which field triggered the error
                         if (dex.InnerException.Message.Contains("TmName"))
-                            ModelState.AddModelError("TmName", "A team with this name already exists. Please choose a different name."); //pass a message to the field that triggered the error
+                        {
+                            // Add error for the TmName field
+                            ModelState.AddModelError("TmName", "A team with this name already exists. Please choose a different name.");
+                        }
                         else if (dex.InnerException.Message.Contains("TmAbbreviation"))
+                        {
+                            // Add error for the TmAbbreviation field
                             ModelState.AddModelError("TmAbbreviation", "A team with this abbreviation already exists. Please choose a different abbreviation.");
+                        }
+                        else
+                        {
+                            // Handle other DbUpdateException scenarios or rethrow the exception
+                            ModelState.AddModelError("", "Unable to save changes. Please try again, and if the problem persists, see your system administrator.");
+                        }
                     }
-                    else
-                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                    return View(teamToUpdate);
                 }
             }
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName", teamToUpdate.DivisionID);
 
-            return RedirectToAction("Details", new { teamToUpdate.ID });
+            // If TryUpdateModelAsync fails or ModelState is invalid, return the view with errors
+            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName", teamToUpdate.DivisionID);
+            return View(teamToUpdate);
         }
 
         //// GET: Teams/Delete/5
