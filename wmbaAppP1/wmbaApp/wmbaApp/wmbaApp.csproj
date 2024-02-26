@@ -23,7 +23,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+<<<<<<< HEAD
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
+=======
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.11" />
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     <PackageReference Include="SkiaSharp" Version="2.88.7" />
   </ItemGroup>
 

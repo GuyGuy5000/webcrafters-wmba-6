@@ -7,22 +7,33 @@
 <form asp-action="InactiveIndex" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+<<<<<<< HEAD
     
     <br />
     <div class="form-horizontal">
         <button class="btn  btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
             <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>@ViewData["numberFilters"]
+=======
+    <a asp-action="Index" class="btn btn-center mt-xl-5">Currently viewing: Inactive teams</a>
+    <br />
+    <div class="form-horizontal">
+        <button class="btn  btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search @ViewData["numberFilters"]
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
         </button>
         <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
                 <div class="row">
+<<<<<<< HEAD
 
                     <div class="col-md-4 activeView">
                         <label class="control-label">Click to view Inactive Players:</label>
                         <a asp-action="Index" class="btn btn-green btn-center btn-outline-dark lbl">Currently viewing: Inactive teams</a>     
                     </div>
 
+=======
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
                     <div class="col-md-4">
                         <label class="control-label">Filter by Divisions:</label>
                         @Html.DropDownList("DivisionID", null, "All Divisions", htmlAttributes: new { @class = "form-control" })

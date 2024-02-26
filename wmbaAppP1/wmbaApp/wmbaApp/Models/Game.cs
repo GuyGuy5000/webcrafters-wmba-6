@@ -90,6 +90,7 @@ namespace wmbaApp.Models
         public int ID { get; set; }
         [Display(Name = "Game Starts")]
         public DateTime? GameStartTime { get; set; }
+<<<<<<< HEAD
 
 
         [Display(Name = "Game Ends")]
@@ -98,6 +99,10 @@ namespace wmbaApp.Models
         [Display(Name = "Active")]
         public bool IsActive { get; set; } = true;
 
+=======
+        [Display(Name = "Game Ends")]
+        public DateTime? GameEndTime { get; set; }
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
         [StringLength(50, ErrorMessage = "Game location must be less than 50 characters")]
         public string GameLocation { get; set; }
 

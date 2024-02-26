@@ -3,6 +3,7 @@
 // Done By: Emmanuel James
 // Last Modified: 2024/01/23
 // Write your JavaScript code.
+<<<<<<< HEAD
 
   
 
@@ -58,3 +59,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+=======
+var player = new Vimeo.Player(document.getElementById('videoFrame'));
+
+player.setLoop(true);
+player.setVolume(0);
+player.play();
+>>>>>>> bd393857f4064c2898b737573188121837f79d06

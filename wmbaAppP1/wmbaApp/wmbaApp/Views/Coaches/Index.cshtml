@@ -37,6 +37,7 @@
         <thead>
             <tr>
 
+<<<<<<< HEAD
                
 
                 <th class="d-sm-table-cell d-md-table-cell">
@@ -58,6 +59,44 @@
                 <th class="d-none d-lg-table-cell">
                     <input type="submit" name="actionButton" value="Phone" class="non-button-input" title="Sort by Phone" />
                     <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
+=======
+                <style>
+                    .clickable-header {
+                        cursor: pointer;
+                        padding: 8px 13px;
+                        background-color: #001F3F;
+                        color: #fff;
+                        border: 1px solid #001F3F;
+                        border-radius: 5px;
+                        display: inline-block;
+                    }
+
+                    .hover:hover {
+                        background-color: #4CBB17;
+                        border-color: #001F3F;
+                    }
+
+                </style>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <input type="submit" name="actionButton" value="Name" class="btn btn-toolbar" title="Sort by Full Name" />
+                </th>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="clickable-header">
+                        Team
+                    </div>
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <div class="clickable-header">
+                        Division
+                    </div>
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Email" class="btn btn-toolbar" title="Sort by Email" />
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Phone" class="btn btn-toolbar" title="Sort by Phone" />
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
                 </th>
                 <th style="min-width:120px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
@@ -118,6 +157,7 @@
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+<<<<<<< HEAD
                             EDIT
                         </a>
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
@@ -125,6 +165,15 @@
                         </a>
                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                             DELETE
+=======
+                            &#x270E;
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            &#x1F50E;
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            &#x274C;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
                         </a>
                     </td>
                 </tr>
@@ -134,6 +183,16 @@
     <partial name="_PagingNavBar" />
 </form>
 
+<<<<<<< HEAD
 <div class="clickable-header">
     <a href="@Url.Action("Index", "Home")">Back</a>
 </div>
+=======
+@section Scripts {
+    <script>
+        GenerateContextHelp(["<p>This page lists all coaches you have access to. From here you can create, edit, and delete coaches.</p>",
+            "<p>Click one of the three buttons in a team's row to edit, view, or delete that coach.</p>",
+           ]);
+    </script>
+}
+>>>>>>> bd393857f4064c2898b737573188121837f79d06

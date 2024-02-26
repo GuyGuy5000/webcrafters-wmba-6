@@ -6,7 +6,11 @@
     /// </summary>
     public class GameScoreKeepingVM
     {
+<<<<<<< HEAD
         public int GameID { get; set; }
+=======
+        public int GameID {  get; set; }
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
         public string HomeTeamName { get; set; }
         public string AwayTeamName { get; set; }
         public int HomeTeamScore { get; set; } = 0;

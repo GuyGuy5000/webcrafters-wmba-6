@@ -6,10 +6,15 @@ namespace wmbaApp.ViewModels
     {
         public List<PlayerScoreKeepingVM> Players { get; set; }
         public int CurrentBatter { get; set; } = 0;
+<<<<<<< HEAD
+=======
+        public bool CurrentlyBatting { get; set; } = true;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 
         public int TotalRunsThisInning
             => Players.Sum(p => p.Runs);
         public int TotalOutsThisInning
+<<<<<<< HEAD
         {
             get
             {
@@ -32,6 +37,13 @@ namespace wmbaApp.ViewModels
                 return Players[CurrentBatter];
             }
         }
+=======
+            => Players.Sum(p => p.Outs);
+
+        //gets the players on each base including home base
+        public PlayerScoreKeepingVM Batter
+            => Players[CurrentBatter];
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
         public PlayerScoreKeepingVM PlayerOnFirst
             => Players.FirstOrDefault(p => p.FirstBase && p != this.Batter);
         public PlayerScoreKeepingVM PlayerOnSecond

@@ -45,7 +45,11 @@ body {
 
 
 .navbar {
+<<<<<<< HEAD
     background-color: #2e8b43;
+=======
+    background-color: #4CBB17;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 }
 
     .navbar a {
@@ -57,7 +61,11 @@ li a:hover {
 }
 
 .dropdown-menu a:hover {
+<<<<<<< HEAD
     background-color: #2e8b43;
+=======
+    background-color: #4CBB17;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     color: #fff;
 }
 /********Logo********/
@@ -97,7 +105,11 @@ li a:hover {
 /******Header Starts**********/
 .header {
     background-color: #fff;
+<<<<<<< HEAD
     color: #17254C;
+=======
+    color: #001F3F;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     padding: 4px 12px;
     margin: 4px;
     font-size: 20px;
@@ -128,6 +140,7 @@ li a:hover {
     float: left;
 }
 
+<<<<<<< HEAD
 .arrow {
     font-size: 22px;
 }
@@ -143,16 +156,37 @@ li a:hover {
     margin: 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 
+=======
+
+.gameStyle {
+    max-height: 450px;
+    max-width: 460px; /* Set the maximum height for the container */
+    overflow-y: auto; /* Add a vertical scrollbar if the content overflows */
+    border: 5px solid #4CBB17; /* Optional: Add a border for visual clarity */
+    padding: 10px; /* Optional: Add padding for spacing inside the container */
+    margin-top: -15px;
+    margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    /* Optional: Add margin to create space below the container */
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 }
 
 
 
     .gameStyle h1 {
+<<<<<<< HEAD
         background-color: #2e8b43;
     }
 
 .row #gameBtn {
     background-color: #2e8b43;
+=======
+        background-color: #4CBB17;
+    }
+
+.row #gameBtn {
+    background-color: #4CBB17;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     margin: 0 auto;
     max-width: 460px;
     padding: 26px;
@@ -214,6 +248,7 @@ li a:hover {
         border-radius: 5px;
         padding: 50px;
     }
+<<<<<<< HEAD
 
     form .impTeams {
         font-size: 14px;
@@ -231,6 +266,15 @@ li a:hover {
 /******Header Ends**********/
 
 /******Header Ends**********/
+=======
+}
+
+
+
+/******Header Ends**********/
+
+
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 /******Context help starts*********/
 .help-icon {
     align-items: center;
@@ -314,10 +358,17 @@ li a:hover {
 
 
 
+<<<<<<< HEAD
 /*
 i:hover {
     transform: translateY(-7px);
 }*/
+=======
+
+i:hover {
+    transform: translateY(-7px);
+}
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 
 
 
@@ -335,8 +386,13 @@ i:hover {
 
 
     .header {
+<<<<<<< HEAD
         background-color: #2e8b43;
         color: #17254C;
+=======
+        background-color: #4CBB17;
+        color: #001F3F;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
         padding: 4px 12px 51px;
         margin: 4px;
         height: 40px;
@@ -361,13 +417,22 @@ i:hover {
     text-align: center;
 }
 
+<<<<<<< HEAD
 .startGame, .startGames {
     background-color: #2e8b43;
     margin: 0 auto;
+=======
+.startGame {
+    /* display: grid;*/
+
+    background-color: #4CBB17;
+    margin: 0 auto; /* Center the .startGame div */
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     padding: 19px;
     margin-bottom: 40px;
     max-width: 300px;
     border-radius: 5px;
+<<<<<<< HEAD
     gap: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 }
@@ -457,11 +522,17 @@ i:hover {
 
 
 
+=======
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Add box shadow */
+}
+
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 .dashboard {
     text-align: center;
     margin: 0 auto;
     border-radius: 5px;
     padding: 15px;
+<<<<<<< HEAD
    
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
@@ -476,26 +547,49 @@ i:hover {
     padding: 15px;
    /* height: 577px;*/
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+=======
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+.dashboards {
+    margin: 0 auto;
+    border-radius: 5px;
+    padding: 15px;
+    height: 577px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 }
 
 
 .import {
     margin-bottom: 30px;
+<<<<<<< HEAD
     margin-top: 20px;
     height: 280px;
 }
 
 .parent {
     gap: 7px;
+=======
+}
+
+.parent {
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     padding-top: 70px;
 }
 
 .clickable-header {
     cursor: pointer;
     padding: 8px 13px;
+<<<<<<< HEAD
     background-color: #17254C;
     color: #fff;
     border: 1px solid #17254C;
+=======
+    background-color: #001F3F;
+    color: #fff;
+    border: 1px solid #001F3F;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     border-radius: 5px;
     display: inline-block;
     margin-top: 30px;
@@ -508,8 +602,13 @@ i:hover {
     }
 
 .hover:hover {
+<<<<<<< HEAD
     background-color: #2e8b43;
     border-color: #17254C;
+=======
+    background-color: #4CBB17;
+    border-color: #001F3F;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 }
 
 
@@ -527,6 +626,7 @@ i:hover {
     footer {
         bottom: 40px;
     }
+<<<<<<< HEAD
     .wmba {
     text-align: center;
   
@@ -855,12 +955,28 @@ fieldset {
 }
 
 
+=======
+}
+
+.form-group {
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+    .form-group i {
+        margin-right: 10px;
+    }
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 /******Button Starts**********/
 .btn {
     display: inline-block;
     padding: 10px 20px;
     text-decoration: none;
+<<<<<<< HEAD
     background-color: #17254C;
+=======
+    background-color: #001F3F;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     color: #fff;
     border-radius: 5px;
 }
@@ -871,7 +987,11 @@ fieldset {
 
 
 .btn-green {
+<<<<<<< HEAD
     background-color: #2e8b43;
+=======
+    background-color: #4CBB17;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     border: solid 2px #000;
 }
 
@@ -880,6 +1000,28 @@ fieldset {
     margin: 0 auto;
     width: 282px;
 }
+<<<<<<< HEAD
+=======
+/*    position: relative;
+    left: 80%;
+    top: 95px;*/
+
+/*@media only screen and (min-width: 320px) and (max-width: 768px) {
+    .btn-active-toggle {
+        position: relative;
+        left: 26%;
+        top: 0px;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1440px) {
+    .btn-active-toggle {
+        position: relative;
+        left: 33%;
+        top: 0px;
+    }
+}*/
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
 
 
 /******Button Ends**********/
@@ -887,7 +1029,11 @@ fieldset {
 
 /******Footer Starts************/
 footer {
+<<<<<<< HEAD
     background-color: #2e8b43;
+=======
+    background-color: #4CBB17;
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
     height: 40px;
     font-weight: 700;
     margin-bottom: -0px;

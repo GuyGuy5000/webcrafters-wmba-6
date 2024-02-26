@@ -7,21 +7,32 @@
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+<<<<<<< HEAD
     
     <br />
     <div class="form-horizontal">
         <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
             <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+=======
+    <a asp-action="InactiveIndex" class="btn btn-green btn-outline-dark btn-center" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
+    <br />
+    <div class="form-horizontal">
+        <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search @ViewData["numberFilters"]
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
         </button>
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
                 <div class="row">
+<<<<<<< HEAD
 
                     <div class="col-md-4">
                         <label class="control-label ">Click to View Inactive Teams:</label>
                         <a asp-action="InactiveIndex" class="btn btn-green btn-outline-dark btn-center view" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
                     </div>
 
+=======
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
                     <div class="col-md-4">
                         <label class="control-label">Filter by Divisions:</label>
                         @Html.DropDownList("DivisionID", null, "All Divisions", htmlAttributes: new { @class = "form-control" })
@@ -42,6 +53,7 @@
     <table class="table mt-3">
         <thead>
             <tr>
+<<<<<<< HEAD
       
 
               
@@ -61,6 +73,38 @@
                 <th class="d-none d-md-table-cell">
                     <input type="submit" value="Division" name="actionButton" class="non-button-input" data-bs-toggle="tooltip" title="Sort Division Name" />
                     <i class="fa-solid fa-arrows-up-down arrow  non-button-input"></i>
+=======
+                <style>
+                    .clickable-header {
+                        cursor: pointer;
+                        padding: 8px 13px;
+                        background-color: #001F3F;
+                        color: #fff;
+                        border: 1px solid #001F3F;
+                        border-radius: 5px;
+                        display: inline-block;
+                    }
+
+                    .hover:hover {
+                        background-color: #4CBB17;
+                        border-color: #001F3F;
+                    }
+
+                </style>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <input type="submit" name="actionButton" value="Team" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Team Name" />
+                </th>
+                <!-- Coaches -->
+                <th class="d-none d-lg-table-cell">
+                    <h5>
+                        Coaches
+                    </h5>
+                </th>
+                <!-- Division -->
+                <th class="d-none d-md-table-cell">
+                    <input type="submit" value="Division" name="actionButton" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Division Name" />
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
                 </th>
                 <!-- Create New Team -->
                 <th style="min-width:120px">
@@ -113,7 +157,11 @@
                             DETAILS
                         </a>
                         <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
+<<<<<<< HEAD
                             INACTIVATE
+=======
+                            DEACTIVATE
+>>>>>>> bd393857f4064c2898b737573188121837f79d06
                         </a>
                     </td>
                 </tr>
