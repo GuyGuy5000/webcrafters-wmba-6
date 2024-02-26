@@ -1,5 +1,4 @@
 ﻿@model wmbaApp.Models.Player
-<<<<<<< HEAD
 
 <hr />
 
@@ -33,36 +32,6 @@
             </div>
             <div class="form-group">
                 <label asp-for="TeamID" class="control-label required-label"></label>
-=======
-<partial name="_ViewHeading" />
-<hr />
-<div class="row">
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
-        <div class="col-md-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="PlyrFirstName" class="control-label"></label>
-                <input asp-for="PlyrFirstName" class="form-control" />
-                <span asp-validation-for="PlyrFirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PlyrLastName" class="control-label"></label>
-                <input asp-for="PlyrLastName" class="form-control" />
-                <span asp-validation-for="PlyrLastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PlyrJerseyNumber" class="control-label"></label>
-                <input asp-for="PlyrJerseyNumber" class="form-control" />
-                <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PlyrMemberID" class="control-label"></label>
-                <input asp-for="PlyrMemberID" class="form-control" />
-                <span asp-validation-for="PlyrMemberID" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TeamID" class="control-label"></label>
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                 <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
                     <option value="">Assign Team to Player</option>
                 </select>
@@ -73,15 +42,10 @@
             <input type="submit" value="Create" class="btn btn-primary" />
             <a asp-action="Index" class="btn btn-outline-dark">Back to Players List</a>
         </div>
-<<<<<<< HEAD
     </fieldset>
        
     </form>
 
-=======
-    </form>
-</div>
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 
 
 @section Scripts {

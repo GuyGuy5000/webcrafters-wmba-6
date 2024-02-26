@@ -5,7 +5,6 @@
     ViewData["Title"] = "Home Page";
 }
 
-<<<<<<< HEAD
 <div class="wmba" >
     <h1><i id="icon1" class="fa-solid fa-baseball"></i> WMBA <i id="icon2" class="fa-solid fa-baseball"></i></h1>
 </div>
@@ -14,22 +13,12 @@
 
     <div class="row dashboard">
 
-=======
-
-
-<div class="container-fluid text-center d-flex align-items-center justify-content-center parent">
-    <div class="row dashboard">
->>>>>>> bd393857f4064c2898b737573188121837f79d06
         <div class="col-md-4 startGame">
             <h1>TEAMS</h1>
             <i class="fa-solid fa-users icon"></i>
             <b><p>View, edit and deactivate teams.</p></b>
             <p class="link">
-<<<<<<< HEAD
                 <a asp-controller="Teams" asp-action="Index"  class="btn">View Teams <i class="fa-solid fa-angles-right" tabindex="7"></i></a>
-=======
-                <a asp-controller="Teams" asp-action="Index" class="btn">View Teams <i class="fa-solid fa-angles-right" tabindex="7"></i></a>
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             </p>
         </div>
 
@@ -38,11 +27,7 @@
             <i class="fa-solid fa-user-plus icon"></i>
             <b><p>View, edit and deactivate players.</p></b>
             <p class="link">
-<<<<<<< HEAD
                 <a asp-controller="Players" asp-action="Index"  class="btn">View Players <i class="fa-solid fa-angles-right" tabindex="9"></i></a>
-=======
-                <a asp-controller="Players" asp-action="Index" class="btn">View Players <i class="fa-solid fa-angles-right" tabindex="9"></i></a>
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             </p>
         </div>
 
@@ -51,21 +36,14 @@
             <i class="fa-solid fa-baseball-bat-ball icon"></i>
             <b><p>View Player Statistics.</p></b>
             <p class="link">
-<<<<<<< HEAD
                 <a href="#" onclick="return false;" class="btn" style="pointer-events: none; cursor: default; color: grey;">
                     View Statistics <i class="fa-solid fa-angles-right" tabindex="8"></i>
                 </a>
 
-=======
-                <a asp-controller="Statistics" asp-action="Index" class="btn" disabled>
-                    View Statistics <i class="fa-solid fa-angles-right" tabindex="8"></i>
-                </a>
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             </p>
         </div>
 
 
-<<<<<<< HEAD
 
         <div class="phoneviewImport">
             <div class="col-md-7  img-guide  teamImport" style="margin: 0 auto;">
@@ -109,41 +87,13 @@
 
 
         <div class="col-md-12 gameStyle styleGameTbl">
-=======
-        <div class="col-md-12 startGame">
-            <form asp-action="ImportTeams" method="post" enctype="multipart/form-data">
-                <label class="control-label custom-file-label">IMPORT TEAMS:</label>
-                <div class="input-group mb-3">
-                    <input type="file" class="form-control" name="theFile" id="theFile" accept=".xlsx">
-                </div>
-
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                @Html.Raw(TempData["TeamImportFeedback"])
-                <br />
-                @Html.Raw(TempData["PlayerImportFeedback"])
-                <div class="form-group">
-                    <input type="submit" value="Upload" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="row dashboards">
-
-
-        <div class="col-md-12 gameStyle">
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 
             @if (Model != null && Model.Any())
             {
                 <table class="table">
                     <thead>
                         <tr>
-<<<<<<< HEAD
                             <th class=" d-lg-table-cell"><h1>GAMES</h1></th>
-=======
-                            <th class="d-none d-lg-table-cell"><h1>GAMES</h1></th>
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                             @* <th class="d-none d-lg-table-cell">Game Location</th> *@
                             <!-- Add additional headers as needed -->
                         </tr>
@@ -152,11 +102,7 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-<<<<<<< HEAD
                                 <td class="text-left" style=" text-align: left;">
-=======
-                                <td class="d-none d-xxl-table-cell">
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                                     @{
                                         int gameCount = item.GameTeams.Count;
                                         string firstGame = "";
@@ -172,17 +118,10 @@
                                                 }
                                             }
                                             <a class="" role="button" data-bs-toggle="collapse" href="#collapseGames@(item.ID)"
-<<<<<<< HEAD
                                                aria-expanded="false" aria-controls="collapseGames@(item.ID)" title="Game Details" style=" text-align: left;">
                                                 @firstGame <span class="badge bg-info" style="background-color: #2e8b43; color: #fff;"> Details</span>
                                             </a>
                                             <div class="collapse" id="collapseGames@(item.ID)" style="background-color: #2e8b43; color: #fff; text-align: left;">
-=======
-                                               aria-expanded="false" aria-controls="collapseGames@(item.ID)" title="Number of Games">
-                                                @firstGame <span class="badge bg-info" style="background-color: #4CBB17; color: #fff;"> Details</span>
-                                            </a>
-                                            <div class="collapse" id="collapseGames@(item.ID)" style="background-color: #4CBB17; color: #fff;">
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                                                 @Html.Raw(gameSummary)
                                             </div>
                                         }
@@ -197,17 +136,13 @@
                     </tbody>
 
                 </table>
-<<<<<<< HEAD
              
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             }
             else
             {
                 <p>No game data available.</p>
             }
 
-<<<<<<< HEAD
       </div>
         <!-- Hide on laptop, show on phones and tablets -->
         <div class="d-md-none mt-3 hideGameBtnLaptop">
@@ -262,15 +197,6 @@
 </div>
 
 
-=======
-        </div>
-        <p class="link" id="gameBtn">
-            <a asp-controller="Games" asp-action="Index" target="_blank" class="btn">View Games <i class="fa-solid fa-angles-right" tabindex="8"></i></a>
-        </p>
-    </div>
-</div>
-
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 @section Scripts {
     <script>
         GenerateContextHelp([

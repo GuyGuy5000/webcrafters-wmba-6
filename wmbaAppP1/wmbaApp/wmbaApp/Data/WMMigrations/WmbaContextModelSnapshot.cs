@@ -101,12 +101,9 @@ namespace wmbaApp.Data.WMMigrations
                     b.Property<DateTime?>("GameStartTime")
                         .HasColumnType("TEXT");
 
-<<<<<<< HEAD
                     b.Property<bool>("IsActive")
                         .HasColumnType("INTEGER");
 
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                     b.HasKey("ID");
 
                     b.ToTable("Games");

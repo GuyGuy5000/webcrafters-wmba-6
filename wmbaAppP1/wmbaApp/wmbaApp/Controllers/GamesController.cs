@@ -6,19 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-<<<<<<< HEAD
 using OfficeOpenXml.Style;
 using OfficeOpenXml;
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
-<<<<<<< HEAD
-=======
-using wmbaApp.ViewModels;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 
 namespace wmbaApp.Controllers
 {
@@ -31,11 +24,8 @@ namespace wmbaApp.Controllers
             _context = context;
         }
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
         // GET: Games
         public async Task<IActionResult> Index(string SearchString, int? ID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
@@ -352,7 +342,6 @@ namespace wmbaApp.Controllers
             }
         }
 
-<<<<<<< HEAD
 
         //// GET: Players/Inactive/5
         //public async Task<IActionResult> MakeInactive(int? id)
@@ -543,8 +532,6 @@ namespace wmbaApp.Controllers
         //}
 
 
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
         private void CreateGameTeams(Game game, int? HomeTeamID, int? AwayTeamID)
         {
             int gameID = game.ID;

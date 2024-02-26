@@ -268,11 +268,7 @@ namespace wmbaApp.Controllers
             {
                 _context.Coaches.Remove(coach);
             }
-<<<<<<< HEAD
 
-=======
-            
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -295,14 +291,7 @@ namespace wmbaApp.Controllers
 
         private bool CoachExists(int id)
         {
-<<<<<<< HEAD
             return _context.Coaches.Any(e => e.ID == id);
         }
     }
 }
-=======
-          return _context.Coaches.Any(e => e.ID == id);
-        }
-    }
-}
->>>>>>> bd393857f4064c2898b737573188121837f79d06

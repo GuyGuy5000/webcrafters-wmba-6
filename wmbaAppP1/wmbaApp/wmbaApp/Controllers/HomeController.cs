@@ -1,19 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-<<<<<<< HEAD
-=======
-using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
-<<<<<<< HEAD
-=======
-
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 namespace wmbaApp.Controllers
 {
     public class HomeController : Controller
@@ -27,15 +19,8 @@ namespace wmbaApp.Controllers
             _context = context;
         }
 
-<<<<<<< HEAD
        
 
-=======
-        public IActionResult UnderConstruction()
-        {
-            return View();
-        }
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 
         public IActionResult Index()
         {
@@ -47,12 +32,9 @@ namespace wmbaApp.Controllers
             return View(teams);
         }
 
-<<<<<<< HEAD
         [HttpPost]
        
 
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
         public IActionResult Privacy()
         {
             return View();

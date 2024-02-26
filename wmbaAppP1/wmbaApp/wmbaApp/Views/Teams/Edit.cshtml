@@ -1,6 +1,5 @@
 ﻿@model wmbaApp.Models.Team
 
-<<<<<<< HEAD
 
 
 <hr />
@@ -54,48 +53,10 @@
                             <span class="d-none d-md-inline">Back </span>
                         </button>
                         <!-- <a asp-action="Index" type="button" data-toggle="modal" data-target="#pageSizeModal" class="btn btn-primary">Back to Teams list</a> -->
-=======
-<partial name="_ViewHeading" />
-
-<hr />
-<form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="ID" />
-
-    <div class="row">
-        <div class="col-md-4">
-
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
-            <div class="form-group">
-                <label asp-for="TmName" class="control-label"></label>
-                <input asp-for="TmName" class="form-control" placeholder="Ex: Green Jr. Jackfish"/>
-                <span asp-validation-for="TmName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DivisionID" class="control-label"></label>
-                <div class="input-group mb-3">
-@*                     <div class="input-group-prepend">
-                        <button class="btn btn-outline-secondary" id="nowAddDivision" data-bs-toggle="modal" data-bs-target="#addDivisionCoachModal" type="button">&#x2795;</button>
-                    </div> *@
-                    <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID">
-                    </select>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <div display="flex">
-                            <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
-                            <a asp-action="Index" type="button" class="btn btn-primary">Back to Teams list</a>
-                        </div>
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                     </div>
                 </div>
             </div>
         </div>
-<<<<<<< HEAD
 
     </fieldset>
 </form>
@@ -160,12 +121,4 @@
 
     </script>
 
-=======
-    </div>
-</form>
-
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 }

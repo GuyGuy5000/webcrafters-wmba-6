@@ -3,15 +3,10 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-<<<<<<< HEAD
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
-=======
-using System.Linq;
-using System.Text;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 using System.Threading.Tasks;
 using wmbaApp.Models;
 
@@ -19,7 +14,6 @@ namespace wmbaApp.ViewModels
 {
     public enum AtBatOutcome
     {
-<<<<<<< HEAD
         Single,
         Double,
         Triple,
@@ -32,30 +26,10 @@ namespace wmbaApp.ViewModels
         IntentionalWalk,
         CatcherInterference,
 
-=======
-        Ball,
-        CalledStrike,
-        SwingAndMiss,
-        FoulBall,
-        FoulTipOut,
-        HitByPitch,
-        IntentionalBall,
-        IntentionalWalk,
-        CatcherInterference,
-        IllegalPitch,
-        Walk,
-        Strikeout,
-        Hit,
-        Single,
-        Double,
-        Triple,
-        HomeRun
->>>>>>> bd393857f4064c2898b737573188121837f79d06
     }
 
     public class PlayerScoreKeepingVM
     {
-<<<<<<< HEAD
         //Fields and Properties
         public int PlateAppearances { get; set; } = 0;
         public int AtBats { get; set; } = 0;
@@ -75,36 +49,12 @@ namespace wmbaApp.ViewModels
         public int FoulStrikes { get; set; } = 0; //used to subtract from pitch count when adding strikes, balls, and fouls
         public int Runs { get; set; } = 0;
         public int Outs { get; set; } = 0;
-=======
-        // Fields and Properties
-        public int AtBats = 0;
-        public int Hits = 0;
-        public int Singles = 0;
-        public int Doubles = 0;
-        public int Triples = 0;
-        public int HomeRuns = 0;
-        public int RBI = 0;
-        public int PlateAppearances = 0;
-        public int Walks = 0;
-        public int HitByPitches = 0;
-        public int Sacrifices = 0;
-        public int CatcherInterference = 0;
-        public int Balls = 0;
-        public int Strikes = 0;
-        public int Fouls = 0;
-        public int Runs = 0;
-        public int Outs = 0;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
         public bool FirstBase { get; set; }
         public bool SecondBase { get; set; }
         public bool ThirdBase { get; set; }
         public bool BasesLoaded => FirstBase && SecondBase && ThirdBase;
         public string Name { get; set; }
-<<<<<<< HEAD
         public int ID { get; set; }
-=======
-        public int ID {  get; set; }
->>>>>>> bd393857f4064c2898b737573188121837f79d06
         public List<AtBatOutcome> AtBatActions { get; set; } = new List<AtBatOutcome>();
 
 
@@ -129,15 +79,9 @@ namespace wmbaApp.ViewModels
             this.Singles = singles;
             this.Doubles = doubles;
             this.Triples = triples;
-<<<<<<< HEAD
             this.HR = homeRuns;
             this.PlateAppearances = plateAppearances;
             this.BB = walks;
-=======
-            this.HomeRuns = homeRuns;
-            this.PlateAppearances = plateAppearances;
-            this.Walks = walks;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             this.HitByPitches = hitsByPitches;
             this.Sacrifices = sacrifices;
             this.CatcherInterference = catcherInterference;
@@ -150,35 +94,23 @@ namespace wmbaApp.ViewModels
 
         // Does the total AtBats
         public int PAtBats
-<<<<<<< HEAD
             => PlateAppearances - BB - HitByPitches - Sacrifices - CatcherInterference;
 
         //Calculates pitch count
         public int PitchCount
             => Strikes + BB + Fouls - FoulStrikes;
-=======
-            => PlateAppearances - Walks - HitByPitches - Sacrifices - CatcherInterference;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 
         // Calculates OPS
         public double CalculateOBP()
         {
-<<<<<<< HEAD
             double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HR * 4) / AtBats;
-=======
-            double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HomeRuns * 4) / AtBats;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             return Math.Round(OPS, 3);
         }
 
         // Calculates OBP
         public double CalculateSLG()
         {
-<<<<<<< HEAD
             double OBP = (double)(Hits + BB + HitByPitches) / (AtBats + BB + HitByPitches + Sacrifices);
-=======
-            double OBP = (double)(Hits + Walks + HitByPitches) / (AtBats + Walks + HitByPitches + Sacrifices);
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             return Math.Round(OBP, 3);
         }
 
@@ -235,11 +167,7 @@ namespace wmbaApp.ViewModels
                 SecondBase = false;
                 ThirdBase = false;
                 Runs++;
-<<<<<<< HEAD
                 HR++;
-=======
-                HomeRuns++;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             }
         }
 
@@ -282,11 +210,7 @@ namespace wmbaApp.ViewModels
         private void RecordIntentionalBall()
             => RecordBall();
         private void RecordWalk()
-<<<<<<< HEAD
             => BB++;
-=======
-            => Walks++;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
         private void RecordCatcherInterference()
             => CatcherInterference++;
         private void RecordSwingAndMiss()
@@ -305,7 +229,6 @@ namespace wmbaApp.ViewModels
             if (Balls >= 4)
             {
                 Balls = 0;
-<<<<<<< HEAD
                 return AtBatOutcome.Ball;
             }
             else if (Strikes >= 3)
@@ -314,16 +237,6 @@ namespace wmbaApp.ViewModels
             {
                 ///////Still need to add Logic for fouls
                 return AtBatOutcome.Single;
-=======
-                return AtBatOutcome.Walk;
-            }
-            else if (Strikes >= 3)
-                return AtBatOutcome.Strikeout;
-            else
-            {
-                ///////Still need to add Logic for fouls
-                return AtBatOutcome.Hit;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             }
         }
 
@@ -348,46 +261,24 @@ namespace wmbaApp.ViewModels
                     case AtBatOutcome.Ball:
                         RecordBall();
                         break;
-<<<<<<< HEAD
                     case AtBatOutcome.Strike:
-=======
-                    case AtBatOutcome.CalledStrike:
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                         RecordStrike();
                         break;
                     case AtBatOutcome.FoulBall:
                         RecordFoul();
                         break;
-<<<<<<< HEAD
-=======
-                    case AtBatOutcome.SwingAndMiss:
-                        RecordSwingAndMiss();
-                        break;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                     case AtBatOutcome.FoulTipOut:
                         RecordFoulTipOut();
                         break;
                     case AtBatOutcome.HitByPitch:
                         RecordHitByPitch();
                         break;
-<<<<<<< HEAD
-=======
-                    case AtBatOutcome.IntentionalBall:
-                        RecordIntentionalBall();
-                        break;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                     case AtBatOutcome.IntentionalWalk:
                         RecordIntentionalWalk();
                         break;
                     case AtBatOutcome.CatcherInterference:
                         RecordCatcherInterference();
                         break;
-<<<<<<< HEAD
-=======
-                    case AtBatOutcome.IllegalPitch:
-                        RecordIllegalPitch();
-                        break;
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                 }
             }
         }

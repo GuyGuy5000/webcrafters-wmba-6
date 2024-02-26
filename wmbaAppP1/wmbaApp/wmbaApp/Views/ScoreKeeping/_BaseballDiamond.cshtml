@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 ﻿@model wmbaApp.ViewModels.InningScoreKeepingVM
-=======
-﻿@* @model IEnumerable<wmbaApp.ViewModels.PlayerScoreKeepingVM> *@
-@model wmbaApp.ViewModels.InningScoreKeepingVM
->>>>>>> bd393857f4064c2898b737573188121837f79d06
 
 
 <!--Stores the current inning's data-->
@@ -61,21 +56,14 @@
             bool handleSecondBase = (bool)TempData.Peek("HandleSecondBase");
             bool handleFirstBase = (bool)TempData.Peek("HandleFirstBase");
 
-<<<<<<< HEAD
             //if a player is on base and is flagged to be handled
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             if (Model.PlayerOnThird != null && handleThirdBase)
             {
                 <div class="player-on-base-prompt third-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnThird.Name advance to home base?</p>
                     <button name="playerOnBase" id="thirdBaseSafe" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
                     @{
-<<<<<<< HEAD
                         if (!Model.Batter.ThirdBase) //force play actions disabled if batter hits a triple
-=======
-                        if (!Model.Batter.ThirdBase)
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                         {
                             <button name="playerOnBase" id="thirdBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
                         }
@@ -165,29 +153,21 @@
         <!--Player on base prompts-->
         <!--Batter actions prompt-->
         @{
-<<<<<<< HEAD
             //after all bases were handled, the next batter action happens
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
             {
                 <div class="batter-action-button-container">
                     <button id="btnBatterAction" type="button" class="batter-action-button" onclick="ShowBatterAction()">PITCH</button>
                 </div>
                 <div id="batterActionPrompt" class="batter-prompt">
-<<<<<<< HEAD
                     @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600;" })
                     <button id="batterActionSubmit" type="button" class="btn-batter-action-submit">Confirm play</button>
-=======
-                    @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15" })
->>>>>>> bd393857f4064c2898b737573188121837f79d06
                 </div>
             }
         }
         <!--Batter actions prompt-->
     </div>
 </section>
-<<<<<<< HEAD
 <section>
     <div class="inning-tracker-container">
         <!--Play by play-->
@@ -278,10 +258,6 @@
 
 <style>
     /*Baseball diamond and players*/
-=======
-
-<style>
->>>>>>> bd393857f4064c2898b737573188121837f79d06
     .diamond-container {
         background-image: url(../../Image/baseball-diamond.png);
         background-position: center;
@@ -394,7 +370,6 @@
             font-weight: 800;
         }
 
-<<<<<<< HEAD
     .btn-batter-action-submit {
         font-weight: 600;
         height: 35px;
@@ -402,8 +377,6 @@
         width: 100px;
     }
 
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
     .first-base {
         left: 463px;
         top: 330px;
@@ -481,7 +454,6 @@
         top: -175px;
     }
 
-<<<<<<< HEAD
     /*Inning tracker CSS*/
     .inning-tracker-container {
         display: grid;
@@ -546,8 +518,6 @@
 
 
 
-=======
->>>>>>> bd393857f4064c2898b737573188121837f79d06
     /* Tablet */
     @@media only screen and (min-width: 427px) and (max-width: 768px) {
         .diamond-container {
@@ -702,10 +672,6 @@
                 }
 
         .batter-prompt {
-<<<<<<< HEAD
-=======
-
->>>>>>> bd393857f4064c2898b737573188121837f79d06
             left: 32px;
             top: -360px;
         }
