@@ -1,11 +1,12 @@
 ﻿@using wmbaApp.Utilities;
+@using wmbaApp.ViewModels;
 @model IEnumerable<wmbaApp.Models.Game>
 <partial name="_ViewHeading" />
 
 
 
 <form asp-action="Index" method="get">
-   
+
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
     <br />
@@ -39,17 +40,17 @@
         <thead>
             <tr>
 
-                
+
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
                         Teams
-                     </h6>
+                    </h6>
                 </th>
 
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="d-flex align-items-center">
                         <input type="submit" name="actionButton" value=" Time" class="non-button-input" data-bs-toggle="tooltip" title="Sort Start Time" />
-                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" style="padding-left: 5px";></i>
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" style="padding-left: 5px" ;></i>
                     </div>
                 </th>
 
@@ -110,9 +111,23 @@
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Details @ViewData["ControllerFriendlyName"]">
                             DETAILS
                         </a>
-                      @*   <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                            DELETE
-                        </a> *@
+                        @*   <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                    DELETE
+                    </a> *@
+                        @{
+                            List<GameMatchup> matchups = (List<GameMatchup>)ViewData["Matchups"];
+                            string homeTeamName = matchups.FirstOrDefault(m => m.game.ID == item.ID).teamOne.TmName;
+                            string awayTeamName = matchups.FirstOrDefault(m => m.game.ID == item.ID).teamTwo.TmName;
+                            GameScoreKeepingVM scoreKeeping = new()
+                            {
+                                GameID = item.ID,
+                                HomeTeamName = homeTeamName,
+                                AwayTeamName = awayTeamName,
+                                HomeTeamScore = 0,
+                                AwayTeamScore = 0
+                            };
+                        }
+                        @Html.ActionLink("START GAME", "Index","ScoreKeeping", scoreKeeping, htmlAttributes: new { @class = "btn btn-sm btn-outline-primary" })
                     </td>
                 </tr>
             }
