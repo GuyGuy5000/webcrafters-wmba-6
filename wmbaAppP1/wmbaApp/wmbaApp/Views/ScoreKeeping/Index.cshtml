@@ -25,10 +25,13 @@
             $('#batterActionPrompt').show();
         }
 
+<<<<<<< HEAD
         function HideBatterAction() {
             $('#batterActionPrompt').hide();
         }
 
+=======
+>>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
         //reassigns click events. Use when posting back and refreshing the partial view, or on first time load
         function AssignClickEvents() {
             //assigns click events to the player on base buttons
@@ -38,6 +41,7 @@
                 });
             });
 
+<<<<<<< HEAD
             //assigns click events to the steal prompt buttons
             $("button[name='stealPrompt']").each(function () {
                 $(`#${this.id}`).click(function () {
@@ -46,6 +50,8 @@
                 });
             });
 
+=======
+>>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
             //assigns a click event to the batter submit button
             $("#batterActionSubmit").click(function () {
                 HandleBatterAction();
@@ -101,6 +107,11 @@
                 success: function (result) {
                     $("#gameScoreKeepningJSON").val(result); // set the div to the result of the postback
                     var updatedGame = JSON.parse(result);
+<<<<<<< HEAD
+=======
+                    console.log(game);
+                    console.log(updatedGame);
+>>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
                     if (updatedGame.currentInning > game.currentInning)
                         StartNewInning();
 
