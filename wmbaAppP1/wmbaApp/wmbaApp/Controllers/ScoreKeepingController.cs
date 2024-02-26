@@ -4,9 +4,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using Newtonsoft.Json.Serialization;
 =======
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+=======
+using Newtonsoft.Json.Serialization;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
 using OfficeOpenXml.Drawing.Chart;
 using System;
 using System.Linq;
@@ -44,6 +50,7 @@ namespace wmbaApp.Controllers
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
             TempData["HandleFirstBase"] = false;
@@ -55,6 +62,8 @@ namespace wmbaApp.Controllers
 =======
             scoreKeeping.Innings[0].Players[3].FirstBase = true;
 =======
+=======
+>>>>>>> 3b13cb3 (fixed merged solution issue)
             scoreKeeping.Innings[0].Players[1].FirstBase = true;
 >>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
             scoreKeeping.Innings[0].Players[2].SecondBase = true;
@@ -68,12 +77,26 @@ namespace wmbaApp.Controllers
             //TempData["HandleFirstBase"] = false;
             //TempData["HandleSecondBase"] = false;
             //TempData["HandleThirdBase"] = false;
+=======
+            //scoreKeeping.Innings[0].Players[1].FirstBase = true;
+            //scoreKeeping.Innings[0].Players[2].SecondBase = true;
+            //scoreKeeping.Innings[0].Players[3].ThirdBase = true;
+
+            //TempData["HandleFirstBase"] = true;
+            //TempData["HandleSecondBase"] = true;
+            //TempData["HandleThirdBase"] = true;
+
+            TempData["HandleFirstBase"] = false;
+            TempData["HandleSecondBase"] = false;
+            TempData["HandleThirdBase"] = false;
+>>>>>>> 29e156e (fixed merged solution issue)
 
             PopulateDropDownLists();
 
             return View(scoreKeeping);
         }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         //Returs a fresh baseball diamond with a new inning and pushes updates to the database
         public async Task<IActionResult> StartNewInning(string gameScoreKeepingJSON)
@@ -100,6 +123,8 @@ namespace wmbaApp.Controllers
                     player.AwardRun();
                     player.ThirdBase = false;
 =======
+=======
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         [HttpPost]
         public async Task<IActionResult> StartInning(string gameScoreKeepningJSON)
         {
@@ -108,11 +133,27 @@ namespace wmbaApp.Controllers
 
             return PartialView("_BaseballDiamond", inning);
         }
+=======
+        //Returs a fresh baseball diamond with a new inning and pushes updates to the database
+        public async Task<IActionResult> StartNewInning(string gameScoreKeepingJSON)
+        {
+            GameScoreKeepingVM gameScoreKeepingVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameScoreKeepingJSON);
+            InningScoreKeepingVM inning = gameScoreKeepingVM.Innings[gameScoreKeepingVM.CurrentInning];
+
+            PopulateDropDownLists();
+
+            return PartialView("_BaseballDiamond", inning);
+        }
+
+>>>>>>> 29e156e (fixed merged solution issue)
         public async Task<IActionResult> HandlePlayerOnBase(string inningScoreKeepningJSON, string senderID, string senderAction)
         {
             InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 29e156e (fixed merged solution issue)
             if (senderID.Contains("thirdBase")) //if third base triggered the event
             {
                 PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnThird.ID); //get player on third base
@@ -513,10 +554,24 @@ namespace wmbaApp.Controllers
             }
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 
+<<<<<<< HEAD
+=======
+            bool handleThirdBase = (bool)TempData.Peek("HandleThirdBase");
+            bool handleSecondBase = (bool)TempData.Peek("HandleSecondBase");
+            bool handleFirstBase = (bool)TempData.Peek("HandleFirstBase");
+
+            if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
+                inning.CurrentBatter++;
+
+            if (inning.CurrentBatter > inning.Players.Count())
+                inning.CurrentBatter = 0;
+
+>>>>>>> 29e156e (fixed merged solution issue)
             PopulateDropDownLists();
             return PartialView("_BaseballDiamond", inning);
         }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         public IActionResult HandleSteal(string inningScoreKeepningJSON, string stolenBase)
         {
@@ -560,6 +615,8 @@ namespace wmbaApp.Controllers
         }
 
 =======
+=======
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         public async Task<IActionResult> InputPlayerAction(string inningScoreKeepningJSON, int outcomeID)
         {
             InningScoreKeepingVM inningScoreKeepingVM = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
@@ -654,6 +711,279 @@ namespace wmbaApp.Controllers
             return PartialView("_BaseballDiamond", playerScoreKeeping);
         }
 
+=======
+        public async Task<IActionResult> HandleBatterAction(string inningScoreKeepningJSON, int actionID)
+        {
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
+            PlayerScoreKeepingVM currentBatter = inning.Players[inning.CurrentBatter];
+            PlayerScoreKeepingVM playerOnFirst = inning.PlayerOnFirst;
+            PlayerScoreKeepingVM playerOnSecond = inning.PlayerOnSecond;
+            PlayerScoreKeepingVM playerOnThird = inning.PlayerOnThird;
+
+
+            //if any players were already on base flag them as needing to be handled
+            if (playerOnFirst != null)
+                TempData["HandleFirstBase"] = false;
+            if (playerOnSecond != null)
+                TempData["HandleSecondBase"] = false;
+            if (playerOnThird != null)
+                TempData["HandleThirdBase"] = false;
+
+            AtBatOutcome action = (AtBatOutcome)actionID;
+
+            //based on the action, update the player's stats and base position accordingly
+            switch (action)
+            {
+                case AtBatOutcome.Single:
+                    currentBatter.FirstBase = true;
+                    currentBatter.Singles++;
+                    currentBatter.Hits++;
+                    currentBatter.AtBats++;
+                    if (playerOnFirst != null)
+                        TempData["HandleFirstBase"] = true;
+                    if (playerOnSecond != null)
+                        TempData["HandleSecondBase"] = true;
+                    if (playerOnThird != null)
+                        TempData["HandleThirdBase"] = true;
+                    break;
+                case AtBatOutcome.Double:
+                    currentBatter.SecondBase = true;
+                    currentBatter.Doubles++;
+                    currentBatter.Hits++;
+                    currentBatter.AtBats++;
+                    if (playerOnFirst != null)
+                        TempData["HandleFirstBase"] = true;
+                    if (playerOnSecond != null)
+                        TempData["HandleSecondBase"] = true;
+                    if (playerOnThird != null)
+                        TempData["HandleThirdBase"] = true;
+                    break;
+                case AtBatOutcome.Triple:
+                    currentBatter.ThirdBase = true;
+                    currentBatter.Triples++;
+                    currentBatter.Hits++;
+                    currentBatter.AtBats++;
+                    if (playerOnFirst != null)
+                        TempData["HandleFirstBase"] = true;
+                    if (playerOnSecond != null)
+                        TempData["HandleSecondBase"] = true;
+                    if (playerOnThird != null)
+                        TempData["HandleThirdBase"] = true;
+                    break;
+                case AtBatOutcome.HomeRun:
+                    currentBatter.Runs++;
+                    currentBatter.HR++;
+                    currentBatter.Hits++;
+                    currentBatter.AtBats++;
+                    //if any runners are on base, add a run and remove them
+                    if (playerOnFirst != null)
+                    {
+                        TempData["HandleFirstBase"] = false;
+                        playerOnFirst.Runs++;
+                        playerOnFirst.FirstBase = false;
+                        currentBatter.RBI++;
+                    }
+                    if (playerOnSecond != null)
+                    {
+                        TempData["HandleSecondBase"] = false;
+                        playerOnSecond.Runs++;
+                        playerOnSecond.SecondBase = false;
+                        currentBatter.RBI++;
+
+                    }
+                    if (playerOnThird != null)
+                    {
+                        TempData["HandleThirdBase"] = false;
+                        playerOnThird.Runs++;
+                        playerOnThird.ThirdBase = false;
+                        currentBatter.RBI++;
+                    }
+                    break;
+                case AtBatOutcome.Ball:
+                    currentBatter.Balls++;
+                    break;
+                case AtBatOutcome.Strike:
+                    currentBatter.Strikes++;
+                    break;
+                case AtBatOutcome.FoulBall:
+                    if (currentBatter.Strikes < 2) //in the case of less that two strikes, the foul must be counted as a special foul
+                    {
+                        currentBatter.Strikes++;
+                        currentBatter.Fouls++;
+                        currentBatter.FoulStrikes++; //special foul
+                        currentBatter.Hits++;
+                    }
+                    else
+                    {
+                        currentBatter.Fouls++;
+                        currentBatter.Hits++;
+                    }
+                    break;
+                case AtBatOutcome.FoulTipOut:
+                    if (currentBatter.Strikes < 2)
+                    {
+                        currentBatter.Strikes++;
+                        currentBatter.Fouls++;
+                        currentBatter.FoulStrikes++;
+                        currentBatter.Hits++;
+                    }
+                    else
+                    {
+                        currentBatter.Fouls++;
+                        currentBatter.Hits++;
+                    }
+                    break;
+                case AtBatOutcome.HitByPitch:
+                    //advance any runners ahead of the batter
+                    if (playerOnFirst != null)
+                    {
+                        playerOnFirst.SecondBase = true;
+                        playerOnFirst.FirstBase = false;
+
+                        if (playerOnSecond != null)
+                        {
+                            playerOnSecond.ThirdBase = true;
+                            playerOnSecond.SecondBase = false;
+
+                            if (playerOnThird != null)
+                            {
+                                playerOnThird.ThirdBase = false;
+                                playerOnThird.Runs++;
+                                currentBatter.RBI++;
+                            }
+                        }
+                    }
+                    currentBatter.FirstBase = true;
+                    currentBatter.AtBats++;
+                    inning.CurrentBatter++;
+                    break;
+                case AtBatOutcome.IntentionalWalk:
+                    //advance any runners ahead of the batter
+                    if (playerOnFirst != null)
+                    {
+                        playerOnFirst.SecondBase = true;
+                        playerOnFirst.FirstBase = false;
+
+                        if (playerOnSecond != null)
+                        {
+                            playerOnSecond.ThirdBase = true;
+                            playerOnSecond.SecondBase = false;
+
+                            if (playerOnThird != null)
+                            {
+                                playerOnThird.ThirdBase = false;
+                                playerOnThird.Runs++;
+                                currentBatter.RBI++;
+                            }
+                        }
+                    }
+                    currentBatter.FirstBase = true;
+                    currentBatter.AtBats++;
+                    inning.CurrentBatter++;
+                    break;
+                case AtBatOutcome.CatcherInterference:
+                    //advance any runners ahead of the batter
+                    if (playerOnFirst != null)
+                    {
+                        playerOnFirst.SecondBase = true;
+                        playerOnFirst.FirstBase = false;
+
+                        if (playerOnSecond != null)
+                        {
+                            playerOnSecond.ThirdBase = true;
+                            playerOnSecond.SecondBase = false;
+
+                            if (playerOnThird != null)
+                            {
+                                playerOnThird.ThirdBase = false;
+                                playerOnThird.Runs++;
+                                currentBatter.RBI++;
+                            }
+                        }
+                    }
+                    currentBatter.FirstBase = true;
+                    currentBatter.AtBats++;
+                    inning.CurrentBatter++;
+                    break;
+            }
+
+            //three strikes
+            if (currentBatter.Strikes >= 3)
+            {
+                currentBatter.Outs++;
+                inning.CurrentBatter++;
+            }
+            //four balls
+            if (currentBatter.Balls == 4)
+            {
+                //advance any runners ahead of the batter
+                if (playerOnFirst != null)
+                {
+                    playerOnFirst.SecondBase = true;
+                    playerOnFirst.FirstBase = false;
+
+                    if (playerOnSecond != null)
+                    {
+                        playerOnSecond.ThirdBase = true;
+                        playerOnSecond.SecondBase = false;
+
+                        if (playerOnThird != null)
+                        {
+                            playerOnThird.ThirdBase = false;
+                            playerOnThird.Runs++;
+                            currentBatter.RBI++;
+                        }
+                    }
+                }
+                currentBatter.FirstBase = true;
+                currentBatter.AtBats++;
+                inning.CurrentBatter++;
+            }
+
+            if ((bool)TempData.Peek("HandleFirstBase") == false && (bool)TempData.Peek("HandleSecondBase") == false && (bool)TempData.Peek("HandleThirdBase") == false) //if all runners were handled
+                if (actionID <= 3 || actionID == 11) //Any action that is an at bat or causes the batter to advance (based on the enum)
+                    inning.CurrentBatter++;
+
+            if (inning.CurrentBatter > inning.Players.Count())
+                inning.CurrentBatter = 0;
+
+            PopulateDropDownLists();
+
+            return PartialView("_BaseballDiamond", inning);
+        }
+
+        public IActionResult UpdateScorePartial(string gameJSON)
+        {
+            GameScoreKeepingVM game = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
+
+            if (game.Innings[game.CurrentInning].TotalOutsThisInning >= 3)
+                game.CurrentInning++;
+            if (game.CurrentInning >= 10)
+                return RedirectToAction("Index", "Games");
+
+            game.HomeTeamScore = Convert.ToInt32(game.Score);
+            return PartialView("_ScoreBar", game);
+        }
+
+        public IActionResult UpdateInningsTablePartial(string gameJSON)
+        {
+            GameScoreKeepingVM game = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
+            return PartialView("_InningsTable", game);
+        }
+
+        public string UpdateGameScoreKeeping(string gameJSON, string currentInningJSON)
+        {
+            GameScoreKeepingVM game = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(currentInningJSON);
+
+            game.Innings[game.CurrentInning] = inning;
+
+            if (inning.TotalOutsThisInning >= 3)
+                game.CurrentInning++;
+
+            return JsonConvert.SerializeObject(game, settings: new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+        }
+>>>>>>> 29e156e (fixed merged solution issue)
 
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
         #region SelectLists

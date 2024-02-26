@@ -6,13 +6,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+<<<<<<< HEAD
 using OfficeOpenXml.Style;
 using OfficeOpenXml;
+=======
+<<<<<<< HEAD
+=======
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
 using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
+<<<<<<< HEAD
 using wmbaApp.ViewModels;
+=======
+>>>>>>> 29e156e (fixed merged solution issue)
 
 namespace wmbaApp.Controllers
 {
@@ -25,8 +36,16 @@ namespace wmbaApp.Controllers
             _context = context;
         }
 
+<<<<<<< HEAD
 
 
+=======
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         // GET: Games
         public async Task<IActionResult> Index(string SearchString, int? ID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
@@ -343,6 +362,11 @@ namespace wmbaApp.Controllers
             }
         }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 3b13cb3 (fixed merged solution issue)
 
         //// GET: Players/Inactive/5
         //public async Task<IActionResult> MakeInactive(int? id)
@@ -533,6 +557,10 @@ namespace wmbaApp.Controllers
         //}
 
 
+<<<<<<< HEAD
+=======
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         private void CreateGameTeams(Game game, int? HomeTeamID, int? AwayTeamID)
         {
             int gameID = game.ID;

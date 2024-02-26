@@ -7,13 +7,20 @@ namespace wmbaApp.ViewModels
         public List<PlayerScoreKeepingVM> Players { get; set; }
         public int CurrentBatter { get; set; } = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         public bool CurrentlyBatting { get; set; } = true;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+        public bool CurrentlyBatting { get; set; } = true;
+=======
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
 
         public int TotalRunsThisInning
             => Players.Sum(p => p.Runs);
         public int TotalOutsThisInning
+<<<<<<< HEAD
 <<<<<<< HEAD
         {
             get
@@ -38,12 +45,41 @@ namespace wmbaApp.ViewModels
             }
         }
 =======
+=======
+>>>>>>> 3b13cb3 (fixed merged solution issue)
             => Players.Sum(p => p.Outs);
 
         //gets the players on each base including home base
         public PlayerScoreKeepingVM Batter
             => Players[CurrentBatter];
+<<<<<<< HEAD
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+=======
+        {
+            get
+            {
+                return Players.Sum(p => p.Outs);
+            }
+            set
+            {
+            }
+        }
+
+        //gets the players on each base including home base
+        public PlayerScoreKeepingVM Batter
+        {
+            get
+            {
+                if (CurrentBatter >= Players.Count)
+                {
+                    CurrentBatter = 0;
+                }
+                return Players[CurrentBatter];
+            }
+        }
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         public PlayerScoreKeepingVM PlayerOnFirst
             => Players.FirstOrDefault(p => p.FirstBase && p != this.Batter);
         public PlayerScoreKeepingVM PlayerOnSecond

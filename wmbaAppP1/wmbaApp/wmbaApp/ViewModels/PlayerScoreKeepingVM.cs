@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,16 @@ using System.Text.Json.Serialization;
 using System.Linq;
 using System.Text;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+using System.Linq;
+using System.Text;
+=======
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Text.Json.Serialization;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
 using System.Threading.Tasks;
 using wmbaApp.Models;
 
@@ -19,6 +30,7 @@ namespace wmbaApp.ViewModels
 {
     public enum AtBatOutcome
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
         Single,
         Double,
@@ -33,6 +45,8 @@ namespace wmbaApp.ViewModels
         CatcherInterference,
 
 =======
+=======
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         Ball,
         CalledStrike,
         SwingAndMiss,
@@ -50,11 +64,29 @@ namespace wmbaApp.ViewModels
         Double,
         Triple,
         HomeRun
+<<<<<<< HEAD
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+=======
+        Single,
+        Double,
+        Triple,
+        HomeRun,
+        Ball,
+        Strike,
+        FoulBall,
+        FoulTipOut,
+        HitByPitch,
+        IntentionalWalk,
+        CatcherInterference,
+
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
     }
 
     public class PlayerScoreKeepingVM
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
         //Fields and Properties
         public int PlateAppearances { get; set; } = 0;
@@ -76,6 +108,8 @@ namespace wmbaApp.ViewModels
         public int Runs { get; set; } = 0;
         public int Outs { get; set; } = 0;
 =======
+=======
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         // Fields and Properties
         public int AtBats = 0;
         public int Hits = 0;
@@ -94,17 +128,48 @@ namespace wmbaApp.ViewModels
         public int Fouls = 0;
         public int Runs = 0;
         public int Outs = 0;
+<<<<<<< HEAD
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+=======
+        //Fields and Properties
+        public int PlateAppearances { get; set; } = 0;
+        public int AtBats { get; set; } = 0;
+        public int Hits { get; set; } = 0;
+        public int Singles { get; set; } = 0;
+        public int Doubles { get; set; } = 0;
+        public int Triples { get; set; } = 0;
+        public int HR { get; set; } = 0;
+        public int RBI { get; set; } = 0;
+        public int BB { get; set; } = 0;
+        public int HitByPitches { get; set; } = 0;
+        public int Sacrifices { get; set; } = 0;
+        public int CatcherInterference { get; set; } = 0;
+        public int Balls { get; set; } = 0;
+        public int Strikes { get; set; } = 0;
+        public int Fouls { get; set; } = 0;
+        public int FoulStrikes { get; set; } = 0; //used to subtract from pitch count when adding strikes, balls, and fouls
+        public int Runs { get; set; } = 0;
+        public int Outs { get; set; } = 0;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         public bool FirstBase { get; set; }
         public bool SecondBase { get; set; }
         public bool ThirdBase { get; set; }
         public bool BasesLoaded => FirstBase && SecondBase && ThirdBase;
         public string Name { get; set; }
 <<<<<<< HEAD
+<<<<<<< HEAD
         public int ID { get; set; }
 =======
         public int ID {  get; set; }
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+        public int ID {  get; set; }
+=======
+        public int ID { get; set; }
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         public List<AtBatOutcome> AtBatActions { get; set; } = new List<AtBatOutcome>();
 
 
@@ -130,6 +195,7 @@ namespace wmbaApp.ViewModels
             this.Doubles = doubles;
             this.Triples = triples;
 <<<<<<< HEAD
+<<<<<<< HEAD
             this.HR = homeRuns;
             this.PlateAppearances = plateAppearances;
             this.BB = walks;
@@ -138,6 +204,16 @@ namespace wmbaApp.ViewModels
             this.PlateAppearances = plateAppearances;
             this.Walks = walks;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+            this.HomeRuns = homeRuns;
+            this.PlateAppearances = plateAppearances;
+            this.Walks = walks;
+=======
+            this.HR = homeRuns;
+            this.PlateAppearances = plateAppearances;
+            this.BB = walks;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
             this.HitByPitches = hitsByPitches;
             this.Sacrifices = sacrifices;
             this.CatcherInterference = catcherInterference;
@@ -151,6 +227,7 @@ namespace wmbaApp.ViewModels
         // Does the total AtBats
         public int PAtBats
 <<<<<<< HEAD
+<<<<<<< HEAD
             => PlateAppearances - BB - HitByPitches - Sacrifices - CatcherInterference;
 
         //Calculates pitch count
@@ -159,15 +236,32 @@ namespace wmbaApp.ViewModels
 =======
             => PlateAppearances - Walks - HitByPitches - Sacrifices - CatcherInterference;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+            => PlateAppearances - Walks - HitByPitches - Sacrifices - CatcherInterference;
+=======
+            => PlateAppearances - BB - HitByPitches - Sacrifices - CatcherInterference;
+
+        //Calculates pitch count
+        public int PitchCount
+            => Strikes + BB + Fouls - FoulStrikes;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
 
         // Calculates OPS
         public double CalculateOBP()
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
             double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HR * 4) / AtBats;
 =======
             double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HomeRuns * 4) / AtBats;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+            double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HomeRuns * 4) / AtBats;
+=======
+            double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HR * 4) / AtBats;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
             return Math.Round(OPS, 3);
         }
 
@@ -175,10 +269,17 @@ namespace wmbaApp.ViewModels
         public double CalculateSLG()
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
             double OBP = (double)(Hits + BB + HitByPitches) / (AtBats + BB + HitByPitches + Sacrifices);
 =======
             double OBP = (double)(Hits + Walks + HitByPitches) / (AtBats + Walks + HitByPitches + Sacrifices);
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+            double OBP = (double)(Hits + Walks + HitByPitches) / (AtBats + Walks + HitByPitches + Sacrifices);
+=======
+            double OBP = (double)(Hits + BB + HitByPitches) / (AtBats + BB + HitByPitches + Sacrifices);
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
             return Math.Round(OBP, 3);
         }
 
@@ -236,10 +337,17 @@ namespace wmbaApp.ViewModels
                 ThirdBase = false;
                 Runs++;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 HR++;
 =======
                 HomeRuns++;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+                HomeRuns++;
+=======
+                HR++;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
             }
         }
 
@@ -283,10 +391,17 @@ namespace wmbaApp.ViewModels
             => RecordBall();
         private void RecordWalk()
 <<<<<<< HEAD
+<<<<<<< HEAD
             => BB++;
 =======
             => Walks++;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+            => Walks++;
+=======
+            => BB++;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         private void RecordCatcherInterference()
             => CatcherInterference++;
         private void RecordSwingAndMiss()
@@ -306,6 +421,7 @@ namespace wmbaApp.ViewModels
             {
                 Balls = 0;
 <<<<<<< HEAD
+<<<<<<< HEAD
                 return AtBatOutcome.Ball;
             }
             else if (Strikes >= 3)
@@ -315,6 +431,8 @@ namespace wmbaApp.ViewModels
                 ///////Still need to add Logic for fouls
                 return AtBatOutcome.Single;
 =======
+=======
+>>>>>>> 3b13cb3 (fixed merged solution issue)
                 return AtBatOutcome.Walk;
             }
             else if (Strikes >= 3)
@@ -323,7 +441,20 @@ namespace wmbaApp.ViewModels
             {
                 ///////Still need to add Logic for fouls
                 return AtBatOutcome.Hit;
+<<<<<<< HEAD
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+=======
+                return AtBatOutcome.Ball;
+            }
+            else if (Strikes >= 3)
+                return AtBatOutcome.FoulTipOut;
+            else
+            {
+                ///////Still need to add Logic for fouls
+                return AtBatOutcome.Single;
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
             }
         }
 
@@ -349,21 +480,36 @@ namespace wmbaApp.ViewModels
                         RecordBall();
                         break;
 <<<<<<< HEAD
+<<<<<<< HEAD
                     case AtBatOutcome.Strike:
 =======
                     case AtBatOutcome.CalledStrike:
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+                    case AtBatOutcome.CalledStrike:
+=======
+                    case AtBatOutcome.Strike:
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
                         RecordStrike();
                         break;
                     case AtBatOutcome.FoulBall:
                         RecordFoul();
                         break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     case AtBatOutcome.SwingAndMiss:
                         RecordSwingAndMiss();
                         break;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+                    case AtBatOutcome.SwingAndMiss:
+                        RecordSwingAndMiss();
+                        break;
+=======
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
                     case AtBatOutcome.FoulTipOut:
                         RecordFoulTipOut();
                         break;
@@ -371,11 +517,19 @@ namespace wmbaApp.ViewModels
                         RecordHitByPitch();
                         break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     case AtBatOutcome.IntentionalBall:
                         RecordIntentionalBall();
                         break;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+                    case AtBatOutcome.IntentionalBall:
+                        RecordIntentionalBall();
+                        break;
+=======
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
                     case AtBatOutcome.IntentionalWalk:
                         RecordIntentionalWalk();
                         break;
@@ -383,11 +537,19 @@ namespace wmbaApp.ViewModels
                         RecordCatcherInterference();
                         break;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     case AtBatOutcome.IllegalPitch:
                         RecordIllegalPitch();
                         break;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+                    case AtBatOutcome.IllegalPitch:
+                        RecordIllegalPitch();
+                        break;
+=======
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
                 }
             }
         }

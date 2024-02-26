@@ -34,7 +34,11 @@ namespace wmbaApp.Utilities
 
         public string Score
         {
+<<<<<<< HEAD
             get => $"{teamOneScore ?? 0} - {teamTwoScore ?? 0}";
+=======
+            get => $"{teamOne.TmName}: {teamOneScore} - {teamTwo.TmName}: {teamTwoScore}";
+>>>>>>> 29e156e (fixed merged solution issue)
         }
 
         public GameMatchup(WmbaContext context, GameTeam gameTeam)

@@ -7,10 +7,17 @@
     public class GameScoreKeepingVM
     {
 <<<<<<< HEAD
+<<<<<<< HEAD
         public int GameID { get; set; }
 =======
         public int GameID {  get; set; }
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+        public int GameID {  get; set; }
+=======
+        public int GameID { get; set; }
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
         public string HomeTeamName { get; set; }
         public string AwayTeamName { get; set; }
         public int HomeTeamScore { get; set; } = 0;

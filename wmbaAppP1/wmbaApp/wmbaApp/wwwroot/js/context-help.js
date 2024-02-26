@@ -22,7 +22,11 @@ function GenerateContextHelp(explanations) {
     let pageNum = document.getElementById("pageNum");
     let helpContent = document.querySelector('.help-content');
     let explanationIndex = 0;
+<<<<<<< HEAD
     //firstTimeHelp();
+=======
+    firstTimeHelp();
+>>>>>>> 29e156e (fixed merged solution issue)
 
 
     helpIcon.addEventListener('keydown', (event) => {

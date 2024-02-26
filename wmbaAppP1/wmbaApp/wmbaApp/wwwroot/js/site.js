@@ -3,7 +3,18 @@
 // Done By: Emmanuel James
 // Last Modified: 2024/01/23
 // Write your JavaScript code.
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+var player = new Vimeo.Player(document.getElementById('videoFrame'));
+
+player.setLoop(true);
+player.setVolume(0);
+player.play();
+=======
+
+>>>>>>> 3b13cb3 (fixed merged solution issue)
   
 
 
@@ -58,3 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+<<<<<<< HEAD
+=======
+>>>>>>> 29e156e (fixed merged solution issue)
+>>>>>>> 3b13cb3 (fixed merged solution issue)
