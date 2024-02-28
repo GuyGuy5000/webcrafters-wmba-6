@@ -39,7 +39,7 @@ namespace wmbaApp.ViewModels
         public PlayerScoreKeepingVM PlayerOnThird
             => Players.FirstOrDefault(p => p.ThirdBase && p != this.Batter);
 
-        //unloaded inning constructor for debugging
+        //constructor for JSON serialization
         public InningScoreKeepingVM()
         {
 
