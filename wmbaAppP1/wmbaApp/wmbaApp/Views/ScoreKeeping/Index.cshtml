@@ -124,10 +124,13 @@
                     $("#gameScoreKeepningJSON").val(result); // set the div to the result of the postback
                     var updatedGame = JSON.parse(result);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     console.log(game);
                     console.log(updatedGame);
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
                     if (updatedGame.currentInning > game.currentInning)
                         StartNewInning();
 

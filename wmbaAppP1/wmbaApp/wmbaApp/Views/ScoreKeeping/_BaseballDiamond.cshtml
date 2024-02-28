@@ -202,6 +202,7 @@
                 </div>
                 <div id="batterActionPrompt" class="batter-prompt">
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <p style="color: #000; margin-bottom: 0;">Choose an action for @Model.Batter.Name</p>
                     <input id="btnCloseBatterActions" type="button" class="btn-close-batter-prompt" value="X" onclick="HideBatterAction()" />
                     @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600; max-width: 180px; margin: 10px auto;" })
@@ -252,18 +253,31 @@
         }
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
         <!--Batter actions prompt-->
+=======
+                    <p style="color: #000; margin-bottom: 0;">Choose an action for @Model.Batter.Name</p>
+                    @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600; max-width: 180px; margin: 10px auto;" })
+                    <button id="batterActionSubmit" type="button" class="btn-batter-action-submit">Confirm play</button>
+                </div>
+            }
+                }
+                <!--Batter actions prompt-->
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
     </div>
 </section>
 <section>
     <div class="inning-tracker-container">
         <!--Play by play-->
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         <div id="playByPlayContainer" class="play-by-play-container">
             <h4 style="text-align: center; font-weight: 800;">Play-By-Play</h4>
             <ol class="play-by-play-list">
                 <li><div class="green-play-indicator">1B</div>Player one - Single</li>
                 <li><div class="red-play-indicator">X</div>Player Two - Double</li>
             </ol>
+<<<<<<< HEAD
         </div>
 
         <!--inning information-->
@@ -271,10 +285,17 @@
             <h4 style="text-align: center; font-weight: 800;">Current Count</h4>
 =======
         <div>
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         </div>
+
         <!--inning information-->
         <div class="inning-info-container">
+<<<<<<< HEAD
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+            <h4 style="text-align: center; font-weight: 800;">Current Count</h4>
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
             <table class="w-100">
                 <tr>
                     <th></th>
@@ -298,10 +319,14 @@
                                 outputBalls += "<div class='blank-indicator'></div>";
                             }
 <<<<<<< HEAD
+<<<<<<< HEAD
                             outputBalls += $"<p class='number-indicator'>({Model.Batter.Balls})</p>";
 =======
                             outputBalls += $"<p class='number-indicator' style='font-size: 24px;'>({Model.Batter.Balls})</p>";
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+                            outputBalls += $"<p class='number-indicator'>({Model.Batter.Balls})</p>";
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
 
                             @Html.Raw(outputBalls)
                         }
@@ -325,10 +350,14 @@
                                 outputStrikes += "<div class='blank-indicator'></div>";
                             }
 <<<<<<< HEAD
+<<<<<<< HEAD
                             outputStrikes += $"<p class='number-indicator'>({Model.Batter.Strikes})</p>";
 =======
                             outputStrikes += $"<p class='number-indicator' style='font-size: 24px;'>({Model.Batter.Strikes})</p>";
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+                            outputStrikes += $"<p class='number-indicator'>({Model.Batter.Strikes})</p>";
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
 
                             @Html.Raw(outputStrikes)
                         }
@@ -352,6 +381,7 @@
                                 outputOuts += "<div class='blank-indicator'></div>";
                             }
 <<<<<<< HEAD
+<<<<<<< HEAD
                             outputOuts += $"<p class='number-indicator'>({Model.TotalOutsThisInning})</p>";
 
                             @Html.Raw(outputOuts)
@@ -361,6 +391,11 @@
                             @Html.Raw(outputOuts)
 
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+                            outputOuts += $"<p class='number-indicator'>({Model.TotalOutsThisInning})</p>";
+
+                            @Html.Raw(outputOuts)
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
                         }
                     </td>
                 </tr>
@@ -735,10 +770,14 @@
         grid-template-columns: 1fr 1fr;
         height: 200px;
 <<<<<<< HEAD
+<<<<<<< HEAD
         margin: 15px auto;
 =======
         margin-top: 10px;
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+        margin: 15px auto;
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         width: 100%;
     }
 
@@ -751,6 +790,7 @@
             border: 5px solid #FFF;
         }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
         .inning-info-container .inning-info-header p {
             font-size: 24px;
@@ -781,6 +821,21 @@
             width: 120px;
         }
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+        .inning-info-container .inning-info-header p {
+            font-size: 24px;
+            margin-bottom: 0px;
+        }
+
+    .inning-info-header {
+        background-color: #17254c;
+        color: #FFF;
+        font-weight: 600;
+        height: 40px;
+        text-align: center;
+        width: 120px;
+    }
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
 
 
     .blank-indicator,
@@ -806,6 +861,7 @@
         background-color: #B11;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     .number-indicator {
         display: inline-block;
@@ -864,11 +920,52 @@
     @@media only screen and (min-width: 426px) and (max-width: 768px) {
 =======
     .number-indicator{
+=======
+    .number-indicator {
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         display: inline-block;
-        margin-left: 7px;
+        font-size: 24px;
+        margin: 0 0 0 4px;
     }
 
+    /*Play by play*/
+    .play-by-play-container {
+        overflow-y: scroll;
+        width: 100%;
+    }
 
+    .play-by-play-list {
+        margin: 0 auto;
+        text-align: left;
+    }
+
+    .play-by-play-list li {
+        background-color: rgba(0,0,0,0.1);
+        font-size: 16px;
+        height: 30px;
+        list-style-type: none;
+        margin: 5px 25px;
+    }
+
+    .green-play-indicator,
+    .red-play-indicator {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 800;
+        height: 30px;
+        margin-right: 10px;
+        text-align: center;
+        width: 30px;
+    }
+
+    .green-play-indicator{
+        background-color: #1B1;
+    }
+
+    .red-play-indicator {
+        background-color: #A00;
+        color: #FFF;
+    }
 
 <<<<<<< HEAD
 =======
@@ -876,8 +973,12 @@
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
     /* Tablet */
+<<<<<<< HEAD
     @@media only screen and (min-width: 427px) and (max-width: 768px) {
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+    @@media only screen and (min-width: 426px) and (max-width: 768px) {
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         .diamond-container {
             height: 362px;
             width: 396px;
@@ -1011,6 +1112,9 @@
             top: -208px;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         /*Inning tracker CSS*/
         .inning-info-container {
             margin: 0;
@@ -1030,6 +1134,7 @@
             margin: 0 0 0 4px;
         }
 
+<<<<<<< HEAD
         .play-by-play-list {
             padding-left: 0;
         }
@@ -1042,11 +1147,26 @@
 
         .green-play-indicator,
         .red-play-indicator {
+=======
+        .play-by-play-list{
+            padding-left: 0;
+        }
+
+        .play-by-play-list li{
+            font-size: 12px;
+            height: 27px;
+            margin: 5px 0;
+        }
+
+        .green-play-indicator,
+        .red-play-indicator{
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
             font-size: 16px;
             height: 27px;
             margin-right: 5px;
             width: 27px;
         }
+<<<<<<< HEAD
 
 /*         .batter-up-next-dropdown {
             font-size: 14px;
@@ -1056,6 +1176,8 @@
         } */
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
     }
 
     /* phone */
@@ -1205,6 +1327,9 @@
             top: -202px;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         /*Inning tracker CSS*/
         .inning-info-container {
             margin: 0;
@@ -1248,6 +1373,7 @@
             margin-right: 2px;
             width: 18px;
         }
+<<<<<<< HEAD
 
 /*         .batter-up-next-dropdown {
             font-size: 12px;
@@ -1257,5 +1383,7 @@
         } */
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
     }
 </style>

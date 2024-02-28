@@ -51,6 +51,7 @@ namespace wmbaApp.Controllers
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
             TempData["HandleFirstBase"] = false;
@@ -64,6 +65,8 @@ namespace wmbaApp.Controllers
 =======
 =======
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
             scoreKeeping.Innings[0].Players[1].FirstBase = true;
 >>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
             scoreKeeping.Innings[0].Players[2].SecondBase = true;
@@ -81,10 +84,9 @@ namespace wmbaApp.Controllers
             //scoreKeeping.Innings[0].Players[1].FirstBase = true;
             //scoreKeeping.Innings[0].Players[2].SecondBase = true;
             //scoreKeeping.Innings[0].Players[3].ThirdBase = true;
+=======
+>>>>>>> e96378f (started working on play by play in scorekeeping view)
 
-            //TempData["HandleFirstBase"] = true;
-            //TempData["HandleSecondBase"] = true;
-            //TempData["HandleThirdBase"] = true;
 
             TempData["HandleFirstBase"] = false;
             TempData["HandleSecondBase"] = false;
@@ -145,20 +147,28 @@ namespace wmbaApp.Controllers
             return PartialView("_BaseballDiamond", inning);
         }
 
+<<<<<<< HEAD
 >>>>>>> 29e156e (fixed merged solution issue)
+=======
+        //handles a runner advancing to the next base
+>>>>>>> e96378f (started working on play by play in scorekeeping view)
         public async Task<IActionResult> HandlePlayerOnBase(string inningScoreKeepningJSON, string senderID, string senderAction)
         {
             InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
             if (senderID.Contains("thirdBase")) //if third base triggered the event
+=======
+            if (senderID.Contains("thirdBase")) //base that triggered the event
+>>>>>>> e96378f (started working on play by play in scorekeeping view)
             {
                 PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnThird.ID); //get player on third base
-                //check what action occured
-                if (senderAction == "home")
+
+                if (senderAction == "home")//check what action occured
                 {
                     player.AwardRun();
                     player.ThirdBase = false;
@@ -181,6 +191,7 @@ namespace wmbaApp.Controllers
                 TempData["HandleThirdBase"] = false;
 
             }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
             else if (senderID.Contains("secondBase"))
@@ -498,8 +509,11 @@ namespace wmbaApp.Controllers
 =======
             else if (senderID.Contains("secondBase")) //if second base triggered the event
 >>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
+=======
+            else if (senderID.Contains("secondBase")) 
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
             {
-                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnSecond.ID); //get player on second base
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnSecond.ID); 
                 if (senderAction == "3rd")
                 {
                     player.SecondBase = false;
@@ -524,7 +538,7 @@ namespace wmbaApp.Controllers
             }
             else if (senderID.Contains("firstBase"))
             {
-                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnFirst.ID); //get player on second base
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnFirst.ID); 
                 if (senderAction == "2nd")
                 {
                     player.FirstBase = false;
@@ -573,6 +587,7 @@ namespace wmbaApp.Controllers
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         public IActionResult HandleSteal(string inningScoreKeepningJSON, string stolenBase)
         {
             InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
@@ -617,6 +632,8 @@ namespace wmbaApp.Controllers
 =======
 =======
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         public async Task<IActionResult> InputPlayerAction(string inningScoreKeepningJSON, int outcomeID)
         {
             InningScoreKeepingVM inningScoreKeepingVM = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
@@ -712,6 +729,9 @@ namespace wmbaApp.Controllers
         }
 
 =======
+=======
+        //handles the action made by the batter
+>>>>>>> e96378f (started working on play by play in scorekeeping view)
         public async Task<IActionResult> HandleBatterAction(string inningScoreKeepningJSON, int actionID)
         {
             InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);

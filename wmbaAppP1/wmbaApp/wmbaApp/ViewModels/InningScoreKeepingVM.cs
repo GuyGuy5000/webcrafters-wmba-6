@@ -88,10 +88,14 @@ namespace wmbaApp.ViewModels
             => Players.FirstOrDefault(p => p.ThirdBase && p != this.Batter);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         //constructor for JSON serialization
 =======
         //unloaded inning constructor for debugging
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+        //constructor for JSON serialization
+>>>>>>> 040d56e (started working on play by play in scorekeeping view)
         public InningScoreKeepingVM()
         {
 
