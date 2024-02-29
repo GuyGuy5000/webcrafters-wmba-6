@@ -161,12 +161,48 @@
                 </div>
                 <div id="batterActionPrompt" class="batter-prompt">
                     <p style="color: #000; margin-bottom: 0;">Choose an action for @Model.Batter.Name</p>
+                    <input id="btnCloseBatterActions" type="button" class="btn-close-batter-prompt" value="X" onclick="HideBatterAction()" />
                     @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600; max-width: 180px; margin: 10px auto;" })
                     <button id="batterActionSubmit" type="button" class="btn-batter-action-submit">Confirm play</button>
                 </div>
-            }
+
+                //if any player has the opportunity to steal a base
+                if ((Model.PlayerOnFirst != null && Model.PlayerOnSecond == null)
+                 || (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
+                 || Model.PlayerOnThird != null)
+                {
+                    <div class="steal-prompt-container">
+                        @{
+                            if (Model.PlayerOnFirst != null && Model.PlayerOnSecond == null) //check for each possible steal play individually
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealSecond" type="button" class="btn-steal-prompt">Steal Second Base</button>
+                                </div>
+                            }
+
+                            if (Model.PlayerOnSecond != null && Model.PlayerOnThird == null) 
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealThird" type="button" class="btn-steal-prompt">Steal Third Base</button>
+                                </div>
+                            }
+
+                            if (Model.PlayerOnThird != null)
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealHome" type="button" class="btn-steal-prompt">Steal Home Base</button>
+                                </div>
+                            }
+
+                        }
+                    </div>
                 }
-                <!--Batter actions prompt-->
+            }
+        }
+
+        @* @Html.DropDownList("BatterUpNext", null, htmlAttributes: new { @class = "form-control batter-up-next-dropdown", disabled = "disabled" }) *@
+
+        <!--Batter actions prompt-->
     </div>
 </section>
 <section>
@@ -263,7 +299,7 @@
 </section>
 
 <style>
-    /*Baseball diamond and players*/
+    /*Baseball diamond*/
     .diamond-container {
         background-image: url(../../Image/baseball-diamond.png);
         background-position: center;
@@ -300,6 +336,7 @@
         width: 90px;
     }
 
+    /*Prompt for runners and batter*/
     .player-on-base-prompt {
         background: rgba(255,255,255,0.8);
         border: 2px solid #000;
@@ -383,6 +420,39 @@
         width: 100px;
     }
 
+    .btn-close-batter-prompt{
+        position: relative;
+        left: 110px;
+        top: -17px;
+    }
+
+    /*Steal prompt*/
+    .steal-prompt-container{
+        border-radius: 5px;
+        color: #FFF;
+        font-size: 12px;
+        font-weight: 600;
+        height: auto;
+        left: 625px;
+        padding: 2px 0;
+        position: relative;
+        text-align: center;
+        top: -40px;
+        width: 140px;
+    }
+
+    .btn-steal-prompt{
+        background-color: #900;
+        border: 2px solid #FFF;
+        border-radius: 5px;
+        color: #F8F8F8;
+        font-size: 17px;
+        font-weight: 600;
+        height: 35px;
+        width: 160px;
+    }
+
+    /*Labels for defensive positions*/
     .first-base {
         left: 463px;
         top: 330px;
@@ -418,6 +488,7 @@
         top: -60px;
     }
 
+    /*Labels for runners and batter*/
     .first-base-label,
     .second-base-label,
     .third-base-label,
@@ -460,7 +531,7 @@
         top: -175px;
     }
 
-    /*Inning tracker CSS*/
+    /*Inning tracker*/
     .inning-tracker-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -533,13 +604,13 @@
         text-align: left;
     }
 
-    .play-by-play-list li {
-        background-color: rgba(0,0,0,0.1);
-        font-size: 16px;
-        height: 30px;
-        list-style-type: none;
-        margin: 5px 25px;
-    }
+        .play-by-play-list li {
+            background-color: rgba(0,0,0,0.1);
+            font-size: 16px;
+            height: 30px;
+            list-style-type: none;
+            margin: 5px 25px;
+        }
 
     .green-play-indicator,
     .red-play-indicator {
@@ -552,7 +623,7 @@
         width: 30px;
     }
 
-    .green-play-indicator{
+    .green-play-indicator {
         background-color: #1B1;
     }
 
@@ -560,6 +631,14 @@
         background-color: #A00;
         color: #FFF;
     }
+
+
+/*     .batter-up-next-dropdown{
+        font-weight: 600;
+        position: relative;
+        left: -28px;
+        max-width: 180px;
+    } */
 
     /* Tablet */
     @@media only screen and (min-width: 426px) and (max-width: 768px) {
@@ -696,23 +775,30 @@
             margin: 0 0 0 4px;
         }
 
-        .play-by-play-list{
+        .play-by-play-list {
             padding-left: 0;
         }
 
-        .play-by-play-list li{
-            font-size: 12px;
-            height: 27px;
-            margin: 5px 0;
-        }
+            .play-by-play-list li {
+                font-size: 12px;
+                height: 27px;
+                margin: 5px 0;
+            }
 
         .green-play-indicator,
-        .red-play-indicator{
+        .red-play-indicator {
             font-size: 16px;
             height: 27px;
             margin-right: 5px;
             width: 27px;
         }
+
+/*         .batter-up-next-dropdown {
+            font-size: 14px;
+            left: -24px;
+            top: -60px;
+            width: 140px;
+        } */
     }
 
     /* phone */
@@ -880,5 +966,12 @@
             margin-right: 2px;
             width: 18px;
         }
+
+/*         .batter-up-next-dropdown {
+            font-size: 12px;
+            left: -8px;
+            top: -50px;
+            width: 110px;
+        } */
     }
 </style>

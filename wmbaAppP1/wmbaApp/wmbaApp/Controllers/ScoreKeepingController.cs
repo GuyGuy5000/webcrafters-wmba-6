@@ -44,8 +44,9 @@ namespace wmbaApp.Controllers
             TempData["HandleFirstBase"] = false;
             TempData["HandleSecondBase"] = false;
             TempData["HandleThirdBase"] = false;
+            //TempData["BatterUpNextIndex"] = 0;
 
-            PopulateDropDownLists();
+            PopulateDropDownLists(scoreKeeping.Innings[scoreKeeping.CurrentInning]);
 
             return View(scoreKeeping);
         }
@@ -56,7 +57,7 @@ namespace wmbaApp.Controllers
             GameScoreKeepingVM gameScoreKeepingVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameScoreKeepingJSON);
             InningScoreKeepingVM inning = gameScoreKeepingVM.Innings[gameScoreKeepingVM.CurrentInning];
 
-            PopulateDropDownLists();
+            PopulateDropDownLists(inning);
 
             return PartialView("_BaseballDiamond", inning);
         }
@@ -88,9 +89,9 @@ namespace wmbaApp.Controllers
                 TempData["HandleThirdBase"] = false;
 
             }
-            else if (senderID.Contains("secondBase")) 
+            else if (senderID.Contains("secondBase"))
             {
-                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnSecond.ID); 
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnSecond.ID);
                 if (senderAction == "3rd")
                 {
                     player.SecondBase = false;
@@ -115,7 +116,7 @@ namespace wmbaApp.Controllers
             }
             else if (senderID.Contains("firstBase"))
             {
-                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnFirst.ID); 
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnFirst.ID);
                 if (senderAction == "2nd")
                 {
                     player.FirstBase = false;
@@ -151,10 +152,12 @@ namespace wmbaApp.Controllers
             if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
                 inning.CurrentBatter++;
 
-            if (inning.CurrentBatter > inning.Players.Count())
+            if (inning.CurrentBatter > inning.Players.Count)
                 inning.CurrentBatter = 0;
 
-            PopulateDropDownLists();
+
+
+            PopulateDropDownLists(inning);
             return PartialView("_BaseballDiamond", inning);
         }
 
@@ -394,7 +397,16 @@ namespace wmbaApp.Controllers
             if (inning.CurrentBatter > inning.Players.Count())
                 inning.CurrentBatter = 0;
 
-            PopulateDropDownLists();
+            PopulateDropDownLists(inning);
+
+            return PartialView("_BaseballDiamond", inning);
+        }
+
+        public IActionResult HandleSteal(string inningScoreKeepningJSON, string stolenBase)
+        {
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
+
+
 
             return PartialView("_BaseballDiamond", inning);
         }
@@ -438,9 +450,31 @@ namespace wmbaApp.Controllers
                              select new { ID = (int)outcome, Name = outcome.Humanize() };
             return new SelectList(actionList, "ID", "Name", 0);
         }
-        private void PopulateDropDownLists()
+
+        //private SelectList BatterUpNextSelectList(InningScoreKeepingVM inning)
+        //{
+        //    var batterList = inning.Players.Select(p => new { p.ID, p.Name }).ToList();
+
+        //    for (int i = inning.CurrentBatter; i >= 0; i--)
+        //    {
+        //        if (i >= inning.Players.Count)
+        //        {
+        //            batterList.RemoveAt(0);
+        //            break;
+        //        }
+        //        batterList.RemoveAt(i);
+        //    }
+
+        //    if (batterList.Count == 0)
+        //        batterList = inning.Players.Select(p => new { p.ID, p.Name }).ToList();
+
+        //    return new SelectList(batterList, "ID", "Name", TempData.Peek("BatterUpNextIndex"));
+        //}
+
+        private void PopulateDropDownLists(InningScoreKeepingVM inning)
         {
             ViewData["BatterActionList"] = PlayerActionSelectList();
+            //ViewData["BatterUpNext"] = BatterUpNextSelectList(inning);
         }
         #endregion
     }

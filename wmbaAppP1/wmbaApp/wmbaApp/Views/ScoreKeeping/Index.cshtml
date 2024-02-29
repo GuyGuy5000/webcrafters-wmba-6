@@ -25,12 +25,24 @@
             $('#batterActionPrompt').show();
         }
 
+        function HideBatterAction() {
+            $('#batterActionPrompt').hide();
+        }
+
         //reassigns click events. Use when posting back and refreshing the partial view, or on first time load
         function AssignClickEvents() {
             //assigns click events to the player on base buttons
             $("button[name='playerOnBase']").each(function () {
                 $(`#${this.id}`).click(function () {
                     HandlePlayerOnBase(this);
+                });
+            });
+
+            //assigns click events to the steal prompt buttons
+            $("button[name='stealPrompt']").each(function () {
+                $(`#${this.id}`).click(function () {
+                    console.log("guga");
+                    //HandleSteal(this):
                 });
             });
 
