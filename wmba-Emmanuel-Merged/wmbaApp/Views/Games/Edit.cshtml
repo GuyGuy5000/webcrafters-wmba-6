@@ -1,0 +1,64 @@
+﻿@model wmbaApp.Models.Game
+
+
+<hr />
+
+<form asp-action="Edit" id="editform"  class="mx-auto mt-4 editform"  style="width: 80%;">
+    <fieldset>
+        <partial name="_ViewHeading" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ID" />
+        <div class="form-group">
+            <label asp-for="GameStartTime" id="disable" class="control-label required-label"></label>
+            <input asp-for="GameStartTime" class="form-control" />
+            <span asp-validation-for="GameStartTime" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="GameEndTime" id="disable" class="control-label required-label"></label>
+            <input asp-for="GameEndTime" class="form-control" />
+            <span asp-validation-for="GameEndTime" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="GameLocation" id="disable" class="control-label required-label"></label>
+            <input asp-for="GameLocation" class="form-control" placeholder="Ex: Chippawa Park Ball Diamond" />
+            <span asp-validation-for="GameLocation" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" id="btnView" value="Save" class="btn btn-primary" />
+            <button type="button" id="tmsBck" class="btn btn-primary " onclick="openModal()">
+                Back
+            </button>
+        </div>
+
+
+        <div id="customModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="close" onclick="closeModal()">&times;</span>
+                <b><p id="question">Are you done, have you reviewed it?</p></b>
+                <b><p id="required">All Fields are required</p></b>
+                <i></i>
+                <i id="saveCheck" class="fa-solid fa-question fa-f6"></i>
+                <input type="submit" id="hideBtn" value="Save" class="btn btn-primary" />
+
+                <i id="error" class="fa-solid fa-xmark fa-f6"></i>
+                <a asp-action="Index" id="bck" class="btn btn-outline-dark" onclick="closeModal()">Back</a>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+            
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        GenerateContextHelp(["<p>This page lets you edit a game.</p>",
+            "<p>Enter valid information into each field and click the Save button to save your changes.</p>",
+            "<p>Click the Back to Teams list button to go back to the teams list.</p>"]);
+    </script>
+    <script src="~/js/site.js"></script>
+}

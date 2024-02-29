@@ -1,0 +1,35 @@
+﻿@{
+    if (TempData.ContainsKey("Lookup"))
+    {
+        <a asp-controller="Lookup" asp-action="Index" asp-route-Tab="@TempData["Lookup"]-Tab">Back to Lookup List</a>
+    }
+    else
+    {
+        if (ViewData.ContainsKey("ControllerName"))
+        {
+            if (ViewData.ContainsKey("returnURL"))
+            {
+                <a href='@ViewData["returnURL"]'>Back to @ViewData["ControllerFriendlyName"]</a>
+            }
+            else
+            {
+                <a asp-action="Index">Back to @ViewData["ControllerFriendlyName"]</a>
+            }
+        }
+        else
+        {
+            <a asp-action="Index">Back to List</a>
+        }
+    }
+
+}
+@* Find/Replace all
+
+<a_asp-action="Index">Back to List</a>
+   Note: added the _ in '<a_' to avoid having this comment replaced
+
+with
+
+<partial name="_BackToList" />
+
+*@

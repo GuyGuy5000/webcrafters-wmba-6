@@ -1,0 +1,66 @@
+﻿@using wmbaApp.Utilities;
+
+div class="row dashboards">
+
+
+    <div class="col-md-12 gameStyle">
+
+        @if (Model != null && Model.Any())
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="d-none d-lg-table-cell"><h1>GAMES</h1></th>
+                        @* <th class="d-none d-lg-table-cell">Game Location</th> *@
+                        <!-- Add additional headers as needed -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @{
+                                    int gameCount = item.GameTeams.Count;
+                                    string firstGame = "";
+                                    string gameSummary = "";
+                                    if (gameCount > 0)
+                                    {
+                                        foreach (GameMatchup matchup in (List<GameMatchup>)ViewData["Matchups"])
+                                        {
+                                            if (matchup.teamOne.TmName == item.TmName)
+                                            {
+                                                firstGame = matchup.FullVersus;
+                                                gameSummary = matchup.game.Summary;
+                                            }
+                                        }
+                                        <a class="" role="button" data-bs-toggle="collapse" href="#collapseGames@(item.ID)"
+                                           aria-expanded="false" aria-controls="collapseGames@(item.ID)" title="Number of Games">
+                                            @firstGame <span class="badge bg-info" style="background-color: #4CBB17; color: #fff;"> Details</span>
+                                        </a>
+                                        <div class="collapse" id="collapseGames@(item.ID)" style="background-color: #4CBB17; color: #fff;">
+                                            @Html.Raw(gameSummary)
+                                        </div>
+                                    }
+
+                                }
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+        }
+        else
+        {
+            <p>No game data available.</p>
+        }
+
+    </div>
+    <p class="link" id="gameBtn">
+        <a asp-controller="Games" asp-action="Index" target="_blank" class="btn">View Games <i class="fa-solid fa-angles-right" tabindex="8"></i></a>
+    </p>
+</div>

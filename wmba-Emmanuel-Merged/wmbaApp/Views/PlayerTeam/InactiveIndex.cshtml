@@ -1,0 +1,89 @@
+﻿@model IEnumerable<wmbaApp.Models.Player>
+
+@{
+    wmbaApp.Models.Team team = (wmbaApp.Models.Team)ViewBag.Team;
+    <partial name="_TeamDetails" model="team" />
+    ViewData["Title"] = ViewData["ControllerFriendlyName"];
+}
+
+<div style="text-align: center;">
+    <h2>Inactive Players</h2>
+</div>
+<form asp-action="InactiveIndex" method="get">
+    <input type="hidden" name="TeamID" value="@team.ID" />
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <a asp-action="Index" asp-route-TeamID="@team.ID" class="btn btn-center btn-outline-dark">Currently viewing: Inactive players</a>
+    <br />
+    <div class="form-horizontal">
+        <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search @ViewData["numberFilters"]
+        </button>
+        <br />
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by name:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="InactiveIndex" asp-route-TeamID="@team.ID" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Player Full Name" class="btn btn-toolbar" />
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <h5>
+                        Jersey Number
+                    </h5>
+                </th>
+                <th style="min-width:120px">
+                    <a asp-action="Create" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Add a new player to this team">
+                        <strong>&#x270D; Add New Player</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Player Details">
+                            DETAILS
+                        </a>
+                        <a asp-action="MakeActive" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Reactivate Player">
+                            REACTIVATE
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+}
