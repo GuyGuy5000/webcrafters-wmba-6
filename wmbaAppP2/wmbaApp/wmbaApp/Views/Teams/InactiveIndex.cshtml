@@ -1,0 +1,145 @@
+﻿@using wmbaApp.Utilities;
+@model IEnumerable<wmbaApp.Models.Team>
+<partial name="_ViewHeading" />
+
+
+
+<form asp-action="InactiveIndex" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    
+    <br />
+    <div class="form-horizontal">
+        <button class="btn  btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>@ViewData["numberFilters"]
+        </button>
+        <br />
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+
+                    <div class="col-md-4 activeView">
+                        <label class="control-label">Click to view Inactive Players:</label>
+                        <a asp-action="Index" class="btn btn-green btn-center btn-outline-dark lbl">Currently viewing: Inactive teams</a>     
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by Divisions:</label>
+                        @Html.DropDownList("DivisionID", null, "All Divisions", htmlAttributes: new { @class = "form-control" })
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label">Search by Team Name:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="InactiveIndex" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <style>
+                    .clickable-header {
+                        cursor: pointer;
+                        padding: 8px 13px;
+                        background-color: #001F3F;
+                        color: #fff;
+                        border: 1px solid #001F3F;
+                        border-radius: 5px;
+                        display: inline-block;
+                    }
+
+                    .hover:hover {
+                        background-color: #4CBB17;
+                        border-color: #001F3F;
+                    }
+
+                </style>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <input type="submit" name="actionButton" value="Team" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Team Name" />
+                </th>
+                <!-- Coaches -->
+                <th class="d-none d-lg-table-cell">
+                    <h5>
+                        Coaches
+                    </h5>
+                </th>
+                <!-- Division -->
+                <th class="d-none d-md-table-cell">
+                    <input type="submit" value="Division" name="actionButton" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Division Name" />
+                </th>
+                <!-- Create New Team -->
+                <th style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a new team">
+                        <strong>&#x270D; Create  Team</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.TmName)</td>
+                    <td class="d-none d-xxl-table-cell">
+                        @{
+                            int coachCount = item.DivisionCoaches.Count;
+                            if (coachCount > 0)
+                            {
+                                string firstCoach = item.DivisionCoaches.FirstOrDefault().Coach.FullName;
+                                if (coachCount > 1)
+                                {
+                                    string coachList = "";
+                                    var c = item.DivisionCoaches.ToList();
+                                    for (int i = 1; i < coachCount; i++)
+                                    {
+                                        coachList += c[i].Coach.FullName + " <br />";
+                                    }
+                                    <a class="" role="button" data-bs-toggle="collapse" href="#collapseCoach@(item.ID)"
+                                       aria-expanded="false" aria-controls="collapseCoach@(item.ID)">
+                                        @firstCoach <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Coaches">@coachCount</span>
+                                    </a>
+                                    <div class="collapse" id="collapseCoach@(item.ID)">
+                                        @Html.Raw(coachList)
+                                    </div>
+                                }
+                                else
+                                {
+                                    @firstCoach
+                                }
+                            }
+                        }
+                    </td>
+                    <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
+                    <td>
+                        <a asp-controller="PlayerTeam" asp-action="InactiveIndex" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            DETAILS
+                        </a>
+                        <a asp-action="MakeActive" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Reactivate @ViewData["ControllerFriendlyName"]">
+                            REACTIVATE
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+<div class="clickable-header">
+    <a href="@Url.Action("Index", "Teams")">Back</a>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+}

@@ -1,0 +1,154 @@
+﻿@using wmbaApp.Utilities;
+@using wmbaApp.ViewModels;
+@model IEnumerable<wmbaApp.Models.Game>
+<partial name="_ViewHeading" />
+
+
+
+<form asp-action="Index" method="get">
+
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <br />
+    <div class="form-horizontal">
+
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>@ViewData["numberFilters"]
+        </button>
+        <br />
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by Divisions:</label>
+                        @Html.DropDownList("ID", null, "All Games", htmlAttributes: new { @class = "form-control" })
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="control-label">Search Games with their Location:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table mt-3">
+        <thead>
+            <tr>
+
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Teams
+                    </h6>
+                </th>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="d-flex align-items-center">
+                        <input type="submit" name="actionButton" value=" Time" class="non-button-input" data-bs-toggle="tooltip" title="Sort Start Time" />
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" style="padding-left: 5px" ;></i>
+                    </div>
+                </th>
+
+
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="End Time" class="non-button-input" data-bs-toggle="tooltip" title="Sort End Time" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
+                </th>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="d-flex align-items-center">
+                        <input type="submit" name="actionButton" value="Location" class="non-button-input" data-bs-toggle="tooltip" title="Sort Location" />
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" style="padding-left: 5px;"></i>
+                    </div>
+                </th>
+
+                <th style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a New Game">
+                        <strong>&#x270D; Create Game</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="d-none d-xxl-table-cell">
+                        @{
+                            int gameCount = item.GameTeams.Count;
+                            string firstGame = "";
+                            if (gameCount > 0)
+                            {
+                                foreach (GameMatchup matchup in (List<GameMatchup>)ViewData["Matchups"])
+                                {
+                                    if (matchup.game.ID == item.ID)
+                                    {
+                                        firstGame = matchup.FullVersus;
+                                    }
+                                }
+                                @firstGame
+                            }
+                        }
+                    </td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.GameStartTime)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.GameEndTime)
+                    </td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.GameLocation)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            EDIT
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Details @ViewData["ControllerFriendlyName"]">
+                            DETAILS
+                        </a>
+                        @*   <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                    DELETE
+                    </a> *@
+                        @{
+                            List<GameMatchup> matchups = (List<GameMatchup>)ViewData["Matchups"];
+                            string homeTeamName = matchups.FirstOrDefault(m => m.game.ID == item.ID).teamOne.TmName;
+                            string awayTeamName = matchups.FirstOrDefault(m => m.game.ID == item.ID).teamTwo.TmName;
+                            GameScoreKeepingVM scoreKeeping = new()
+                            {
+                                GameID = item.ID,
+                                HomeTeamName = homeTeamName,
+                                AwayTeamName = awayTeamName,
+                                HomeTeamScore = 0,
+                                AwayTeamScore = 0
+                            };
+                        }
+                        @Html.ActionLink("START GAME", "Index","ScoreKeeping", scoreKeeping, htmlAttributes: new { @class = "btn btn-sm btn-outline-primary" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+
+<div class="clickable-header">
+    <a href="@Url.Action("Index", "Home")">Back</a>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script>
+        GenerateContextHelp(["<p>This page lists all Games you have access to. From here you can create, edit, and delete Games.</p>",
+            "<p>Click one of the three buttons in a team's row to edit, view, or delete that game.</p>"]);
+    </script>
+}

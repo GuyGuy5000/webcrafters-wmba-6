@@ -1,0 +1,62 @@
+﻿@using wmbaApp.Utilities;
+@model IEnumerable<wmbaApp.Models.Division>
+
+<partial name="_ViewHeading" />
+
+<form asp-action="Index" method="get">
+    <table class="table mt-3">
+
+        <thead>
+           
+            <tr>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Division
+                    </h6>
+                </th>
+
+                <th style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a new Division">
+                        <strong>&#x270D; Create New Division</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DivName)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            EDIT
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            DETAILS
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            DELETE
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+
+<div class="clickable-header">
+    <a href="@Url.Action("Index", "Home")">Back</a>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    
+}

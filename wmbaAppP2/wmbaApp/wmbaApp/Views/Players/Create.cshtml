@@ -1,0 +1,55 @@
+﻿@model wmbaApp.Models.Player
+
+<hr />
+
+
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="mx-auto mt-4 editform" id="createForm" style="width: 80%;">
+        <fieldset>
+        <partial name="_ViewHeading" />
+        <div class="col-md-4">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PlyrFirstName" class="control-label required-label"></label>
+                <input asp-for="PlyrFirstName" class="form-control" placeholder="Ex:  Emmanuel" />
+                <span asp-validation-for="PlyrFirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrLastName" class="control-label required-label"></label>
+                <input asp-for="PlyrLastName" class="form-control" placeholder="Ex:  James" />
+              
+                <span asp-validation-for="PlyrLastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrJerseyNumber" class="control-label required-label"></label>
+                <input asp-for="PlyrJerseyNumber" class="form-control" placeholder="Ex:  7" />
+                <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PlyrMemberID" class="control-label required-label"></label>
+                <input asp-for="PlyrMemberID" class="form-control" placeholder="Ex:  746ASE4C" />
+                <span asp-validation-for="PlyrMemberID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TeamID" class="control-label required-label"></label>
+                <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
+                    <option value="">Assign Team to Player</option>
+                </select>
+                <span asp-validation-for="TeamID" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-outline-dark">Back to Players List</a>
+        </div>
+    </fieldset>
+       
+    </form>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

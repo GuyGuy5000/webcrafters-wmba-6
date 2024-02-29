@@ -1,0 +1,45 @@
+﻿@model wmbaApp.Models.Coach
+
+
+<hr />
+
+
+<form asp-action="Edit" class="mx-auto mt-4 editform" id="createForm" style="width: 80%;">
+    <fieldset>
+        <partial name="_ViewHeading" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ID" />
+        <div class="form-group">
+            <label asp-for="CoachFirstName" class="control-label  required-label"></label>
+            <input asp-for="CoachFirstName" class="form-control" placeholder="Ex:  Jackfish" />
+            <span asp-validation-for="CoachFirstName" class="text-danger"></span>
+          
+        </div>
+        <div class="form-group">
+            <label asp-for="CoachLastName" class="control-label  required-label"></label>
+            <input asp-for="CoachLastName" class="form-control" placeholder="Ex: Green" />
+            <span asp-validation-for="CoachLastName" class="text-danger"></span>
+          
+        </div>
+
+        <div class="form-group">
+            <label asp-for="CoachPhone" class="control-label  required-label"></label>
+            <input asp-for="CoachPhone" class="form-control" placeholder="Ex: 3456224555" />
+
+            <span asp-validation-for="CoachLastName" class="text-danger"></span>
+          
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" />
+            <a asp-action="Index" class="btn btn-primary">Back to List</a>
+        </div>
+    </fieldset>
+           
+        </form>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
