@@ -255,13 +255,53 @@
         <!--Batter actions prompt-->
 =======
                     <p style="color: #000; margin-bottom: 0;">Choose an action for @Model.Batter.Name</p>
+                    <input id="btnCloseBatterActions" type="button" class="btn-close-batter-prompt" value="X" onclick="HideBatterAction()" />
                     @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600; max-width: 180px; margin: 10px auto;" })
                     <button id="batterActionSubmit" type="button" class="btn-batter-action-submit">Confirm play</button>
                 </div>
-            }
+
+                //if any player has the opportunity to steal a base
+                if ((Model.PlayerOnFirst != null && Model.PlayerOnSecond == null)
+                 || (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
+                 || Model.PlayerOnThird != null)
+                {
+                    <div class="steal-prompt-container">
+                        @{
+                            if (Model.PlayerOnFirst != null && Model.PlayerOnSecond == null) //check for each possible steal play individually
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealSecond" type="button" class="btn-steal-prompt">Steal Second Base</button>
+                                </div>
+                            }
+
+                            if (Model.PlayerOnSecond != null && Model.PlayerOnThird == null) 
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealThird" type="button" class="btn-steal-prompt">Steal Third Base</button>
+                                </div>
+                            }
+
+                            if (Model.PlayerOnThird != null)
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealHome" type="button" class="btn-steal-prompt">Steal Home Base</button>
+                                </div>
+                            }
+
+                        }
+                    </div>
                 }
+<<<<<<< HEAD
                 <!--Batter actions prompt-->
 >>>>>>> 040d56e (started working on play by play in scorekeeping view)
+=======
+            }
+        }
+
+        @* @Html.DropDownList("BatterUpNext", null, htmlAttributes: new { @class = "form-control batter-up-next-dropdown", disabled = "disabled" }) *@
+
+        <!--Batter actions prompt-->
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     </div>
 </section>
 <section>
@@ -437,6 +477,7 @@
 >>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
 <style>
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*Baseball diamond and players*/
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -450,7 +491,13 @@
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
+<<<<<<< HEAD
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+=======
+    /*Baseball diamond*/
+>>>>>>> a918cb0 (working on adding stealing base functionality)
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     .diamond-container {
         background-image: url(../../Image/baseball-diamond.png);
         background-position: center;
@@ -488,9 +535,13 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*Prompt for runners and batter*/
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+    /*Prompt for runners and batter*/
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     .player-on-base-prompt {
         background: rgba(255,255,255,0.8);
         border: 2px solid #000;
@@ -629,6 +680,9 @@
 >>>>>>> 29e156e (fixed merged solution issue)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     .btn-close-batter-prompt{
         position: relative;
         left: 110px;
@@ -662,8 +716,11 @@
     }
 
     /*Labels for defensive positions*/
+<<<<<<< HEAD
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     .first-base {
         left: 463px;
         top: 330px;
@@ -700,9 +757,13 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*Labels for runners and batter*/
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+    /*Labels for runners and batter*/
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     .first-base-label,
     .second-base-label,
     .third-base-label,
@@ -757,6 +818,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     /*Inning tracker*/
 =======
 =======
@@ -765,6 +827,9 @@
 >>>>>>> 3b13cb3 (fixed merged solution issue)
     /*Inning tracker CSS*/
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
+=======
+    /*Inning tracker*/
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     .inning-tracker-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -887,6 +952,7 @@
             list-style-type: none;
             margin: 5px 25px;
         }
+<<<<<<< HEAD
 
     .green-play-indicator,
     .red-play-indicator {
@@ -946,6 +1012,8 @@
         list-style-type: none;
         margin: 5px 25px;
     }
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
 
     .green-play-indicator,
     .red-play-indicator {
@@ -958,7 +1026,7 @@
         width: 30px;
     }
 
-    .green-play-indicator{
+    .green-play-indicator {
         background-color: #1B1;
     }
 
@@ -968,10 +1036,21 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
+=======
+
+/*     .batter-up-next-dropdown{
+        font-weight: 600;
+        position: relative;
+        left: -28px;
+        max-width: 180px;
+    } */
+
+>>>>>>> a918cb0 (working on adding stealing base functionality)
     /* Tablet */
 <<<<<<< HEAD
     @@media only screen and (min-width: 427px) and (max-width: 768px) {
@@ -1135,6 +1214,7 @@
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         .play-by-play-list {
             padding-left: 0;
         }
@@ -1149,24 +1229,34 @@
         .red-play-indicator {
 =======
         .play-by-play-list{
+=======
+        .play-by-play-list {
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
             padding-left: 0;
         }
 
-        .play-by-play-list li{
-            font-size: 12px;
-            height: 27px;
-            margin: 5px 0;
-        }
+            .play-by-play-list li {
+                font-size: 12px;
+                height: 27px;
+                margin: 5px 0;
+            }
 
         .green-play-indicator,
+<<<<<<< HEAD
         .red-play-indicator{
 >>>>>>> 040d56e (started working on play by play in scorekeeping view)
+=======
+        .red-play-indicator {
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
             font-size: 16px;
             height: 27px;
             margin-right: 5px;
             width: 27px;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
 
 /*         .batter-up-next-dropdown {
             font-size: 14px;
@@ -1174,10 +1264,13 @@
             top: -60px;
             width: 140px;
         } */
+<<<<<<< HEAD
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
 =======
 >>>>>>> 040d56e (started working on play by play in scorekeeping view)
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     }
 
     /* phone */
@@ -1374,6 +1467,9 @@
             width: 18px;
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
 
 /*         .batter-up-next-dropdown {
             font-size: 12px;
@@ -1381,9 +1477,12 @@
             top: -50px;
             width: 110px;
         } */
+<<<<<<< HEAD
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
 =======
 >>>>>>> 040d56e (started working on play by play in scorekeeping view)
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
     }
 </style>

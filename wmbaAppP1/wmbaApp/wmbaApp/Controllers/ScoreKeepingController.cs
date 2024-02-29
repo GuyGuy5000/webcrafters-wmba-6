@@ -91,9 +91,13 @@ namespace wmbaApp.Controllers
             TempData["HandleFirstBase"] = false;
             TempData["HandleSecondBase"] = false;
             TempData["HandleThirdBase"] = false;
+<<<<<<< HEAD
 >>>>>>> 29e156e (fixed merged solution issue)
+=======
+            //TempData["BatterUpNextIndex"] = 0;
+>>>>>>> a918cb0 (working on adding stealing base functionality)
 
-            PopulateDropDownLists();
+            PopulateDropDownLists(scoreKeeping.Innings[scoreKeeping.CurrentInning]);
 
             return View(scoreKeeping);
         }
@@ -142,7 +146,7 @@ namespace wmbaApp.Controllers
             GameScoreKeepingVM gameScoreKeepingVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameScoreKeepingJSON);
             InningScoreKeepingVM inning = gameScoreKeepingVM.Innings[gameScoreKeepingVM.CurrentInning];
 
-            PopulateDropDownLists();
+            PopulateDropDownLists(inning);
 
             return PartialView("_BaseballDiamond", inning);
         }
@@ -191,6 +195,7 @@ namespace wmbaApp.Controllers
                 TempData["HandleThirdBase"] = false;
 
             }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -512,8 +517,11 @@ namespace wmbaApp.Controllers
 =======
             else if (senderID.Contains("secondBase")) 
 >>>>>>> 040d56e (started working on play by play in scorekeeping view)
+=======
+            else if (senderID.Contains("secondBase"))
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
             {
-                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnSecond.ID); 
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnSecond.ID);
                 if (senderAction == "3rd")
                 {
                     player.SecondBase = false;
@@ -538,7 +546,7 @@ namespace wmbaApp.Controllers
             }
             else if (senderID.Contains("firstBase"))
             {
-                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnFirst.ID); 
+                PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnFirst.ID);
                 if (senderAction == "2nd")
                 {
                     player.FirstBase = false;
@@ -577,11 +585,17 @@ namespace wmbaApp.Controllers
             if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
                 inning.CurrentBatter++;
 
-            if (inning.CurrentBatter > inning.Players.Count())
+            if (inning.CurrentBatter > inning.Players.Count)
                 inning.CurrentBatter = 0;
 
+<<<<<<< HEAD
 >>>>>>> 29e156e (fixed merged solution issue)
             PopulateDropDownLists();
+=======
+
+
+            PopulateDropDownLists(inning);
+>>>>>>> a918cb0 (working on adding stealing base functionality)
             return PartialView("_BaseballDiamond", inning);
         }
 
@@ -967,7 +981,16 @@ namespace wmbaApp.Controllers
             if (inning.CurrentBatter > inning.Players.Count())
                 inning.CurrentBatter = 0;
 
-            PopulateDropDownLists();
+            PopulateDropDownLists(inning);
+
+            return PartialView("_BaseballDiamond", inning);
+        }
+
+        public IActionResult HandleSteal(string inningScoreKeepningJSON, string stolenBase)
+        {
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
+
+
 
             return PartialView("_BaseballDiamond", inning);
         }
@@ -1014,6 +1037,9 @@ namespace wmbaApp.Controllers
             return new SelectList(actionList, "ID", "Name", 0);
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
 
         //private SelectList BatterUpNextSelectList(InningScoreKeepingVM inning)
         //{
@@ -1039,6 +1065,7 @@ namespace wmbaApp.Controllers
         {
             ViewData["BatterActionList"] = PlayerActionSelectList();
             //ViewData["BatterUpNext"] = BatterUpNextSelectList(inning);
+<<<<<<< HEAD
 =======
         private void PopulateDropDownLists()
         {
@@ -1048,6 +1075,8 @@ namespace wmbaApp.Controllers
 =======
             ViewData["BatterActionList"] = PlayerActionSelectList();
 >>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
+=======
+>>>>>>> 6b55d49 (working on adding stealing base functionality)
         }
         #endregion
     }
