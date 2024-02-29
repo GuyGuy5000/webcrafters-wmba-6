@@ -269,6 +269,7 @@ namespace wmbaApp.Controllers
                 _context.Coaches.Remove(coach);
             }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
@@ -277,6 +278,9 @@ namespace wmbaApp.Controllers
 
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+
+>>>>>>> b47d29c (reset main branch to Nadav)
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -300,6 +304,7 @@ namespace wmbaApp.Controllers
         private bool CoachExists(int id)
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
             return _context.Coaches.Any(e => e.ID == id);
         }
     }
@@ -317,3 +322,9 @@ namespace wmbaApp.Controllers
 }
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+            return _context.Coaches.Any(e => e.ID == id);
+        }
+    }
+}
+>>>>>>> b47d29c (reset main branch to Nadav)

@@ -20,6 +20,7 @@ namespace wmbaApp.Data
             {
                 context.Database.EnsureDeleted();
 <<<<<<< HEAD
+<<<<<<< HEAD
                 context.Database.EnsureCreated();
                 //context.Database.Migrate();
 =======
@@ -31,6 +32,10 @@ namespace wmbaApp.Data
                 //context.Database.Migrate();
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+                context.Database.EnsureCreated();
+                //context.Database.Migrate();
+>>>>>>> b47d29c (reset main branch to Nadav)
                 Random random = new();
 
                 //Division seed data

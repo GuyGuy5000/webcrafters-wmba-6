@@ -46,6 +46,7 @@ body {
 
 .navbar {
 <<<<<<< HEAD
+<<<<<<< HEAD
     background-color: #2e8b43;
 =======
 <<<<<<< HEAD
@@ -54,6 +55,9 @@ body {
     background-color: #2e8b43;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+    background-color: #2e8b43;
+>>>>>>> b47d29c (reset main branch to Nadav)
 }
 
     .navbar a {
@@ -66,6 +70,7 @@ li a:hover {
 
 .dropdown-menu a:hover {
 <<<<<<< HEAD
+<<<<<<< HEAD
     background-color: #2e8b43;
 =======
 <<<<<<< HEAD
@@ -74,6 +79,9 @@ li a:hover {
     background-color: #2e8b43;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+    background-color: #2e8b43;
+>>>>>>> b47d29c (reset main branch to Nadav)
     color: #fff;
 }
 /********Logo********/
@@ -114,6 +122,7 @@ li a:hover {
 .header {
     background-color: #fff;
 <<<<<<< HEAD
+<<<<<<< HEAD
     color: #17254C;
 =======
 <<<<<<< HEAD
@@ -122,6 +131,9 @@ li a:hover {
     color: #17254C;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+    color: #17254C;
+>>>>>>> b47d29c (reset main branch to Nadav)
     padding: 4px 12px;
     margin: 4px;
     font-size: 20px;
@@ -153,6 +165,7 @@ li a:hover {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .arrow {
     font-size: 22px;
 }
@@ -175,6 +188,8 @@ li a:hover {
 =======
     /* Optional: Add margin to create space below the container */
 =======
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 .arrow {
     font-size: 22px;
 }
@@ -190,19 +205,26 @@ li a:hover {
     margin: 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 
+<<<<<<< HEAD
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 }
 
 
 
     .gameStyle h1 {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         background-color: #2e8b43;
     }
 
 .row #gameBtn {
     background-color: #2e8b43;
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
         background-color: #4CBB17;
@@ -218,6 +240,8 @@ li a:hover {
     background-color: #2e8b43;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     margin: 0 auto;
     max-width: 460px;
     padding: 26px;
@@ -280,6 +304,7 @@ li a:hover {
         padding: 50px;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     form .impTeams {
         font-size: 14px;
@@ -304,6 +329,8 @@ li a:hover {
 =======
 
 =======
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
     form .impTeams {
         font-size: 14px;
@@ -321,8 +348,11 @@ li a:hover {
 /******Header Ends**********/
 
 /******Header Ends**********/
+<<<<<<< HEAD
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 /******Context help starts*********/
 .help-icon {
     align-items: center;
@@ -407,10 +437,14 @@ li a:hover {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 /*
 i:hover {
     transform: translateY(-7px);
 }*/
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 
@@ -424,6 +458,8 @@ i:hover {
 }*/
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
 
 
@@ -442,6 +478,7 @@ i:hover {
 
     .header {
 <<<<<<< HEAD
+<<<<<<< HEAD
         background-color: #2e8b43;
         color: #17254C;
 =======
@@ -453,6 +490,10 @@ i:hover {
         color: #17254C;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+        background-color: #2e8b43;
+        color: #17254C;
+>>>>>>> b47d29c (reset main branch to Nadav)
         padding: 4px 12px 51px;
         margin: 4px;
         height: 40px;
@@ -478,6 +519,7 @@ i:hover {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .startGame, .startGames {
     background-color: #2e8b43;
     margin: 0 auto;
@@ -494,15 +536,24 @@ i:hover {
     margin: 0 auto;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+.startGame, .startGames {
+    background-color: #2e8b43;
+    margin: 0 auto;
+>>>>>>> b47d29c (reset main branch to Nadav)
     padding: 19px;
     margin-bottom: 40px;
     max-width: 300px;
     border-radius: 5px;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     gap: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 }
 
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Add box shadow */
@@ -514,6 +565,8 @@ i:hover {
 }
 
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 /* Default styles for all views */
 .startGame, .dashboards {
     display: block; /* Display by default */
@@ -600,14 +653,18 @@ i:hover {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 .dashboard {
     text-align: center;
     margin: 0 auto;
     border-radius: 5px;
     padding: 15px;
+<<<<<<< HEAD
 <<<<<<< HEAD
    
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
@@ -632,6 +689,8 @@ i:hover {
     height: 577px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 =======
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
    
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
@@ -646,20 +705,27 @@ i:hover {
     padding: 15px;
    /* height: 577px;*/
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+<<<<<<< HEAD
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 }
 
 
 .import {
     margin-bottom: 30px;
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     margin-top: 20px;
     height: 280px;
 }
 
 .parent {
     gap: 7px;
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 }
@@ -674,12 +740,15 @@ i:hover {
     gap: 7px;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     padding-top: 70px;
 }
 
 .clickable-header {
     cursor: pointer;
     padding: 8px 13px;
+<<<<<<< HEAD
 <<<<<<< HEAD
     background-color: #17254C;
     color: #fff;
@@ -695,6 +764,11 @@ i:hover {
     border: 1px solid #17254C;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+    background-color: #17254C;
+    color: #fff;
+    border: 1px solid #17254C;
+>>>>>>> b47d29c (reset main branch to Nadav)
     border-radius: 5px;
     display: inline-block;
     margin-top: 30px;
@@ -708,6 +782,7 @@ i:hover {
 
 .hover:hover {
 <<<<<<< HEAD
+<<<<<<< HEAD
     background-color: #2e8b43;
     border-color: #17254C;
 =======
@@ -719,6 +794,10 @@ i:hover {
     border-color: #17254C;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+    background-color: #2e8b43;
+    border-color: #17254C;
+>>>>>>> b47d29c (reset main branch to Nadav)
 }
 
 
@@ -737,6 +816,7 @@ i:hover {
         bottom: 40px;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
     .wmba {
     text-align: center;
   
@@ -820,6 +900,8 @@ i:hover {
 <<<<<<< HEAD
 =======
 =======
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     .wmba {
     text-align: center;
   
@@ -897,7 +979,10 @@ i:hover {
         display: flex;
         flex-direction: column;
     }
+<<<<<<< HEAD
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     
 
 }
@@ -1150,14 +1235,18 @@ fieldset {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 /******Button Starts**********/
 .btn {
     display: inline-block;
     padding: 10px 20px;
     text-decoration: none;
+<<<<<<< HEAD
 <<<<<<< HEAD
     background-color: #17254C;
 =======
@@ -1167,6 +1256,9 @@ fieldset {
     background-color: #17254C;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+    background-color: #17254C;
+>>>>>>> b47d29c (reset main branch to Nadav)
     color: #fff;
     border-radius: 5px;
 }
@@ -1178,6 +1270,7 @@ fieldset {
 
 .btn-green {
 <<<<<<< HEAD
+<<<<<<< HEAD
     background-color: #2e8b43;
 =======
 <<<<<<< HEAD
@@ -1186,6 +1279,9 @@ fieldset {
     background-color: #2e8b43;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+    background-color: #2e8b43;
+>>>>>>> b47d29c (reset main branch to Nadav)
     border: solid 2px #000;
 }
 
@@ -1194,6 +1290,7 @@ fieldset {
     margin: 0 auto;
     width: 282px;
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -1219,6 +1316,8 @@ fieldset {
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
 
 /******Button Ends**********/
@@ -1226,6 +1325,7 @@ fieldset {
 
 /******Footer Starts************/
 footer {
+<<<<<<< HEAD
 <<<<<<< HEAD
     background-color: #2e8b43;
 =======
@@ -1235,6 +1335,9 @@ footer {
     background-color: #2e8b43;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+    background-color: #2e8b43;
+>>>>>>> b47d29c (reset main branch to Nadav)
     height: 40px;
     font-weight: 700;
     margin-bottom: -0px;

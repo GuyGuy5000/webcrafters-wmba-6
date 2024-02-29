@@ -3,15 +3,19 @@
 
 <div id="ScoreBar">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <div id="scoreBar">
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     <partial name="_ScoreBar" model="@Model" />
 </div>
 
 <div id="BaseballDiamond">
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
     <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
@@ -21,6 +25,9 @@
 =======
     <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
 >>>>>>> bd39385 (Added pitch button and batter actions select list for scorekeeping.)
+=======
+    <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
+>>>>>>> b47d29c (reset main branch to Nadav)
 </div>
 
 <div id="InningsTable">
@@ -32,6 +39,9 @@
 @section Scripts{
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     <!--Player on base action-->
     <script type="text/javascript">
         AssignClickEvents();
@@ -43,17 +53,23 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6b55d49 (working on adding stealing base functionality)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         function HideBatterAction() {
             $('#batterActionPrompt').hide();
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
 =======
 >>>>>>> 6b55d49 (working on adding stealing base functionality)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         //reassigns click events. Use when posting back and refreshing the partial view, or on first time load
         function AssignClickEvents() {
             //assigns click events to the player on base buttons
@@ -65,8 +81,11 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6b55d49 (working on adding stealing base functionality)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
             //assigns click events to the steal prompt buttons
             $("button[name='stealPrompt']").each(function () {
                 $(`#${this.id}`).click(function () {
@@ -76,10 +95,13 @@
             });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
 =======
 >>>>>>> 6b55d49 (working on adding stealing base functionality)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
             //assigns a click event to the batter submit button
             $("#batterActionSubmit").click(function () {
                 HandleBatterAction();
@@ -137,12 +159,15 @@
                     var updatedGame = JSON.parse(result);
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     console.log(game);
                     console.log(updatedGame);
 >>>>>>> 54c95fb (Modified scorekeeping to update partial views automatically. Added strike, ball, and out conter to inning tracker section.)
 =======
 >>>>>>> 040d56e (started working on play by play in scorekeeping view)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
                     if (updatedGame.currentInning > game.currentInning)
                         StartNewInning();
 
@@ -208,6 +233,7 @@
 
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
     <!--Player on base action-->
@@ -251,3 +277,5 @@
 >>>>>>> ba5fa4e (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)

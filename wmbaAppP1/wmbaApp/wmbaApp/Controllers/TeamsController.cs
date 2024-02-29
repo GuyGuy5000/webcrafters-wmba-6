@@ -337,10 +337,14 @@ namespace wmbaApp.Controllers
         public async Task<IActionResult> Edit(int id)
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
             // Populate drop-down lists for the view
             PopulateDropDownLists();
 
             // Retrieve the team to be edited from the database
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
             PopulateDropDownLists();
@@ -351,6 +355,8 @@ namespace wmbaApp.Controllers
             // Retrieve the team to be edited from the database
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
             var teamToUpdate = await _context.Teams
                 .Include(t => t.Division)
                 .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
@@ -359,6 +365,7 @@ namespace wmbaApp.Controllers
                 .FirstOrDefaultAsync(m => m.ID == id);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             // Check if the team exists
 =======
 <<<<<<< HEAD
@@ -366,11 +373,15 @@ namespace wmbaApp.Controllers
             // Check if the team exists
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+            // Check if the team exists
+>>>>>>> b47d29c (reset main branch to Nadav)
             if (teamToUpdate == null)
             {
                 return NotFound();
             }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
             // Try to update the model from the form data
             if (await TryUpdateModelAsync<Team>(teamToUpdate, "", t => t.TmName, t => t.DivisionID))
@@ -427,6 +438,8 @@ namespace wmbaApp.Controllers
 =======
             return RedirectToAction("Details", new { teamToUpdate.ID });
 =======
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
             // Try to update the model from the form data
             if (await TryUpdateModelAsync<Team>(teamToUpdate, "", t => t.TmName, t => t.DivisionID))
             {
@@ -473,8 +486,11 @@ namespace wmbaApp.Controllers
             // If TryUpdateModelAsync fails or ModelState is invalid, return the view with errors
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName", teamToUpdate.DivisionID);
             return View(teamToUpdate);
+<<<<<<< HEAD
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         }
 
         //// GET: Teams/Delete/5

@@ -8,6 +8,7 @@ namespace wmbaApp.ViewModels
         public int CurrentBatter { get; set; } = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         public bool CurrentlyBatting { get; set; } = true;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
@@ -16,12 +17,17 @@ namespace wmbaApp.ViewModels
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
         public int TotalRunsThisInning
             => Players.Sum(p => p.Runs);
         public int TotalOutsThisInning
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         {
             get
             {
@@ -44,6 +50,7 @@ namespace wmbaApp.ViewModels
                 return Players[CurrentBatter];
             }
         }
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 3b13cb3 (fixed merged solution issue)
@@ -80,6 +87,8 @@ namespace wmbaApp.ViewModels
         }
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         public PlayerScoreKeepingVM PlayerOnFirst
             => Players.FirstOrDefault(p => p.FirstBase && p != this.Batter);
         public PlayerScoreKeepingVM PlayerOnSecond
@@ -89,6 +98,7 @@ namespace wmbaApp.ViewModels
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         //constructor for JSON serialization
 =======
         //unloaded inning constructor for debugging
@@ -96,11 +106,15 @@ namespace wmbaApp.ViewModels
 =======
         //constructor for JSON serialization
 >>>>>>> 040d56e (started working on play by play in scorekeeping view)
+=======
+        //constructor for JSON serialization
+>>>>>>> b47d29c (reset main branch to Nadav)
         public InningScoreKeepingVM()
         {
 
         }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         //constructor for debugging
@@ -109,6 +123,9 @@ namespace wmbaApp.ViewModels
 =======
         //constructor for debugging
 >>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
+=======
+        //constructor for debugging
+>>>>>>> b47d29c (reset main branch to Nadav)
         public InningScoreKeepingVM(string debug)
         {
             this.Players = new List<PlayerScoreKeepingVM>()

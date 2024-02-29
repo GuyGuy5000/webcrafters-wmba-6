@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wmbaApp.Data;
 
@@ -10,9 +11,11 @@ using wmbaApp.Data;
 namespace wmbaApp.Data.WMMigrations
 {
     [DbContext(typeof(WmbaContext))]
-    partial class WmbaContextModelSnapshot : ModelSnapshot
+    [Migration("20240206031759_PlayerMemberID")]
+    partial class PlayerMemberID
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,24 +104,6 @@ namespace wmbaApp.Data.WMMigrations
                     b.Property<DateTime?>("GameStartTime")
                         .HasColumnType("TEXT");
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-=======
-<<<<<<< HEAD
-=======
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
->>>>>>> 29e156e (fixed merged solution issue)
->>>>>>> 3b13cb3 (fixed merged solution issue)
-=======
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
->>>>>>> b47d29c (reset main branch to Nadav)
                     b.HasKey("ID");
 
                     b.ToTable("Games");

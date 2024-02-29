@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wmbaApp.Data;
 
@@ -10,14 +11,14 @@ using wmbaApp.Data;
 namespace wmbaApp.Data.WMMigrations
 {
     [DbContext(typeof(WmbaContext))]
-    partial class WmbaContextModelSnapshot : ModelSnapshot
+    [Migration("20240127113622_Initial1")]
+    partial class Initial1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .UseCollation("NOCASE")
-                .HasAnnotation("ProductVersion", "7.0.15");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.15");
 
             modelBuilder.Entity("wmbaApp.Models.Coach", b =>
                 {
@@ -37,7 +38,6 @@ namespace wmbaApp.Data.WMMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CoachPhone")
-                        .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
@@ -53,8 +53,7 @@ namespace wmbaApp.Data.WMMigrations
 
                     b.Property<string>("DivName")
                         .IsRequired()
-                        .HasColumnType("TEXT")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
@@ -85,6 +84,19 @@ namespace wmbaApp.Data.WMMigrations
                     b.ToTable("DivisionCoaches");
                 });
 
+            modelBuilder.Entity("wmbaApp.Models.FileProperty", b =>
+                {
+                    b.Property<int>("FilePropertyID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Property")
+                        .HasColumnType("BLOB");
+
+                    b.HasKey("FilePropertyID");
+
+                    b.ToTable("FileProperty");
+                });
+
             modelBuilder.Entity("wmbaApp.Models.Game", b =>
                 {
                     b.Property<int>("ID")
@@ -101,24 +113,6 @@ namespace wmbaApp.Data.WMMigrations
                     b.Property<DateTime?>("GameStartTime")
                         .HasColumnType("TEXT");
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-=======
-<<<<<<< HEAD
-=======
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
->>>>>>> 29e156e (fixed merged solution issue)
->>>>>>> 3b13cb3 (fixed merged solution issue)
-=======
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
->>>>>>> b47d29c (reset main branch to Nadav)
                     b.HasKey("ID");
 
                     b.ToTable("Games");
@@ -156,8 +150,8 @@ namespace wmbaApp.Data.WMMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
+                    b.Property<DateTime?>("PlyrDOB")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PlyrFirstName")
                         .IsRequired()
@@ -171,10 +165,6 @@ namespace wmbaApp.Data.WMMigrations
                         .HasMaxLength(80)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PlyrMemberID")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<int?>("StatisticID")
                         .HasColumnType("INTEGER");
 
@@ -183,17 +173,95 @@ namespace wmbaApp.Data.WMMigrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("PlyrMemberID")
-                        .IsUnique();
-
                     b.HasIndex("StatisticID");
 
                     b.HasIndex("TeamID");
 
-                    b.HasIndex("PlyrJerseyNumber", "TeamID")
+                    b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayerPhoto", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PlayerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PlayerID")
                         .IsUnique();
 
-                    b.ToTable("Players");
+                    b.ToTable("PlayerPhotos");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayerPosition", b =>
+                {
+                    b.Property<int>("PlayerID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PositionID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PlayerID", "PositionID");
+
+                    b.HasIndex("PlayerID")
+                        .IsUnique();
+
+                    b.HasIndex("PositionID");
+
+                    b.ToTable("PlayerPositions");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayerThumbnail", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Content")
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("MimeType")
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PlayerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PlayerID")
+                        .IsUnique();
+
+                    b.ToTable("PlayerThumbnails");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.Position", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PosName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PosName")
+                        .IsUnique();
+
+                    b.ToTable("Positions");
                 });
 
             modelBuilder.Entity("wmbaApp.Models.Statistic", b =>
@@ -255,18 +323,21 @@ namespace wmbaApp.Data.WMMigrations
                     b.Property<int>("DivisionID")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("TmAbbreviation")
+                        .HasMaxLength(3)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("TmName")
                         .IsRequired()
                         .HasMaxLength(80)
-                        .HasColumnType("TEXT")
-                        .UseCollation("NOCASE");
+                        .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
                     b.HasIndex("DivisionID");
+
+                    b.HasIndex("TmAbbreviation")
+                        .IsUnique();
 
                     b.HasIndex("TmName")
                         .IsUnique();
@@ -274,20 +345,7 @@ namespace wmbaApp.Data.WMMigrations
                     b.ToTable("Teams");
                 });
 
-            modelBuilder.Entity("wmbaApp.ViewModels.FileProperty", b =>
-                {
-                    b.Property<int>("FilePropertyID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte[]>("Property")
-                        .HasColumnType("BLOB");
-
-                    b.HasKey("FilePropertyID");
-
-                    b.ToTable("FileProperty");
-                });
-
-            modelBuilder.Entity("wmbaApp.ViewModels.UploadedFile", b =>
+            modelBuilder.Entity("wmbaApp.Models.UploadedFile", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -333,6 +391,17 @@ namespace wmbaApp.Data.WMMigrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("wmbaApp.Models.FileProperty", b =>
+                {
+                    b.HasOne("wmbaApp.Models.UploadedFile", "UploadedFile")
+                        .WithOne("FileProperty")
+                        .HasForeignKey("wmbaApp.Models.FileProperty", "FilePropertyID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UploadedFile");
+                });
+
             modelBuilder.Entity("wmbaApp.Models.GameTeam", b =>
                 {
                     b.HasOne("wmbaApp.Models.Game", "Game")
@@ -369,6 +438,47 @@ namespace wmbaApp.Data.WMMigrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("wmbaApp.Models.PlayerPhoto", b =>
+                {
+                    b.HasOne("wmbaApp.Models.Player", "Player")
+                        .WithOne("PlayerPhoto")
+                        .HasForeignKey("wmbaApp.Models.PlayerPhoto", "PlayerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayerPosition", b =>
+                {
+                    b.HasOne("wmbaApp.Models.Player", "Player")
+                        .WithMany("PlayerPositions")
+                        .HasForeignKey("PlayerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("wmbaApp.Models.Position", "Position")
+                        .WithMany("PlayerPositions")
+                        .HasForeignKey("PositionID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+
+                    b.Navigation("Position");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayerThumbnail", b =>
+                {
+                    b.HasOne("wmbaApp.Models.Player", "Player")
+                        .WithOne("PlayerThumbnail")
+                        .HasForeignKey("wmbaApp.Models.PlayerThumbnail", "PlayerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+
             modelBuilder.Entity("wmbaApp.Models.Team", b =>
                 {
                     b.HasOne("wmbaApp.Models.Division", "Division")
@@ -378,17 +488,6 @@ namespace wmbaApp.Data.WMMigrations
                         .IsRequired();
 
                     b.Navigation("Division");
-                });
-
-            modelBuilder.Entity("wmbaApp.ViewModels.FileProperty", b =>
-                {
-                    b.HasOne("wmbaApp.ViewModels.UploadedFile", "UploadedFile")
-                        .WithOne("FileProperty")
-                        .HasForeignKey("wmbaApp.ViewModels.FileProperty", "FilePropertyID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UploadedFile");
                 });
 
             modelBuilder.Entity("wmbaApp.Models.Coach", b =>
@@ -408,6 +507,20 @@ namespace wmbaApp.Data.WMMigrations
                     b.Navigation("GameTeams");
                 });
 
+            modelBuilder.Entity("wmbaApp.Models.Player", b =>
+                {
+                    b.Navigation("PlayerPhoto");
+
+                    b.Navigation("PlayerPositions");
+
+                    b.Navigation("PlayerThumbnail");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.Position", b =>
+                {
+                    b.Navigation("PlayerPositions");
+                });
+
             modelBuilder.Entity("wmbaApp.Models.Statistic", b =>
                 {
                     b.Navigation("Players");
@@ -422,7 +535,7 @@ namespace wmbaApp.Data.WMMigrations
                     b.Navigation("Players");
                 });
 
-            modelBuilder.Entity("wmbaApp.ViewModels.UploadedFile", b =>
+            modelBuilder.Entity("wmbaApp.Models.UploadedFile", b =>
                 {
                     b.Navigation("FileProperty");
                 });

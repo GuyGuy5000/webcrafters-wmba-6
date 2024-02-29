@@ -5,10 +5,14 @@ using System;
 using System.Collections.Generic;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
+<<<<<<< HEAD
 =======
 using System.Linq;
 using System.Text;
@@ -23,6 +27,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 using System.Threading.Tasks;
 using wmbaApp.Models;
 
@@ -32,6 +38,9 @@ namespace wmbaApp.ViewModels
     {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         Single,
         Double,
         Triple,
@@ -44,6 +53,7 @@ namespace wmbaApp.ViewModels
         IntentionalWalk,
         CatcherInterference,
 
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 3b13cb3 (fixed merged solution issue)
@@ -82,12 +92,17 @@ namespace wmbaApp.ViewModels
 
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
     }
 
     public class PlayerScoreKeepingVM
     {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         //Fields and Properties
         public int PlateAppearances { get; set; } = 0;
         public int AtBats { get; set; } = 0;
@@ -107,6 +122,7 @@ namespace wmbaApp.ViewModels
         public int FoulStrikes { get; set; } = 0; //used to subtract from pitch count when adding strikes, balls, and fouls
         public int Runs { get; set; } = 0;
         public int Outs { get; set; } = 0;
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 3b13cb3 (fixed merged solution issue)
@@ -153,11 +169,14 @@ namespace wmbaApp.ViewModels
         public int Outs { get; set; } = 0;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         public bool FirstBase { get; set; }
         public bool SecondBase { get; set; }
         public bool ThirdBase { get; set; }
         public bool BasesLoaded => FirstBase && SecondBase && ThirdBase;
         public string Name { get; set; }
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         public int ID { get; set; }
@@ -170,6 +189,9 @@ namespace wmbaApp.ViewModels
         public int ID { get; set; }
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+        public int ID { get; set; }
+>>>>>>> b47d29c (reset main branch to Nadav)
         public List<AtBatOutcome> AtBatActions { get; set; } = new List<AtBatOutcome>();
 
 
@@ -196,6 +218,7 @@ namespace wmbaApp.ViewModels
             this.Triples = triples;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             this.HR = homeRuns;
             this.PlateAppearances = plateAppearances;
             this.BB = walks;
@@ -214,6 +237,11 @@ namespace wmbaApp.ViewModels
             this.BB = walks;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+            this.HR = homeRuns;
+            this.PlateAppearances = plateAppearances;
+            this.BB = walks;
+>>>>>>> b47d29c (reset main branch to Nadav)
             this.HitByPitches = hitsByPitches;
             this.Sacrifices = sacrifices;
             this.CatcherInterference = catcherInterference;
@@ -228,11 +256,15 @@ namespace wmbaApp.ViewModels
         public int PAtBats
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
             => PlateAppearances - BB - HitByPitches - Sacrifices - CatcherInterference;
 
         //Calculates pitch count
         public int PitchCount
             => Strikes + BB + Fouls - FoulStrikes;
+<<<<<<< HEAD
 =======
             => PlateAppearances - Walks - HitByPitches - Sacrifices - CatcherInterference;
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
@@ -246,12 +278,15 @@ namespace wmbaApp.ViewModels
             => Strikes + BB + Fouls - FoulStrikes;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
         // Calculates OPS
         public double CalculateOBP()
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HR * 4) / AtBats;
 =======
             double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HomeRuns * 4) / AtBats;
@@ -262,6 +297,9 @@ namespace wmbaApp.ViewModels
             double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HR * 4) / AtBats;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+            double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HR * 4) / AtBats;
+>>>>>>> b47d29c (reset main branch to Nadav)
             return Math.Round(OPS, 3);
         }
 
@@ -270,6 +308,7 @@ namespace wmbaApp.ViewModels
         {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             double OBP = (double)(Hits + BB + HitByPitches) / (AtBats + BB + HitByPitches + Sacrifices);
 =======
             double OBP = (double)(Hits + Walks + HitByPitches) / (AtBats + Walks + HitByPitches + Sacrifices);
@@ -280,6 +319,9 @@ namespace wmbaApp.ViewModels
             double OBP = (double)(Hits + BB + HitByPitches) / (AtBats + BB + HitByPitches + Sacrifices);
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+            double OBP = (double)(Hits + BB + HitByPitches) / (AtBats + BB + HitByPitches + Sacrifices);
+>>>>>>> b47d29c (reset main branch to Nadav)
             return Math.Round(OBP, 3);
         }
 
@@ -338,6 +380,7 @@ namespace wmbaApp.ViewModels
                 Runs++;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                 HR++;
 =======
                 HomeRuns++;
@@ -348,6 +391,9 @@ namespace wmbaApp.ViewModels
                 HR++;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+                HR++;
+>>>>>>> b47d29c (reset main branch to Nadav)
             }
         }
 
@@ -392,6 +438,7 @@ namespace wmbaApp.ViewModels
         private void RecordWalk()
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             => BB++;
 =======
             => Walks++;
@@ -402,6 +449,9 @@ namespace wmbaApp.ViewModels
             => BB++;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+            => BB++;
+>>>>>>> b47d29c (reset main branch to Nadav)
         private void RecordCatcherInterference()
             => CatcherInterference++;
         private void RecordSwingAndMiss()
@@ -422,6 +472,9 @@ namespace wmbaApp.ViewModels
                 Balls = 0;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
                 return AtBatOutcome.Ball;
             }
             else if (Strikes >= 3)
@@ -430,6 +483,7 @@ namespace wmbaApp.ViewModels
             {
                 ///////Still need to add Logic for fouls
                 return AtBatOutcome.Single;
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 3b13cb3 (fixed merged solution issue)
@@ -455,6 +509,8 @@ namespace wmbaApp.ViewModels
                 return AtBatOutcome.Single;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
             }
         }
 
@@ -481,6 +537,7 @@ namespace wmbaApp.ViewModels
                         break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                     case AtBatOutcome.Strike:
 =======
                     case AtBatOutcome.CalledStrike:
@@ -491,6 +548,9 @@ namespace wmbaApp.ViewModels
                     case AtBatOutcome.Strike:
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+                    case AtBatOutcome.Strike:
+>>>>>>> b47d29c (reset main branch to Nadav)
                         RecordStrike();
                         break;
                     case AtBatOutcome.FoulBall:
@@ -498,6 +558,7 @@ namespace wmbaApp.ViewModels
                         break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     case AtBatOutcome.SwingAndMiss:
                         RecordSwingAndMiss();
@@ -510,6 +571,8 @@ namespace wmbaApp.ViewModels
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
                     case AtBatOutcome.FoulTipOut:
                         RecordFoulTipOut();
                         break;
@@ -518,6 +581,7 @@ namespace wmbaApp.ViewModels
                         break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     case AtBatOutcome.IntentionalBall:
                         RecordIntentionalBall();
@@ -530,6 +594,8 @@ namespace wmbaApp.ViewModels
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
                     case AtBatOutcome.IntentionalWalk:
                         RecordIntentionalWalk();
                         break;
@@ -538,6 +604,7 @@ namespace wmbaApp.ViewModels
                         break;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     case AtBatOutcome.IllegalPitch:
                         RecordIllegalPitch();
@@ -550,6 +617,8 @@ namespace wmbaApp.ViewModels
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
                 }
             }
         }

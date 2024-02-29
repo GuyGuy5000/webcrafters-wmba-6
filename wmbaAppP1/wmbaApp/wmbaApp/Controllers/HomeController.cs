@@ -2,14 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 <<<<<<< HEAD
@@ -17,6 +21,8 @@ using wmbaApp.Utilities;
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 namespace wmbaApp.Controllers
 {
     public class HomeController : Controller
@@ -31,6 +37,7 @@ namespace wmbaApp.Controllers
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
        
 
 =======
@@ -44,6 +51,10 @@ namespace wmbaApp.Controllers
 
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+       
+
+>>>>>>> b47d29c (reset main branch to Nadav)
 
         public IActionResult Index()
         {
@@ -56,6 +67,7 @@ namespace wmbaApp.Controllers
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         [HttpPost]
        
 
@@ -67,6 +79,11 @@ namespace wmbaApp.Controllers
 
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+        [HttpPost]
+       
+
+>>>>>>> b47d29c (reset main branch to Nadav)
         public IActionResult Privacy()
         {
             return View();

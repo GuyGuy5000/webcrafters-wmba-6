@@ -4,6 +4,7 @@
 // Last Modified: 2024/01/23
 // Write your JavaScript code.
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
@@ -15,6 +16,9 @@ player.play();
 =======
 
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+
+>>>>>>> b47d29c (reset main branch to Nadav)
   
 
 
@@ -70,6 +74,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)

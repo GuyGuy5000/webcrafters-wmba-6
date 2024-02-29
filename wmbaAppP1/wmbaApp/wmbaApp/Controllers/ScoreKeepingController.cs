@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 using Newtonsoft.Json.Serialization;
 =======
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
@@ -13,6 +14,9 @@ using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Serialization;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+using Newtonsoft.Json.Serialization;
+>>>>>>> b47d29c (reset main branch to Nadav)
 using OfficeOpenXml.Drawing.Chart;
 using System;
 using System.Linq;
@@ -52,6 +56,9 @@ namespace wmbaApp.Controllers
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
 
             TempData["HandleFirstBase"] = false;
@@ -60,6 +67,7 @@ namespace wmbaApp.Controllers
             //TempData["BatterUpNextIndex"] = 0;
 
             PopulateDropDownLists(scoreKeeping.Innings[scoreKeeping.CurrentInning]);
+<<<<<<< HEAD
 =======
             scoreKeeping.Innings[0].Players[3].FirstBase = true;
 =======
@@ -98,12 +106,17 @@ namespace wmbaApp.Controllers
 >>>>>>> a918cb0 (working on adding stealing base functionality)
 
             PopulateDropDownLists(scoreKeeping.Innings[scoreKeeping.CurrentInning]);
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
             return View(scoreKeeping);
         }
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         //Returs a fresh baseball diamond with a new inning and pushes updates to the database
         public async Task<IActionResult> StartNewInning(string gameScoreKeepingJSON)
         {
@@ -128,6 +141,7 @@ namespace wmbaApp.Controllers
                 {
                     player.AwardRun();
                     player.ThirdBase = false;
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 3b13cb3 (fixed merged solution issue)
@@ -181,6 +195,8 @@ namespace wmbaApp.Controllers
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
 =======
 >>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
                 }
                 else if (senderAction == "stay")
                 {
@@ -199,6 +215,9 @@ namespace wmbaApp.Controllers
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
             else if (senderID.Contains("secondBase"))
             {
                 PlayerScoreKeepingVM player = inning.Players.FirstOrDefault(p => p.ID == inning.PlayerOnSecond.ID);
@@ -508,6 +527,7 @@ namespace wmbaApp.Controllers
                 inning.CurrentBatter = 0;
 
             PopulateDropDownLists(inning);
+<<<<<<< HEAD
 =======
 
             if (inning.TotalOutsThisInning == 3)
@@ -982,6 +1002,8 @@ namespace wmbaApp.Controllers
                 inning.CurrentBatter = 0;
 
             PopulateDropDownLists(inning);
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
             return PartialView("_BaseballDiamond", inning);
         }
@@ -1026,9 +1048,13 @@ namespace wmbaApp.Controllers
 
             return JsonConvert.SerializeObject(game, settings: new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         }
+<<<<<<< HEAD
 >>>>>>> 29e156e (fixed merged solution issue)
 
 >>>>>>> 2403aa7 (Updated scorekeeping view and ViewModels. Scorekeeping view not yet completed)
+=======
+
+>>>>>>> b47d29c (reset main branch to Nadav)
         #region SelectLists
         private SelectList PlayerActionSelectList()
         {
@@ -1038,8 +1064,11 @@ namespace wmbaApp.Controllers
         }
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 6b55d49 (working on adding stealing base functionality)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
         //private SelectList BatterUpNextSelectList(InningScoreKeepingVM inning)
         //{
@@ -1066,6 +1095,7 @@ namespace wmbaApp.Controllers
             ViewData["BatterActionList"] = PlayerActionSelectList();
             //ViewData["BatterUpNext"] = BatterUpNextSelectList(inning);
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         private void PopulateDropDownLists()
         {
@@ -1077,6 +1107,8 @@ namespace wmbaApp.Controllers
 >>>>>>> c4ae6ca (Added pitch button and batter actions select list for scorekeeping.)
 =======
 >>>>>>> 6b55d49 (working on adding stealing base functionality)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         }
         #endregion
     }

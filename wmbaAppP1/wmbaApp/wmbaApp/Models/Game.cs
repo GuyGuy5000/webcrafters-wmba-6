@@ -91,10 +91,14 @@ namespace wmbaApp.Models
         [Display(Name = "Game Starts")]
         public DateTime? GameStartTime { get; set; }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
 
         [Display(Name = "Game Ends")]
         public DateTime? GameEndTime { get; set; }
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
         [Display(Name = "Game Ends")]
@@ -105,14 +109,19 @@ namespace wmbaApp.Models
         [Display(Name = "Game Ends")]
         public DateTime? GameEndTime { get; set; }
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
         [Display(Name = "Active")]
         public bool IsActive { get; set; } = true;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         [StringLength(50, ErrorMessage = "Game location must be less than 50 characters")]
         public string GameLocation { get; set; }
 

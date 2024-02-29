@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using OfficeOpenXml.Style;
 using OfficeOpenXml;
 =======
@@ -16,14 +17,21 @@ using OfficeOpenXml.Style;
 using OfficeOpenXml;
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
+>>>>>>> b47d29c (reset main branch to Nadav)
 using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
 <<<<<<< HEAD
+<<<<<<< HEAD
 using wmbaApp.ViewModels;
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
 namespace wmbaApp.Controllers
 {
@@ -37,6 +45,7 @@ namespace wmbaApp.Controllers
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
@@ -46,6 +55,10 @@ namespace wmbaApp.Controllers
 
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+
+
+>>>>>>> b47d29c (reset main branch to Nadav)
         // GET: Games
         public async Task<IActionResult> Index(string SearchString, int? ID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
@@ -363,10 +376,13 @@ namespace wmbaApp.Controllers
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 =======
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
 
         //// GET: Players/Inactive/5
         //public async Task<IActionResult> MakeInactive(int? id)
@@ -558,9 +574,12 @@ namespace wmbaApp.Controllers
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 29e156e (fixed merged solution issue)
 >>>>>>> 3b13cb3 (fixed merged solution issue)
+=======
+>>>>>>> b47d29c (reset main branch to Nadav)
         private void CreateGameTeams(Game game, int? HomeTeamID, int? AwayTeamID)
         {
             int gameID = game.ID;
