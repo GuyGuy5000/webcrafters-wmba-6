@@ -1,0 +1,100 @@
+﻿@model IEnumerable<wmbaApp.Models.Coach>
+
+<partial name="_ViewHeading" />
+
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="form-horizontal">
+        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter/Search @ViewData["numberFilters"]
+        </button>
+        <br />
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by Teams:</label>
+                        @Html.DropDownList("DivisionID", null, "All Divsion", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Filter by Teams:</label>
+                        @Html.DropDownList("TeamID", null, "All Teams", htmlAttributes: new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Search Coaches by First/Last Name/Email/Phone:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <input type="submit" name="actionButton" value="Coach Name" class="non-button-input" title="Sort by Full Name" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
+                 
+                </th>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Team
+                       </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Division
+                    </h6>
+                </th>
+
+                <th style="min-width:120px">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
+                        <strong>&#x270D; Create New</strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.DivisionCoaches.FirstOrDefault().Team.TmName)
+                    </td>
+
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.DivisionCoaches.FirstOrDefault().Division.DivName)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            EDIT
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            DETAILS
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            DELETE
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+
+<div class="clickable-header btn d-none d-lg-block  btn-center">
+    <a href="@Url.Action("Index", "Home")">Back</a>
+</div>
