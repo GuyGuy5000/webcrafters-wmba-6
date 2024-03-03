@@ -160,21 +160,65 @@
                     <button id="btnBatterAction" type="button" class="batter-action-button" onclick="ShowBatterAction()">PITCH</button>
                 </div>
                 <div id="batterActionPrompt" class="batter-prompt">
-                    @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600;" })
+                    <p style="color: #000; margin-bottom: 0;">Choose an action for @Model.Batter.Name</p>
+                    <input id="btnCloseBatterActions" type="button" class="btn-close-batter-prompt" value="X" onclick="HideBatterAction()" />
+                    @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600; max-width: 180px; margin: 10px auto;" })
                     <button id="batterActionSubmit" type="button" class="btn-batter-action-submit">Confirm play</button>
                 </div>
+
+                //if any player has the opportunity to steal a base
+                if ((Model.PlayerOnFirst != null && Model.PlayerOnSecond == null)
+                || (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
+                || Model.PlayerOnThird != null)
+                {
+                    <div class="steal-prompt-container">
+                        @{
+                            if (Model.PlayerOnFirst != null && Model.PlayerOnSecond == null) //check for each possible steal play individually
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealSecond" type="button" class="btn-steal-prompt">Steal Second Base</button>
+                                </div>
+                            }
+
+                            if (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealThird" type="button" class="btn-steal-prompt">Steal Third Base</button>
+                                </div>
+                            }
+
+                            if (Model.PlayerOnThird != null)
+                            {
+                                <div class="steal-prompt">
+                                    <button name="stealPrompt" id="stealHome" type="button" class="btn-steal-prompt">Steal Home Base</button>
+                                </div>
+                            }
+
+                        }
+                    </div>
+                }
             }
         }
+
+        @* @Html.DropDownList("BatterUpNext", null, htmlAttributes: new { @class = "form-control batter-up-next-dropdown", disabled = "disabled" }) *@
+
         <!--Batter actions prompt-->
     </div>
 </section>
 <section>
     <div class="inning-tracker-container">
         <!--Play by play-->
-        <div>
+        <div id="playByPlayContainer" class="play-by-play-container">
+            <h4 style="text-align: center; font-weight: 800;">Play-By-Play</h4>
+            <ol class="play-by-play-list">
+                @*                 <li><div class="green-play-indicator">1B</div>Player one - Single</li>
+                <li><div class="red-play-indicator">X</div>Player Two - Double</li> *@
+            </ol>
         </div>
+
         <!--inning information-->
         <div class="inning-info-container">
+            <h4 style="text-align: center; font-weight: 800;">Current Count</h4>
             <table class="w-100">
                 <tr>
                     <th></th>
@@ -197,7 +241,7 @@
                             {
                                 outputBalls += "<div class='blank-indicator'></div>";
                             }
-                            outputBalls += $"<p class='number-indicator' style='font-size: 24px;'>({Model.Batter.Balls})</p>";
+                            outputBalls += $"<p class='number-indicator'>({Model.Batter.Balls})</p>";
 
                             @Html.Raw(outputBalls)
                         }
@@ -220,7 +264,7 @@
                             {
                                 outputStrikes += "<div class='blank-indicator'></div>";
                             }
-                            outputStrikes += $"<p class='number-indicator' style='font-size: 24px;'>({Model.Batter.Strikes})</p>";
+                            outputStrikes += $"<p class='number-indicator'>({Model.Batter.Strikes})</p>";
 
                             @Html.Raw(outputStrikes)
                         }
@@ -243,10 +287,9 @@
                             {
                                 outputOuts += "<div class='blank-indicator'></div>";
                             }
-                            outputOuts += $"<p class='number-indicator' style='font-size: 24px;'>({Model.TotalOutsThisInning})</p>";
+                            outputOuts += $"<p class='number-indicator'>({Model.TotalOutsThisInning})</p>";
 
                             @Html.Raw(outputOuts)
-
                         }
                     </td>
                 </tr>
@@ -255,9 +298,8 @@
     </div>
 </section>
 
-
 <style>
-    /*Baseball diamond and players*/
+    /*Baseball diamond*/
     .diamond-container {
         background-image: url(../../Image/baseball-diamond.png);
         background-position: center;
@@ -294,6 +336,7 @@
         width: 90px;
     }
 
+    /*Prompt for runners and batter*/
     .player-on-base-prompt {
         background: rgba(255,255,255,0.8);
         border: 2px solid #000;
@@ -377,6 +420,38 @@
         width: 100px;
     }
 
+    .btn-close-batter-prompt {
+        position: relative;
+        left: 110px;
+        top: -17px;
+    }
+
+    /*Steal prompt*/
+    .steal-prompt-container {
+        border-radius: 5px;
+        color: #FFF;
+        font-weight: 600;
+        height: auto;
+        left: 625px;
+        padding: 2px 0;
+        position: relative;
+        text-align: center;
+        top: -40px;
+        width: 140px;
+    }
+
+    .btn-steal-prompt {
+        background-color: #900;
+        border: 2px solid #FFF;
+        border-radius: 5px;
+        color: #F8F8F8;
+        font-size: 17px;
+        font-weight: 600;
+        height: 35px;
+        width: 160px;
+    }
+
+    /*Labels for defensive positions*/
     .first-base {
         left: 463px;
         top: 330px;
@@ -412,6 +487,7 @@
         top: -60px;
     }
 
+    /*Labels for runners and batter*/
     .first-base-label,
     .second-base-label,
     .third-base-label,
@@ -454,12 +530,12 @@
         top: -175px;
     }
 
-    /*Inning tracker CSS*/
+    /*Inning tracker*/
     .inning-tracker-container {
         display: grid;
         grid-template-columns: 1fr 1fr;
         height: 200px;
-        margin-top: 10px;
+        margin: 15px auto;
         width: 100%;
     }
 
@@ -472,20 +548,19 @@
             border: 5px solid #FFF;
         }
 
-        .inning-info-container p {
-            font-size: 16px;
+        .inning-info-container .inning-info-header p {
+            font-size: 24px;
             margin-bottom: 0px;
         }
 
-        .inning-info-container .inning-info-header {
-            background-color: #17254c;
-            color: #FFF;
-            font-size: 16px;
-            font-weight: 600;
-            height: 40px;
-            text-align: center;
-            width: 120px;
-        }
+    .inning-info-header {
+        background-color: #17254c;
+        color: #FFF;
+        font-weight: 600;
+        height: 40px;
+        text-align: center;
+        width: 120px;
+    }
 
 
     .blank-indicator,
@@ -511,15 +586,61 @@
         background-color: #B11;
     }
 
-    .number-indicator{
+    .number-indicator {
         display: inline-block;
-        margin-left: 7px;
+        font-size: 24px;
+        margin: 0 0 0 4px;
+    }
+
+    /*Play by play*/
+    .play-by-play-container {
+        overflow-y: scroll;
+        width: 100%;
+    }
+
+    .play-by-play-list {
+        margin: 0 auto;
+        text-align: left;
+    }
+
+        .play-by-play-list li {
+            background-color: rgba(0,0,0,0.1);
+            font-size: 16px;
+            height: 30px;
+            list-style-type: none;
+            margin: 5px 25px;
+        }
+
+    .green-play-indicator,
+    .red-play-indicator {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 800;
+        height: 30px;
+        margin-right: 10px;
+        text-align: center;
+        width: 30px;
+    }
+
+    .green-play-indicator {
+        background-color: #1B1;
+    }
+
+    .red-play-indicator {
+        background-color: #A00;
+        color: #FFF;
     }
 
 
+    /*     .batter-up-next-dropdown{
+            font-weight: 600;
+            position: relative;
+            left: -28px;
+            max-width: 180px;
+        } */
 
     /* Tablet */
-    @@media only screen and (min-width: 427px) and (max-width: 768px) {
+    @@media only screen and (min-width: 426px) and (max-width: 768px) {
         .diamond-container {
             height: 362px;
             width: 396px;
@@ -563,6 +684,17 @@
             font-size: 10px;
             height: 43px;
             width: 32px;
+        }
+
+        .steal-prompt-container {
+            height: 30px;
+            left: 280px;
+            width: 130px;
+        }
+
+        .btn-steal-prompt {
+            font-size: 13px;
+            width: 130px;
         }
 
         .first-base {
@@ -634,6 +766,48 @@
             left: 70px;
             top: -208px;
         }
+        /*Inning tracker CSS*/
+        .inning-info-container {
+            margin: 0;
+        }
+
+        .inning-info-header {
+            width: 64px;
+        }
+
+        .inning-info-container .inning-info-header p {
+            font-size: 16px;
+            margin-bottom: 0px;
+        }
+
+        .number-indicator {
+            font-size: 20px;
+            margin: 0 0 0 4px;
+        }
+
+        .play-by-play-list {
+            padding-left: 0;
+        }
+
+            .play-by-play-list li {
+                font-size: 12px;
+                height: 27px;
+                margin: 5px 0;
+            }
+
+        .green-play-indicator,
+        .red-play-indicator {
+            font-size: 16px;
+            height: 27px;
+            margin-right: 5px;
+            width: 27px;
+        }
+        /*         .batter-up-next-dropdown {
+                font-size: 14px;
+                left: -24px;
+                top: -60px;
+                width: 140px;
+            } */
     }
 
     /* phone */
@@ -687,6 +861,19 @@
             font-size: 9px;
             height: 45px;
             width: 9px;
+        }
+
+        .steal-prompt-container {
+            height: 30px;
+            left: 209px;
+            top: -60px;
+            width: 100px;
+        }
+
+        .btn-steal-prompt {
+            font-size: 10px;
+            height: 30px;
+            width: 100px;
         }
 
         .first-base {
@@ -758,5 +945,54 @@
             left: 35px;
             top: -202px;
         }
+        /*Inning tracker CSS*/
+        .inning-info-container {
+            margin: 0;
+        }
+
+        .inning-info-header {
+            width: 57px;
+        }
+
+        .inning-info-container .inning-info-header p {
+            font-size: 16px;
+            margin-bottom: 0px;
+        }
+
+        .blank-indicator,
+        .green-indicator,
+        .red-indicator {
+            height: 16px;
+            width: 16px;
+        }
+
+        .number-indicator {
+            font-size: 18px;
+            margin: 0 0 0 1px;
+        }
+
+        .play-by-play-list {
+            padding-left: 0;
+        }
+
+            .play-by-play-list li {
+                font-size: 12px;
+                height: 18px;
+                margin: 5px 0;
+            }
+
+        .green-play-indicator,
+        .red-play-indicator {
+            font-size: 12px;
+            height: 18px;
+            margin-right: 2px;
+            width: 18px;
+        }
+        /*         .batter-up-next-dropdown {
+                font-size: 12px;
+                left: -8px;
+                top: -50px;
+                width: 110px;
+            } */
     }
 </style>
