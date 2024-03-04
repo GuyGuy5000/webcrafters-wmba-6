@@ -24,19 +24,30 @@ namespace wmbaApp.Controllers
             _context = context;
         }
 
-        public IActionResult Index(GameScoreKeepingVM scoreKeeping)
+        public async Task<IActionResult> Index(GameScoreKeepingVM scoreKeeping)
         {
+            //get game using game ID
+            var game = await _context.Games
+                .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
+                .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
+                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
+                .FirstOrDefaultAsync(g => g.ID == scoreKeeping.GameID);
+
+            //lineup is not kept on redirect and has to be retrieved from the db
+            scoreKeeping.LineUp = game.HomeLineup.PlayerLineups.Select(pl => new PlayerScoreKeepingVM(pl.Player.FullName, pl.ID)).ToList();
+
             scoreKeeping.Innings = new InningScoreKeepingVM[9]
                                 {
-                                    new InningScoreKeepingVM(""),
-                                    new InningScoreKeepingVM(""),
-                                    new InningScoreKeepingVM(""),
-                                    new InningScoreKeepingVM(""),
-                                    new InningScoreKeepingVM(""),
-                                    new InningScoreKeepingVM(""),
-                                    new InningScoreKeepingVM(""),
-                                    new InningScoreKeepingVM(""),
-                                    new InningScoreKeepingVM(""),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
+                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
                                 };
 
 

@@ -1,4 +1,6 @@
-﻿namespace wmbaApp.ViewModels
+﻿using wmbaApp.Models;
+
+namespace wmbaApp.ViewModels
 {
     /// <summary>
     ///  A class to represent data used in score keeping
@@ -11,13 +13,30 @@
         public string AwayTeamName { get; set; }
         public int HomeTeamScore { get; set; } = 0;
         public int AwayTeamScore { get; set; } = 0;
-        //public LineUp LineUp {  get; set; } 
+        public List<PlayerScoreKeepingVM> LineUp { get; set; }
         //public PlayByPlay PlayByPlay {  get; set; } 
         public int CurrentInning { get; set; } = 0;
         public InningScoreKeepingVM[] Innings { get; set; } = new InningScoreKeepingVM[9];
 
         public string Score
             => Innings.Sum(i => i?.TotalRunsThisInning).ToString();
+
+        //empty constructor for JSON serialization
+        public GameScoreKeepingVM()
+        {
+
+        }
+
+        public GameScoreKeepingVM(int gameID, string homeTeamName, string awayTeamName, List<PlayerScoreKeepingVM> lineUp)
+        {
+            this.GameID = gameID;
+            this.HomeTeamName = homeTeamName;
+            this.AwayTeamName = awayTeamName;
+            this.HomeTeamScore = 0;
+            this.AwayTeamScore = 0;
+            this.LineUp = lineUp;
+            this.CurrentInning = 0;
+        }
 
     }
 }

@@ -19,6 +19,7 @@ using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
+using wmbaApp.ViewModels;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace wmbaApp.Controllers
@@ -49,6 +50,8 @@ namespace wmbaApp.Controllers
             var games = _context.Games
                 .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
+                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
                 .AsNoTracking();
 
 
@@ -217,28 +220,28 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
-            if (await TryUpdateModelAsync<Game>(gameToUpdate, "", 
-                t =>t.GameStartTime, t => t.GameEndTime, t => t.GameLocation, t => t.DivisionID,
+            if (await TryUpdateModelAsync<Game>(gameToUpdate, "",
+                t => t.GameStartTime, t => t.GameEndTime, t => t.GameLocation, t => t.DivisionID,
                 t => t.AwayTeamID, t => t.HomeTeamID))
             {
 
-                    try
+                try
+                {
+                    _context.Update(gameToUpdate);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { gameToUpdate.ID });
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!GameExists(gameToUpdate.ID))
                     {
-                        _context.Update(gameToUpdate);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction("Details", new { gameToUpdate.ID });
+                        return NotFound();
                     }
-                    catch (DbUpdateConcurrencyException)
+                    else
                     {
-                        if (!GameExists(gameToUpdate.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                        throw;
                     }
+                }
             }
 
             ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "TmName", gameToUpdate.AwayTeamID);
@@ -309,7 +312,7 @@ namespace wmbaApp.Controllers
             {
                 _context.Games.Remove(game);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -402,7 +405,7 @@ namespace wmbaApp.Controllers
         private async Task ReadImportedGameData(ExcelWorksheet workSheet, string feedback)
         {
             // Prepare the collection of imported data
-          //  List<Game> games = new List<Game>();
+            //  List<Game> games = new List<Game>();
 
             var start = workSheet.Dimension.Start;
             var end = workSheet.Dimension.End;
@@ -589,9 +592,39 @@ namespace wmbaApp.Controllers
             return NotFound("No data.");
         }
 
+
+        public async Task<IActionResult> StartGame(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var game = await _context.Games
+                .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
+                .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
+                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            var gameId = game.ID;
+            var homeTeamName = game.HomeTeam.TmName;
+            var awayTeamName = game.AwayTeam.TmName;
+            var lineUp = game.HomeLineup.PlayerLineups.Select(pl => new PlayerScoreKeepingVM(pl.Player.FullName, pl.ID)).ToList(); ;
+
+            var scoreKeeping = new GameScoreKeepingVM(game.ID, homeTeamName, awayTeamName, lineUp);
+
+            return RedirectToAction("Index", "ScoreKeeping", scoreKeeping);
+        }
+
         private bool GameExists(int id)
         {
-          return _context.Games.Any(e => e.ID == id);
+            return _context.Games.Any(e => e.ID == id);
         }
     }
 }

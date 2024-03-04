@@ -142,15 +142,15 @@ namespace wmbaApp.Models
 
 
 
-        [Display(Name = "Away Team:")]
-        [Required(ErrorMessage = "Away Team name is required")]
+        [Display(Name = "Visitor Team:")]
+        [Required(ErrorMessage = "Visitor Team name is required")]
         public int AwayTeamID { get; set; }
         [ForeignKey("AwayTeamID")]
         public Team AwayTeam { get; set; }
 
 
 
-        [Display(Name = "Home and Away Team Division:")]
+        [Display(Name = "Home and Visitor Team Division:")]
         public int DivisionID { get; set; }
 
         [ForeignKey("DivisionID")]
@@ -163,13 +163,13 @@ namespace wmbaApp.Models
 
 
 
-        [Display(Name = "HomeLineup")]
+        [Display(Name = "Home Lineup")]
         public int? HomeLineupID { get; set; }
         public Lineup HomeLineup { get; set; }
 
 
 
-        [Display(Name = "AwayLineup")]
+        [Display(Name = "Visitor Lineup")]
         public int? AwayLineupID { get; set; }
         public Lineup AwayLineup { get; set; }
 
@@ -196,7 +196,7 @@ namespace wmbaApp.Models
 
             if (HomeTeamID == AwayTeamID)
             {
-                yield return new ValidationResult("Home Team and Away Team cannot be the same Team.", new[] { "HomeTeamID", "AwayTeamID" });
+                yield return new ValidationResult("Home Team and Visitor Team cannot be the same Team.", new[] { "HomeTeamID", "AwayTeamID" });
             }
 
         }

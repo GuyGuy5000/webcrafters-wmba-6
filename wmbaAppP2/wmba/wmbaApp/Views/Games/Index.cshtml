@@ -12,29 +12,29 @@
         <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
             <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
-    <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
-        <div class="card card-body bg-light">
-            <div class="row">
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
 
-                <div class="col-md-4">
-                    <label class="control-label">Search By Team/Location:</label>
-                    @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    <div class="col-md-4">
+                        <label class="control-label">Search By Team/Location:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+
+
+
                 </div>
-                <div class="col-md-4 align-self-end">
-                    <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
-                    <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
-                </div>
-
-                   
-
             </div>
         </div>
     </div>
-    </div>
     <table class="table mt-3">
-    <thead>
-        <tr>
-           
+        <thead>
+            <tr>
+
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="d-flex align-items-center">
                         <input type="submit" name="actionButton" value="Games" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Games" />
@@ -45,15 +45,15 @@
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                @Html.DisplayNameFor(model => model.Summary)
+                        @Html.DisplayNameFor(model => model.Summary)
                     </h6>
-            </th>
+                </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                    Division
-                </h6>
-            </th>
+                        Division
+                    </h6>
+                </th>
 
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="d-flex align-items-center">
@@ -63,64 +63,58 @@
                 </th>
 
 
-              <th style="min-width:190px" >
+                <th style="min-width:190px">
                     <a asp-action="Create" class="btn btn-sm btn-outline-success btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new Game">
-                    <strong>&#x270D; Create  Game</strong>
-                </a>
+                        <strong>&#x270D; Create  Game</strong>
+                    </a>
                     <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-success btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Download Games Roaster">
                         <strong>&#x1F4C4; Download Games</strong>
                     </a>
-            </th>
-                
+                </th>
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullVersus)
-                </td>
-                    <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.Summary)
-                </td>
-                <td class="d-none d-lg-table-cell">
-                    @Html.DisplayFor(modelItem => item.HomeTeam.Division.DivName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.GameLocation)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                        EDIT
-                    </a>
-                    <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
-                        DETAILS
-                    </a>
-                        @{
-                            var gameId = item.ID;
-                            var homeTeamName = item.HomeTeam.TmName;
-                            var awayTeamName = item.AwayTeam.TmName;
-                            var scoreKeeping = new GameScoreKeepingVM
-                {
-                    GameID = gameId,
-                    HomeTeamName = homeTeamName,
-                    AwayTeamName = awayTeamName,
-                    HomeTeamScore = 0,
-                    AwayTeamScore = 0
-                };
-                        }
-                        <a href="@Url.Action("Index", "ScoreKeeping", new { GameID = scoreKeeping.GameID, HomeTeamName = scoreKeeping.HomeTeamName, AwayTeamName = scoreKeeping.AwayTeamName })" class="btn btn-sm btn-outline-primary">
-                            START GAME
-                        </a>
-                </td>
+
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullVersus)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.Summary)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.HomeTeam.Division.DivName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GameLocation)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            EDIT
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            DETAILS
+                        </a>
+                        @{
+                            <a asp-action="StartGame" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Start this game">
+                                START GAME
+                            </a>
 
-<partial name="_PagingNavBar" />
+                            // <a href="@Url.Action("Index", "ScoreKeeping", scoreKeeping)" class="btn btn-sm btn-outline-primary">
+                            //     START GAME
+                            // </a>
+                        }
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <partial name="_PagingNavBar" />
 </form>
 
 <div class="clickable-header btn d-none d-lg-block  btn-center">

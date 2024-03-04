@@ -63,9 +63,9 @@ namespace wmbaApp.ViewModels
         }
 
         //loaded inning constructor with players param
-        public InningScoreKeepingVM(Player[] players)
+        public InningScoreKeepingVM(List<PlayerScoreKeepingVM> players)
         {
-            this.Players = new List<PlayerScoreKeepingVM>(PlayerScoreKeepingVM.GetPlayers(players));
+            this.Players = players;
         }
     }
 }

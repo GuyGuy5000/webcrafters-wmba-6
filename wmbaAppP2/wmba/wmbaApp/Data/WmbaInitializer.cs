@@ -215,17 +215,20 @@ namespace wmbaApp.Data
                                     GameStartTime = start,
                                     GameEndTime = start.AddMinutes(random.Next(120, 150)),
                                     GameLocation = locations[random.Next(locations.Length - 1)],
-                                    DivisionID = homeTeam.DivisionID
+                                    DivisionID = homeTeam.DivisionID,
+                                    HomeLineup = new Lineup(),
+                                    AwayLineup = new Lineup()
                                 });
 
-                                // Create lineups for the game
-                                Game createdGame = context.Games.Local.Last();
-                                createdGame.HomeLineup = new Lineup();
-                                createdGame.AwayLineup = new Lineup();
+                                context.SaveChanges();
+
+                                Game createdGame = context.Games.OrderBy(g => g.ID).Last();
 
                                 // Add the players from the teams to each lineup
                                 foreach (Player p in homeTeam.Players)
                                 {
+                                    if (createdGame.HomeLineup.PlayerLineups.Count == 9)
+                                        break;
                                     createdGame.HomeLineup.PlayerLineups.Add(new PlayerLineup()
                                     {
                                         PlayerID = p.ID,
@@ -235,6 +238,8 @@ namespace wmbaApp.Data
 
                                 foreach (Player p in awayTeam.Players)
                                 {
+                                    if (createdGame.AwayLineup.PlayerLineups.Count == 9)
+                                        break;
                                     createdGame.AwayLineup.PlayerLineups.Add(new PlayerLineup()
                                     {
                                         PlayerID = p.ID,
@@ -242,6 +247,7 @@ namespace wmbaApp.Data
                                     });
                                 }
 
+                                context.Games.Update(createdGame);
                                 // Save the changes to the database
                                 context.SaveChanges();
 

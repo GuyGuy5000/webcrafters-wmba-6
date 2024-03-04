@@ -23,10 +23,12 @@
         //shows the batter action prompt
         function ShowBatterAction() {
             $('#batterActionPrompt').show();
+            $('#stealPrompt').hide();
         }
 
         function HideBatterAction() {
             $('#batterActionPrompt').hide();
+            $('#stealPrompt').show();
         }
 
         //reassigns click events. Use when posting back and refreshing the partial view, or on first time load

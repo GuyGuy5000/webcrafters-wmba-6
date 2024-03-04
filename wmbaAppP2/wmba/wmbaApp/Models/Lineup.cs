@@ -20,7 +20,7 @@ namespace wmbaApp.Models
 
 
 
-        [Display(Name = "Away Team Lineup:")]
+        [Display(Name = "Visitor Team Lineup:")]
         [InverseProperty("AwayLineup")]
         public ICollection<Game> AwayGames { get; set; } = new HashSet<Game>();
     }
