@@ -99,15 +99,14 @@
                             DETAILS
                         </a>
                         @{
-                            <a asp-action="StartGame" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Start this game">
-                                START GAME
-                            </a>
 
-                            // <a href="@Url.Action("Index", "ScoreKeeping", scoreKeeping)" class="btn btn-sm btn-outline-primary">
-                            //     START GAME
-                            // </a>
+                            if (item.HomeLineup != null)
+                            {
+                                <a asp-action="StartGame" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Start this game">
+                                    START GAME
+                                </a>
+                            }
                         }
-
                     </td>
                 </tr>
             }

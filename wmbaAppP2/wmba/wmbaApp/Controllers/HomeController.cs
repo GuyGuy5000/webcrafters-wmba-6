@@ -79,13 +79,19 @@ namespace wmbaApp.Controllers
         /// <returns></returns>
         public async Task<IActionResult> ImportTeams(IFormFile theFile)
         {
+            var teams = _context.Teams
+                  .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                  .AsNoTracking();
+
+            // trying to get all Games
             var games = _context.Games
                 .Include(p => p.GameTeams).ThenInclude(p => p.Team)
                 .Include(p => p.AwayTeam)
                 .Include(p => p.HomeTeam)
+                .Include(p => p.HomeLineup)
+                .Include(p => p.AwayLineup)
                 .AsNoTracking()
                 .ToList();
-            //ViewData["Matchups"] = GameMatchup.GetMatchups(_context, teams.ToArray());
 
             // add infos to the List<GameIndexVM>
             var viewModelList = games.Select(game => new GameIndexVM
@@ -100,12 +106,20 @@ namespace wmbaApp.Controllers
                 return View("Index", viewModelList);
             }
 
+            //if the file format is csv
             if (theFile.ContentType == "text/csv")
             {
                 ValidateCSVFile(theFile);
-
+                using var memoryStream = new MemoryStream();
+                await theFile.CopyToAsync(memoryStream);
+                StreamReader reader = new(memoryStream);
+                reader.BaseStream.Position = 0;
+                ImportTeamCSV(reader);
+                reader.BaseStream.Position = 0;
+                ImportPlayerCSV(reader);
 
             }
+            //if the file format is excel
             else if (theFile.ContentType.Contains("excel") || theFile.ContentType.Contains("spreadsheet"))
             {
                 ExcelPackage excel;
@@ -121,9 +135,9 @@ namespace wmbaApp.Controllers
             }
             else
             {
-                ModelState.AddModelError("", "File is the wrong type. Only .CSV files are allowed");
+                ModelState.AddModelError("", "File is the wrong type. Only excel and CSV files are allowed");
             }
-            if (!ModelState.IsValid) //if there were validation errors return to view
+            if (!ModelState.IsValid) //if there were validation errors return to index
                 return View("Index", viewModelList);
 
             return View("Index", viewModelList);
@@ -149,17 +163,19 @@ namespace wmbaApp.Controllers
 
                         string firstLine = null;
                         int counter = 0;
+
+                        //retrieve the first line
                         while (firstLine == null)
                         {
-                            firstLine = await reader.ReadLineAsync();
+                            firstLine = await reader.ReadLineAsync(); //attempt to get the first line
                             counter++;
-                            if (counter > 5000)
+                            if (counter > 5000) //if fails too many times the file is empty
                             {
                                 ModelState.AddModelError("", "Cannot upload an empty file");
                                 return;
                             }
                         }
-                        if (firstLine == "ID,First Name,Last Name,Member ID,Season,Division,Club,Team")
+                        if (firstLine == "ID,First Name,Last Name,Member ID,Season,Division,Club,Team") //if headers are in the correct format
                         {
                             return;
                         }
@@ -176,6 +192,147 @@ namespace wmbaApp.Controllers
             {
                 ModelState.AddModelError("", "An unknown error occured.  Try again, and if the problem persists see your system administrator.");
             }
+        }
+        private void ImportTeamCSV(StreamReader reader)
+        {
+            Collection<string> importedTeams = new();
+            string feedBack = "";
+            string[] headers = reader.ReadLine().Split(","); //order of the headers: [0]ID,[1]First Name,[2]Last Name,[3]Member ID,[4]Season,[5]Division,[6]Club,[7]Team
+            var lines = reader.ReadToEnd().Split("\n"); //get all lines after the header
+            int successCount = 0;
+            int errorCount = 0;
+
+            foreach (string line in lines)
+            {
+                Team t = new();
+
+                string[] data = line.Split(','); //split the line into the individual components
+                if (data.Length == 1) //if length is one, it reached the end of the file 
+                    break;
+
+                string teamName = data[7].Trim(); //check to see if the team name contains a division
+                if (data[7].Contains("U "))
+                    teamName = teamName.Split("U ")[1]; //if yes, split and get everything after the division
+
+                if (!importedTeams.Contains(teamName)) //check to see if a team was already imported
+                    try
+                    {
+                        int? divID = _context.Divisions.FirstOrDefault(d => d.DivName == data[5].ToUpper())?.ID;
+
+                        // Row by row...
+                        t.TmName = teamName;
+                        t.DivisionID = (int)divID;
+                        _context.Teams.Add(t);
+                        _context.SaveChanges();
+                        successCount++;
+                        importedTeams.Add(t.TmName);
+                    }
+                    catch (DbUpdateException dex)
+                    {
+                        errorCount++;
+                        if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
+                        {
+                            //feedBack += "Error: Record " + t.TmName + " was rejected as a duplicate."
+                            //        + "<br />";
+                        }
+                        else
+                        {
+                            //feedBack += "Error: Record " + t.TmName + " caused an error."
+                            //        + "<br />";
+                        }
+                        _context.Remove(t);
+                    }
+                    catch (Exception ex)
+                    {
+                        errorCount++;
+                        if (ex.GetBaseException().Message.Contains("correct format"))
+                        {
+                            //feedBack += "Error: Record " + t.TmName + " was rejected becuase the standard charge was not in the correct format."
+                            //        + "<br />";
+                        }
+                        else
+                        {
+                            //feedBack += "Error: Record " + t.TmName + " caused and error."
+                            //        + "<br />";
+                        }
+                    }
+            }
+
+            feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
+                        " Teams with " + successCount.ToString() + " inserted and " +
+                        errorCount.ToString() + " rejected";
+
+            TempData["TeamImportFeedback"] = feedBack;
+        }
+
+        private void ImportPlayerCSV(StreamReader reader)
+        {
+            string feedBack = "";
+            string[] headers = reader.ReadLine().Split(",");
+            var lines = reader.ReadToEnd().Split("\n");
+            int successCount = 0;
+            int errorCount = 0;
+
+            foreach (string line in lines)
+            {
+                Player p = new();
+
+                string[] data = line.Split(',');
+                if (data.Length == 1)
+                    break;
+
+                string teamName = data[7]; //check to see if the team name contains a division
+                if (data[7].Contains("U "))
+                    teamName = teamName.Split("U ")[1]; //if yes, split and get everything after the division
+
+                try
+                {
+                    int? teamID = _context.Teams.FirstOrDefault(t => t.TmName == teamName)?.ID;
+
+                    // Row by row...
+                    p.PlyrFirstName = data[1];
+                    p.PlyrLastName = data[2];
+                    p.PlyrMemberID = data[3];
+                    p.TeamID = (int)teamID;
+                    _context.Players.Add(p);
+                    _context.SaveChanges();
+                    successCount++;
+                }
+                catch (DbUpdateException dex)
+                {
+                    errorCount++;
+                    if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
+                    {
+                        //feedBack += "Error: Record " + p.PlyrMemberID + " was rejected as a duplicate."
+                        //        + "<br />";
+                    }
+                    else
+                    {
+                        //feedBack += "Error: Record " + p.PlyrMemberID + " caused an error."
+                        //        + "<br />";
+                    }
+                    _context.Remove(p);
+                }
+                catch (Exception ex)
+                {
+                    errorCount++;
+                    if (ex.GetBaseException().Message.Contains("correct format"))
+                    {
+                        //feedBack += "Error: Record " + p.PlyrMemberID + " was rejected becuase the standard charge was not in the correct format."
+                        //        + "<br />";
+                    }
+                    else
+                    {
+                        //feedBack += "Error: Record " + p.PlyrMemberID + " caused and error."
+                        //        + "<br />";
+                    }
+                }
+            }
+
+            feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
+                        " Players with " + successCount.ToString() + " inserted and " +
+                        errorCount.ToString() + " rejected";
+            TempData["PlayerImportFeedback"] = feedBack;
         }
 
         private void ValidateExcelFile(ExcelPackage excel)
@@ -248,13 +405,13 @@ namespace wmbaApp.Controllers
                         errorCount++;
                         if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
                         {
-                            feedBack += "Error: Record " + t.TmName + " was rejected as a duplicate."
-                                    + "<br />";
+                            //feedBack += "Error: Record " + t.TmName + " was rejected as a duplicate."
+                            //        + "<br />";
                         }
                         else
                         {
-                            feedBack += "Error: Record " + t.TmName + " caused an error."
-                                    + "<br />";
+                            //feedBack += "Error: Record " + t.TmName + " caused an error."
+                            //        + "<br />";
                         }
                         //Here is the trick to using SaveChanges in a loop.  You must remove the 
                         //offending object from the cue or it will keep raising the same error.
@@ -265,18 +422,18 @@ namespace wmbaApp.Controllers
                         errorCount++;
                         if (ex.GetBaseException().Message.Contains("correct format"))
                         {
-                            feedBack += "Error: Record " + t.TmName + " was rejected becuase the standard charge was not in the correct format."
-                                    + "<br />";
+                            //feedBack += "Error: Record " + t.TmName + " was rejected becuase the standard charge was not in the correct format."
+                            //        + "<br />";
                         }
                         else
                         {
-                            feedBack += "Error: Record " + t.TmName + " caused and error."
-                                    + "<br />";
+                            //feedBack += "Error: Record " + t.TmName + " caused and error."
+                            //        + "<br />";
                         }
                     }
             }
             feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
-                        " Records with " + successCount.ToString() + " inserted and " +
+                        " Teams with " + successCount.ToString() + " inserted and " +
                         errorCount.ToString() + " rejected";
             TempData["TeamImportFeedback"] = feedBack;
         }
@@ -310,13 +467,13 @@ namespace wmbaApp.Controllers
                     errorCount++;
                     if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
                     {
-                        feedBack += "Error: Record " + p.PlyrMemberID + " was rejected as a duplicate."
-                                + "<br />";
+                        //feedBack += "Error: Record " + p.PlyrMemberID + " was rejected as a duplicate."
+                        //        + "<br />";
                     }
                     else
                     {
-                        feedBack += "Error: Record " + p.PlyrMemberID + " caused an error."
-                                + "<br />";
+                        //feedBack += "Error: Record " + p.PlyrMemberID + " caused an error."
+                        //        + "<br />";
                     }
                     //Here is the trick to using SaveChanges in a loop.  You must remove the 
                     //offending object from the cue or it will keep raising the same error.
@@ -327,18 +484,18 @@ namespace wmbaApp.Controllers
                     errorCount++;
                     if (ex.GetBaseException().Message.Contains("correct format"))
                     {
-                        feedBack += "Error: Record " + p.PlyrMemberID + " was rejected becuase the standard charge was not in the correct format."
-                                + "<br />";
+                        //feedBack += "Error: Record " + p.PlyrMemberID + " was rejected becuase the standard charge was not in the correct format."
+                        //        + "<br />";
                     }
                     else
                     {
-                        feedBack += "Error: Record " + p.PlyrMemberID + " caused and error."
-                                + "<br />";
+                        //feedBack += "Error: Record " + p.PlyrMemberID + " caused and error."
+                        //        + "<br />";
                     }
                 }
             }
             feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
-                        " Records with " + successCount.ToString() + " inserted and " +
+                        " Players with " + successCount.ToString() + " inserted and " +
                         errorCount.ToString() + " rejected";
             TempData["PlayerImportFeedback"] = feedBack;
         }
