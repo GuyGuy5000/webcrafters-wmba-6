@@ -260,7 +260,7 @@
                                 remainingChecksStrikes++;
                                 outputStrikes += "<div class='red-indicator'></div>";
                             }
-                            for (int i = remainingChecksStrikes; i < 3; i++)
+                            for (int i = remainingChecksStrikes; i < (int)TempData.Peek("StrikeLimit"); i++)
                             {
                                 outputStrikes += "<div class='blank-indicator'></div>";
                             }

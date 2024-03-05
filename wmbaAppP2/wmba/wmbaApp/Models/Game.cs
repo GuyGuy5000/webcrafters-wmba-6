@@ -133,6 +133,11 @@ namespace wmbaApp.Models
         [Display(Name = "Game Location")]
         public string GameLocation { get; set; }
 
+        [Display(Name = "Score")]
+        public int HomeTeamScore {  get; set; }
+
+        [Display(Name = "Score")]
+        public int CurrentInning { get; set; }
 
         [Display(Name = "Home Team:")]
         [Required(ErrorMessage = "Home Team name is required")]

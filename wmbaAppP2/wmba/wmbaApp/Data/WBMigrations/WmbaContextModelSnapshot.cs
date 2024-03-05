@@ -97,6 +97,9 @@ namespace wmbaApp.Data.WBMigrations
                     b.Property<int>("AwayTeamID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("CurrentInning")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("DivisionID")
                         .HasColumnType("INTEGER");
 
@@ -117,6 +120,9 @@ namespace wmbaApp.Data.WBMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("HomeTeamID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HomeTeamScore")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("ID");
