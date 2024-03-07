@@ -7,7 +7,7 @@ namespace wmbaApp.Data
 {
     /// <summary>
     /// Context class for code first DB approach
-    /// - Nadav Hilu
+    /// - Nadav Hilu, Emmanuel James
     /// </summary>
     public class WmbaContext : DbContext
     {
@@ -34,6 +34,11 @@ namespace wmbaApp.Data
         public DbSet<PlayerLineup> PlayerLineup { get; set; }
 
         public DbSet<UploadedFile> UploadedFiles { get; set; }
+
+        public DbSet<PlayByPlay> PlayByPlays { get; set; }
+        public DbSet<Inning> Innings { get; set; }
+        public DbSet<PlayerAction> PlayerActions { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,6 +67,12 @@ namespace wmbaApp.Data
             //Unique constraint for player member ID
             modelBuilder.Entity<Player>()
                 .HasIndex(p => p.PlyrMemberID)
+                .IsUnique();
+
+
+            //Unique constraint for PlayerActionName
+            modelBuilder.Entity<PlayerAction>()
+                .HasIndex(pa => pa.PlayerActionName)
                 .IsUnique();
 
             ////Unique constraint for position names
@@ -101,6 +112,27 @@ namespace wmbaApp.Data
                 .HasMany<DivisionCoach>(d => d.DivisionCoaches)
                 .WithOne(c => c.Division)
                 .HasForeignKey(c => c.DivisionID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Prevent cascade delete from Game to Innings
+            modelBuilder.Entity<Game>()
+                .HasMany<Inning>(g => g.Innings)
+                .WithOne(i => i.Game)
+                .HasForeignKey(i => i.gameID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Prevent cascade delete from Innings to PlayByPlay
+            modelBuilder.Entity<Inning>()
+                .HasMany<PlayByPlay>(i => i.PlayByPlays)
+                .WithOne(pbp => pbp.Inning)
+                .HasForeignKey(pbp => pbp.InningID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            //Prevent cascade delete from PlayerAction to PlayByPlay
+            modelBuilder.Entity<PlayerAction>()
+                .HasMany<PlayByPlay>(pa => pa.PlayByPlays)
+                .WithOne(pbp => pbp.PlayerAction)
+                .HasForeignKey(pbp => pbp.PlayerActionID)
                 .OnDelete(DeleteBehavior.Restrict);
 
             ////Prevent cascade delete from position to player_position

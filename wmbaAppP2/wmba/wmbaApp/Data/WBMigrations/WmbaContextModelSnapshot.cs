@@ -97,6 +97,9 @@ namespace wmbaApp.Data.WBMigrations
                     b.Property<int>("AwayTeamID")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("AwayTeamScore")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("CurrentInning")
                         .HasColumnType("INTEGER");
 
@@ -166,6 +169,28 @@ namespace wmbaApp.Data.WBMigrations
                     b.ToTable("GameTeams");
                 });
 
+            modelBuilder.Entity("wmbaApp.Models.Inning", b =>
+                {
+                    b.Property<int>("InningID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AwayTeamScore")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("HomeTeamScore")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("gameID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InningID");
+
+                    b.HasIndex("gameID");
+
+                    b.ToTable("Innings");
+                });
+
             modelBuilder.Entity("wmbaApp.Models.Lineup", b =>
                 {
                     b.Property<int>("ID")
@@ -175,6 +200,32 @@ namespace wmbaApp.Data.WBMigrations
                     b.HasKey("ID");
 
                     b.ToTable("Lineups");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayByPlay", b =>
+                {
+                    b.Property<int>("PlayByPlayID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InningID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerActionID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("PlayerID")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("PlayByPlayID");
+
+                    b.HasIndex("InningID");
+
+                    b.HasIndex("PlayerActionID");
+
+                    b.HasIndex("PlayerID");
+
+                    b.ToTable("PlayByPlays");
                 });
 
             modelBuilder.Entity("wmbaApp.Models.Player", b =>
@@ -221,6 +272,23 @@ namespace wmbaApp.Data.WBMigrations
                         .IsUnique();
 
                     b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayerAction", b =>
+                {
+                    b.Property<int>("PlayerActionID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("PlayerActionName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("PlayerActionID");
+
+                    b.HasIndex("PlayerActionName")
+                        .IsUnique();
+
+                    b.ToTable("PlayerActions");
                 });
 
             modelBuilder.Entity("wmbaApp.Models.PlayerLineup", b =>
@@ -440,6 +508,44 @@ namespace wmbaApp.Data.WBMigrations
                     b.Navigation("Team");
                 });
 
+            modelBuilder.Entity("wmbaApp.Models.Inning", b =>
+                {
+                    b.HasOne("wmbaApp.Models.Game", "Game")
+                        .WithMany("Innings")
+                        .HasForeignKey("gameID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayByPlay", b =>
+                {
+                    b.HasOne("wmbaApp.Models.Inning", "Inning")
+                        .WithMany("PlayByPlays")
+                        .HasForeignKey("InningID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("wmbaApp.Models.PlayerAction", "PlayerAction")
+                        .WithMany("PlayByPlays")
+                        .HasForeignKey("PlayerActionID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("wmbaApp.Models.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Inning");
+
+                    b.Navigation("Player");
+
+                    b.Navigation("PlayerAction");
+                });
+
             modelBuilder.Entity("wmbaApp.Models.Player", b =>
                 {
                     b.HasOne("wmbaApp.Models.Statistic", "Statistics")
@@ -511,6 +617,13 @@ namespace wmbaApp.Data.WBMigrations
             modelBuilder.Entity("wmbaApp.Models.Game", b =>
                 {
                     b.Navigation("GameTeams");
+
+                    b.Navigation("Innings");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.Inning", b =>
+                {
+                    b.Navigation("PlayByPlays");
                 });
 
             modelBuilder.Entity("wmbaApp.Models.Lineup", b =>
@@ -525,6 +638,11 @@ namespace wmbaApp.Data.WBMigrations
             modelBuilder.Entity("wmbaApp.Models.Player", b =>
                 {
                     b.Navigation("PlayerLineups");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.PlayerAction", b =>
+                {
+                    b.Navigation("PlayByPlays");
                 });
 
             modelBuilder.Entity("wmbaApp.Models.Statistic", b =>

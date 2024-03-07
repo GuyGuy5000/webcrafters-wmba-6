@@ -178,6 +178,18 @@ namespace wmbaApp.Data
                 //    context.SaveChanges();
                 //}
 
+                //player action seed data
+                string[] actions = { "Single", "Double", "Triple", "Home Run", "Ball", "Strike", "Foul Ball", "Foul Tip", "Hit By Pitch", "Intentional Walk", "Catcher Interference",
+                    "Home Base" ,"First Base", "Second Base", "Third Base", "Out", "Walk"};
+                if (!context.PlayerActions.Any())
+                {
+                    foreach (string actionName in actions)
+                    {
+                        context.PlayerActions.Add(new PlayerAction { PlayerActionName = actionName });
+                    }
+                    context.SaveChanges();
+                }
+
                 // Game seed data
                 string[] locations = { "Chippawa Park Ball Diamond", "Maple Park Diamond 1", "Plymouth Park Ball Diamond", "PCMBA Rotary Complex", "Memorial Park Diamond 1", "Memorial Park Diamond 2", "Memorial Park Diamond 3", "Memorial Park Diamond 4", "Port Robinson Park Ball Diamond", "Treelawn Park Ball Diamond", "Southward Community Park Diamond 4" };
 

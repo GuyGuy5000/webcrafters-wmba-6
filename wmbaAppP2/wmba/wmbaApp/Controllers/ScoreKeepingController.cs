@@ -34,23 +34,17 @@ namespace wmbaApp.Controllers
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
-                //.Include(g => g.Inning).ThenInclude(i => i.PlayByPlay)
+                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.ID == scoreKeeping.GameID);
-
-            /*
-             if (game.Inning.currentInning > 0)
-            {
-                foreach()
-            }
-             */
-
 
             //update scorekeeping to match what is in the db
             scoreKeeping.LineUp = game.HomeLineup.PlayerLineups.Select(pl => new PlayerScoreKeepingVM(pl.Player.FullName, pl.ID)).ToList();
             scoreKeeping.HomeTeamScore = game.HomeTeamScore;
+            scoreKeeping.AwayTeamScore = game.AwayTeamScore;
             scoreKeeping.CurrentInning = game.CurrentInning;
 
-            scoreKeeping.Innings = new InningScoreKeepingVM[9]
+            scoreKeeping.Innings = new List<InningScoreKeepingVM>()
                                 {
                                     new InningScoreKeepingVM(scoreKeeping.LineUp),
                                     new InningScoreKeepingVM(scoreKeeping.LineUp),
@@ -84,40 +78,48 @@ namespace wmbaApp.Controllers
         //Returs a fresh baseball diamond with a new inning and updates the database
         public async Task<IActionResult> StartNewInning(string gameScoreKeepingJSON)
         {
-            GameScoreKeepingVM gameScoreKeepingVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameScoreKeepingJSON);
-            InningScoreKeepingVM inning = gameScoreKeepingVM.Innings[gameScoreKeepingVM.CurrentInning];
+            GameScoreKeepingVM gameVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameScoreKeepingJSON);
+            InningScoreKeepingVM previousInningVM = gameVM.Innings[gameVM.CurrentInning - 1]; //gets the previous inning
 
 
             var game = await _context.Games
-               .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
-               .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
-               .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
-               .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
-               //.Include(g => g.Inning).ThenInclude(i => i.PlayByPlay)
-               .FirstOrDefaultAsync(g => g.ID == gameScoreKeepingVM.GameID);
+                .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
+                .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
+                .Include(p => p.HomeTeam).ThenInclude(p => p.Division)
+                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
+               .FirstOrDefaultAsync(g => g.ID == gameVM.GameID);
 
 
             //save the previous inning's data
             try
             {
-                //var currentInning = game.Innings.ToArray()[game.CurrentInning - 1];
-                //var playByPlay = currentInning.PlayByPlay;
+                game.CurrentInning = gameVM.CurrentInning;
+                game.HomeTeamScore = gameVM.HomeTeamScore;
+                game.AwayTeamScore = gameVM.AwayTeamScore;
+                game.CurrentInning = gameVM.CurrentInning;
 
-                //currentInning.Score = inning.TotalRunsThisInning;
-                game.HomeTeamScore = gameScoreKeepingVM.HomeTeamScore;
-                game.CurrentInning = gameScoreKeepingVM.CurrentInning;
+                var previousInning = new Inning() { gameID = game.ID };
+
+                previousInning.HomeTeamScore = previousInningVM.TotalRunsThisInning;
+                previousInning.AwayTeamScore = previousInningVM.AwayTeamScore;
+                //previousInning.PlayByPlays = previousInningVM.PlayByPlays;
 
                 _context.Games.Update(game);
                 _context.SaveChanges();
-            } 
-            catch (Exception dex)
+            }
+            catch (DbUpdateException dex)
             {
-
+                ModelState.AddModelError("", "Unable to save inning. Try again, and if the problem persists see your system administrator.");
             }
 
-            PopulateDropDownLists(inning);
+            PopulateDropDownLists(gameVM.Innings[gameVM.CurrentInning]);
+            TempData["HandleFirstBase"] = false;
+            TempData["HandleSecondBase"] = false;
+            TempData["HandleThirdBase"] = false;
 
-            return PartialView("_BaseballDiamond", inning);
+            return PartialView("_BaseballDiamond", gameVM.Innings[gameVM.CurrentInning]);
         }
 
         //handles a runner advancing to the next base
@@ -239,39 +241,39 @@ namespace wmbaApp.Controllers
 
             AtBatOutcome action = (AtBatOutcome)actionID;
 
-            //based on the action, update the player's stats and base position accordingly
+            //based on the action, update the playerVM's stats and base position accordingly
             switch (action)
             {
                 case AtBatOutcome.Single:
-                    RecordSingle(currentBatter, playerOnFirst, playerOnSecond, playerOnThird);
+                    RecordSingle(inning, currentBatter, playerOnFirst, playerOnSecond, playerOnThird);
                     break;
 
                 case AtBatOutcome.Double:
-                    RecordDouble(currentBatter, playerOnFirst, playerOnSecond, playerOnThird);
+                    RecordDouble(inning, currentBatter, playerOnFirst, playerOnSecond, playerOnThird);
                     break;
 
                 case AtBatOutcome.Triple:
-                    RecordTriple(currentBatter, playerOnFirst, playerOnSecond, playerOnThird);
+                    RecordTriple(inning, currentBatter, playerOnFirst, playerOnSecond, playerOnThird);
                     break;
 
                 case AtBatOutcome.HomeRun:
-                    RecordHomeRun(currentBatter, playerOnFirst, playerOnSecond, playerOnThird);
+                    RecordHomeRun(inning, currentBatter, playerOnFirst, playerOnSecond, playerOnThird);
                     break;
 
                 case AtBatOutcome.Ball:
-                    RecordBall(currentBatter);
+                    RecordBall(inning, currentBatter);
                     break;
 
                 case AtBatOutcome.Strike:
-                    RecordStrike(currentBatter);
+                    RecordStrike(inning, currentBatter);
                     break;
 
                 case AtBatOutcome.FoulBall:
-                    RecordFoul(currentBatter);
+                    RecordFoul(inning, currentBatter);
                     break;
 
-                case AtBatOutcome.FoulTipOut:
-                    RecordFoulTipOut(currentBatter);
+                case AtBatOutcome.FoulTip:
+                    RecordFoulTip(inning, currentBatter);
                     break;
 
                 case AtBatOutcome.HitByPitch:
@@ -338,12 +340,8 @@ namespace wmbaApp.Controllers
         {
             GameScoreKeepingVM game = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
 
-            if (game.Innings[game.CurrentInning].TotalOutsThisInning >= 3)
-                game.CurrentInning++;
-            if (game.CurrentInning >= 10)
-                return RedirectToAction("Index", "Games");
 
-            game.HomeTeamScore = Convert.ToInt32(game.Score);
+            game.HomeTeamScore = game.Innings.Sum(i => i.TotalRunsThisInning);
             return PartialView("_ScoreBar", game);
         }
 
@@ -355,16 +353,23 @@ namespace wmbaApp.Controllers
 
         public string UpdateGameScoreKeeping(string gameJSON, string currentInningJSON)
         {
-            GameScoreKeepingVM game = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
+            GameScoreKeepingVM gameVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
             InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(currentInningJSON);
 
-            game.HomeTeamScore = game.Innings.Sum(i => i.TotalRunsThisInning);
-            game.Innings[game.CurrentInning] = inning;
+            if (gameVM.CurrentInning < gameVM.Innings.Count)
+            {
+                gameVM.HomeTeamScore = gameVM.Innings.Sum(i => i.TotalRunsThisInning);
+                gameVM.Innings[gameVM.CurrentInning] = inning;
+            }
 
             if (inning.TotalOutsThisInning >= 3)
-                game.CurrentInning++;
+            {
+                gameVM.CurrentInning++;
+                if (gameVM.CurrentInning >= gameVM.Innings.Count)
+                    gameVM.Innings.Add(new InningScoreKeepingVM(gameVM.LineUp));
+            }
 
-            return JsonConvert.SerializeObject(game, settings: new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+            return JsonConvert.SerializeObject(gameVM, settings: new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         }
 
 
@@ -410,8 +415,10 @@ namespace wmbaApp.Controllers
 
 
         #region ActionMethods
-        private async void RecordSingle(PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
+        private async void RecordSingle(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "single"));
+
             currentBatter.FirstBase = true;
             currentBatter.Singles++;
             currentBatter.Hits++;
@@ -424,8 +431,10 @@ namespace wmbaApp.Controllers
                 TempData["HandleThirdBase"] = true;
         }
 
-        private async void RecordDouble(PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
+        private async void RecordDouble(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "double"));
+
             currentBatter.SecondBase = true;
             currentBatter.Doubles++;
             currentBatter.Hits++;
@@ -438,8 +447,10 @@ namespace wmbaApp.Controllers
                 TempData["HandleThirdBase"] = true;
         }
 
-        private async void RecordTriple(PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
+        private async void RecordTriple(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "triple"));
+
             currentBatter.ThirdBase = true;
             currentBatter.Triples++;
             currentBatter.Hits++;
@@ -452,8 +463,10 @@ namespace wmbaApp.Controllers
                 TempData["HandleThirdBase"] = true;
         }
 
-        private async void RecordHomeRun(PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
+        private async void RecordHomeRun(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "home run"));
+
             currentBatter.Runs++;
             currentBatter.HR++;
             currentBatter.Hits++;
@@ -483,18 +496,24 @@ namespace wmbaApp.Controllers
             }
         }
 
-        private async void RecordBall(PlayerScoreKeepingVM currentBatter)
+        private async void RecordBall(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "ball"));
+
             currentBatter.Balls++;
         }
 
-        private async void RecordStrike(PlayerScoreKeepingVM currentBatter)
+        private async void RecordStrike(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "strike"));
+
             currentBatter.Strikes++;
         }
 
-        private async void RecordFoul(PlayerScoreKeepingVM currentBatter)
+        private async void RecordFoul(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "foul ball"));
+
             if (currentBatter.Strikes < 2) //in the case of less that two strikes, the foul must be counted as a special foul
             {
                 currentBatter.Strikes++;
@@ -509,24 +528,17 @@ namespace wmbaApp.Controllers
             }
         }
 
-        private async void RecordFoulTipOut(PlayerScoreKeepingVM currentBatter)
+        private async void RecordFoulTip(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter)
         {
-            if (currentBatter.Strikes < 2)
-            {
-                currentBatter.Strikes++;
-                currentBatter.Fouls++;
-                currentBatter.FoulStrikes++;
-                currentBatter.Hits++;
-            }
-            else
-            {
-                currentBatter.Fouls++;
-                currentBatter.Hits++;
-            }
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "foul tip"));
+
+            currentBatter.Strikes++;
         }
 
         private async void RecordHitByPitch(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "hit by pitch"));
+
             //advance any runners ahead of the batter
             if (playerOnFirst != null)
             {
@@ -553,6 +565,8 @@ namespace wmbaApp.Controllers
 
         private async void RecordIntentionalWalk(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "intentional walk"));
+
             //advance any runners ahead of the batter
             if (playerOnFirst != null)
             {
@@ -579,6 +593,8 @@ namespace wmbaApp.Controllers
 
         private async void RecordCatcherInterference(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "catcher interference"));
+
             //advance any runners ahead of the batter
             if (playerOnFirst != null)
             {
@@ -605,12 +621,17 @@ namespace wmbaApp.Controllers
 
         private async void RecordOut(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter)
         {
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "out"));
+
             currentBatter.Outs++;
             inning.CurrentBatter++;
         }
 
         private async void RecordWalk(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)
         {
+            //add a play to the playbyplay
+            inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "walk"));
+
             //advance any runners ahead of the batter
             if (playerOnFirst != null)
             {
@@ -635,8 +656,19 @@ namespace wmbaApp.Controllers
             inning.CurrentBatter++;
         }
 
-
         #endregion
 
+        #region PlayByPlayMethods
+        //returns a PlayByPlay object based on the actionName
+        public PlayByPlay GetPlayByPlay(int playerID, string actionName)
+        {
+            //get action and player from db
+            var playerAction = _context.PlayerActions.FirstOrDefault(pa => pa.PlayerActionName.ToLower() == actionName);
+            var player = _context.Players.FirstOrDefault(p => p.ID == playerID);
+
+            //return a PlayByPlay with player and playerAction that aren't null
+            return new PlayByPlay { PlayerID = playerID, Player = player, PlayerActionID = playerAction.PlayerActionID, PlayerAction = playerAction };
+        }
+        #endregion
     }
 }

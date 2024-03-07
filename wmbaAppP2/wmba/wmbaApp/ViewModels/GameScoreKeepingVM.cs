@@ -14,9 +14,8 @@ namespace wmbaApp.ViewModels
         public int HomeTeamScore { get; set; } = 0;
         public int AwayTeamScore { get; set; } = 0;
         public List<PlayerScoreKeepingVM> LineUp { get; set; }
-        //public PlayByPlay PlayByPlay {  get; set; } 
         public int CurrentInning { get; set; } = 0;
-        public InningScoreKeepingVM[] Innings { get; set; } = new InningScoreKeepingVM[9];
+        public List<InningScoreKeepingVM> Innings { get; set; } = new List<InningScoreKeepingVM>();
 
         public string Score
             => Innings.Sum(i => i?.TotalRunsThisInning).ToString();

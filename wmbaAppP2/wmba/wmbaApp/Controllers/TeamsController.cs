@@ -498,12 +498,26 @@ namespace wmbaApp.Controllers
                 }
                 if (activePlayers > 0)
                 {
-                    ModelState.AddModelError("FK", $"Unable to deactivate a team that has active players. Reassign or deactivate the players assigned to this team.");
-                    return View(team);
+                    ModelState.AddModelError("FK1", $"Unable to make a team that has active players inactive. Reassign the players assigned to this team, or make all active players inactive.");
                 }
+
+                int activeGames = 0;
+                foreach (GameTeam g in team.GameTeams)
+                {
+                   if (g.Game.GameEndTime > DateTime.Now)
+                    {
+                        activeGames++;
+                    }
+                }
+                if (activeGames > 0)
+                {
+                    ModelState.AddModelError("FK2", $"Unable to make a team that has upcoming games inactive. Reassign or cancel the upcoming games for this team");
+                }
+                return View(team);
+
             }
 
-            
+
 
             if (team != null)
             {

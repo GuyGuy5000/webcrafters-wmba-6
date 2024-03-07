@@ -102,7 +102,7 @@ namespace wmbaApp.Controllers
 
             if (theFile == null)
             {
-                ModelState.AddModelError("", "Upload a file to continue.");
+                ModelState.AddModelError("", "Choose a file to continue.");
                 return View("Index", viewModelList);
             }
 

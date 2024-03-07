@@ -102,9 +102,16 @@
 
                             if (item.HomeLineup != null)
                             {
-                                <a asp-action="StartGame" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Start this game">
-                                    START GAME
-                                </a>
+                                if (item.CurrentInning <= 9)
+                                {
+                                    <a asp-action="StartGame" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Start this game">
+                                        START GAME
+                                    </a>
+                                }
+                                else
+                                {
+                                    //put a button to redirect to game results view (N.Y.I) here
+                                }
                             }
                         }
                     </td>

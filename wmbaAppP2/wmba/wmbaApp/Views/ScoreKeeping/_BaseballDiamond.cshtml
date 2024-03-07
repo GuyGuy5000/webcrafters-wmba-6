@@ -193,7 +193,6 @@
                                     <button name="stealPrompt" id="stealHome" type="button" class="btn-steal-prompt">Steal Home Base</button>
                                 </div>
                             }
-
                         }
                     </div>
                 }
@@ -211,6 +210,81 @@
         <div id="playByPlayContainer" class="play-by-play-container">
             <h4 style="text-align: center; font-weight: 800;">Play-By-Play</h4>
             <ol class="play-by-play-list">
+                @{
+                    string playByPlayOutput = "";
+                    foreach (PlayByPlay play in Model.PlayByPlays)
+                    {
+                        switch (play.PlayerAction.PlayerActionName)
+                        {
+                            case "Single":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>1B</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Double":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>2B</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Triple":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>3B</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Home Run":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>HR</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Ball":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>B</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Strike":
+                                playByPlayOutput += $"<li><div class='red-play-indicator'>K</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Foul Ball":
+                                playByPlayOutput += $"<li><div class='red-play-indicator'>FB</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Foul Tip":
+                                playByPlayOutput += $"<li><div class='red-play-indicator'>FT</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Hit By Pitch":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>HBP</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Intentional Walk":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>IBB</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Catcher Interference":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>CI</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Home Base":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>R</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+                            case "First Base":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>1ST</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+                            case "Second Base":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>2ND</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+                            case "Third Base":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>3RD</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Out":
+                                playByPlayOutput += $"<li><div class='red-play-indicator'>O</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+                            case "Walk":
+                                playByPlayOutput += $"<li><div class='green-play-indicator'>BB</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                        }
+                    }
+                    @Html.Raw(playByPlayOutput);
+                }
+
                 @*                 <li><div class="green-play-indicator">1B</div>Player one - Single</li>
                 <li><div class="red-play-indicator">X</div>Player Two - Double</li> *@
             </ol>
@@ -633,11 +707,11 @@
 
 
     /*     .batter-up-next-dropdown{
-            font-weight: 600;
-            position: relative;
-            left: -28px;
-            max-width: 180px;
-        } */
+                font-weight: 600;
+                position: relative;
+                left: -28px;
+                max-width: 180px;
+            } */
 
     /* Tablet */
     @@media only screen and (min-width: 426px) and (max-width: 768px) {
@@ -803,11 +877,11 @@
             width: 27px;
         }
         /*         .batter-up-next-dropdown {
-                font-size: 14px;
-                left: -24px;
-                top: -60px;
-                width: 140px;
-            } */
+                    font-size: 14px;
+                    left: -24px;
+                    top: -60px;
+                    width: 140px;
+                } */
     }
 
     /* phone */
@@ -989,10 +1063,10 @@
             width: 18px;
         }
         /*         .batter-up-next-dropdown {
-                font-size: 12px;
-                left: -8px;
-                top: -50px;
-                width: 110px;
-            } */
+                    font-size: 12px;
+                    left: -8px;
+                    top: -50px;
+                    width: 110px;
+                } */
     }
 </style>

@@ -133,11 +133,14 @@ namespace wmbaApp.Models
         [Display(Name = "Game Location")]
         public string GameLocation { get; set; }
 
-        [Display(Name = "Score")]
-        public int HomeTeamScore {  get; set; }
+        [Display(Name = "Home Team Score")]
+        public int HomeTeamScore { get; set; } = 0;
 
-        [Display(Name = "Score")]
-        public int CurrentInning { get; set; }
+        [Display(Name = "Visitor Team Score")]
+        public int AwayTeamScore { get; set; } = 0;
+
+        [Display(Name = "Current Inning")]
+        public int CurrentInning { get; set; } = 0;
 
         [Display(Name = "Home Team:")]
         [Required(ErrorMessage = "Home Team name is required")]
@@ -178,6 +181,9 @@ namespace wmbaApp.Models
         public int? AwayLineupID { get; set; }
         public Lineup AwayLineup { get; set; }
 
+
+        [Display(Name = "Innings")]
+        public ICollection<Inning> Innings { get; set; } = new HashSet<Inning>();
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

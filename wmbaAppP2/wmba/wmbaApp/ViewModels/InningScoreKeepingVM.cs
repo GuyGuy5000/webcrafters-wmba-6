@@ -5,6 +5,9 @@ namespace wmbaApp.ViewModels
     public class InningScoreKeepingVM
     {
         public List<PlayerScoreKeepingVM> Players { get; set; }
+        public List<PlayByPlay> PlayByPlays {  get; set; } = new List<PlayByPlay>();
+        public List<InningScoreKeepingVM> UndoHistory { get; set; } = new List<InningScoreKeepingVM>();
+        public int AwayTeamScore { get; set; } = 0;
         public int CurrentBatter { get; set; } = 0;
 
         public int TotalRunsThisInning

@@ -121,15 +121,20 @@
                 success: function (result) {
                     $("#gameScoreKeepningJSON").val(result); // set the div to the result of the postback
                     var updatedGame = JSON.parse(result);
-                    if (updatedGame.currentInning > game.currentInning)
+
+                    if (updatedGame.currentInning > game.currentInning) {
                         StartNewInning();
-
-                    UpdateScorePartial();
-                    UpdateInningsTablePartial();
-
+                    }
+                    else {
+                        UpdateScorePartial();
+                        UpdateInningsTablePartial();
+                    }
                 },
                 error: function (result, status, err) {
-                    window.alert("Update game " + result.responseText + " " + status.responseText, err.Message);
+                    if (updatedGame.currentInning >= 9)
+                        window.location.href = "@Url.Action("Index", "Games")";
+                    else
+                        window.alert("Update game " + result.responseText + " " + status.responseText, err.Message);
                 }
             });
         }
@@ -144,9 +149,11 @@
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
                     AssignClickEvents();
+                    UpdateScorePartial();
+                    UpdateInningsTablePartial();
                 },
                 error: function (result, status, err) {
-                    window.alert("Update game " + result.responseText + " " + status.responseText, err.Message);
+                    window.alert("Update new inning " + result.responseText + " " + status.responseText, err.Message);
                 }
             });
         }

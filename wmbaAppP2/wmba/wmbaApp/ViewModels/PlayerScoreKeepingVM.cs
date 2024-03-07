@@ -21,7 +21,7 @@ namespace wmbaApp.ViewModels
         Ball,
         Strike,
         FoulBall,
-        FoulTipOut,
+        FoulTip,
         HitByPitch,
         IntentionalWalk,
         CatcherInterference,
