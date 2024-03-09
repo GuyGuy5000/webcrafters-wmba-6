@@ -259,6 +259,8 @@ namespace wmbaApp.Data
                                     });
                                 }
 
+
+
                                 context.Games.Update(createdGame);
                                 // Save the changes to the database
                                 context.SaveChanges();

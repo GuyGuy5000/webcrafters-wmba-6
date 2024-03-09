@@ -44,19 +44,20 @@ namespace wmbaApp.Controllers
             scoreKeeping.AwayTeamScore = game.AwayTeamScore;
             scoreKeeping.CurrentInning = game.CurrentInning;
 
-            scoreKeeping.Innings = new List<InningScoreKeepingVM>()
-                                {
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                    new InningScoreKeepingVM(scoreKeeping.LineUp),
-                                };
 
+            //add innings that exist in the db
+            for (int i = 0; i < game.CurrentInning; i++)
+            {
+                scoreKeeping.Innings.Add(new InningScoreKeepingVM(scoreKeeping.LineUp));
+                scoreKeeping.Innings[i].HomeTeamScore = game.Innings.ToArray()[i].HomeTeamScore;
+                scoreKeeping.Innings[i].AwayTeamScore = game.Innings.ToArray()[i].AwayTeamScore;
+            }
+            //add any remaining innings to make 9 innings total
+            if (scoreKeeping.Innings.Count < 9)
+            {
+                for (int i = scoreKeeping.Innings.Count; i < 9; i++)
+                    scoreKeeping.Innings.Add(new InningScoreKeepingVM(scoreKeeping.LineUp));
+            }
 
 
             //initialize TempData variables
@@ -102,9 +103,11 @@ namespace wmbaApp.Controllers
 
                 var previousInning = new Inning() { gameID = game.ID };
 
-                previousInning.HomeTeamScore = previousInningVM.TotalRunsThisInning;
+                previousInning.HomeTeamScore = previousInningVM.HomeTeamScore;
                 previousInning.AwayTeamScore = previousInningVM.AwayTeamScore;
                 //previousInning.PlayByPlays = previousInningVM.PlayByPlays;
+
+                game.Innings.Add(previousInning);
 
                 _context.Games.Update(game);
                 _context.SaveChanges();
@@ -123,9 +126,9 @@ namespace wmbaApp.Controllers
         }
 
         //handles a runner advancing to the next base
-        public async Task<IActionResult> HandlePlayerOnBase(string inningScoreKeepningJSON, string senderID, string senderAction)
+        public async Task<IActionResult> HandlePlayerOnBase(string inningScoreKeepingJSON, string senderID, string senderAction)
         {
-            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepingJSON);
 
             if (senderID.Contains("thirdBase")) //base that triggered the event
             {
@@ -194,7 +197,6 @@ namespace wmbaApp.Controllers
                 }
                 else if (senderAction == "stay")
                 {
-
                 }
                 else
                 {
@@ -210,21 +212,30 @@ namespace wmbaApp.Controllers
             bool handleFirstBase = (bool)TempData.Peek("HandleFirstBase");
 
             if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
+            {
                 inning.CurrentBatter++;
 
+                while (inning.Batter.FirstBase || inning.Batter.SecondBase || inning.Batter.ThirdBase)
+                    inning.CurrentBatter++;
+            }
+
             if (inning.CurrentBatter > inning.Players.Count)
+            {
                 inning.CurrentBatter = 0;
 
-
+                while (inning.Batter.FirstBase || inning.Batter.SecondBase || inning.Batter.ThirdBase)
+                    inning.CurrentBatter++;
+            }
 
             PopulateDropDownLists(inning);
+
             return PartialView("_BaseballDiamond", inning);
         }
 
         //handles the action made by the batter
-        public async Task<IActionResult> HandleBatterAction(string inningScoreKeepningJSON, int actionID)
+        public async Task<IActionResult> HandleBatterAction(string inningScoreKeepingJSON, int actionID)
         {
-            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepingJSON);
             PlayerScoreKeepingVM currentBatter = inning.Players[inning.CurrentBatter];
             PlayerScoreKeepingVM playerOnFirst = inning.PlayerOnFirst;
             PlayerScoreKeepingVM playerOnSecond = inning.PlayerOnSecond;
@@ -301,19 +312,30 @@ namespace wmbaApp.Controllers
 
             if ((bool)TempData.Peek("HandleFirstBase") == false && (bool)TempData.Peek("HandleSecondBase") == false && (bool)TempData.Peek("HandleThirdBase") == false) //if all runners were handled
                 if (actionID <= 3 || actionID == 11) //Any action that is an at bat or causes the batter to advance (based on the enum)
+                {
                     inning.CurrentBatter++;
 
-            if (inning.CurrentBatter > inning.Players.Count())
+                    while (inning.Batter.FirstBase || inning.Batter.SecondBase || inning.Batter.ThirdBase)
+                        inning.CurrentBatter++;
+                }
+
+            if (inning.CurrentBatter > inning.Players.Count)
+            {
                 inning.CurrentBatter = 0;
+
+                while (inning.Batter.FirstBase || inning.Batter.SecondBase || inning.Batter.ThirdBase)
+                    inning.CurrentBatter++;
+            }
+
 
             PopulateDropDownLists(inning);
 
             return PartialView("_BaseballDiamond", inning);
         }
 
-        public IActionResult HandleSteal(string inningScoreKeepningJSON, string senderID)
+        public IActionResult HandleSteal(string inningScoreKeepingJSON, string senderID)
         {
-            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepningJSON);
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepingJSON);
 
             if (senderID == "stealSecond")
             {
@@ -336,12 +358,40 @@ namespace wmbaApp.Controllers
             return PartialView("_BaseballDiamond", inning);
         }
 
+        public IActionResult SkipBatter(string inningScoreKeepingJSON)
+        {
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepingJSON);
+
+            inning.CurrentBatter++;
+
+            while (inning.Batter.FirstBase || inning.Batter.SecondBase || inning.Batter.ThirdBase)
+                inning.CurrentBatter++;
+
+            if (inning.CurrentBatter > inning.Players.Count())
+                inning.CurrentBatter = 0;
+
+            PopulateDropDownLists(inning);
+
+            return PartialView("_BaseballDiamond", inning);
+        }
+
+        public IActionResult IncrementAwayTeamScore(string inningScoreKeepingJSON)
+        {
+            InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepingJSON);
+
+            inning.AwayTeamScore++;
+
+            PopulateDropDownLists(inning);
+
+            return PartialView("_BaseballDiamond", inning);
+        }
+
         public IActionResult UpdateScorePartial(string gameJSON)
         {
             GameScoreKeepingVM game = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
 
-
-            game.HomeTeamScore = game.Innings.Sum(i => i.TotalRunsThisInning);
+            game.HomeTeamScore = game.Innings.Sum(i => i.HomeTeamScore);
+            game.AwayTeamScore = game.Innings.Sum(i => i.AwayTeamScore);
             return PartialView("_ScoreBar", game);
         }
 
@@ -356,9 +406,11 @@ namespace wmbaApp.Controllers
             GameScoreKeepingVM gameVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
             InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(currentInningJSON);
 
+            inning.HomeTeamScore = inning.TotalRunsThisInning;
             if (gameVM.CurrentInning < gameVM.Innings.Count)
             {
-                gameVM.HomeTeamScore = gameVM.Innings.Sum(i => i.TotalRunsThisInning);
+                gameVM.HomeTeamScore = gameVM.Innings.Sum(i => i.HomeTeamScore);
+                gameVM.AwayTeamScore = gameVM.Innings.Sum(i => i.AwayTeamScore);
                 gameVM.Innings[gameVM.CurrentInning] = inning;
             }
 
@@ -372,11 +424,44 @@ namespace wmbaApp.Controllers
             return JsonConvert.SerializeObject(gameVM, settings: new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         }
 
-
-        public /*PlayerAction*/ void ConvertAtBatToPlayerAction(AtBatOutcome action)
+        public async Task<IActionResult> CancelGame(int gameID)
         {
-            //return _context.PlayerActions.FirstOrDefault(a => a.Name == action.Humanize);
+            var game = await _context.Games
+                .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
+                .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
+                .Include(p => p.HomeTeam).ThenInclude(p => p.Division)
+                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
+               .FirstOrDefaultAsync(g => g.ID == gameID);
+
+            try
+            {
+                foreach (Inning i in game.Innings)
+                {
+                    _context.Innings.Remove(i);
+                }
+
+                game.Innings.Clear();
+                game.CurrentInning = 0;
+                game.HomeTeamScore = 0;
+                game.AwayTeamScore = 0;
+
+                _context.Games.Update(game);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException dex)
+            {
+                ModelState.AddModelError("", "Unable to save inning. Try again, and if the problem persists see your system administrator.");
+            }
+
+            return RedirectToAction("Index", "Games");
         }
+
+        //public PlayerAction ConvertAtBatToPlayerAction(AtBatOutcome action)
+        //{
+        //    return _context.PlayerActions.FirstOrDefault(a => a.Name == action.Humanize);
+        //}
 
         #region SelectLists
         private SelectList PlayerActionSelectList()

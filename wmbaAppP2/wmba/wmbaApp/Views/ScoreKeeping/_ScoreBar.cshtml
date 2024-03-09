@@ -5,10 +5,9 @@
         background-color: #FFF;
         color: #000;
         display: grid;
-        height: 100px;
+        height: 88px;
         grid-template-columns: repeat(3, 1fr);
         padding: 0 40px 0 40px;
-        margin: 10px 0 25px 0;
     }
 
     .home-team-header,
@@ -38,8 +37,21 @@
 
 
     @@media only screen and (min-width: 320px) and (max-width: 769px) {
+        .score-bar-container {
+            height: 80px;
+        }
+
         .score-bar-container,
         .score-container {
+            padding: 0;
+        }
+
+        .score-header {
+            padding: 10px;
+        }
+
+        .home-team-header,
+        .away-team-header {
             padding: 0;
         }
 

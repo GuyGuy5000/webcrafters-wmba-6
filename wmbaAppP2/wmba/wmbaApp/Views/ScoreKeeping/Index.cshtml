@@ -13,6 +13,12 @@
     <partial name="_InningsTable" model="@Model" />
 </div>
 
+<form asp-action="CancelGame">
+    <input type="hidden" asp-for="GameID" />
+    <input type="submit" value="CANCEL GAME" class="btn btn-danger" />
+</form>
+
+
 <input id="gameScoreKeepningJSON" type="hidden" value='@Json.Serialize(Model)' />
 
 @section Scripts{
@@ -24,11 +30,13 @@
         function ShowBatterAction() {
             $('#batterActionPrompt').show();
             $('#stealPrompt').hide();
+            $('#btnSkip').hide();
         }
 
         function HideBatterAction() {
             $('#batterActionPrompt').hide();
             $('#stealPrompt').show();
+            $('#btnSkip').show();
         }
 
         //reassigns click events. Use when posting back and refreshing the partial view, or on first time load
@@ -51,6 +59,16 @@
             $("#batterActionSubmit").click(function () {
                 HandleBatterAction();
             });
+
+            //assigns a click event to the batter submit button
+            $("#btnSkip").click(function () {
+                SkipBatter();
+            });
+
+            $("#btnAddToVisitorTeam").click(function () {
+                IncrementAwayTeamScore();
+            });
+
         }
 
         //handles any runners that are on base
@@ -58,7 +76,7 @@
             //postback
             $.ajax({
                 url: "@Url.Action("HandlePlayerOnBase", "ScoreKeeping")",
-                data: { inningScoreKeepningJSON: $("#inningScoreKeepingJSON").val(), senderID: `${sender.id}`, senderAction: `${sender.value}` }, //dictionary with same keys as the method's params
+                data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val(), senderID: `${sender.id}`, senderAction: `${sender.value}` }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
@@ -77,7 +95,7 @@
             //postback
             $.ajax({
                 url: "@Url.Action("HandleBatterAction", "ScoreKeeping")",
-                data: { inningScoreKeepningJSON: $("#inningScoreKeepingJSON").val(), actionID: $("#BatterActionList").val() }, //dictionary with same keys as the method's params
+                data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val(), actionID: $("#BatterActionList").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
@@ -96,7 +114,7 @@
             //postback
             $.ajax({
                 url: "@Url.Action("HandleSteal", "ScoreKeeping")",
-                data: { inningScoreKeepningJSON: $("#inningScoreKeepingJSON").val(), senderID: `${sender.id}` }, //dictionary with same keys as the method's params
+                data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val(), senderID: `${sender.id}` }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
@@ -106,6 +124,44 @@
                 },
                 error: function (result, status, err) {
                     window.alert("batter action" + result.responseText + " " + status.responseText, err.Message);
+                }
+            });
+        }
+
+        //handles skipBatter
+        function SkipBatter() {
+            //postback
+            $.ajax({
+                url: "@Url.Action("SkipBatter", "ScoreKeeping")",
+                data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
+                type: "Post",
+                success: function (result) {
+                    $("#BaseballDiamond").html(""); //reset the div
+                    $("#BaseballDiamond").html(result); // set the div to the result of the postback
+                    AssignClickEvents();
+                    UpdateGame();
+                },
+                error: function (result, status, err) {
+                    window.alert("batter action" + result.responseText + " " + status.responseText, err.Message);
+                }
+            });
+        }
+
+        //handles skipBatter
+        function IncrementAwayTeamScore() {
+            //postback
+            $.ajax({
+                url: "@Url.Action("IncrementAwayTeamScore", "ScoreKeeping")",
+                data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
+                type: "Post",
+                success: function (result) {
+                    $("#BaseballDiamond").html(""); //reset the div
+                    $("#BaseballDiamond").html(result); // set the div to the result of the postback
+                    AssignClickEvents();
+                    UpdateGame();
+                },
+                error: function (result, status, err) {
+                    window.alert("add to away team" + result.responseText + " " + status.responseText, err.Message);
                 }
             });
         }
