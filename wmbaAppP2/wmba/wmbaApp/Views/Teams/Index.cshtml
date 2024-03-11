@@ -106,9 +106,14 @@
                     </td>
                     <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                            EDIT
-                        </a>
+@*                         @{
+                            if (!item.HomeGames.Any(g => g.HasStarted) || !item.AwayGames.Any(g => g.HasStarted))
+                            { *@
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                    EDIT
+                                </a>
+@*                             }
+                        } *@
                         <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             DETAILS
                         </a>

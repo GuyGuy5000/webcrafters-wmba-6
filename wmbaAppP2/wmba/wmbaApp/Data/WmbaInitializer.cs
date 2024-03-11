@@ -295,11 +295,12 @@ namespace wmbaApp.Data
 
                         if (context.Teams.FirstOrDefault(t => t.ID == teamID).ID == context.Teams.Count()) //check to see that teamID isn't last in the database
                             teamID -= 2;
+
                         context.GameTeams.Add(
                             new GameTeam
                             {
                                 GameID = game.ID,
-                                TeamID = context.Teams.FirstOrDefault(t => t.ID == teamID).ID + 1,
+                                TeamID = context.Teams.FirstOrDefault(t => t.ID == teamID + 1).ID,
                                 GmtmLineup = "TBA"
                             });
                         teamID++;

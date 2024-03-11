@@ -159,8 +159,8 @@
         var selectedHomePlayersCount = $("input[name='SelectedPlayers'][data-team='Home']:checked").length;
         var selectedAwayPlayersCount = $("input[name='SelectedPlayers'][data-team='Away']:checked").length;
 
-        if (selectedHomePlayersCount !== 9 || selectedAwayPlayersCount !== 9) {
-            alert("Please select exactly 9 players for HomeTeam and 9 players for AwayTeam.");
+        if (selectedHomePlayersCount == 0 & selectedAwayPlayersCount == 0) {
+            alert("Please select players.");
             return false;
         }
 

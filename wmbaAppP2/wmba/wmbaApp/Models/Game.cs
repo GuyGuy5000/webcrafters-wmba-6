@@ -122,11 +122,9 @@ namespace wmbaApp.Models
         [Required(ErrorMessage = "Set a Start Time")]
         public DateTime? GameStartTime { get; set; }
 
-
         [Display(Name = "Game Ends")]
         [Required(ErrorMessage = "Set an End Time")]
         public DateTime? GameEndTime { get; set; }
-
 
         [StringLength(50, ErrorMessage = "Game location must be less than 50 characters")]
         [Required(ErrorMessage = "Game must have a Location.")]
@@ -142,13 +140,16 @@ namespace wmbaApp.Models
         [Display(Name = "Current Inning")]
         public int CurrentInning { get; set; } = 0;
 
+        [Display(Name = "Game Status")]
+        public bool HasStarted { get; set; } = false;
+
+
+
         [Display(Name = "Home Team:")]
         [Required(ErrorMessage = "Home Team name is required")]
         public int HomeTeamID { get; set; }
         [ForeignKey("HomeTeamID")]
         public Team HomeTeam { get; set; }
-
-
 
         [Display(Name = "Visitor Team:")]
         [Required(ErrorMessage = "Visitor Team name is required")]
@@ -156,9 +157,7 @@ namespace wmbaApp.Models
         [ForeignKey("AwayTeamID")]
         public Team AwayTeam { get; set; }
 
-
-
-        [Display(Name = "Home and Visitor Team Division:")]
+        [Display(Name = "Division:")]
         public int DivisionID { get; set; }
 
         [ForeignKey("DivisionID")]

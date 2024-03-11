@@ -102,7 +102,7 @@
 
                             if (item.HomeLineup != null && item.HomeLineup.PlayerLineups.Count > 0)
                             {
-                                if (item.CurrentInning < 3)
+                                if (item.Innings.Count < 4)
                                 {
                                     <a asp-action="StartGame" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Start this game">
                                         START GAME

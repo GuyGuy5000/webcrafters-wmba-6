@@ -30,14 +30,24 @@ namespace wmbaApp.Controllers
         {
             //get game using game ID
             var game = await _context.Games
-                .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
-                .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.ID == scoreKeeping.GameID);
+
+            try
+            {
+                game.HasStarted = true;
+                _context.Games.Update(game);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateException dex)
+            {
+                ModelState.AddModelError("", "Unable to save inning. Try again, and if the problem persists see your system administrator.");
+            }
+
 
             //update scorekeeping to match what is in the db
             scoreKeeping.LineUp = game.HomeLineup.PlayerLineups.Select(pl => new PlayerScoreKeepingVM(pl.Player.FullName, pl.ID)).ToList();
@@ -500,6 +510,7 @@ namespace wmbaApp.Controllers
                 .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
                .FirstOrDefaultAsync(g => g.ID == gameID);
 
+            game.HasStarted = false;
             try
             {
                 foreach (Inning i in game.Innings)
@@ -535,6 +546,7 @@ namespace wmbaApp.Controllers
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
                .FirstOrDefaultAsync(g => g.ID == gameVM.GameID);
+
 
             foreach (PlayerLineup playerLineup in game.HomeLineup.PlayerLineups)
             {
@@ -576,6 +588,7 @@ namespace wmbaApp.Controllers
                     ModelState.AddModelError("", "Unable to save inning. Try again, and if the problem persists see your system administrator.");
                 }
             }
+
 
             return RedirectToAction("Index", "Games");
         }

@@ -41,6 +41,8 @@ namespace wmbaApp.Controllers
             .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
             .Include(t => t.Players)
             .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+            .Include(t => t.HomeGames)
+            .Include(t => t.AwayGames)
             .Where(t => t.IsActive)
             .AsNoTracking();
 

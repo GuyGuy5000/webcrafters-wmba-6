@@ -108,9 +108,9 @@ namespace wmbaApp.Controllers
                     var selectedHomePlayersCount = SelectedPlayers.Count(p => game.HomeTeam.Players.Any(hp => hp.ID == p));
                     var selectedAwayPlayersCount = SelectedPlayers.Count(p => game.AwayTeam.Players.Any(ap => ap.ID == p));
 
-                    if (selectedHomePlayersCount != 9 || selectedAwayPlayersCount != 9)
+                    if (selectedHomePlayersCount == 0 & selectedAwayPlayersCount == 0)
                     {
-                        ModelState.AddModelError("", "Please select exactly 9 players for HomeTeam and 9 players for AwayTeam.");
+                        ModelState.AddModelError("", "Please select players.");
                     }
 
                     lineup.HomeGames = new List<Game> { game };
