@@ -58,7 +58,7 @@ PopulateDropDownLists();
 
             if (!System.String.IsNullOrEmpty(SearchString))
             {
-                games = games.Where(g => g.GameLocation.ToUpper().Contains(SearchString.ToUpper())
+                games = games.Where(g => g.GameLocation.Name.ToUpper().Contains(SearchString.ToUpper())
                 || g.HomeTeam.TmName.ToUpper().Contains(SearchString.ToUpper())
                 || g.AwayTeam.TmName.ToUpper().Contains(SearchString.ToUpper())
                 || g.Division.DivName.ToUpper().Contains(SearchString.ToUpper()));
