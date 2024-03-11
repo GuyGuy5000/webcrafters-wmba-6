@@ -126,10 +126,10 @@ namespace wmbaApp.Models
         [Required(ErrorMessage = "Set an End Time")]
         public DateTime? GameEndTime { get; set; }
 
-        [StringLength(50, ErrorMessage = "Game location must be less than 50 characters")]
-        [Required(ErrorMessage = "Game must have a Location.")]
         [Display(Name = "Game Location")]
-        public string GameLocation { get; set; }
+        public int GameLocationID { get; set; }
+        [Display(Name = "Game Location:")]
+        public GameLocation GameLocation { get; set; }
 
         [Display(Name = "Home Team Score")]
         public int HomeTeamScore { get; set; } = 0;
@@ -149,18 +149,21 @@ namespace wmbaApp.Models
         [Required(ErrorMessage = "Home Team name is required")]
         public int HomeTeamID { get; set; }
         [ForeignKey("HomeTeamID")]
+        [Display(Name = "Home Team:")]
         public Team HomeTeam { get; set; }
 
         [Display(Name = "Visitor Team:")]
         [Required(ErrorMessage = "Visitor Team name is required")]
         public int AwayTeamID { get; set; }
         [ForeignKey("AwayTeamID")]
+        [Display(Name = "Home Team:")]
         public Team AwayTeam { get; set; }
 
         [Display(Name = "Division:")]
         public int DivisionID { get; set; }
 
         [ForeignKey("DivisionID")]
+        [Display(Name = "Division:")]
         public Division Division { get; set; }
 
 
