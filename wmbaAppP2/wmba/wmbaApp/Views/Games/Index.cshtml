@@ -37,7 +37,7 @@
 
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="d-flex align-items-center">
-                        <input type="submit" name="actionButton" value="Games" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Games" />
+                        <input type="submit" name="actionButton" value="Teams" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Games" />
                         <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move"></i>
                     </div>
                 </th>
@@ -57,7 +57,7 @@
 
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="d-flex align-items-center">
-                        <input type="submit" name="actionButton" value="Game-Location" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Location" />
+                        <input type="submit" name="actionButton" value="Location" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Location" />
                         <i class="fa-solid fa-arrows-up-down arrow non-button-input " id="move"></i>
                     </div>
                 </th>
@@ -79,7 +79,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
+                     <td>
                         @Html.DisplayFor(modelItem => item.FullVersus)
                     </td>
                     <td class="d-none d-lg-table-cell">
@@ -89,7 +89,7 @@
                         @Html.DisplayFor(modelItem => item.HomeTeam.Division.DivName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.GameLocation)
+                        @Html.DisplayFor(modelItem => item.GameLocation.Name)
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
