@@ -1,10 +1,8 @@
-﻿@model wmbaApp.Models.Player
+@model wmbaApp.Models.Player
 
 <hr />
 
-
-
-    <form asp-action="Create" method="post" enctype="multipart/form-data" class="mx-auto mt-4 editform" id="createForm" style="width: 80%;">
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="mx-auto mt-4 games-editform" id="createForm" style="width: 80%;">
         <fieldset>
         <partial name="_ViewHeading" />
         <div class="col-md-4">
@@ -15,13 +13,13 @@
                 <span asp-validation-for="PlyrFirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PlyrLastName" class="control-label "></label>
+                <label asp-for="PlyrLastName" class="control-label required-label"></label>
                 <input asp-for="PlyrLastName" class="form-control" placeholder="Ex:  James" />
               
                 <span asp-validation-for="PlyrLastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PlyrJerseyNumber" class="control-label "></label>
+                <label asp-for="PlyrJerseyNumber" class="control-label required-label"></label>
                 <input asp-for="PlyrJerseyNumber" class="form-control" placeholder="Ex:  7" />
                 <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
             </div>
@@ -30,7 +28,8 @@
                 <input asp-for="PlyrMemberID" class="form-control" placeholder="Ex:  746ASE4C" />
                 <span asp-validation-for="PlyrMemberID" class="text-danger"></span>
             </div>
-@* for division dropdown *@
+
+            @* for division dropdown *@
             <div class="form-group">
                 <label asp-for="Team.DivisionID" class="control-label"></label>
                 <select asp-for="Team.DivisionID" class="form-control" id="divisionDropdown">
@@ -42,13 +41,16 @@
                 </select>
                 <span asp-validation-for="Team.DivisionID" class="text-danger"></span>
             </div>
+
             <div class="form-group">
-                <label asp-for="TeamID" class="control-label "></label>
-                <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
+                <label asp-for="TeamID" class="control-label required-label"></label>
+                <select asp-for="TeamID" class="form-control" id="teamDropdown">
                     <option value="">Assign Team to Player</option>
                 </select>
                 <span asp-validation-for="TeamID" class="text-danger"></span>
             </div>
+
+
         </div>
         <div class="form-group">
             <input type="submit" value="Create" class="btn btn-primary" />
@@ -61,6 +63,7 @@
 
 
 @section Scripts {
+    <script src="~/js/modal.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
