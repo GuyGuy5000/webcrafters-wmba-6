@@ -14,7 +14,7 @@ namespace wmbaApp.Models
 
 
 
-        [Display(Name = "Game Location")]
-        public ICollection<GameLocation> GameLocations { get; set; } = new HashSet<GameLocation>();
+        [Display(Name = "Game:")]
+        public ICollection<Game> Games { get; set; } = new HashSet<Game>();
     }
 }
