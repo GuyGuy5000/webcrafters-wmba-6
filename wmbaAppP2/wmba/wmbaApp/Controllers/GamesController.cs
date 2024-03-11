@@ -43,11 +43,12 @@ namespace wmbaApp.Controllers
 
             // List of sort options.
             // NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Games", "Game-Location" };
+            string[] sortOptions = new[] { "Teamss", "Location" };
 
+PopulateDropDownLists();
 
-
-            var games = _context.Games
+           var games = _context.Games
+                .Include(g => g.GameLocation)
                 .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
@@ -92,13 +93,13 @@ namespace wmbaApp.Controllers
             }
 
             // Sort data based on the selected field and direction
-            if (sortField == "Games")
+            if (sortField == "Teams")
             {
                 games = sortDirection == "asc" ? games.OrderBy(g => g.HomeTeam) : games.OrderByDescending(g => g.HomeTeam);
             }
-            else if (sortField == "Game-Location")
+            else if (sortField == "Location")
             {
-                games = sortDirection == "asc" ? games.OrderBy(g => g.GameLocation) : games.OrderByDescending(g => g.GameLocation);
+                games = sortDirection == "asc" ? games.OrderBy(g => g.GameLocation.Name) : games.OrderByDescending(g => g.GameLocation.Name);
             }
 
 
@@ -120,10 +121,7 @@ namespace wmbaApp.Controllers
         // GET: Games/Create
         public IActionResult Create()
         {
-            ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "TmName");
-            ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "TmName");
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName");
-            ViewData["GameLocations"] = new SelectList(_context.Games.Select(p => p.GameLocation).Distinct().ToList());
+            PopulateDropDownLists();
             return View();
         }
 
@@ -132,8 +130,8 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,GameStartTime,GameEndTime,IsActive,GameLocation,HomeTeamID,AwayTeamID,DivisionID")] Game game,
-            string newGameLocation, int? selectedDivision, IFormFile theExcel)
+        public async Task<IActionResult> Create([Bind("ID,GameStartTime,GameEndTime,IsActive,GameLocationID,HomeTeamID,AwayTeamID,DivisionID")] Game game,
+            int? selectedDivision, IFormFile theExcel)
         {
             if (selectedDivision.HasValue)
             {
@@ -141,33 +139,16 @@ namespace wmbaApp.Controllers
                 ViewData["AwayTeamID"] = new SelectList(_context.Teams.Where(t => t.DivisionID == selectedDivision), "ID", "TmName");
             }
 
-            //i'm trying to avoid usingw same Gamelocation be used twice for different games same day.
-            if (game.GameStartTime.HasValue && IsGameLocationUsedOnceADay(game.GameStartTime.Value.Date, game.GameLocation))
-            {
-                ModelState.AddModelError("GameLocation", "Game location can only be used once a day.");
-            }
-
-            if (theExcel != null)
-            {
-                await InsertFromExcel(theExcel);
-            }
-
-
             if (ModelState.IsValid)
             {
-                if (game.GameLocation == "Add New" && !string.IsNullOrWhiteSpace(newGameLocation))
-                {
-                    game.GameLocation = newGameLocation;
-                }
 
                 _context.Add(game);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", new { game.ID });
             }
             //ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "TmName", game.AwayTeamID);
             //ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "TmName", game.HomeTeamID);
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName");
-            ViewData["GameLocations"] = new SelectList(_context.Games.Select(p => p.GameLocation).Distinct().ToList());
+            PopulateDropDownLists();
             return View(game);
         }
 
@@ -180,6 +161,7 @@ namespace wmbaApp.Controllers
             }
 
             var game = await _context.Games
+                .Include(g => g.GameLocation)
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
                 .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
@@ -191,13 +173,9 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
-
-            ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "TmName", game.AwayTeamID);
-            ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "TmName", game.HomeTeamID);
             ViewData["HomeLineupID"] = new SelectList(_context.Lineups, "ID", "ID", game.HomeLineupID);
             ViewData["AwayLineupID"] = new SelectList(_context.Lineups, "ID", "ID", game.AwayLineupID);
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName");
-            ViewData["GameLocations"] = new SelectList(_context.Games.Select(p => p.GameLocation).Distinct().ToList());
+            PopulateDropDownLists(game);
             return View(game);
         }
 
@@ -209,6 +187,7 @@ namespace wmbaApp.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var gameToUpdate = await _context.Games
+                .Include(g => g.GameLocation)
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
                 .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
@@ -221,7 +200,7 @@ namespace wmbaApp.Controllers
             }
 
             if (await TryUpdateModelAsync<Game>(gameToUpdate, "",
-                t => t.GameStartTime, t => t.GameEndTime, t => t.GameLocation, t => t.DivisionID,
+                t => t.GameStartTime, t => t.GameEndTime, t => t.GameLocationID, t => t.DivisionID,
                 t => t.AwayTeamID, t => t.HomeTeamID))
             {
 
@@ -243,14 +222,9 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
-
-            ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "TmName", gameToUpdate.AwayTeamID);
-            ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "TmName", gameToUpdate.HomeTeamID);
             ViewData["HomeLineupID"] = new SelectList(_context.Lineups, "ID", "ID", gameToUpdate.HomeLineupID);
             ViewData["AwayLineupID"] = new SelectList(_context.Lineups, "ID", "ID", gameToUpdate.AwayLineupID);
-            ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName");
-            ViewData["GameLocations"] = new SelectList(_context.Games.Select(p => p.GameLocation).Distinct().ToList());
-
+            PopulateDropDownLists(gameToUpdate);
             return View(gameToUpdate);
         }
 
@@ -263,6 +237,7 @@ namespace wmbaApp.Controllers
             }
 
             var game = await _context.Games
+                .Include(g => g.GameLocation)
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
                 .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
@@ -278,7 +253,7 @@ namespace wmbaApp.Controllers
             return View(game);
         }
 
-        // GET: Games/Delete/5
+       // GET: Games/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Games == null)
@@ -289,6 +264,7 @@ namespace wmbaApp.Controllers
             var game = await _context.Games
                 .Include(g => g.AwayTeam)
                 .Include(g => g.HomeTeam)
+                .Include(g => g.GameLocation)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (game == null)
             {
@@ -322,10 +298,50 @@ namespace wmbaApp.Controllers
             return RedirectToAction("Create", "Lineups", new { gameId });
         }
 
-        private bool IsGameLocationUsedOnceADay(DateTime gameDate, string gameLocation)
+       #region selectlist
+        private SelectList DivisionSelectList(int? selectedId)
         {
-            return _context.Games.Any(g => g.GameStartTime == gameDate && g.GameLocation == gameLocation);
+            return new SelectList(_context
+                .Divisions
+                .OrderBy(m => m.DivName), "ID", "DivName", selectedId);
         }
+
+        private SelectList GameLocationSelectList(int? selectedId)
+        {
+            return new SelectList(_context
+                .GameLocations
+                .OrderBy(m => m.Name), "ID", "Name", selectedId);
+        }
+        private SelectList HomeTeamSelectList(int? selectedId)
+        {
+            return new SelectList(_context
+                .HomeTeams
+                .OrderBy(m => m.TmName), "ID", "TmName", selectedId);
+        }
+        private SelectList AwayTeamSelectList(int? selectedId)
+        {
+            return new SelectList(_context
+                .AwayTeams
+                .OrderBy(m => m.TmName), "ID", "TmName", selectedId);
+        }
+
+
+        private void PopulateDropDownLists(Game game = null)
+        {
+            ViewData["DivisionID"] = DivisionSelectList(game?.DivisionID);
+            ViewData["GameLocationID"] = GameLocationSelectList(game?.GameLocationID);
+            ViewData["HomeTeamID"] = HomeTeamSelectList(game?.HomeTeamID);
+            ViewData["AwayTeamID"] = AwayTeamSelectList(game?.AwayTeamID);
+        }
+
+        #endregion
+
+        [HttpGet]
+        public JsonResult GetGameLocations(int? id)
+        {
+            return Json(GameLocationSelectList(id));
+        }
+
 
         [HttpGet]
         public JsonResult GetTeamsByDivision(int divisionId)
@@ -342,14 +358,12 @@ namespace wmbaApp.Controllers
         [HttpPost]
         public async Task<IActionResult> InsertFromExcel(IFormFile theExcel)
         {
-            string feedback = string.Empty;
-
+            string feedBack = string.Empty;
             if (theExcel != null)
             {
                 string mimeType = theExcel.ContentType;
                 long fileLength = theExcel.Length;
-
-                if (!(mimeType == "" || fileLength == 0))
+                if (!(mimeType == "" || fileLength == 0))//Looks like we have a file!!!
                 {
                     if (mimeType.Contains("excel") || mimeType.Contains("spreadsheet"))
                     {
@@ -361,146 +375,99 @@ namespace wmbaApp.Controllers
                         }
 
                         var workSheet = excel.Workbook.Worksheets[0];
+                        var start = workSheet.Dimension.Start;
+                        var end = workSheet.Dimension.End;
+                        int successCount = 0;
+                        int errorCount = 0;
 
-                        // Calling the method to accept and run my excel file
-                        await ReadImportedGameData(workSheet, feedback);
-                    }
-                    else if (mimeType.Contains("text/csv"))
-                    {
-                        var format = new ExcelTextFormat();
-                        format.Delimiter = ',';
-                        bool firstRowIsHeader = true;
+                        if ((workSheet.Cells[1, 6].Text == "HomeTeam") && (workSheet.Cells[1, 7].Text == "AwayTeam") &&
+                            (workSheet.Cells[1, 9].Text == "HomeDivision") && (workSheet.Cells[1, 8].Text == "Location") &&
+                            (workSheet.Cells[1, 11].Text == "sDate") && (workSheet.Cells[1, 12].Text == "eDate"))
+                        {
+                            for (int row = start.Row + 1; row <= end.Row; row++)
+                            {
+                                Game g = new Game();
+                                try
+                                {
+                                    int? homeTeam = _context.HomeTeams.FirstOrDefault(t => workSheet.Cells[row, 6].Text.Contains(t.TmName)).ID;
+                                    int? awayTeam = _context.AwayTeams.FirstOrDefault(t => workSheet.Cells[row, 7].Text.Contains(t.TmName)).ID;
+                                    int? division = _context.Divisions.FirstOrDefault(t => workSheet.Cells[row, 1].Text.Contains(t.DivName)).ID;
 
-                        using var reader = new System.IO.StreamReader(theExcel.OpenReadStream());
 
-                        using ExcelPackage package = new ExcelPackage();
-                        var result = reader.ReadToEnd();
-                        ExcelWorksheet workSheet = package.Workbook.Worksheets.Add("Imported Report Data");
+                                    // Row by row...
+                                    g.HomeTeamID = (int)homeTeam;
+                                    g.AwayTeamID = (int)awayTeam;
+                                    g.DivisionID = (int)division;
+                                    g.GameLocation = await _context.GameLocations.FindAsync(workSheet.Cells[row, 4].Text);
+                                    g.GameStartTime = DateTime.Parse(workSheet.Cells[row, 5].Text);
+                                    g.GameEndTime = DateTime.Parse(workSheet.Cells[row, 6].Text);
 
-                        workSheet.Cells["A1"].LoadFromText(result, format, TableStyles.None, firstRowIsHeader);
 
-                        // Call the method to read imported data and process it
-                        await ReadImportedGameData(workSheet, feedback);
+                                    _context.Games.Add(g);
+                                    _context.SaveChanges();
+                                    successCount++;
+                                }
+                                catch (DbUpdateException dex)
+                                {
+                                    errorCount++;
+                                    if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
+                                    {
+                                        feedBack += "Error: Record " + g.Division + " was rejected as a duplicate."
+                                                + "<br />";
+                                    }
+                                    else
+                                    {
+                                        feedBack += "Error: Record " + g.Division + " caused an error."
+                                                + "<br />";
+                                    }
+                                    //Here is the trick to using SaveChanges in a loop.  You must remove the 
+                                    //offending object from the cue or it will keep raising the same error.
+                                    _context.Remove(g);
+                                }
+                                catch (Exception ex)
+                                {
+                                    errorCount++;
+                                    if (ex.GetBaseException().Message.Contains("correct format"))
+                                    {
+                                        feedBack += "Error: Record " + g.Division + " was rejected becuase the standard charge was not in the correct format."
+                                                + "<br />";
+                                    }
+                                    else
+                                    {
+                                        feedBack += "Error: Record " + g.Division + " caused and error."
+                                                + "<br />";
+                                    }
+                                }
+                            }
+                            feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
+                                " Records with " + successCount.ToString() + " inserted and " +
+                                errorCount.ToString() + " rejected";
+                        }
+                        else
+                        {
+                            feedBack = "Error: You may have selected the wrong file to upload.<br /> Remember, you must have the headings 'Name' and 'Standard Charge' in the first two cells of the first row.";
+                        }
                     }
                     else
                     {
-                        feedback = "Error: That file is not an Excel spreadsheet.";
+                        feedBack = "Error: That file is not an Excel spreadsheet.";
                     }
                 }
                 else
                 {
-                    feedback = "Error: File appears to be empty";
+                    feedBack = "Error:  file appears to be empty";
                 }
             }
             else
             {
-                feedback = "Error: No file uploaded";
+                feedBack = "Error: No file uploaded";
             }
 
-            TempData["Feedback"] = feedback + "<br /><br />";
-            return RedirectToAction("Index");
+            TempData["Feedback"] = feedBack + "<br /><br />";
 
-        }
-
-        private async Task ReadImportedGameData(ExcelWorksheet workSheet, string feedback)
-        {
-            // Prepare the collection of imported data
-            //  List<Game> games = new List<Game>();
-
-            var start = workSheet.Dimension.Start;
-            var end = workSheet.Dimension.End;
-            int successCount = 0;
-            int errorCount = 0;
-            feedback = "";
-
-            if (workSheet.Cells[1, 1].Text == "Division" &&
-                workSheet.Cells[1, 2].Text == "Home Team" &&
-                workSheet.Cells[1, 3].Text == "Away Team" &&
-                workSheet.Cells[1, 4].Text == "Game Starts" &&
-                workSheet.Cells[1, 5].Text == "Game Ends" &&
-                workSheet.Cells[1, 6].Text == "Game Location")
-            {
-                for (int row = start.Row + 1; row <= end.Row; row++)
-                {
-                    try
-                    {
-                        Division division = await _context.Divisions.SingleOrDefaultAsync(d => d.DivName == workSheet.Cells[row, 1].Text);
-                        Team homeTeam = await _context.Teams.SingleOrDefaultAsync(t => t.TmName == workSheet.Cells[row, 2].Text);
-                        Team awayTeam = await _context.Teams.SingleOrDefaultAsync(t => t.TmName == workSheet.Cells[row, 3].Text);
-
-                        if (division != null && homeTeam != null && awayTeam != null &&
-                                    DateTime.TryParse(workSheet.Cells[row, 4].Text, out DateTime gameStartTime) &&
-                                    DateTime.TryParse(workSheet.Cells[row, 5].Text, out DateTime gameEndTime))
-                        {
-                            Game gameData = new Game();
-                            {
-                                gameData.Division = division;
-                                gameData.HomeTeam = homeTeam;
-                                gameData.AwayTeam = awayTeam;
-                                gameData.GameStartTime = gameStartTime;
-                                gameData.GameEndTime = gameEndTime;
-                                gameData.GameLocation = HandleGameLocation(workSheet.Cells[row, 6].Text);
-
-                                _context.Games.Add(gameData);
-                                await _context.SaveChangesAsync();
-                                successCount++;
-                            };
-                        }
-                        else
-                        {
-                            if (division == null)
-                                feedback += $"Division '{workSheet.Cells[row, 1].Text}' not found. ";
-
-                            if (homeTeam == null)
-                                feedback += $"Home Team '{workSheet.Cells[row, 2].Text}' not found. ";
-
-                            feedback += "<br />";
-
-
-                            errorCount++;
-                            feedback += $"Error: Record {workSheet.Cells[row, 3].Text} - Away Team not found in the database.<br />";
-
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        errorCount++;
-                        if (ex.GetBaseException().Message.Contains("correct format"))
-                        {
-                            feedback += "Error: Record " + workSheet.Cells[row, 4].Text + " was rejected because the Start Time was not in the correct format."
-                                    + "<br />";
-                        }
-                        else
-                        {
-                            feedback += "Error: Record " + workSheet.Cells[row, 4].Text + " caused an error."
-                                    + "<br />";
-                        }
-                    }
-                }
-                feedback += "Finished Importing " + (successCount + errorCount).ToString() +
-                    " Records with " + successCount.ToString() + " inserted and " +
-                    errorCount.ToString() + " rejected";
-            }
-            else
-            {
-                feedback = "Error: You may have selected the wrong file to upload.<br /> Remember, you must have the headings 'Division', 'Home Team', 'Away Team', 'Game Starts', 'Game Ends', and 'Game Location' in the first row.";
-            }
-        }
-
-        private string HandleGameLocation(string inputLocation)
-        {
-            // Check if the location already exists in the database
-            var existingLocation = _context.Games.FirstOrDefault(gl => gl.GameLocation == inputLocation);
-
-            if (existingLocation != null)
-            {
-                // location is in my db send the user back
-                return existingLocation.GameLocation;
-            }
-            else
-            {
-                return inputLocation;
-            }
+            //Note that we are assuming that you are using the Preferred Approach to Lookup Values
+            //And the custom LookupsController
+            return Redirect("Index");
         }
 
         public IActionResult DownloadGamesFixtures()
