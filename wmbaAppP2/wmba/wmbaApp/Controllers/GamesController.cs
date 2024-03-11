@@ -43,7 +43,7 @@ namespace wmbaApp.Controllers
 
             // List of sort options.
             // NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Teamss", "Location" };
+            string[] sortOptions = new[] { "Teams", "Location" };
 
 PopulateDropDownLists();
 
