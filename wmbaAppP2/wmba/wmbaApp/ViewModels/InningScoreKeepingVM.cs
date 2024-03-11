@@ -9,6 +9,10 @@ namespace wmbaApp.ViewModels
         public int HomeTeamScore { get; set; } = 0;
         public int AwayTeamScore { get; set; } = 0;
         public int CurrentBatter { get; set; } = 0;
+        public bool HandleFirstBase {  get; set; } = false;
+        public bool HandleSecondBase {  get; set; } = false;
+        public bool HandleThirdBase {  get; set; } = false;
+
 
         public int TotalRunsThisInning
             => Players.Sum(p => p.Runs);
@@ -17,9 +21,6 @@ namespace wmbaApp.ViewModels
             get
             {
                 return Players.Sum(p => p.Outs);
-            }
-            set
-            {
             }
         }
 

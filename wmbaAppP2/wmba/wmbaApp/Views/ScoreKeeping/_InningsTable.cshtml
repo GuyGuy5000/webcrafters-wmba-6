@@ -1,10 +1,12 @@
-﻿@model wmbaApp.ViewModels.GameScoreKeepingVM
+﻿@using wmbaApp.ViewModels
+@model wmbaApp.ViewModels.GameScoreKeepingVM
 
 
 <style>
     .innings-table-container {
         display: block;
         margin: 0px auto 40px auto;
+        overflow-x: scroll;
         width: 100%;
     }
 
@@ -44,7 +46,7 @@
 <section class="innings-table-container">
     <table class="innings-table">
         <tr>
-            <th colspan="13">
+            <th colspan="@(Model.Innings.Count + 4)">
                 Innings
             </th>
         </tr>
@@ -52,33 +54,14 @@
             <td class="team-th" colspan="3">
                 Team
             </td>
-            <td class="inning-heading">
-                1
-            </td>
-            <td class="inning-heading">
-                2
-            </td>
-            <td class="inning-heading">
-                3
-            </td>
-            <td class="inning-heading">
-                4
-            </td>
-            <td class="inning-heading">
-                5
-            </td>
-            <td class="inning-heading">
-                6
-            </td>
-            <td class="inning-heading">
-                7
-            </td>
-            <td class="inning-heading">
-                8
-            </td>
-            <td class="inning-heading">
-                9
-            </td>
+            @{
+                for (int i = 1; i <= Model.Innings.Count; i++)
+                {
+                    <td class="inning-heading">
+                        @i
+                    </td>
+                }
+            }
             <td class="inning-heading">
                 R
             </td>
@@ -87,71 +70,37 @@
             <td colspan="3">
                 @Model.HomeTeamName
             </td>
+            @{
+                foreach (InningScoreKeepingVM inning in Model.Innings)
+                {
+                    <td>
+                        @(Model.CurrentInning >= Model.Innings.IndexOf(inning) ? inning.HomeTeamScore : "")
+                    </td>
+                }
+            }
             <td>
-                @(Model.CurrentInning >= 0 ? Model.Innings[0].HomeTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 1 ? Model.Innings[1].HomeTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 2 ? Model.Innings[2].HomeTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 3 ? Model.Innings[3].HomeTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 4 ? Model.Innings[4].HomeTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 5 ? Model.Innings[5].HomeTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 6 ? Model.Innings[6].HomeTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 7 ? Model.Innings[7].HomeTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 8 ? Model.Innings[8].HomeTeamScore : "")
-            </td>
-            <td>
-                @Model.Score
+                @Model.HomeTeamScore
             </td>
         </tr>
         <tr>
             <td colspan="3">
                 @Model.AwayTeamName
             </td>
+            @{
+                foreach (InningScoreKeepingVM inning in Model.Innings)
+                {
+                    <td>
+                        @(Model.CurrentInning >= Model.Innings.IndexOf(inning) ? inning.AwayTeamScore : "")
+                    </td>
+                }
+            }
             <td>
-                @(Model.CurrentInning >= 0 ? Model.Innings[0].AwayTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 1 ? Model.Innings[1].AwayTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 2 ? Model.Innings[2].AwayTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 3 ? Model.Innings[3].AwayTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 4 ? Model.Innings[4].AwayTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 5 ? Model.Innings[5].AwayTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 6 ? Model.Innings[6].AwayTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 7 ? Model.Innings[7].AwayTeamScore : "")
-            </td>
-            <td>
-                @(Model.CurrentInning >= 8 ? Model.Innings[8].AwayTeamScore : "")
-            </td>
-            <td>
-                @Model.Score
+                @Model.AwayTeamScore
             </td>
         </tr>
     </table>
 </section>
+
+
+
+

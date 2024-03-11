@@ -22,10 +22,11 @@ namespace wmbaApp.ViewModels
         Strike,
         FoulBall,
         FoulTip,
+        FlyOut,
+        GroundOut,
         HitByPitch,
         IntentionalWalk,
         CatcherInterference,
-
     }
 
     public class PlayerScoreKeepingVM
@@ -103,8 +104,8 @@ namespace wmbaApp.ViewModels
         // Calculates OPS
         public double CalculateOBP()
         {
-            double OPS = (double)(Singles + Doubles * 2 + Triples * 3 + HR * 4) / AtBats;
-            return Math.Round(OPS, 3);
+            double OBP = (double)(Singles + Doubles * 2 + Triples * 3 + HR * 4) / AtBats;
+            return Math.Round(OBP, 3);
         }
 
         // Calculates OBP

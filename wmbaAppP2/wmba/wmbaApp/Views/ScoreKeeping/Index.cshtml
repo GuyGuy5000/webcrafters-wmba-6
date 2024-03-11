@@ -1,29 +1,79 @@
 ﻿@using wmbaApp.ViewModels
 @model wmbaApp.ViewModels.GameScoreKeepingVM
 
-<div id="ScoreBar">
-    <partial name="_ScoreBar" model="@Model" />
-</div>
+<div id="scoreKeepingMain">
+    <div id="ScoreBar">
+        <partial name="_ScoreBar" model="@Model" />
+    </div>
 
-<div id="BaseballDiamond">
-    <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
-</div>
+    <div class="grid">
+        <input id="btnUndoLast" type="button" value="Undo Last Action" onclick="UndoLastAction()" class="btn-action" />
+        <div></div>
+        <input id="btnAddToVisitorTeam" type="button" value="Add score to Visitor" class="btn-action" />
+    </div>
+    <div id="BaseballDiamond">
+        <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
+    </div>
 
-<div id="InningsTable">
-    <partial name="_InningsTable" model="@Model" />
-</div>
+    <div id="InningsTable">
+        <partial name="_InningsTable" model="@Model" />
+    </div>
 
+    <input type="hidden" id="undoLastPlayJSON" value='' />
+</div>
 <form asp-action="CancelGame">
     <input type="hidden" asp-for="GameID" />
     <input type="submit" value="CANCEL GAME" class="btn btn-danger" />
 </form>
 
+<style>
+    .grid{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+    }
 
-<input id="gameScoreKeepningJSON" type="hidden" value='@Json.Serialize(Model)' />
+    .btn-action {
+        border: 1px solid #000;
+        border-radius: 5px;
+        display: block;
+        font-size: 17px;
+        font-weight: 600;
+        height: 40px;
+        margin: 0 auto;
+        width: 170px;
+    }
+
+    /* Tablet */
+    @@media only screen and (min-width: 426px) and (max-width: 768px) {
+        .btn-action {
+            font-size: 13px;
+            height: 30px;
+            width: 130px;
+        }
+    }
+
+    /* phone */
+    @@media only screen and (min-width: 320px) and (max-width: 426px) {
+        .btn-action {
+            font-size: 10px;
+            height: 27px;
+            width: 105px;
+        }
+    }
+</style>
 
 @section Scripts{
     <!--Player on base action-->
     <script type="text/javascript">
+        $("input[type='button']").each(function () {
+            $(`#${this.id}`).click(function () {
+                $('#scoreKeepingMain input').prop("disabled", true);
+                new Promise(r => setTimeout(r, 1000)).then(function () {
+                    $('#scoreKeepingMain input').prop("disabled", false);
+                });
+            });
+        });
+
         AssignClickEvents();
 
         //shows the batter action prompt
@@ -68,7 +118,6 @@
             $("#btnAddToVisitorTeam").click(function () {
                 IncrementAwayTeamScore();
             });
-
         }
 
         //handles any runners that are on base
@@ -161,21 +210,49 @@
                     UpdateGame();
                 },
                 error: function (result, status, err) {
-                    window.alert("add to away team" + result.responseText + " " + status.responseText, err.Message);
+                    window.alert("add to visotor team" + result.responseText + " " + status.responseText, err.Message);
                 }
             });
         }
 
-        //retrieves an updated JSON of the game and updates the hidden gameScoreKeepingJSON field
+        //Undoes the last action by refreshing the page with an older gameVM
+        function UndoLastAction() {
+            var undoJSON = $("#undoLastPlayJSON");
+            if (undoJSON.val() == "" || undoJSON.val() == $("#gameScoreKeepingJSON").val()) { //if there is no undo primed
+                alert(`Nothing to undo`);
+                return;
+            }
+
+            $("#gameScoreKeepingJSON").val(undoJSON.val()); //sets the current JSON to the undoJSON so that UpdateGame() can use it\
+            //postback
+            $.ajax({
+                url: "@Url.Action("UndoLastAction", "ScoreKeeping")",
+                data: { undoGameJSON: undoJSON.val() }, //dictionary with same keys as the method's params
+                type: "Post",
+                success: function (result) {
+                    $("#BaseballDiamond").html(""); //reset the div
+                    $("#BaseballDiamond").html(result); // set the div to the result of the postback
+                    AssignClickEvents();
+                    undoJSON.val("");
+                    UpdateGame();
+                },
+                error: function (result, status, err) {
+                    window.alert("undo action" + result.responseText + " " + status.responseText, err.Message);
+                }
+            });
+        }
+
+        //retrieves an updated JSON of the game and updates the hidden gameScoreKeepingJSON field then updates all partial views accordingly
         function UpdateGame() {
-            var game = JSON.parse($("#gameScoreKeepningJSON").val());
+            $("#undoLastPlayJSON").val($("#gameScoreKeepingJSON").val()); //retains the current JSON for the undo feature
+            var game = JSON.parse($("#gameScoreKeepingJSON").val());
             //postback
             $.ajax({
                 url: "@Url.Action("UpdateGameScoreKeeping", "ScoreKeeping")",
-                data: { gameJSON: $("#gameScoreKeepningJSON").val(), currentInningJSON: $("#inningScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
+                data: { gameJSON: $("#gameScoreKeepingJSON").val(), currentInningJSON: $("#inningScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
-                    $("#gameScoreKeepningJSON").val(result); // set the div to the result of the postback
+                    $("#gameScoreKeepingJSON").val(result); // set the div to the result of the postback
                     var updatedGame = JSON.parse(result);
 
                     if (updatedGame.currentInning > game.currentInning) {
@@ -199,7 +276,7 @@
             //postback
             $.ajax({
                 url: "@Url.Action("StartNewInning", "ScoreKeeping")",
-                data: { gameScoreKeepingJSON: $("#gameScoreKeepningJSON").val() }, //dictionary with same keys as the method's params
+                data: { gameScoreKeepingJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
@@ -218,7 +295,7 @@
             //postback
             $.ajax({
                 url: "@Url.Action("UpdateScorePartial", "ScoreKeeping")",
-                data: { gameJSON: $("#gameScoreKeepningJSON").val() }, //dictionary with same keys as the method's params
+                data: { gameJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#ScoreBar").html(""); //reset the div
@@ -234,17 +311,21 @@
             //postback
             $.ajax({
                 url: "@Url.Action("UpdateInningsTablePartial", "ScoreKeeping")",
-                data: { gameJSON: $("#gameScoreKeepningJSON").val() }, //dictionary with same keys as the method's params
+                data: { gameJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#InningsTable").html(""); //reset the div
                     $("#InningsTable").html(result); // set the div to the result of the postback
                 },
                 error: function (result, status, err) {
-                    window.alert("Update score " + result.responseText + " " + status.responseText, err.Message);
+                    window.alert("Update innings " + result.responseText + " " + status.responseText, err.Message);
                 }
             });
         }
+
+        $(window).on("beforeunload", function () {
+            return "player statistics have not yet saved, leave anyway?";
+        });
     </script>
 
 }

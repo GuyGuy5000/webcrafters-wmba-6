@@ -125,12 +125,8 @@
         <!--Player on base prompts-->
         @{
             //check if any runners are on base
-            bool handleThirdBase = (bool)TempData.Peek("HandleThirdBase");
-            bool handleSecondBase = (bool)TempData.Peek("HandleSecondBase");
-            bool handleFirstBase = (bool)TempData.Peek("HandleFirstBase");
-
             //if a player is on base and is flagged to be handled
-            if (Model.PlayerOnThird != null && handleThirdBase)
+            if (Model.PlayerOnThird != null && Model.HandleThirdBase)
             {
                 <div class="player-on-base-prompt third-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnThird.Name advance to home base?</p>
@@ -144,7 +140,7 @@
                     <button name="playerOnBase" id="thirdBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
                 </div>
             }
-            else if (Model.PlayerOnSecond != null && handleSecondBase)
+            else if (Model.PlayerOnSecond != null && Model.HandleSecondBase)
             {
                 <div class="player-on-base-prompt second-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnSecond.Name advance?</p>
@@ -174,7 +170,7 @@
                     <button name="playerOnBase" id="secondBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
                 </div>
             }
-            else if (Model.PlayerOnFirst != null && handleFirstBase)
+            else if (Model.PlayerOnFirst != null && Model.HandleFirstBase)
             {
                 <div class="player-on-base-prompt first-base-prompt">
                     <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnFirst.Name advance?</p>
@@ -227,7 +223,7 @@
         <!--Batter actions prompt-->
         @{
             //after all bases were handled, the next batter action happens
-            if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
+            if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
             {
                 <div class="batter-action-button-container">
                     <button id="btnBatterAction" type="button" class="batter-action-button" onclick="ShowBatterAction()">PITCH</button>
@@ -276,7 +272,7 @@
 
         <!--Batter actions prompt-->
         @{
-            if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
+            if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
             {
                 <button id="btnSkip" type="button" class="btn-skip-prompt">Skip This Batter</button>
             }
@@ -328,6 +324,14 @@
                                 playByPlayOutput += $"<li><div class='red-play-indicator'>FT</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
                                 break;
 
+                            case "Fly Out":
+                                playByPlayOutput += $"<li><div class='red-play-indicator'>FO</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
+                            case "Ground Out":
+                                playByPlayOutput += $"<li><div class='red-play-indicator'>GO</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                break;
+
                             case "Hit By Pitch":
                                 playByPlayOutput += $"<li><div class='green-play-indicator'>HBP</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
                                 break;
@@ -343,12 +347,15 @@
                             case "Home Base":
                                 playByPlayOutput += $"<li><div class='green-play-indicator'>R</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
                                 break;
+
                             case "First Base":
                                 playByPlayOutput += $"<li><div class='green-play-indicator'>1ST</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
                                 break;
+
                             case "Second Base":
                                 playByPlayOutput += $"<li><div class='green-play-indicator'>2ND</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
                                 break;
+
                             case "Third Base":
                                 playByPlayOutput += $"<li><div class='green-play-indicator'>3RD</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
                                 break;
@@ -356,10 +363,10 @@
                             case "Out":
                                 playByPlayOutput += $"<li><div class='red-play-indicator'>O</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
                                 break;
+
                             case "Walk":
                                 playByPlayOutput += $"<li><div class='green-play-indicator'>BB</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
                                 break;
-
                         }
                     }
                     @Html.Raw(playByPlayOutput)
@@ -387,7 +394,6 @@
     </div>
 </section>
 
-<input id="btnAddToVisitorTeam" type="button" value=" + Add Run to Visitor Team" class="btn" />
 
 <style>
     /*Baseball diamond*/
@@ -455,7 +461,7 @@
         padding: 2px 0;
         position: relative;
         text-align: center;
-        top: -270px;
+        top: -375px;
         width: 250px;
     }
 
@@ -543,7 +549,7 @@
     }
 
     .btn-skip-prompt {
-        border: 2px solid #000;
+        border: 1px solid #000;
         border-radius: 5px;
         font-size: 17px;
         font-weight: 600;
@@ -766,7 +772,7 @@
 
         .batter-prompt {
             left: 83px;
-            top: -312px;
+            top: -410px;
         }
 
         #BatterActionList {
@@ -953,7 +959,7 @@
 
         .batter-prompt {
             left: 32px;
-            top: -360px;
+            top: -435px;
         }
 
         .batter-action-button-container {
@@ -1077,6 +1083,7 @@
         .red-indicator {
             height: 12px;
             width: 12px;
+            margin: 0px 2px -1px 2px;
         }
 
         .number-indicator {

@@ -57,8 +57,7 @@ namespace wmbaApp.Controllers
 
             if (!System.String.IsNullOrEmpty(SearchString))
             {
-                players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
+                players = players.Where(p => (p.PlyrFirstName.ToUpper() + " " + p.PlyrLastName.ToUpper()).Contains(SearchString.ToUpper())
                                        || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
                                        );
 

@@ -56,7 +56,7 @@ namespace wmbaApp.Models
         [Phone(ErrorMessage = "Invalid phone number")]
         public string CoachPhone { get; set; }
 
-        [Display(Name = "Division Coaches")]
+        [Display(Name = "Coach")]
         public ICollection<DivisionCoach> DivisionCoaches { get; set; } = new HashSet<DivisionCoach>();
     }
 }

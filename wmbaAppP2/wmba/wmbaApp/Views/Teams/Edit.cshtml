@@ -21,6 +21,13 @@
                 <select asp-for="DivisionID" id="disableDropdown" class="form-control" asp-items="ViewBag.DivisionID"></select>
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label"></label>
+            <label class="control-label">Coach</label>
+            @Html.DropDownList("CoachID", (SelectList)ViewData["CoachID"], "Select a Coach", new { @class = "form-control" })
+            <span asp-validation-for="DivisionCoaches" class="text-danger"></span>
+            <br />
+        </div>
 
         <div id="customModal" class="modal">
             <div class="modal-content">

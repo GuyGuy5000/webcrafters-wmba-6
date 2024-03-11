@@ -268,7 +268,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,TmName,TmAbbreviation,DivisionID")] Team team, string submitButton = "")
+        public async Task<IActionResult> Create([Bind("ID,TmName,TmAbbreviation,DivisionID")] Team team, int? coachID, string submitButton = "")
         {
             PopulateDropDownLists();
             if (ModelState.IsValid)
@@ -277,6 +277,17 @@ namespace wmbaApp.Controllers
                 {
                     _context.Add(team);
                     await _context.SaveChangesAsync();
+
+                    if (coachID.HasValue)
+                    {
+                        var divisionCoach = new DivisionCoach() { DivisionID = team.DivisionID, CoachID = coachID.Value, TeamID = team.ID };
+
+                        _context.DivisionCoaches.Add(divisionCoach);
+                        team.DivisionCoaches.Add(divisionCoach);
+                    }
+
+                    await _context.SaveChangesAsync();
+
                     if (!String.IsNullOrEmpty(submitButton))
                     {
                         if (submitButton == "Create and add players")
@@ -298,9 +309,13 @@ namespace wmbaApp.Controllers
                             ModelState.AddModelError("TmName", "A team with this name already exists. Please choose a different name."); //pass a message to the field that triggered the error
                         else if (dex.InnerException.Message.Contains("TmAbbreviation"))
                             ModelState.AddModelError("TmAbbreviation", "A team with this abbreviation already exists. Please choose a different abbreviation.");
+                        else if (dex.InnerException.Message.Contains("DivisionCoaches"))
+                            ModelState.AddModelError("DivisionCoaches", "This coach is already assigned to a team in this division. Please choose a different coach");
                     }
                     else
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                    _context.Remove(team);
+                    await _context.SaveChangesAsync();
                 }
             }
             return View(team);
@@ -309,7 +324,6 @@ namespace wmbaApp.Controllers
         // GET: Teams/Edit/5 
         public async Task<IActionResult> Edit(int? id)
         {
-            PopulateDropDownLists();
             if (id == null || _context.Teams == null)
             {
                 return NotFound();
@@ -326,7 +340,9 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
-            ViewBag.DivisionID = new SelectList(_context.Divisions, "ID", "DivName", team.DivisionID);
+
+            PopulateDropDownLists(team);
+
             return View(team);
         }
 
@@ -335,9 +351,8 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, int? coachID)
         {
-            PopulateDropDownLists();
             var teamToUpdate = await _context.Teams
                 .Include(t => t.Division)
                 .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
@@ -350,11 +365,40 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            PopulateDropDownLists(teamToUpdate);
+
             if (await TryUpdateModelAsync<Team>(teamToUpdate, "",
                 t => t.TmName, t => t.DivisionID))
             {
                 try
                 {
+                    if (coachID.HasValue)
+                    {
+                        var divisionCoachToUpdate = await _context.DivisionCoaches.FirstOrDefaultAsync(dc => dc.TeamID == teamToUpdate.ID);
+                        var divisionCoach = teamToUpdate.DivisionCoaches.FirstOrDefault(dc => dc.TeamID == teamToUpdate.ID);
+
+                        if (divisionCoachToUpdate != null)
+                        {
+                            _context.DivisionCoaches.Remove(divisionCoachToUpdate);
+                            teamToUpdate.DivisionCoaches.Remove(divisionCoach);
+
+                            _context.Update(teamToUpdate);
+                            await _context.SaveChangesAsync();
+
+                            var newDivisionCoach = new DivisionCoach() { DivisionID = teamToUpdate.DivisionID, CoachID = coachID.Value, TeamID = teamToUpdate.ID };
+
+                            _context.DivisionCoaches.Add(newDivisionCoach);
+                            teamToUpdate.DivisionCoaches.Add(newDivisionCoach);
+                        }
+                        else
+                        {
+                            var newDivisionCoach = new DivisionCoach() { DivisionID = teamToUpdate.DivisionID, CoachID = coachID.Value, TeamID = teamToUpdate.ID };
+
+                            _context.DivisionCoaches.Add(newDivisionCoach);
+                            teamToUpdate.DivisionCoaches.Add(newDivisionCoach);
+                        }
+                    }
+
                     _context.Update(teamToUpdate);
                     await _context.SaveChangesAsync();
                 }
@@ -369,6 +413,7 @@ namespace wmbaApp.Controllers
                         throw;
                     }
                 }
+
                 catch (DbUpdateException dex)
                 {
                     if (dex.InnerException.Message.Contains("UNIQUE")) //if a UNIQUE constraint caused the exception
@@ -378,6 +423,8 @@ namespace wmbaApp.Controllers
                             ModelState.AddModelError("TmName", "A team with this name already exists. Please choose a different name."); //pass a message to the field that triggered the error
                         else if (dex.InnerException.Message.Contains("TmAbbreviation"))
                             ModelState.AddModelError("TmAbbreviation", "A team with this abbreviation already exists. Please choose a different abbreviation.");
+                        else if (dex.InnerException.Message.Contains("DivisionCoaches"))
+                            ModelState.AddModelError("DivisionCoaches", "This coach is already assigned to a team in this division. Please choose a different coach");
                     }
                     else
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
@@ -504,7 +551,7 @@ namespace wmbaApp.Controllers
                 int activeGames = 0;
                 foreach (GameTeam g in team.GameTeams)
                 {
-                   if (g.Game.GameEndTime > DateTime.Now)
+                    if (g.Game.GameEndTime > DateTime.Now)
                     {
                         activeGames++;
                     }
@@ -514,10 +561,7 @@ namespace wmbaApp.Controllers
                     ModelState.AddModelError("FK2", $"Unable to make a team that has upcoming games inactive. Reassign or cancel the upcoming games for this team");
                 }
                 return View(team);
-
             }
-
-
 
             if (team != null)
             {
@@ -565,7 +609,7 @@ namespace wmbaApp.Controllers
                      .Include(t => t.GameTeams).ThenInclude(t => t.Game)
                      .AsNoTracking()
                      .FirstOrDefaultAsync(m => m.ID == id);
-            
+
             if (team != null)
             {
                 team.IsActive = true;
@@ -581,9 +625,14 @@ namespace wmbaApp.Controllers
         {
             return new SelectList(_context.Divisions, "ID", "DivName", selectedId);
         }
+        private SelectList CoachesSelectList(int? selectedId)
+        {
+            return new SelectList(_context.Coaches, "ID", "FullName", selectedId);
+        }
         private void PopulateDropDownLists(Team team = null)
         {
             ViewData["DivisionID"] = DivisionSelectList(team?.DivisionID);
+            ViewData["CoachID"] = CoachesSelectList(team?.DivisionCoaches?.FirstOrDefault()?.CoachID);
         }
         #endregion
 
