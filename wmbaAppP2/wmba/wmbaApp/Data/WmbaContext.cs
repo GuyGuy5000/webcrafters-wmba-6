@@ -23,7 +23,7 @@ namespace wmbaApp.Data
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
         //public DbSet<PlayerPosition> PlayerPositions { get; set; }
-        //public DbSet<Position> Positions { get; set; }
+        public DbSet<GameLocation> GameLocations { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
 
         public DbSet<Team> HomeTeams { get; set; }
@@ -164,6 +164,11 @@ namespace wmbaApp.Data
 
             modelBuilder.Entity<PlayerLineup>()
                 .HasIndex(pp => new { pp.PlayerID, pp.LineupID })
+                .IsUnique();
+
+                //Unique constraint for GameLocation Name
+            modelBuilder.Entity<GameLocation>()
+                .HasIndex(p => p.Name)
                 .IsUnique();
         }
     }
