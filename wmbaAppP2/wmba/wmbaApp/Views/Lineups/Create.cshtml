@@ -1,4 +1,4 @@
-﻿@model wmbaApp.Models.Lineup;
+@model wmbaApp.Models.Lineup;
 
 <div class="container">
     <form asp-action="Create" asp-controller="Lineups" method="post" onsubmit="return validateCheckboxes()">
@@ -61,7 +61,11 @@
             </div>
 
             <div class="form-group">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModalGame">
+                @* select/DeSelect all the checkboxes *@
+                <label class="form-check-label">
+                    <input type="checkbox" id="selectAllToggle"> Select/Deselect All
+                </label>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModalGame" id="previewLineupButton">
                     Preview Lineup
                 </button>
                 <a asp-controller="Games" asp-action="Index" class="btn btn-primary">Back to Games List</a>
@@ -141,7 +145,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <input type="submit" value="Create" class="btn btn-primary" />
+                        <input type="submit" value="Save" class="btn btn-primary" />
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -154,18 +158,4 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/preview-modal.js"></script>
-    <script>
-    function validateCheckboxes() {
-        var selectedHomePlayersCount = $("input[name='SelectedPlayers'][data-team='Home']:checked").length;
-        var selectedAwayPlayersCount = $("input[name='SelectedPlayers'][data-team='Away']:checked").length;
-
-        if (selectedHomePlayersCount == 0 & selectedAwayPlayersCount == 0) {
-            alert("Please select players.");
-            return false;
-        }
-
-        return true;
-    }
-</script>
-
 }
