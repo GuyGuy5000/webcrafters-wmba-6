@@ -30,6 +30,18 @@
                 <input asp-for="PlyrMemberID" class="form-control" placeholder="Ex:  746ASE4C" />
                 <span asp-validation-for="PlyrMemberID" class="text-danger"></span>
             </div>
+@* for division dropdown *@
+            <div class="form-group">
+                <label asp-for="Team.DivisionID" class="control-label"></label>
+                <select asp-for="Team.DivisionID" class="form-control" id="divisionDropdown">
+                    <option value="">Select Division</option>
+                    @foreach (var division in ViewData["DivisionID"] as SelectList)
+                    {
+                        <option value="@division.Value">@division.Text</option>
+                    }
+                </select>
+                <span asp-validation-for="Team.DivisionID" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="TeamID" class="control-label "></label>
                 <select asp-for="TeamID" class="form-control" asp-items="ViewBag.TeamID">
