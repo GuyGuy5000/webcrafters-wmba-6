@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -57,7 +57,8 @@ namespace wmbaApp.Controllers
 
             if (!System.String.IsNullOrEmpty(SearchString))
             {
-                players = players.Where(p => (p.PlyrFirstName.ToUpper() + " " + p.PlyrLastName.ToUpper()).Contains(SearchString.ToUpper())
+                players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
+                                       || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
                                        );
 
@@ -230,7 +231,7 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-                .Include(p => p.Team)
+                .Include(p => p.Team).ThenInclude(p => p.Division)
                 .Include(p => p.Statistics)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
@@ -299,6 +300,7 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
+                .Include(p=>p.Team).ThenInclude(p=>p.Division)
                 .FirstOrDefaultAsync(f => f.ID == id);
 
             if (player == null)
@@ -427,6 +429,7 @@ namespace wmbaApp.Controllers
             {
                 return Problem("Entity set 'WmbaContext.Players' is null.");
             }
+
             var player = await _context.Players
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
@@ -442,6 +445,7 @@ namespace wmbaApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         // GET: Players/Active/5
         public async Task<IActionResult> MakeActive(int? id)
         {
@@ -452,6 +456,7 @@ namespace wmbaApp.Controllers
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(m => m.ID == id);
+
             if (player == null)
                 return NotFound();
 
@@ -578,6 +583,12 @@ namespace wmbaApp.Controllers
             return new SelectList(_context.Teams.Where(t => t.IsActive), "ID", "TmName", selectedId);
         }
 
+        private SelectList DivisionSelectList(int? selectedId)
+        {
+            return new SelectList(_context.Divisions, "ID", "DivName", selectedId);
+        }
+
+
         private SelectList StatisticSelectList(int? selectedId)
         {
             return new SelectList(_context.Statistics, "ID", "ID", selectedId);
@@ -586,8 +597,24 @@ namespace wmbaApp.Controllers
         private void PopulateDropDownLists(Player player = null)
         {
             ViewData["TeamID"] = TeamSelectList(player?.TeamID);
+            ViewData["DivisionID"] = DivisionSelectList(player?.Team?.DivisionID);
             ViewData["StatisticID"] = StatisticSelectList(player?.StatisticID);
         }
+
+        [HttpGet]
+        public JsonResult GetTeamsByDivision(int divisionId)
+        {
+            var teams = _context.Teams
+                .Include(t => t.Division)
+                .Where(t => t.DivisionID == divisionId)
+                .Select(t => new { value = t.ID, text = t.TmName })
+                .ToList();
+
+            return Json(teams);
+        }
+
+
+
 
         //#region PositionCheckboxes
         //private void PopulateAssignedPositionCheckboxes(Player player)
