@@ -1,4 +1,4 @@
-﻿// Function to update the modal content based on selected checkboxes
+// Function to update the modal content based on selected checkboxes
 function updatePreviewModal() {
     var selectedHomePlayers = [];
     var selectedAwayPlayers = [];
@@ -54,6 +54,17 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+//function to make Select/DeSelect all players at once to work with preview modal also
 
+    $(document).ready(function () {
+        $("#selectAllToggle").change(function () {
+            $("input[name='SelectedPlayers']").prop('checked', $(this).prop("checked"));
+            updatePreviewModal();
+        });
+
+    $("#previewLineupButton").click(function () {
+        updatePreviewModal();
+            });
+        });
 
 
