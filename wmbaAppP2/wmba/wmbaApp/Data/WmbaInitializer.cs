@@ -190,9 +190,20 @@ namespace wmbaApp.Data
                     context.SaveChanges();
                 }
 
-                // Game seed data
+                // Game Location seed data
                 string[] locations = { "Chippawa Park Ball Diamond", "Maple Park Diamond 1", "Plymouth Park Ball Diamond", "PCMBA Rotary Complex", "Memorial Park Diamond 1", "Memorial Park Diamond 2", "Memorial Park Diamond 3", "Memorial Park Diamond 4", "Port Robinson Park Ball Diamond", "Treelawn Park Ball Diamond", "Southward Community Park Diamond 4" };
 
+                // Check if GameLocations exist, if not, add them
+                if (!context.GameLocations.Any())
+                {
+                    foreach (string locationName in locations)
+                    {
+                        context.GameLocations.Add(new GameLocation { Name = locationName });
+                    }
+                    context.SaveChanges();
+                }
+
+                //Game Seed data
                 // Add games if none exist
                 if (!context.Games.Any())
                 {
@@ -220,13 +231,19 @@ namespace wmbaApp.Data
                                     start = lastScheduledGameTime.Value.AddHours(random.Next(48, 72));
                                 }
 
+                                // Get a random location from the array
+                                string randomLocation = locations[random.Next(locations.Length)];
+
+                                // Find the GameLocation by name
+                                var gameLocation = context.GameLocations.FirstOrDefault(gl => gl.Name == randomLocation);
+
                                 context.Games.Add(new Game
                                 {
                                     AwayTeam = awayTeam,
                                     HomeTeam = homeTeam,
                                     GameStartTime = start,
                                     GameEndTime = start.AddMinutes(random.Next(120, 150)),
-                                    GameLocation = locations[random.Next(locations.Length - 1)],
+                                    GameLocationID = gameLocation?.ID ?? default,
                                     DivisionID = homeTeam.DivisionID,
                                     HomeLineup = new Lineup(),
                                     AwayLineup = new Lineup()
@@ -237,7 +254,7 @@ namespace wmbaApp.Data
                                 Game createdGame = context.Games.OrderBy(g => g.ID).Last();
 
                                 // Add the players from the teams to each lineup
-                                foreach (Player p in homeTeam.Players)
+                                foreach (Player p in homeTeam.Players.Where(p => p.IsActive == true))
                                 {
                                     if (createdGame.HomeLineup.PlayerLineups.Count == 9)
                                         break;
@@ -248,7 +265,7 @@ namespace wmbaApp.Data
                                     });
                                 }
 
-                                foreach (Player p in awayTeam.Players)
+                                foreach (Player p in awayTeam.Players.Where(p => p.IsActive == true))
                                 {
                                     if (createdGame.AwayLineup.PlayerLineups.Count == 9)
                                         break;
@@ -258,8 +275,6 @@ namespace wmbaApp.Data
                                         LineupID = createdGame.AwayLineup.ID
                                     });
                                 }
-
-
 
                                 context.Games.Update(createdGame);
                                 // Save the changes to the database
