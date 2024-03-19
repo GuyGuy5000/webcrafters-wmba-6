@@ -1,0 +1,21 @@
+﻿@model wmbaApp.Models.Division
+
+<h4>Are you sure you want to delete @Model.DivName?</h4>
+<div>
+    <h4>Division</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DivName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DivName)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-outline-dark">Back to Division List</a>
+    </form>
+</div>
