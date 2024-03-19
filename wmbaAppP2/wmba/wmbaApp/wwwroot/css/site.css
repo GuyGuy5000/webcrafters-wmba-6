@@ -45,8 +45,11 @@ body {
 
 
 .navbar {
-    background-color: #2e8b43;
+    background-color: #17254c;
 }
+
+
+
 
     .navbar a {
         font-size: 20px;
@@ -60,6 +63,8 @@ li a:hover {
     background-color: #2e8b43;
     color: #fff;
 }
+
+
 /********Logo********/
 .logo {
     width: 150px;
@@ -69,8 +74,10 @@ li a:hover {
 
 
 .secondLogo {
-    width: 60px;
-    height: 60px;
+    width: 100px; /* Adjust the width to your preferred size */
+    height: auto; /* Let the height scale proportionally */
+    max-width: 100%; /* Ensure the image does not exceed its original size */
+    max-height: 100%; /* Ensure the image does not exceed its original size */
 }
 
 
@@ -134,35 +141,46 @@ li a:hover {
 
 
 .gameStyle {
-    max-height: 450px;
-    max-width: 460px;
+    border-radius: 5px;
+    max-height: 516px;
+    max-width: 700px;
     overflow-y: auto;
-    border: 5px solid #2e8b43;
+    border: 2px solid #2e8b43;
     padding: 10px;
     margin-top: -15px;
     margin: 0 auto;
+    position: relative;
+    top: 2px;
+    right: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
 }
 
 
 
     .gameStyle h1 {
-        background-color: #2e8b43;
+        background-color: #17254c;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
     }
 
 .row #gameBtn {
-    background-color: #2e8b43;
+    background-color: #17254c;
+    border-radius: 5px;
     margin: 0 auto;
-    max-width: 460px;
+    max-width: 700px;
     padding: 26px;
+    position: relative;
+    top: 2px;
+    right: 25px;
 }
 /* Optional: Style for collapsed game items */
-.gameStyle .collapse {
-    max-height: 100px; /* Set the maximum height for collapsed items */
-    overflow-y: auto; /* Add a vertical scrollbar for collapsed items */
-    border-top: 1px solid #ddd; /* Optional: Add a border between collapsed items */
-    padding: 5px; /* Optional: Add padding for spacing inside collapsed items */
-}
+/*.gameStyle .collapse {
+    max-height: 100px;*/ /* Set the maximum height for collapsed items */
+/*overflow-y: auto;*/ /* Add a vertical scrollbar for collapsed items */
+/*border-top: 1px solid #ddd;*/ /* Optional: Add a border between collapsed items */
+/*padding: 5px;*/ /* Optional: Add padding for spacing inside collapsed items */
+/*}*/
 
 
 .col-md-12 {
@@ -219,15 +237,22 @@ li a:hover {
     }
 
     .activeParent .activeHeading, filSearch {
-        font-size: 23px;
+        font-size: 18px;
     }
 
     .form-horizontal .filSearch {
         font-size: 15px;
     }
 
-
+  
 }
+
+@media (max-width: 767px) {
+    .text-nowrap {
+        font-size: 12px !important; /* Adjust the font size as needed */
+    }
+}
+
 
 /******Header Ends**********/
 
@@ -247,6 +272,28 @@ li a:hover {
 
 .icon {
     font-size: 70px;
+    margin-top: 35px;
+    margin-bottom: 10px;
+    color: #fff;
+    padding: 1px;
+}
+
+.icons {
+    font-size: 70px;
+    margin-top: 90px;
+    margin-bottom: 10px;
+    color: #fff;
+    padding: 1px;
+}
+
+
+.iconP {
+    font-size: 70px;
+}
+
+.first-section, .second-section, a {
+    text-decoration: none;
+    color: #fff;
 }
 
 @keyframes fadeIn {
@@ -315,11 +362,6 @@ li a:hover {
 
 
 
-/*
-i:hover {
-    transform: translateY(-7px);
-}*/
-
 
 
 
@@ -336,7 +378,7 @@ i:hover {
 
 
     .header {
-        background-color: #2e8b43;
+        background-color: #17254c;
         color: #17254C;
         padding: 4px 12px 51px;
         margin: 4px;
@@ -389,8 +431,7 @@ i:hover {
         flex-direction: column;
     }
 
-    .phoneviewImport,
-    .dashboards,
+
     .gameStyle {
         width: 100%;
         max-width: 280px;
@@ -407,15 +448,11 @@ i:hover {
     }
 }
 
+.styleGameTbl table {
+    text-align: left;
+}
+
 @media only screen and (min-width: 590px) and (max-width: 767px) {
-    .phoneviewImport,
-    .dashboards,
-    .styleGameTbl,
-    .gameStyle {
-        width: 100%;
-        max-width: 580px;
-        margin: 0 auto;
-    }
 }
 
 @media only screen and (min-width: 320px ) and (max-width: 590px) {
@@ -427,21 +464,14 @@ i:hover {
     .dashboards {
         height: 300px;
     }
-    .btn {
-        display: none;
-    }
+
+
 
     .yemiNav {
         position: fixed;
         z-index: 900;
         width: 100%;
-        
-       
     }
-
-  
-    
-   
 }
 
 
@@ -449,7 +479,7 @@ i:hover {
 
 @media only screen and (min-width: 590px) and (max-width: 767px) {
 
-    .dashboards,
+
     .gameStyle {
         width: 100%;
         max-width: 580px;
@@ -460,27 +490,17 @@ i:hover {
     .hideGameBtnLaptop p {
         margin-top: 32px;
     }
-
-    .dashboards h1 {
-        font-size: 25px;
-    }
 }
 
 
 
-.dashboard {
-    text-align: center;
-    margin: 0 auto;
-    border-radius: 5px;
-    padding: 15px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
-}
+
 
 .container-fluid {
     padding-bottom: 30px;
 }
 
-.dashboards, .innerDashboards {
+.dashboard {
     margin: 0 auto;
     border-radius: 5px;
     padding: 15px;
@@ -509,9 +529,7 @@ i:hover {
     border-radius: 5px;
     display: inline-block;
     margin-top: 20px;
-
     text-decoration: none;
-    
 }
 
 #btnBck {
@@ -520,7 +538,6 @@ i:hover {
 
 .clickable-header a {
     text-decoration: none;
-  
     color: #fff;
 }
 
@@ -555,10 +572,7 @@ i:hover {
             font-size: 30px;
         }
 
-    .teamImport {
-        display: flex;
-        flex-direction: column;
-    }
+
 
 
 
@@ -567,11 +581,11 @@ i:hover {
         border: 5px solid #2e8b43;
     }
 
-    .clickable-header{
+    .clickable-header {
         display: none;
     }
 
-   
+
     .view {
         position: relative;
         left: 0px;
@@ -581,11 +595,12 @@ i:hover {
     .modal {
         width: 150px;
     }
+
     .phoneBack {
         background-color: #F7F7f7;
         border-radius: 10px 10px 0 0;
-        top: 82px;
-        padding: 5px;     
+        top: 84px;
+        padding: 10px;
         position: fixed;
         width: 103%;
         z-index: 100;
@@ -596,7 +611,7 @@ i:hover {
             display: flex;
             align-items: center;
             font-size: 10px;
-            padding: 10px 0;
+            padding: 12px 0;
             text-decoration: none;
             color: #000;
         }
@@ -611,6 +626,12 @@ i:hover {
         .phoneBack a:hover {
             color: #e7995e;
         }
+
+
+
+
+   
+
 
 }
 
@@ -639,7 +660,7 @@ i:hover {
 
 /* Styles for smaller screens (Laptop) */
 @media (min-width: 780px) {
- 
+
     main {
         position: relative;
         top: 120px; /* Adjust this value for phone view */
@@ -658,7 +679,6 @@ i:hover {
 
 .yemiNav {
     position: fixed;
-    top: 0;
     z-index: 600;
     width: 100%;
     margin-bottom: 120px;
@@ -680,13 +700,13 @@ i:hover {
 }
 
 .required-label::after {
-    content: 'Required *';
+    content: ' *';
     color: red;
     margin-left: 10px;
 }
 
-form{
- margin-bottom: 80px;
+form {
+    margin-bottom: 80px;
 }
 
 .form-group {
@@ -717,7 +737,7 @@ form{
     border-radius: 10px 10px 0 0;
     bottom: 0;
     position: fixed;
-    width: 100%;
+    width: 103%;
     z-index: 100;
     margin-left: -10px;
 }
@@ -740,6 +760,14 @@ form{
         color: #e7995e;
     }
 
+/* Add these styles to your CSS stylesheet */
+.hidden-bar {
+    display: none;
+}
+
+
+
+
 
 
 
@@ -752,6 +780,7 @@ form{
     .phoneBack {
         display: none;
     }
+
     .hideGameBtnLaptop {
         display: none;
     }
@@ -768,7 +797,7 @@ form{
     height: 600px;
 }
 
-.games-editform{
+.games-editform {
     height: 900px;
 }
 
@@ -815,9 +844,6 @@ fieldset {
 
 
 
-#icon1, #icon2 {
-    animation: rotateAnimation 5s linear infinite;
-}
 
 @keyframes rotateAnimation {
     0% {
@@ -829,25 +855,6 @@ fieldset {
     }
 }
 
-
-
-.teamImport {
-    display: inline-flex;
-    gap: 10px;
-}
-
-.img-guide img {
-    width: 100%;
-}
-
-.img-guide {
-    border: 5px solid #2e8b43;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
-}
-
-.imgGuide {
-    padding-top: 20px;
-}
 
 
 
@@ -882,17 +889,7 @@ fieldset {
 }
 
 /* Button Styles */
-.btn {
-    display: inline-block;
-    padding: 8px 16px;
-    margin-right: 10px;
-    margin-bottom: 12px;
-    font-size: 14px;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    border-radius: 4px;
-}
+
 
 .btn-primary {
     background-color: #007bff;
@@ -900,10 +897,17 @@ fieldset {
     border: 1px solid #007bff;
 }
 
+
+.btn-outline-dark:hover {
+    color: white;
+    background-color: #2e8b43;
+}
+
 .btn-outline-dark {
     background-color: transparent;
-    color: #343a40;
-    border: 1px solid #343a40;
+    color: #666362;
+    border: 1px solid #2e8b43;
+    width: 12em;
 }
 
 .labRequred {
@@ -937,8 +941,13 @@ fieldset {
     padding-top: 12px;
 }
 
-.btnFilter p {
-    font-size: 22px;
+button.btn.btn-left {
+    width: 200px; /* Adjust the width as needed */
+}
+
+
+.form-horizontal button {
+    height: 40px;
 }
 
 .view {
@@ -969,7 +978,7 @@ fieldset {
 
 
 .custom-hover-effect.active {
-    color: #fff !important;
+    color: #2e8b43 !important;
 }
 
 .phoneIcon.active {
@@ -994,23 +1003,119 @@ fieldset {
     margin-top: 10px;
 }
 
-th #move {
-    padding: 5px;
-}
-/******Button Starts**********/
-.btn {
-    display: inline-block;
-    padding: 10px 20px;
-    text-decoration: none;
-    background-color: #17254C;
-    color: #fff;
-    border-radius: 5px;
-}
 
-    .btn:hover {
-        background-color: #F1A41D;
+
+@media only screen and (min-width: 320px) and (max-width: 768px) {
+    th .division {
+        position: relative;
+        top: 20px;
+        right: 10px;
     }
 
+    th #moveDiv {
+        position: relative;
+        left: 60px;
+    }
+}
+
+/******Button Starts**********/
+.btn {
+    --c: #2e8b43;
+    color: var(--c);
+    font-size: 13px;
+    border: 0.3em solid var(--c);
+    border-radius: 0.5em;
+    width: 12em;
+    height: 3em;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: sans-serif;
+    letter-spacing: 0.1em;
+    text-align: center;
+    line-height: 2em;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    transition: 0.5s;
+    margin: 1em;
+}
+
+.gameStyle .btn {
+    position: relative;
+    top: -65px;
+    left: 450px;
+}
+
+.btn span {
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    background-color: var(--c);
+    transform: translateY(150%);
+    border-radius: 50%;
+    left: calc((var(--n) - 1) * 25%);
+    transition: 0.5s;
+    transition-delay: calc((var(--n) - 1) * 0.1s);
+    z-index: -1;
+}
+
+.btn:hover {
+    color: #fff;
+}
+
+    .btn:hover span {
+        transform: translateY(0) scale(2);
+    }
+
+        .btn:hover span:nth-child(1) {
+            --n: 1;
+        }
+
+        .btn:hover span:nth-child(2) {
+            --n: 2;
+        }
+
+        .btn:hover span:nth-child(3) {
+            --n: 3;
+        }
+
+        .btn:hover span:nth-child(4) {
+            --n: 4;
+        }
+
+@media (max-width: 767px) {
+    .btn {
+        width: 100%; /* Full width on phones */
+        margin: 1em 0; /* Adjust margin for spacing */
+    }
+
+    /*.gameStyle .btn {
+        left: 220px; 
+        font-size: 10px;
+        width:*/ /* Adjust position for better placement on phones */
+    /*}*/
+}
+
+@media only screen and (min-width: 320px) and (max-width: 768px) {
+    .btnStyle {
+        width: 90px;
+        font-size: 12px;
+    }
+
+    .link a {
+        font-size: 13px;
+    }
+
+    form .btnFilter {
+        width: 150px; /* Adjust the width for smaller screens */
+    }
+
+    th .gameCreateBtn {
+        position: relative;
+        top: 10px;
+        left: -53px;
+    }
+}
 
 .btn-green {
     background-color: #2e8b43;
@@ -1023,7 +1128,7 @@ th #move {
     width: 282px;
 }
 
-.divisionTable{
+.divisionTable {
     width: 40%;
     margin: 0 auto;
 }
@@ -1033,24 +1138,514 @@ th #move {
     margin: 0 auto;
 }
 
-th .btnCreateTeam{
-   position: relative;
-   top: 10px;
-}
-/******Button Ends**********/
-/******Footer Starts************/
-footer {
-    background-color: #2e8b43;
-    height: 40px;
-    font-weight: 700;
-    margin-bottom: -50px;
-    position: fixed;
-    margin-top: 80px;
-    margin-bottom: -120px;
-    padding-bottom: 60px;
-    
-    color: #fff;
+.coachTable {
 }
 
 
-/******Footer Ends************/
+th .gameCreateBtn {
+    position: relative;
+    top: 10px;
+    right: 213px;
+}
+
+
+
+
+/** {
+    border: 1px solid red !important;
+}*/
+
+
+.hideGameBtnLaptop {
+    width: 700px;
+}
+
+.viewBtn {
+    position: relative;
+    left: 570px;
+    bottom: 100px;
+}
+
+
+.link-container {
+    position: relative;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+}
+
+    .link-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: transparent;
+        z-index: -1;
+    }
+
+    .link-container:hover::before {
+        background: rgba(0, 0, 0, 0.1); /* Adjust as needed */
+    }
+.first-section a:hover,
+.second-section a:hover {
+    z-index: 10;
+}
+
+
+.second-section:hover h3,
+
+.first-section:hover h3 {
+    transform: scale(1.2);
+    transition: transform 0.3s ease;
+    color: #2e8b43;
+    text-decoration: underline;
+}
+
+.second-section:hover h3,
+.first-section:hover h3 {
+    padding: 0; /* Reset the padding for the <h3> */
+}
+.second-section a:hover,
+.first-section a:hover {
+    z-index: 10;
+}
+
+
+
+
+
+.dashboard,
+.parent-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.second-section,
+.first-section {
+    background-color: #17254c;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 13px;
+}
+
+
+.second-section {
+    height: 200px;
+}
+
+.first-section {
+    height: 307px;
+}
+
+.link-container {
+    width: 450px;
+}
+
+/* Make the hamburger menu icon white */
+.hamburger-icon span.navbar-toggler-icon {
+    background-color: white;
+}
+
+form .deactivate {
+    width: 450px;
+}
+
+form .deactivateTeam {
+    width: 270px;
+}
+/* Add this to your existing CSS or create a new file and link it */
+.gameDetails {
+    font-size: 15px;
+}
+
+
+.gameDate {
+    font-size: 16px;
+}
+
+.gamesHeading h1 {
+
+    font-size: 18px; /* Display the heading on phones and tablets */
+}
+@media (max-width: 991px) {
+    .layout,
+    .parent-section {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dashboard {
+        width: 100%; /* Adjust the width as needed for responsiveness */
+        box-shadow: none; /* Remove box shadow on phone and tablet views */
+    }
+
+    .gameDetails {
+        font-size: 13px;
+    }
+
+
+    .gameDate {
+        font-size: 14px;
+    }
+
+    .gamesHeading h1 {
+        display: block;
+        font-size: 15px; /* Display the heading on phones and tablets */
+    }
+
+    .gameStyle .btn {
+        position: relative;
+        top: -0px;
+        left: 230px;
+        margin: 0 auto;
+        font-size: 11px;
+    }
+
+
+    .icon {
+        font-size: 40px;
+        margin-top: 40px;
+        margin-bottom: 10px;
+        color: #fff;
+        padding: 1px;
+    }
+
+    .icons {
+        font-size: 40px;
+        margin-top: 40px;
+        margin-bottom: 10px;
+        color: #fff;
+        padding: 1px;
+    }
+
+    .second-section-container a,
+    .first-section-container a {
+        margin-bottom: 33px;
+        margin-top: 33px;
+    }
+
+
+    .import-container {
+        top: 480px;
+        position: relative;
+    }
+
+    .link-container {
+        height: 150px;
+    }
+
+    .hideGameBtnLaptop {
+        width: 200px;
+        margin: 0 auto;
+    }
+
+    .gameStyle {
+        width: 100%;
+        max-width: 450px;
+        margin: 0px auto;
+        margin-left: 20px;
+    }
+
+
+    .link-container {
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+    }
+
+    .row #gameBtn {
+        background-color: #17254c;
+        border-radius: 5px;
+        margin: 0 auto;
+        width: 80px;
+        padding: 26px;
+        position: relative;
+        top: 2px;
+        right: 25px;
+    }
+
+    .dash {
+        border-radius: 5px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    }
+
+    .btn {
+        width: 70px;
+    }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 558px) {
+    .gameStyle .btn {
+        position: relative;
+        top: -0px;
+        left: 62px;
+        margin: 0 auto;
+        font-size: 9px;
+    }
+
+    .import-container {
+        top: -280px;
+        position: relative;
+    }
+
+    .btn {
+        font-size: 10px;
+    }
+
+    .playerTable {
+        width: 200px;
+    }
+
+    .form-group .crud {
+        width: 200px;
+    }
+
+    .phoneBack {
+        background-color: #F7F7f7;
+        top: 111px;
+        padding: 7px;
+        position: fixed;
+        width: 103%;
+        z-index: 900;
+        margin-left: -10px;
+        color: #000;
+    }
+
+    form .deactivate {
+        width: 150px;
+        /* Adjust the value as needed */
+    }
+
+    .backMargin {
+        margin-bottom: 40px;
+    }
+
+    form table .MakeInactive {
+        width: 90px;
+        position: relative;
+        right: 10px;
+    }
+
+    form .viewPG {
+        width: 120px;
+    }
+
+    form .deactivateTeam {
+        width: 270px;
+    }
+
+    table tbody .GameCrud {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .gameForm table th, .table td {
+        padding: 0.25rem;
+    }
+
+    .gameForm table th {
+        font-size: 0.75rem;
+    }
+
+    .table tr {
+        width: 140px;
+    }
+
+    .pageBtn {
+        width: 60px; /* Adjust the width as needed */
+    }
+
+    .table-responsive .gameTable {
+        width: 50%;
+        margin: 0 auto;
+    }
+    .table-responsive {
+        overflow-x: hidden;
+    }
+    .createTeam {
+        margin-left: -12rem; /* Adjust the value as needed */
+    }
+    /*   form .margin{
+        margin-bottom: 35px;
+        width: 299px;
+    }*/
+
+
+    .absolute-top {
+        position: fixed;
+        top: -11px;
+        left: 0; /* Adjust left position if needed */
+        z-index: 1000; /* Adjust z-index as needed */
+        /* Add any other styles you want for the phone back */ /*Adjust the negative value to fit your design */
+    }
+}
+
+@media only screen and (min-width: 557px) and (max-width: 998px) {
+    .btn {
+        font-size: 7px;
+    }}
+
+
+    @media only screen and (min-width: 765px) and (max-width: 1000px) {
+        .link-container {
+            margin: 0 auto;
+            position: relative;
+            left: 170px;
+        }
+
+        .row #gameBtn {
+            background-color: #17254c;
+            border-radius: 5px;
+            margin: 0 auto;
+            width: 250px;
+            padding: 66px;
+            position: relative;
+            top: 20px;
+            right: 25px;
+            height: 70px;
+        }
+
+        .gameStyle .btn {
+            position: relative;
+            top: 6px;
+            left: 166px;
+            margin: 0 auto;
+            font-size: 11px;
+        }
+
+        .dash .btn {
+            margin-top: -20px;
+        }
+
+        .phoneNav {
+            display: block; /* hide the navigation bar */
+        }
+    }
+
+
+
+    @media only screen and (min-width: 1000px) and (max-width: 1558px) {
+        .gameStyle .btn {
+            position: relative;
+            top: -0px;
+            left: 70px;
+            margin: 0 auto;
+            font-size: 11px;
+        }
+
+        .gameDetails {
+            font-size: 14px;
+        }
+
+        .link-container {
+            width: 230px;
+        }
+
+
+        .gameDate {
+            font-size: 16px;
+        }
+
+        .gamesHeading h1 {
+            display: block;
+            font-size: 15px; /* Display the heading on phones and tablets */
+        }
+
+
+        .icon {
+            font-size: 40px;
+            margin-top: 80px;
+            margin-bottom: 10px;
+            color: #fff;
+            padding: 1px;
+        }
+
+        .icons {
+            font-size: 40px;
+            margin-top: 110px;
+            margin-bottom: 10px;
+            color: #fff;
+            padding: 1px;
+        }
+    }
+
+
+    /* Add styles as needed */
+
+    .import-container {
+        border: dotted;
+        background-color: white;
+        margin: 50px auto;
+        padding: 20px;
+        max-width: 900px;
+    }
+
+        .import-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+    .import-guide {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .import-guide img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+    .import-section {
+        text-align: center;
+    }
+
+        .import-section .startGames.import {
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .import-section .form-group {
+            margin-bottom: 15px;
+        }
+
+        .import-section .custom-file-label.impTeams {
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .import-section .feedback {
+            margin-top: 15px;
+        }
+
+        .import-section .btnStyle {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+
+    /******Button Ends**********/
+    /******Footer Starts************/
+    footer {
+        background-color: #17254c;
+        height: 40px;
+        font-weight: 700;
+        margin-bottom: -50px;
+        position: fixed;
+        margin-top: 80px;
+        margin-bottom: -120px;
+        padding-bottom: 60px;
+        color: #fff;
+    }
+
+
+    /******Footer Ends*************/

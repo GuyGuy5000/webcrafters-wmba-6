@@ -10,7 +10,7 @@
     <br />
     <div class="form-horizontal">
         <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+            <p class="filSearch">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
@@ -31,14 +31,15 @@
             </div>
         </div>
     </div>
-    <table class="table mt-3">
+    <div class="table-responsive">
+    <table class="table mt-3 gameTable">
         <thead>
             <tr>
 
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="d-flex align-items-center">
                         <input type="submit" name="actionButton" value="Teams" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Games" />
-                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move"></i>
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
                     </div>
                 </th>
 
@@ -58,19 +59,20 @@
                 <th class="d-sm-table-cell d-md-table-cell">
                     <div class="d-flex align-items-center">
                         <input type="submit" name="actionButton" value="Location" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Location" />
-                        <i class="fa-solid fa-arrows-up-down arrow non-button-input " id="move"></i>
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
                     </div>
                 </th>
 
 
-                <th style="min-width:190px">
-                    <a asp-action="Create" class="btn btn-sm btn-outline-success btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new Game">
-                        <strong>&#x270D; Create  Game</strong>
+                <th style="min-width:150px" class="d-flex justify-content-end pe-3">
+                    <a asp-action="Create" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Create a new Game">
+                        <strong> Create </strong>
                     </a>
-                    <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-success btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Download Games Roaster">
+                    <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn d-none d-lg-block" role="button" data-bs-toggle="tooltip" title="Download Games Roaster">
                         <strong>&#x1F4C4; Download Games</strong>
                     </a>
                 </th>
+
 
 
             </tr>
@@ -79,7 +81,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                     <td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.FullVersus)
                     </td>
                     <td class="d-none d-lg-table-cell">
@@ -91,11 +93,13 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.GameLocation.Name)
                     </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                    <td class="GameCrud">
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            <span></span><span></span><span></span><span></span>
                             EDIT
                         </a>
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            <span></span><span></span><span></span><span></span>
                             DETAILS
                         </a>
                         @{
@@ -104,7 +108,8 @@
                             {
                                 if (item.Innings.Count < 4)
                                 {
-                                    <a asp-action="StartGame" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Start this game">
+                                    <a asp-action="StartGame" onclick="start()"  asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                        <span></span><span></span><span></span><span></span>
                                         START GAME
                                     </a>
                                 }
@@ -119,10 +124,10 @@
             }
         </tbody>
     </table>
-
+    </div>
     <partial name="_PagingNavBar" />
 </form>
-
+<script src="~/js/site.js"></script>
 <div class="clickable-header btn d-none d-lg-block  btn-center">
     <a href="@Url.Action("Index", "Home")">Back</a>
 </div>

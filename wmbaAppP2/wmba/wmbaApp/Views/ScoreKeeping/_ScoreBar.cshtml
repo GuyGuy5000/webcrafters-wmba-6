@@ -118,12 +118,20 @@
         <h6 style="text-align: center; display: inline; color: #5f5f5f;">
             Inning:
             @{
+                string inningCountOutput = "";
+
                 if (Model.CurrentInning + 1 >= (int)TempData.Peek("GameLength"))
-                    @Html.Raw(
-                        (Model.CurrentInning + 1 > (int)TempData.Peek("GameLength")) ? (Model.CurrentInning + 1) + " (EXTRA)" : (Model.CurrentInning + 1) + " (FINAL)"
-                    )
+                    inningCountOutput += Model.CurrentInning + 1 > (int)TempData.Peek("GameLength") ? (Model.CurrentInning + 1) + " (EXTRA)" : (Model.CurrentInning + 1) + " (FINAL)";
                 else
-                    @Html.Raw(Model.CurrentInning + 1)
+                    inningCountOutput += Model.CurrentInning + 1;
+
+                if (Model.Innings[Model.CurrentInning].InningTop)
+                    inningCountOutput += " &#9650;";
+                else
+                    inningCountOutput += " &#9660;";
+
+                @Html.Raw(inningCountOutput)
+
             }
         </h6>
     </div>

@@ -68,9 +68,6 @@
         $("input[type='button']").each(function () {
             $(`#${this.id}`).click(function () {
                 $('#scoreKeepingMain input').prop("disabled", true);
-                new Promise(r => setTimeout(r, 1000)).then(function () {
-                    $('#scoreKeepingMain input').prop("disabled", false);
-                });
             });
         });
 
@@ -131,7 +128,7 @@
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
                     AssignClickEvents();
-                    UpdateGame();
+                    UpdateGame('');
                 },
                 error: function (result, status, err) {
                     window.alert("Player on base action " + result.responseText + " " + status.responseText, err.Message);
@@ -150,7 +147,7 @@
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
                     AssignClickEvents();
-                    UpdateGame();
+                    UpdateGame('');
                 },
                 error: function (result, status, err) {
                     window.alert("batter action" + result.responseText + " " + status.responseText, err.Message);
@@ -169,7 +166,7 @@
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
                     AssignClickEvents();
-                    UpdateGame();
+                    UpdateGame('');
                 },
                 error: function (result, status, err) {
                     window.alert("batter action" + result.responseText + " " + status.responseText, err.Message);
@@ -188,7 +185,7 @@
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
                     AssignClickEvents();
-                    UpdateGame();
+                    UpdateGame('');
                 },
                 error: function (result, status, err) {
                     window.alert("batter action" + result.responseText + " " + status.responseText, err.Message);
@@ -207,7 +204,7 @@
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
                     AssignClickEvents();
-                    UpdateGame();
+                    UpdateGame('');
                 },
                 error: function (result, status, err) {
                     window.alert("add to visotor team" + result.responseText + " " + status.responseText, err.Message);
@@ -234,7 +231,7 @@
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
                     AssignClickEvents();
                     undoJSON.val("");
-                    UpdateGame();
+                    UpdateGame('');
                 },
                 error: function (result, status, err) {
                     window.alert("undo action" + result.responseText + " " + status.responseText, err.Message);
@@ -243,13 +240,13 @@
         }
 
         //retrieves an updated JSON of the game and updates the hidden gameScoreKeepingJSON field then updates all partial views accordingly
-        function UpdateGame() {
+        function UpdateGame(endInning) {
             $("#undoLastPlayJSON").val($("#gameScoreKeepingJSON").val()); //retains the current JSON for the undo feature
             var game = JSON.parse($("#gameScoreKeepingJSON").val());
             //postback
             $.ajax({
                 url: "@Url.Action("UpdateGameScoreKeeping", "ScoreKeeping")",
-                data: { gameJSON: $("#gameScoreKeepingJSON").val(), currentInningJSON: $("#inningScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
+                data: { gameJSON: $("#gameScoreKeepingJSON").val(), currentInningJSON: $("#inningScoreKeepingJSON").val(), endInning: endInning }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#gameScoreKeepingJSON").val(result); // set the div to the result of the postback
@@ -264,10 +261,7 @@
                     }
                 },
                 error: function (result, status, err) {
-                    if (updatedGame.currentInning >= 9)
-                        window.location.href = "@Url.Action("Index", "Games")";
-                    else
-                        window.alert("Update game " + result.responseText + " " + status.responseText, err.Message);
+                    window.alert("Update game " + result.responseText + " " + status.responseText, err.Message);
                 }
             });
         }
@@ -300,6 +294,10 @@
                 success: function (result) {
                     $("#ScoreBar").html(""); //reset the div
                     $("#ScoreBar").html(result); // set the div to the result of the postback
+                    
+                    new Promise(r => setTimeout(r, 1000)).then(function () {
+                        $('#scoreKeepingMain input').prop("disabled", false); //re-enable buttons after updating the partial views
+                    })
                 },
                 error: function (result, status, err) {
                     window.alert("Update score " + result.responseText + " " + status.responseText, err.Message);
@@ -323,9 +321,6 @@
             });
         }
 
-        $(window).on("beforeunload", function () {
-            return "player statistics have not yet saved, leave anyway?";
-        });
     </script>
 
 }

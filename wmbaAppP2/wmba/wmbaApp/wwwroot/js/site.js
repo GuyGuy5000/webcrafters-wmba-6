@@ -26,6 +26,61 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    $('#clickGame').on('click', function () {
+        // Submit the form when the user confirms the save action
+       
+    });
+
+
+    // Define the hideNavBar function
+    function hideNavBar() {
+        const currentUrl = window.location.href;
+        const hideBar = document.getElementById("navBar");
+        const phoneBack = document.getElementById("phoneBack");
+
+        if (hideBar && phoneBack) {
+            const mustHide = currentUrl === "https://localhost:7297/ScoreKeeping?GameID=1&HomeTeamName=Navy%20Mustangs&AwayTeamName=Green%20Jr%20Jackfish&HomeTeamScore=0&AwayTeamScore=0&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&CurrentInning=0&Score=0";
+            hideBar.classList.toggle("hidden-bar", mustHide);
+
+            // Toggle the "absolute-top" class based on the condition
+            phoneBack.classList.toggle("absolute-top", mustHide);
+        }
+    }
+
+    // Call the hideNavBar function when the page loads
+    document.addEventListener("DOMContentLoaded", function () {
+        hideNavBar();
+    });
+
+    // Call the hideNavBar function when the "START GAME" button is clicked
+    $('#clickGame').on('click', function () {
+        hideNavBar();
+    });
+
+    $(document).ready(function () {
+        $('#filterBtn').on('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission behavior
+            $('#seacrchBtnChange').css('color', 'white');
+        });
+    });
+
+
+
+    changeTextColor()
+
+    hideNavBar();
+    document.addEventListener('DOMContentLoaded', function () {
+        hideNavBar();
+
+        const hideBar = document.querySelector(".navbar a");
+        if (hideBar) {
+            hideBar.addEventListener("click", function () {
+                game();
+            });
+        }
+    });
+
+
     function setBack() {
         const currentUrl = window.location.href;
         const phoneBack = document.getElementById("phoneBack");
@@ -41,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener('DOMContentLoaded', function () {
         setBack();
 
-   
+
         const phoneBack = document.querySelector(".phoneBack a");
         if (phoneBack) {
             phoneBack.addEventListener("click", function () {
@@ -103,6 +158,8 @@ function closeModal() {
     $('#disable').prop('disabled', false);
 }
 
+
+
 $(document).ready(function () {
     // Handle the click event for the "Save" button outside the modal
     $('#btnView').on('click', function (event) {
@@ -148,6 +205,13 @@ $(document).ready(function () {
         $('#editform').unbind('submit').submit();
     });
 
+    $('#clicked').on('click', function (event) {
+        // Submit the form when the user confirms the save action
+        event.preventDefault();
+        $('#editButton').prop('disabled', true);
+    });
+
+
     //$('#btnView').on('click', function () {
     //    // Submit the form when the user confirms the save action
     //    $('#bck').show();
@@ -162,4 +226,22 @@ $(document).ready(function () {
     $(document).on('click', '#close', function () {
         closeModal();
     });
+    //
+
+
+    // Use jQuery to handle the click event
+    $('#editButton').on('click', function (event) {
+        if (gameStarted) {
+            event.preventDefault();
+            $('#editButton')
+        }
+    });
+
+
+
+
+
 });
+
+
+

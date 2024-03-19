@@ -6,8 +6,8 @@
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
     <div class="form-horizontal">
-        <button class="btn @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            Filter/Search @ViewData["numberFilters"]
+        <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            Filter @ViewData["numberFilters"]
         </button>
         <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
@@ -36,7 +36,7 @@
 
 
 
-    <table class="table">
+    <table class="table coachTable">
         <thead>
             <tr>
                 <th class="d-sm-table-cell d-md-table-cell">
@@ -57,8 +57,9 @@
                 </th>
 
                 <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
-                        <strong>&#x270D; Create New</strong>
+                    <a asp-action="Create" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
+                        <span></span><span></span><span></span><span></span>
+                        <strong> Create </strong>
                     </a>
                 </th>
             </tr>
@@ -78,13 +79,16 @@
                         @Html.DisplayFor(modelItem => item.DivisionCoaches.FirstOrDefault().Division.DivName)
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            <span></span><span></span><span></span><span></span>
                             EDIT
                         </a>
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            <span></span><span></span><span></span><span></span>
                             DETAILS
                         </a>
-                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            <span></span><span></span><span></span><span></span>
                             DELETE
                         </a>
                     </td>

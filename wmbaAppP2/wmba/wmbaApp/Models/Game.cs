@@ -38,12 +38,12 @@ namespace wmbaApp.Models
             }
         }
 
-        [Display(Name = "Game Details")]
+        [Display(Name = "Date")]
         public string Summary
         {
             get
             {
-                return $"Starts: {this?.GameStartTime}, Ends: {this?.GameEndTime}";
+                return $" {this?.StartTimeSummary}";
             }
         }
 

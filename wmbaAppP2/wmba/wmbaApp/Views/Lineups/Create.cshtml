@@ -65,10 +65,11 @@
                 <label class="form-check-label">
                     <input type="checkbox" id="selectAllToggle"> Select/Deselect All
                 </label>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModalGame" id="previewLineupButton">
+                <button type="button" class="btn " data-bs-toggle="modal" data-bs-target="#createModalGame" id="previewLineupButton">
+                      <span></span><span></span><span></span><span></span>
                     Preview Lineup
                 </button>
-                <a asp-controller="Games" asp-action="Index" class="btn btn-primary">Back to Games List</a>
+                <a asp-controller="Games" asp-action="Index" class="btn btn-outline-dark ">Back to Games List</a>
             </div>
         </div>
         
@@ -145,7 +146,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <input type="submit" value="Save" class="btn btn-primary" />
+                        <input type="submit" value="Save" class="btn " />
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>

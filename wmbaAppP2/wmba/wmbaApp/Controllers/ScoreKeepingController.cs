@@ -33,7 +33,7 @@ namespace wmbaApp.Controllers
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
-                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
+                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.ID == scoreKeeping.GameID);
 
@@ -249,6 +249,21 @@ namespace wmbaApp.Controllers
                     inning.CurrentBatter++;
             }
 
+
+            if (inning.TotalOutsThisInning >= 3) //a turn over happens if 3 outs are reached
+            {
+                inning.InningTop = false;
+
+                if (inning.PlayerOnFirst != null)
+                    inning.PlayerOnFirst.FirstBase = false;
+
+                if (inning.PlayerOnSecond != null)
+                    inning.PlayerOnSecond.SecondBase = false;
+
+                if (inning.PlayerOnThird != null)
+                    inning.PlayerOnThird.ThirdBase = false;
+            }
+
             PopulateDropDownLists(inning);
 
             return PartialView("_BaseballDiamond", inning);
@@ -341,7 +356,7 @@ namespace wmbaApp.Controllers
             }
 
             if (inning.HandleFirstBase == false && inning.HandleSecondBase == false && inning.HandleThirdBase == false) //if all runners were handled
-                if (actionID <= 3 || actionID == 11) //Any action that is an at bat or causes the batter to advance (based on the enum)
+                if (actionID <= 3 || actionID >= 8) //Any action that is an at bat or causes the batter to advance (based on the enum)
                 {
                     inning.CurrentBatter++;
 
@@ -357,6 +372,20 @@ namespace wmbaApp.Controllers
                     inning.CurrentBatter++;
             }
 
+
+            if (inning.TotalOutsThisInning >= 3) //a turn over happens if 3 outs are reached
+            {
+                inning.InningTop = false;
+
+                if (inning.PlayerOnFirst != null)
+                    inning.PlayerOnFirst.FirstBase = false;
+
+                if (inning.PlayerOnSecond != null)
+                    inning.PlayerOnSecond.SecondBase = false;
+
+                if (inning.PlayerOnThird != null)
+                    inning.PlayerOnThird.ThirdBase = false;
+            }
 
             PopulateDropDownLists(inning);
 
@@ -476,7 +505,7 @@ namespace wmbaApp.Controllers
             return PartialView("_InningsTable", game);
         }
 
-        public string UpdateGameScoreKeeping(string gameJSON, string currentInningJSON)
+        public string UpdateGameScoreKeeping(string gameJSON, string currentInningJSON, string endInning)
         {
             GameScoreKeepingVM gameVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
             InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(currentInningJSON);
@@ -489,9 +518,12 @@ namespace wmbaApp.Controllers
                 gameVM.Innings[gameVM.CurrentInning] = inning;
             }
 
-            if (inning.TotalOutsThisInning >= 3)
+            if (inning.TotalOutsThisInning >= 3) //a turn over happens if 3 outs are reached
             {
-                gameVM.CurrentInning++;
+                inning.InningTop = false;
+
+                if (!String.IsNullOrEmpty(endInning))
+                    gameVM.CurrentInning++;
                 if (gameVM.CurrentInning >= gameVM.Innings.Count)
                     gameVM.Innings.Add(new InningScoreKeepingVM(gameVM.LineUp));
             }
@@ -601,8 +633,16 @@ namespace wmbaApp.Controllers
         #region SelectLists
         private SelectList PlayerActionSelectList()
         {
-            var actionList = from AtBatOutcome outcome in Enum.GetValues(typeof(AtBatOutcome))
-                             select new { ID = (int)outcome, Name = outcome.Humanize() };
+            var actionList = ((IEnumerable<AtBatOutcome>)Enum.GetValues(typeof(AtBatOutcome))) //get IEnumerable of AtBatOutcome
+                                .Select(a => new { ID = (int)a, Name = a.Humanize() }); //convert to SelectList
+
+            if ((string)TempData.Peek("DivisionOfGame") == "9U")
+            {
+                var NineUActionList = actionList.Where(a => a.Name != "Ball" && !a.Name.Contains("walk"));
+
+                return new SelectList(NineUActionList, "ID", "Name", 0);
+            }
+
             return new SelectList(actionList, "ID", "Name", 0);
         }
 
@@ -632,7 +672,6 @@ namespace wmbaApp.Controllers
             //ViewData["BatterUpNext"] = BatterUpNextSelectList(inning);
         }
         #endregion
-
 
         #region ActionMethods
         private async void RecordSingle(InningScoreKeepingVM inning, PlayerScoreKeepingVM currentBatter, PlayerScoreKeepingVM playerOnFirst, PlayerScoreKeepingVM playerOnSecond, PlayerScoreKeepingVM playerOnThird)

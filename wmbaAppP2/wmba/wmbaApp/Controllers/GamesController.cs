@@ -45,7 +45,7 @@ namespace wmbaApp.Controllers
             // NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Teams", "Location" };
 
-PopulateDropDownLists();
+         PopulateDropDownLists();
 
            var games = _context.Games
                 .Include(g => g.GameLocation)
@@ -135,8 +135,8 @@ PopulateDropDownLists();
         {
             if (selectedDivision.HasValue)
             {
-                ViewData["HomeTeamID"] = new SelectList(_context.Teams.Where(t => t.DivisionID == selectedDivision), "ID", "TmName");
-                ViewData["AwayTeamID"] = new SelectList(_context.Teams.Where(t => t.DivisionID == selectedDivision), "ID", "TmName");
+                ViewData["HomeTeamID"] = new SelectList(_context.Teams.Where(t => t.DivisionID == selectedDivision && t.IsActive == true), "ID", "TmName");
+                ViewData["AwayTeamID"] = new SelectList(_context.Teams.Where(t => t.DivisionID == selectedDivision && t.IsActive == true), "ID", "TmName");
             }
 
             if (ModelState.IsValid)
@@ -481,7 +481,7 @@ PopulateDropDownLists();
                     Games = r.FullVersus,
                     Game_Details = r.Summary,
                     Game_Division = r.Division.DivName,
-                    Game_Location = r.GameLocation,
+                    Game_Location = r.GameLocation.Name,
                 })
                 .AsNoTracking();
 

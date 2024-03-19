@@ -13,191 +13,152 @@
 
 <div class="container-fluid text-center d-flex align-items-center justify-content-center parent">
 
-    <div class="row dashboard">
+    <div class="row dashboard layout">
 
-        <div class="col-md-4 startGame">
-            <h1>TEAMS</h1>
-            <i class="fa-solid fa-users icon"></i>
-            <b><p>View, edit and deactivate teams.</p></b>
-            <p class="link">
-                <a asp-controller="Teams" asp-action="Index" class="btn">View Teams <i class="fa-solid fa-angles-right" tabindex="7"></i></a>
-            </p>
-        </div>
+        <section class="dash">
+            <div class="col-md-12 gameStyle styleGameTbl ">
 
-        <div class="col-md-4 startGame">
-            <h1>PLAYERS</h1>
-            <i class="fa-solid fa-user-plus icon"></i>
-            <b><p>View, edit and deactivate players.</p></b>
-            <p class="link">
-                <a asp-controller="Players" asp-action="Index" class="btn">View Players <i class="fa-solid fa-angles-right" tabindex="9"></i></a>
-            </p>
-        </div>
+                @if (Model != null)
+                {
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class=" gamesHeading"><h1>GAMES</h1></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model is IEnumerable<GameIndexVM> games && games.Any())
+                            {
+                                foreach (var item in games)
+                                {
+                                    <tr>
+                                        <td>
+                                            @{
+                                                string firstGame = item?.FullVersus;
+                                                string startTimeFormatted = item?.StartTimeSummary;
 
-        <div class="col-md-4 startGame">
-            <h1>STATS</h1>
-            <i class="fa-solid fa-baseball-bat-ball icon"></i>
-            <b><p>View Player Statistics.</p></b>
-            <p class="link">
-                <a href="#" onclick="return false;" class="btn" style="pointer-events: none; cursor: default; color: grey;">
-                    View Statistics <i class="fa-solid fa-angles-right" tabindex="8"></i>
+                                                if (!string.IsNullOrEmpty(firstGame))
+                                                {
+                                                    <h3 class="gameDate">@Html.Raw(startTimeFormatted).</h3>
+
+                                                    <br> <h5 class="gameDetails">@firstGame</h5>
+                                                    <a class="btn viewBtn " asp-area="" asp-controller="Games" asp-action="Index">
+                                                        View
+                                                        <span></span><span></span><span></span><span></span>
+                                                    </a>
+
+
+
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <p>No game data available.</p>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No game data available.</p>
+                }
+
+
+            </div>
+            <!-- Hide on laptop, show on phones and tablets -->
+            <div class="d-md-none mt-3 hideGameBtnLaptop">
+                <p class="link " style="text-align: center;">
+                    <a asp-controller="Games" asp-action="Index" class="btn">
+                        View Games
+
+                        <span></span><span></span><span></span><span></span>
+                        <i class="fa-solid fa-angles-right" tabindex="8"></i>
+
+                    </a>
+
+                </p>
+            </div>
+
+            <!-- Hide on phones and tablets, show on laptop -->
+            <p class="link d-none d-md-block " id="gameBtn">
+                <a asp-controller="Games" asp-action="Index" class="btn">
+                    View Games
+
+                    <span></span><span></span><span></span><span></span>
+                    <i class="fa-solid fa-angles-right" tabindex="8">
+                    </i>
                 </a>
 
+
             </p>
-        </div>
+
+        </section>
 
 
-
-        <div class="phoneviewImport">
-            <div class="col-md-7  img-guide  teamImport" style="margin: 0 auto;">
-                <div class="col-md-12 startGames import">
-                    <form asp-action="ImportTeams" method="post" enctype="multipart/form-data">
-                        <label class="control-label custom-file-label impTeams">IMPORT TEAMS:</label>
-                        <div class="input-group mb-3">
-                            <input type="file" class="form-control" name="theFile" id="theFile" accept=".csv,.xlsx">
+        <div class="parent-section">
+            <div class="col-md-6">
+                <div class="first-section-container move">
+                    <a asp-controller="Home" asp-action="UnderConstruction" class="first-section link-container">
+                        <div>
+                            <i class="fa-solid fa-file-import icons"></i>
+                            <h3>Upload Team</h3>
                         </div>
+                    </a>
 
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        @Html.Raw(TempData["TeamImportFeedback"])
-                        <br />
-                        @Html.Raw(TempData["PlayerImportFeedback"])
-                        <div class="form-group">
-                            <input type="submit" value="Upload" class="btn btn-primary" />
+                    <a asp-controller="Statistics" asp-action="Index" class="first-section link-container">
+                        <div>
+                            <i class="fa-solid fa-chart-simple icons"></i>
+                            <h3>Stats</h3>
                         </div>
-                    </form>
-                </div>
-                <div class="imgGuide">
-                    <img src="~/Image/import-screenshot.png" />
-                    <b>
-                        <i class="fa-solid fa-arrow-up fa-f6 arrow"></i>
-                        <p>
-                            Above is an example of an excel document with the right format, <br />
-                            please check and be sure your document has the exact same format before<br /> uploading.
-                        </p>
-                    </b>
+                    </a>
                 </div>
             </div>
-        </div>
 
+            <div class="col-md-6">
+                <div class="second-section-container">
+                    <a asp-controller="Divisions" asp-action="Index" class="second-section link-container">
+                        <div>
+                            <i class="fa-solid fa-baseball-bat-ball icon"></i>
+                            <h3>Division</h3>
+                        </div>
+                    </a>
 
+                    <a asp-controller="Teams" asp-action="Index" class="second-section link-container">
+                        <div>
+                            <i class="fa-solid fa-users icon"></i>
+                            <h3>Teams</h3>
+                        </div>
+                    </a>
 
-
-    </div>
-
-
-
-
-    <div class=" dashboards">
-
-
-        <div class="col-md-12 gameStyle styleGameTbl">
-
-            @if (Model != null)
-            {
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="d-none d-lg-table-cell"><h1>GAMES</h1></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model is IEnumerable<GameIndexVM> games && games.Any())
-                        {
-                            foreach (var item in games)
-                            {
-                                <tr>
-                                    <td>
-                                        @{
-                                            string firstGame = item?.FullVersus;
-                                            string gameSummary = item?.Summary;
-
-                                            if (!string.IsNullOrEmpty(firstGame))
-                                            {
-                                                <a class="" role="button" data-bs-toggle="collapse" href="#collapseGames@(item.GetHashCode())"
-                                                   aria-expanded="false" aria-controls="collapseGames@(item.GetHashCode())" title="Number of Games">
-                                                    @firstGame <span class="badge bg-info" style="background-color: #4CBB17; color: #fff;"> Details</span>
-                                                </a>
-                                                <div class="collapse" id="collapseGames@(item.GetHashCode())" style="background-color: #4CBB17; color: #fff;">
-                                                    @Html.Raw(gameSummary)
-                                                </div>
-                                            }
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <p>No game data available.</p>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p>No game data available.</p>
-            }
-
-
-        </div>
-        <!-- Hide on laptop, show on phones and tablets -->
-        <div class="d-md-none mt-3 hideGameBtnLaptop">
-            <p class="link" style="text-align: center;">
-                <a asp-controller="Games" asp-action="Index" class="btn">View Games <i class="fa-solid fa-angles-right" tabindex="8"></i></a>
-            </p>
-        </div>
-
-        <!-- Hide on phones and tablets, show on laptop -->
-        <p class="link d-none d-md-block" id="gameBtn">
-            <a asp-controller="Games" asp-action="Index" class="btn">View Games <i class="fa-solid fa-angles-right" tabindex="8"></i></a>
-        </p>
-
-    </div>
-
-    <div class=" phoneviewImport">
-        <div class="col-md-7 img-guide d-md-none d-lg-none teamImport " style="margin: 0 auto;">
-            <div class="col-md-12 startGames import">
-                <form asp-action="ImportTeams" method="post" enctype="multipart/form-data">
-                    <label class="control-label custom-file-label impTeams">IMPORT TEAMS:</label>
-                    <div class="input-group mb-3">
-                        <input type="file" class="form-control" name="theFile" id="theFile" accept=".csv,.xlsx">
-                    </div>
-
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    @Html.Raw(TempData["TeamImportFeedback"])
-                    <br />
-                    @Html.Raw(TempData["PlayerImportFeedback"])
-                    <div class="form-group">
-                        <input type="submit" value="Upload" class="btn btn-primary" />
-                    </div>
-                </form>
-
-
-            </div>
-            <div class="imgGuide">
-                <img src="~/Image/import-screenshot.png" />
-                <b>
-                    <i class="fa-solid fa-arrow-up fa-f6 arrow"></i>
-                    <p>
-                        Above is an exampe of an excel document with the right format, <br />
-                        please check and be sure your document has the exact same format before<br /> uploading.
-                    </p>
-                </b>
+                    <a asp-controller="Players" asp-action="Index" class="second-section link-container">
+                        <div>
+                            <i class="fa-solid fa-user-plus icon"></i>
+                            <h3>Players</h3>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
 
     </div>
-
 
 
 </div>
 
 
+
+
+
 @section Scripts {
-@*     <script>
+    <script>
         GenerateContextHelp([
             "<p>This is the homepage help icon. Each page contains a help icon that provides contextual help for that page.</p>",
             "<p>You can get help via clicking the help icon located in the navigation bar or pressing alt + h.</p>",
             "<p>The navigation bar at the top of the page will allow you to navigate through each section of the website.</p>"
         ]);
-    </script> *@
+    </script>
 }

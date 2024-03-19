@@ -12,25 +12,27 @@
             <tr>
                 <!--Balls-->
                 @{
-                    int remainingChecksBalls = 0;
-                    string outputBalls = "";
-                    for (int i = 0; i < Model.Batter.Balls; i++)
+                    if ((string)TempData.Peek("DivisionOfGame") != "9U")
                     {
-                        remainingChecksBalls++;
-                        outputBalls += "<div class='green-indicator'></div>";
+                        int remainingChecksBalls = 0;
+                        string outputBalls = "";
+                        for (int i = 0; i < Model.Batter.Balls; i++)
+                        {
+                            remainingChecksBalls++;
+                            outputBalls += "<div class='green-indicator'></div>";
+                        }
+                        for (int i = remainingChecksBalls; i < 4; i++)
+                        {
+                            outputBalls += "<div class='blank-indicator'></div>";
+                        }
+                        <td class="inning-info-header">
+                            <p>B:</p>
+                        </td>
+                        <td>
+                            @Html.Raw(outputBalls)
+                        </td>
                     }
-                    for (int i = remainingChecksBalls; i < 4; i++)
-                    {
-                        outputBalls += "<div class='blank-indicator'></div>";
-                    }
-                    //outputBalls += $"<p class='number-indicator'>{Model.Batter.Balls}</p>";
                 }
-                <td class="inning-info-header">
-                    <p>B:</p>
-                </td>
-                <td>
-                    @Html.Raw(outputBalls)
-                </td>
 
                 <!--Strikes-->
                 @{
@@ -45,7 +47,6 @@
                     {
                         outputStrikes += "<div class='blank-indicator'></div>";
                     }
-                    //outputStrikes += $"<p class='number-indicator'>{Model.Batter.Strikes}</p>";
                 }
                 <td class="inning-info-header">
                     <p>S:</p>
@@ -67,7 +68,6 @@
                     {
                         outputOuts += "<div class='blank-indicator'></div>";
                     }
-                    //outputOuts += $"<p class='number-indicator'>{Model.TotalOutsThisInning}</p>";
                 }
                 <td class="inning-info-header">
                     <p>O:</p>
@@ -103,7 +103,6 @@
         <div class="position-label center-field">
             <p>CF</p>
         </div>
-
         <div class="position-label right-field">
             <p>RF</p>
         </div>
@@ -122,161 +121,163 @@
             @Model.PlayerOnThird?.Name&nbsp;
         </div>
         <!--players on base labels-->
-        <!--Player on base prompts-->
         @{
-            //check if any runners are on base
-            //if a player is on base and is flagged to be handled
-            if (Model.PlayerOnThird != null && Model.HandleThirdBase)
+            if (Model.InningTop) //top half of the inning
             {
-                <div class="player-on-base-prompt third-base-prompt">
-                    <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnThird.Name advance to home base?</p>
-                    <button name="playerOnBase" id="thirdBaseSafe" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
-                    @{
-                        if (!Model.Batter.ThirdBase) //force play actions disabled if batter hits a triple
-                        {
-                            <button name="playerOnBase" id="thirdBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
-                        }
-                    }
-                    <button name="playerOnBase" id="thirdBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
-                </div>
-            }
-            else if (Model.PlayerOnSecond != null && Model.HandleSecondBase)
-            {
-                <div class="player-on-base-prompt second-base-prompt">
-                    <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnSecond.Name advance?</p>
-                    @{
-                        if (Model.Batter.SecondBase) //force play actions if batter hits a double
-                        {
-                            if (Model.PlayerOnThird == null) //no runner on third base
-                            {
-                                <button name="playerOnBase" id="secondBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
-                                <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
-                            }
-                        }
-                        else if (Model.Batter.ThirdBase) //more limited force play actions if the batter hits a triple
-                        {
-                            <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
-                        }
-                        else // regular advance actions
-                        {
-                            if (Model.PlayerOnThird == null)
-                            {
-                                <button name="playerOnBase" id="secondBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
-                                <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
-                            }
-                            <button name="playerOnBase" id="secondBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
-                        }
-                    }
-                    <button name="playerOnBase" id="secondBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
-                </div>
-            }
-            else if (Model.PlayerOnFirst != null && Model.HandleFirstBase)
-            {
-                <div class="player-on-base-prompt first-base-prompt">
-                    <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnFirst.Name advance?</p>
-                    @{
-                        if (Model.Batter.FirstBase) //force play actions if batter hits a single
-                        {
-                            if (Model.PlayerOnSecond == null) //no runner on second base
-                            {
-                                <button name="playerOnBase" id="firstBaseSecond" type="button" value="2nd" style="color: #2e8b43; background-color: #FFF;">Advance to 2nd &#10003;</button>
 
-                                if (Model.PlayerOnThird == null) //no runner on third base either
-                                {
-                                    <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
-                                    <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
-                                }
-                            }
-                        }
-                        else if (Model.Batter.SecondBase) //more limited force play actions if the batter hits a double
-                        {
-                            if (Model.PlayerOnThird == null)
-                            {
-                                <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
-                                <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
-                            }
-                        }
-                        else if (Model.Batter.ThirdBase)
-                        {
-                            <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
-                        }
-                        else // regular advance actions
-                        {
-                            if (Model.PlayerOnSecond == null) //no runner on second base
-                            {
-                                <button name="playerOnBase" id="firstBaseSecond" type="button" value="2nd" style="color: #2e8b43; background-color: #FFF;">Advance to 2nd &#10003;</button>
-
-                                if (Model.PlayerOnThird == null) //no runner on third base either
-                                {
-                                    <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
-                                    <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
-                                }
-                            }
-                            <button name="playerOnBase" id="firstBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
-                        }
-                    }
-                    <button name="playerOnBase" id="firstBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
-                </div>
-            }
-        }
-        <!--Player on base prompts-->
-        <!--Batter actions prompt-->
-        @{
-            //after all bases were handled, the next batter action happens
-            if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
-            {
-                <div class="batter-action-button-container">
-                    <button id="btnBatterAction" type="button" class="batter-action-button" onclick="ShowBatterAction()">PITCH</button>
-                </div>
-                <div id="batterActionPrompt" class="batter-prompt">
-                    <p style="color: #000; margin-bottom: 0;">Choose an action for @Model.Batter.Name</p>
-                    <input id="btnCloseBatterActions" type="button" class="btn-close-batter-prompt" value="X" onclick="HideBatterAction()" />
-                    @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600; max-width: 180px; margin: 10px auto;" })
-                    <button id="batterActionSubmit" type="button" class="btn-batter-action-submit">Confirm play</button>
-                </div>
-
-                //if any player has the opportunity to steal a base
-                if ((Model.PlayerOnFirst != null && Model.PlayerOnSecond == null)
-                || (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
-                || Model.PlayerOnThird != null)
+                <!--Player on base prompts-->
+                //check if any runners are on base
+                //if a player is on base and is flagged to be handled
+                if (Model.PlayerOnThird != null && Model.HandleThirdBase)
                 {
-                    <div id="stealPrompt" class="steal-prompt-container">
+                    <div class="player-on-base-prompt third-base-prompt">
+                        <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnThird.Name advance to home base?</p>
+                        <button name="playerOnBase" id="thirdBaseSafe" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
                         @{
-                            if (Model.PlayerOnFirst != null && Model.PlayerOnSecond == null) //check for each possible steal play individually
+                            if (!Model.Batter.ThirdBase) //force play actions disabled if batter hits a triple
                             {
-                                <div class="steal-prompt">
-                                    <button name="stealPrompt" id="stealSecond" type="button" class="btn-steal-prompt">Steal Second Base</button>
-                                </div>
-                            }
-
-                            if (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
-                            {
-                                <div class="steal-prompt">
-                                    <button name="stealPrompt" id="stealThird" type="button" class="btn-steal-prompt">Steal Third Base</button>
-                                </div>
-                            }
-
-                            if (Model.PlayerOnThird != null)
-                            {
-                                <div class="steal-prompt">
-                                    <button name="stealPrompt" id="stealHome" type="button" class="btn-steal-prompt">Steal Home Base</button>
-                                </div>
+                                <button name="playerOnBase" id="thirdBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
                             }
                         }
+                        <button name="playerOnBase" id="thirdBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
                     </div>
                 }
+                else if (Model.PlayerOnSecond != null && Model.HandleSecondBase)
+                {
+                    <div class="player-on-base-prompt second-base-prompt">
+                        <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnSecond.Name advance?</p>
+                        @{
+                            if (Model.Batter.SecondBase) //force play actions if batter hits a double
+                            {
+                                if (Model.PlayerOnThird == null) //no runner on third base
+                                {
+                                    <button name="playerOnBase" id="secondBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                    <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                }
+                            }
+                            else if (Model.Batter.ThirdBase) //more limited force play actions if the batter hits a triple
+                            {
+                                <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                            }
+                            else // regular advance actions
+                            {
+                                if (Model.PlayerOnThird == null)
+                                {
+                                    <button name="playerOnBase" id="secondBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                    <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                }
+                                <button name="playerOnBase" id="secondBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
+                            }
+                        }
+                        <button name="playerOnBase" id="secondBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
+                    </div>
+                }
+                else if (Model.PlayerOnFirst != null && Model.HandleFirstBase)
+                {
+                    <div class="player-on-base-prompt first-base-prompt">
+                        <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnFirst.Name advance?</p>
+                        @{
+                            if (Model.Batter.FirstBase) //force play actions if batter hits a single
+                            {
+                                if (Model.PlayerOnSecond == null) //no runner on second base
+                                {
+                                    <button name="playerOnBase" id="firstBaseSecond" type="button" value="2nd" style="color: #2e8b43; background-color: #FFF;">Advance to 2nd &#10003;</button>
+
+                                    if (Model.PlayerOnThird == null) //no runner on third base either
+                                    {
+                                        <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                        <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                    }
+                                }
+                            }
+                            else if (Model.Batter.SecondBase) //more limited force play actions if the batter hits a double
+                            {
+                                if (Model.PlayerOnThird == null)
+                                {
+                                    <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                    <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                }
+                            }
+                            else if (Model.Batter.ThirdBase)
+                            {
+                                <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                            }
+                            else // regular advance actions
+                            {
+                                if (Model.PlayerOnSecond == null) //no runner on second base
+                                {
+                                    <button name="playerOnBase" id="firstBaseSecond" type="button" value="2nd" style="color: #2e8b43; background-color: #FFF;">Advance to 2nd &#10003;</button>
+
+                                    if (Model.PlayerOnThird == null) //no runner on third base either
+                                    {
+                                        <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                        <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                    }
+                                }
+                                <button name="playerOnBase" id="firstBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
+                            }
+                        }
+                        <button name="playerOnBase" id="firstBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
+                    </div>
+                }
+                <!--Player on base prompts-->
+                <!--Batter actions prompt-->
+                //after all bases were handled, the next batter action happens
+                if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
+                {
+                    <div class="batter-action-button-container">
+                        <button id="btnBatterAction" type="button" class="batter-action-button" onclick="ShowBatterAction()">PITCH</button>
+                    </div>
+                    <div id="batterActionPrompt" class="batter-prompt">
+                        <p style="color: #000; margin-bottom: 0;">Choose an action for @Model.Batter.Name</p>
+                        <input id="btnCloseBatterActions" type="button" class="btn-close-batter-prompt" value="X" onclick="HideBatterAction()" />
+                        @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600; max-width: 180px; margin: 10px auto;" })
+                        <button id="batterActionSubmit" type="button" class="btn-batter-action-submit">Confirm play</button>
+                    </div>
+
+                    //if any player has the opportunity to steal a base
+                    if ((Model.PlayerOnFirst != null && Model.PlayerOnSecond == null)
+                    || (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
+                    || Model.PlayerOnThird != null)
+                    {
+                        <div id="stealPrompt" class="steal-prompt-container">
+                            @{
+                                if (Model.PlayerOnFirst != null && Model.PlayerOnSecond == null) //check for each possible steal play individually
+                                {
+                                    <div class="steal-prompt">
+                                        <button name="stealPrompt" id="stealSecond" type="button" class="btn-steal-prompt">Steal Second Base</button>
+                                    </div>
+                                }
+
+                                if (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
+                                {
+                                    <div class="steal-prompt">
+                                        <button name="stealPrompt" id="stealThird" type="button" class="btn-steal-prompt">Steal Third Base</button>
+                                    </div>
+                                }
+
+                                if (Model.PlayerOnThird != null)
+                                {
+                                    <div class="steal-prompt">
+                                        <button name="stealPrompt" id="stealHome" type="button" class="btn-steal-prompt">Steal Home Base</button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                }
+                <!--Batter actions prompt-->
+                if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
+                {
+                    <button id="btnSkip" type="button" class="btn-skip-prompt">Skip This Batter</button>
+                }
             }
-        }
-
-        @* @Html.DropDownList("BatterUpNext", null, htmlAttributes: new { @class = "form-control batter-up -next-dropdown", disabled = "disabled" }) *@
-
-        <!--Batter actions prompt-->
-        @{
-            if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
+            else //bottom half of the inning
             {
-                <button id="btnSkip" type="button" class="btn-skip-prompt">Skip This Batter</button>
+                <button id="btnEndInning" type="button" class="btn-skip-prompt" style="left: 270px; top:-80px;" onclick="UpdateGame('endInning')">End Inning</button>
             }
         }
+
     </div>
 </section>
 
@@ -739,11 +740,11 @@
 
 
     /*     .batter-up-next-dropdown{
-                                font-weight: 600;
-                                position: relative;
-                                left: -28px;
-                                max-width: 180px;
-                            } */
+                                                    font-weight: 600;
+                                                    position: relative;
+                                                    left: -28px;
+                                                    max-width: 180px;
+                                                } */
 
     /* Tablet */
     @@media only screen and (min-width: 426px) and (max-width: 768px) {
@@ -803,7 +804,7 @@
             width: 130px;
         }
 
-        .btn-skip-prompt{
+        .btn-skip-prompt {
             font-size: 13px;
             height: 33px;
             width: 120px;
@@ -915,11 +916,11 @@
             width: 27px;
         }
         /*         .batter-up-next-dropdown {
-                                    font-size: 14px;
-                                    left: -24px;
-                                    top: -60px;
-                                    width: 140px;
-                                } */
+                                                        font-size: 14px;
+                                                        left: -24px;
+                                                        top: -60px;
+                                                        width: 140px;
+                                                    } */
     }
 
     /* phone */
@@ -1109,10 +1110,10 @@
             width: 18px;
         }
         /*         .batter-up-next-dropdown {
-                                    font-size: 12px;
-                                    left: -8px;
-                                    top: -50px;
-                                    width: 110px;
-                                } */
+                                                        font-size: 12px;
+                                                        left: -8px;
+                                                        top: -50px;
+                                                        width: 110px;
+                                                    } */
     }
 </style>

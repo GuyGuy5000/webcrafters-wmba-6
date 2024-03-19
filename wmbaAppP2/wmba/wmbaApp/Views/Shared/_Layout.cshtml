@@ -30,41 +30,40 @@
 
 
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light yemiNav border-bottom box-shadow mb-0">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light yemiNav border-bottom box-shadow mb-0" id="navBar">
             <div class="container-fluid" style="padding-bottom: 0px;">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img class="secondLogo img-fluid " src="~/Image/WMBA-combine.png" alt="Logo" tabindex="1" />
+                    <img class="secondLogo img-fluid " src="~/Image/WMBA (9).png" alt="Logo" tabindex="1" />
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                <button class="navbar-toggler text-white hamburger-icon" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
 
+                <div class="navbar-collapse text-white collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                 
                         <li class="nav-item">
-                            <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
+                            <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
+                            <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
+                            <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
+                            <a class="nav-link text-white  dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-target="#navbarDropdown">
-                                Menu
+                                Tools
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                @*   <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a> *@
+                                <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
                                 <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Divisions" asp-action="Index">Divisions</a>
-                                @*                                 <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="DivisionCoach" asp-action="Index">Division-Coach</a> *@
-                                <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Coaches" asp-action="Index">Coaches</a>
-<a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Lookup" asp-action="Index">Lookup Values</a>
+                                <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
+                                <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Home" asp-action="UnderConstruction">Import Teams</a>
+                                <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Lookup" asp-action="Index">Lookup</a>
+                                <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Coaches" asp-action="Create">Create Coaches</a>
                             </div>
                         </li>
 
@@ -74,9 +73,9 @@
                     </div>
                 </div>
 
-               
-                
-              
+
+
+
                 <div class="help-box" id="help-box">
                     <div class="help-content">
                         <p>This is the first explanation.</p>
@@ -92,13 +91,15 @@
 
         <nav class="phoneNav">
             <a asp-controller="Home" asp-action="Index" class="phoneIcon"><i class="fa fa-home"></i><br>Home</a>
-            <a asp-controller="Teams" asp-action="Index" class="phoneIcon"> <i class="fa-solid fa-users icon"></i><br>Team</a>
-            <a asp-controller="Players" asp-action="Index" class="phoneIcon"><i class="fa-solid fa-user-plus icon"></i><br>Player</a>
-            <a asp-controller="Games" asp-action="Index" class="phoneIcon"><i class="fa-solid fa-baseball-bat-ball icon"></i><br>Games</a>
+            <a asp-controller="Teams" asp-action="Index" class="phoneIcon"> <i class="fa-solid fa-users iconP"></i><br>Team</a>
+            <a asp-controller="Players" asp-action="Index" class="phoneIcon"><i class="fa-solid fa-user-plus iconP"></i><br>Player</a>
+            <a asp-controller="Games" asp-action="Index" class="phoneIcon"><i class="fa-solid fa-baseball-bat-ball iconP"></i><br>Games</a>
         </nav>
+
+
         <nav class="phoneBack" id="phoneBack">
             <a href="javascript:void(0);" onclick="back()">
-                <i class="fa-solid fa-angle-left"></i>
+                <i class="fa-solid fa-angle-left" style="color: black"></i>
             </a>
         </nav>
 

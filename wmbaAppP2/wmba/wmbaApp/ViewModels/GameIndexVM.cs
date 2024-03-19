@@ -2,8 +2,8 @@
 {
     public class GameIndexVM
     {
-       public string FullVersus { get; set; }
-       public string Summary { get; set; }
+        public string FullVersus { get; set; }
+        public string StartTimeSummary { get; set; }
 
     }
 }

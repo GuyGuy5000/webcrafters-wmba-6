@@ -275,7 +275,10 @@ namespace wmbaApp.Data
                                         LineupID = createdGame.AwayLineup.ID
                                     });
                                 }
-
+                                homeTeam.HomeGames.Add(createdGame);
+                                awayTeam.AwayGames.Add(createdGame);
+                                context.Teams.Update(homeTeam);
+                                context.Teams.Update(awayTeam);
                                 context.Games.Update(createdGame);
                                 // Save the changes to the database
                                 context.SaveChanges();

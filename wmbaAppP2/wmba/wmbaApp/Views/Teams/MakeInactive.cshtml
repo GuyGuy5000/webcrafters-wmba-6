@@ -2,7 +2,7 @@
 
 <h2>Are you sure you want to make this team inactive?</h2>
 <br />
-<div>
+<div style="margin-bottom: 40px;">
     <h4>Team</h4>
     <hr />
     <dl class="row">
@@ -27,28 +27,34 @@
             if (ViewData.ModelState.ContainsKey("FK1"))
             {
                 <form asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@Model?.ID" class="mb-0">
-                    <input type="submit" value="View Players" class="btn btn-link" />
+                    <input type="submit" value="View Players" class="btn btn-outline-dark viewPG" />
                 </form>
             }
             if (ViewData.ModelState.ContainsKey("FK2"))
             {
                 <form asp-controller="Games" asp-action="Index" class="mb-0">
-                    <input type="submit" value="View Games" class="btn btn-link" />
+                    <input type="submit" value="View Games" class="btn btn-outline-dark viewPG" />
                 </form>
             }
 
             <form asp-action="MakeInactive" class="mb-0">
                 <input type="hidden" asp-for="ID" />
-                <input type="submit" name="deactivate" value="Deactivate team and active players" class="btn btn-danger mt-2" />
-                <a asp-action="Index" type="button" class="btn btn-primary mt-2">Back to Teams list</a>
+                <input type="submit" name="deactivate" value="Deactivate team and active players" class="btn btn-outline-dark mt-2 deactivate" />
+                <a asp-action="Index" type="button" class="btn  mt-2 deactivate ">
+                    <span></span><span></span><span></span><span></span>
+                Back to Teams list</a>
+                
             </form>
+            <br/>
         }
         else
         {
             <form asp-action="MakeInactive" class="mb-0">
                 <input type="hidden" asp-for="ID" />
-                <input type="submit" name="deactivate" value="Deactivate" class="btn btn-danger mt-2" />
-                <a asp-action="Index" type="button" class="btn btn-primary mt-2">Back to Teams list</a>
+                <input type="submit" name="deactivate" value="Deactivate" class="btn btn-outline-dark  mt-2"  />
+                <a asp-action="Index" type="button" class="btn mt-2 deactivateTeam">
+                    <span></span><span></span><span></span><span></span>
+                Back to Teams list</a>
             </form>
         }
     }

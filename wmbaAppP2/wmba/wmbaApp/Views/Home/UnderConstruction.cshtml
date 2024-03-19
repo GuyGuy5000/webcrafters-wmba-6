@@ -1,14 +1,43 @@
 ﻿<main class="error">
-    <div class="container" style="border: dotted; background-color: white; margin: 50px auto;  padding-top: 80px; max-width: 600px;">
+    <div class="import-container">
 
-        <div class="row small justify-content-center">
-            <img class="logo img-fluid" id="logo"src="~/Image/Main.png" alt="Welland Minor Baseball Logo" style="max-width: 80%; height: auto;">
+        <div class="import-guide">
+            <img src="~/Image/import-screenshot.png" alt="Import Screenshot" class="img-fluid">
+            <div class="arrow-container">
+                <i class="fa-solid fa-arrow-up fa-f6 arrow"></i>
+            </div>
+            <div class="text-container">
+                <b>
+                    <h3>
+                        Above is an example of an excel document with the right format,
+                        please check and be sure your document has the exact same format before uploading.
+                    </h3>
+                </b>
+            </div>
         </div>
 
-        <div style="text-align: center; margin-top: 20px;">
-            <h2 style="font-weight: bold; font-size: 20px;">
-                Hello, We understand your interest in playing, but our system is currently undergoing construction. Please attempt again at a later time. Should the problem persist, kindly reach out to your administrator for assistance.
-            </h2>
+        <div class="import-section">
+            <div class="startGames import">
+                <form asp-action="ImportTeams" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label class="control-label custom-file-label impTeams">IMPORT TEAMS:</label>
+                        <div class="input-group mb-3">
+                            <input type="file" class="form-control" name="theFile" id="theFile" accept=".csv,.xlsx">
+                        </div>
+                    </div>
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="feedback">
+                        @Html.Raw(TempData["TeamImportFeedback"])
+                        <br />
+                        @Html.Raw(TempData["PlayerImportFeedback"])
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Upload" class="btn btn-outline-dark " />
+                    </div>
+                </form>
+            </div>
         </div>
 
     </div>

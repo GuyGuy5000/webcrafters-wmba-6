@@ -16,8 +16,8 @@
     <a asp-action="Index" asp-route-TeamID="@team.ID" class="btn btn-center btn-outline-dark">Currently viewing: Inactive players</a>
     <br />
     <div class="form-horizontal">
-        <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            Filter/Search @ViewData["numberFilters"]
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p class="filSearch ">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
         <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
@@ -40,7 +40,8 @@
         <thead>
             <tr>
                 <th class="d-none d-lg-table-cell">
-                    <input type="submit" name="actionButton" value="Player Full Name" class="btn btn-toolbar" />
+                    <input type="submit" name="actionButton" value="Player Full Name" class="non-button-input" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move"></i>
                 </th>
                 <th class="d-none d-lg-table-cell">
                     <h5>
@@ -49,7 +50,7 @@
                 </th>
                 <th style="min-width:120px">
                     <a asp-action="Create" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Add a new player to this team">
-                        <strong>&#x270D; Add New Player</strong>
+                        <strong> Create  </strong>
                     </a>
                 </th>
             </tr>

@@ -10,8 +10,9 @@
     
     <br />
     <div class="form-horizontal">
-        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter" >
+            <span></span><span></span><span></span><span></span>
+            <p class="filSearch ">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
@@ -19,7 +20,9 @@
 
                     <div class="col-md-4 activeView">
                         <label class="control-label ">Click to View Inactive Teams:</label>
-                        <a asp-action="InactiveIndex" class="btn btn-green btn-outline-dark btn-center view" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
+                        
+                        <a asp-action="InactiveIndex" class="btn  btn-outline-dark btn-center view deactivateTeam" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
+                        <span></span><span></span><span></span><span></span>
                     </div>
 
                     <div class="col-md-4">
@@ -32,7 +35,7 @@
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
                     <div class="col-md-4 align-self-end">
-                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-dark" />
                         <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
                     </div>
                 </div>
@@ -52,20 +55,20 @@
 
 
                 <!-- Coaches -->
-                <th class="d-none d-lg-table-cell">
+                <th class="d-none d-xxl-table-cell">
                     <h6 class="non-button-input" id="heading">
                         Coaches
                     </h6>
                 </th>
                 <!-- Division -->
-                <th class="d-none d-md-table-cell">
+                <th class="d-none d-xxl-table-cell">
                     <input type="submit" value="Division" name="actionButton" class="non-button-input" data-bs-toggle="tooltip" title="Sort Division Name" />
                     <i class="fa-solid fa-arrows-up-down arrow  non-button-input"></i>
                 </th>
                 <!-- Create New Team -->
                 <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-sm btn-outline-success btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team">
-                        <strong>&#x270D; Create  Team</strong>
+                    <a asp-action="Create" class="btn btn-right btn-sm btn btn-outline-dark btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team">
+                        <strong> Create  </strong>
                     </a>
                 </th>
             </tr>
@@ -106,19 +109,25 @@
                     </td>
                     <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
                     <td>
-@*                         @{
-                            if (!item.HomeGames.Any(g => g.HasStarted) || !item.AwayGames.Any(g => g.HasStarted))
-                            { *@
+                        @{
+                            if (item.HomeGames.Any(g => g.HasStarted) || item.AwayGames.Any(g => g.HasStarted))
+                            {
+
+                            }
+                            else
+                            {
                                 <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                                     EDIT
                                 </a>
-@*                             }
-                        } *@
-                        <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            }
+                        }
+                        <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                            <span></span><span></span><span></span><span></span>
                             DETAILS
                         </a>
-                        <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
-                            INACTIVATE
+                        <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm MakeInactive" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
+                            <span></span><span></span><span></span><span></span>
+                            ACTIVE
                         </a>
                     </td>
                 </tr>

@@ -52,7 +52,7 @@ namespace wmbaApp.Controllers
             var viewModelList = games.Select(game => new GameIndexVM
             {
                 FullVersus = game.FullVersus,
-                Summary = game.Summary
+                StartTimeSummary = game.StartTimeSummary
             }).ToList();
 
             // Pass the viewModelList to the view
@@ -97,7 +97,7 @@ namespace wmbaApp.Controllers
             var viewModelList = games.Select(game => new GameIndexVM
             {
                 FullVersus = game.FullVersus,
-                Summary = game.Summary
+                StartTimeSummary = game.StartTimeSummary
             }).ToList();
 
             if (theFile == null)
@@ -140,7 +140,7 @@ namespace wmbaApp.Controllers
             if (!ModelState.IsValid) //if there were validation errors return to index
                 return View("Index", viewModelList);
 
-            return View("Index", viewModelList);
+            return View("UnderConstruction", viewModelList);
         }
 
 
