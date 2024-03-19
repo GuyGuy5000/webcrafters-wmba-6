@@ -24,12 +24,78 @@ namespace wmbaApp.Controllers
             _context = context;
         }
 
+
         // GET: Statistics
-        public async Task<IActionResult> Index(int? page, int? pageSizeID)
+        public async Task<IActionResult> Index(string SearchString, int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
-            var statistics =  _context.Statistics
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+
+            string[] sortOptions = new[] { "Player" };
+
+            var statistics = _context.Statistics
                 .Include(s => s.Players)
                 .AsNoTracking();
+
+            // Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                // Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                // Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+            }
+
+
+            if (!System.String.IsNullOrEmpty(SearchString))
+            {
+                var upperSearchString = SearchString.ToUpper(); // Convert the search string to upper case once for efficiency
+
+                statistics = statistics.Where(s => s.Players.Any(p =>
+
+                (p.PlyrFirstName.ToUpper() + " " + p.PlyrLastName.ToUpper()).Contains(SearchString.ToUpper())));
+
+
+                numberFilters++;
+            }
+
+            if (!System.String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+
+                if (sortOptions.Contains(actionButton))//Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton;//Sort by the button clicked
+                }
+            }
+
+            if (sortField == "Player")
+            {
+
+                if (sortDirection == "asc")
+                {
+                    statistics = statistics
+                        .OrderBy(p => p.Players.FirstOrDefault().PlyrFirstName);
+                }
+                else
+                {
+                    statistics = statistics
+                        .OrderByDescending(p => p.Players.FirstOrDefault().PlyrFirstName);
+                }
+            }
+
+
+
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            // Default page size to 10 if pageSizeID is null
+            int pageNumber = page ?? 1;
 
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
@@ -39,6 +105,7 @@ namespace wmbaApp.Controllers
             return View(pagedData);
         }
 
+
         public IActionResult DownloadStatisticsReport()
         {
             // Get the data from the database
@@ -46,7 +113,7 @@ namespace wmbaApp.Controllers
                 .OrderBy(r => r.StatsGP) // Change to the actual property for player name
                 .Select(r => new
                 {
-                    
+
                     GP = r.StatsGP,
                     PA = r.StatsPA,
                     AVG = r.StatsAVG,
@@ -216,7 +283,7 @@ namespace wmbaApp.Controllers
                 .Include(t => t.Players)
                 .FirstOrDefaultAsync(s => s.ID == id);
 
-    
+
 
             var statisticsToUpdate = await _context.Statistics.FirstOrDefaultAsync(p => p.ID == id);
 
@@ -227,7 +294,7 @@ namespace wmbaApp.Controllers
 
 
             if (await TryUpdateModelAsync<Statistic>(statisticsToUpdate, "",
-               s => s.StatsGP, s => s.StatsPA, s => s.StatsAB, s => s.StatsAVG, s => s.StatsOBP, s => s.StatsOPS, s => s.StatsSLG, 
+               s => s.StatsGP, s => s.StatsPA, s => s.StatsAB, s => s.StatsAVG, s => s.StatsOBP, s => s.StatsOPS, s => s.StatsSLG,
               s => s.StatsH, s => s.StatsR, s => s.StatsK, s => s.StatsHR, s => s.StatsRBI, s => s.StatsBB))
             {
                 try

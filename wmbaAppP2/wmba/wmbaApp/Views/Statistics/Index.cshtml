@@ -1,19 +1,52 @@
-﻿@using wmbaApp.Utilities;
+﻿﻿@using wmbaApp.Utilities;
 @model IEnumerable<wmbaApp.Models.Statistic>
 @using wmbaApp.Models;
 <partial name="_ViewHeading" />
 
 <a asp-action="DownloadStatisticsReport" class="btn btn-info float-end d-none d-lg-table-cell">Download Statistics Report</a>
 <form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <br />
+    <div class="form-horizontal">
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        </button>
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label class="control-label">Search By Player First/Last Name:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
     <table class="table mt-3">
         <thead>
             <tr>
 
-              
+
+                @*                 <th class="d-sm-table-cell d-md-table-cell">
+                <h6 class="non-button-input" id="heading">
+                Player
+                </h6>
+
+                </th> *@
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        Player
-                    </h6>
+                    <input type="submit" name="actionButton" value="Player" class="non-button-input" title="Sort by Full Name" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
+
                 </th>
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
@@ -93,8 +126,8 @@
                 </th>
 
                 <th style="min-width:120px">
-@*                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a Players Statistics">
-                        <strong>&#x270D; Create </strong>
+                    @*                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a Players Statistics">
+                    <strong>&#x270D; Create </strong>
                     </a> *@
                 </th>
             </tr>
@@ -146,13 +179,13 @@
                         @Html.DisplayFor(modelItem => item.StatsBB)
                     </td>
                     <td>
-                      
+
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title=" @ViewData["ControllerFriendlyName"] Detail">
                             &#x270E;
                         </a>
-@*                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                            &#x274C;
-                        </a> *@
+                        @*                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                    &#x274C;
+                    </a> *@
                     </td>
                 </tr>
             }
@@ -171,5 +204,5 @@
         })
     </script>
 
-  
+
 }

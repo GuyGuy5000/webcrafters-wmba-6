@@ -18,9 +18,11 @@
         {
             /* redirect to player index with the team name as a search string.
             * Can be changed later redirect to a specific index that shows only one team's players at a time */
-            <form asp-controller="Division" asp-action="Index" asp-route-TeamID="@Model?.ID">
+
+            //Teams?sortDirection=asc&sortField=&DivisionID=3&SearchString=&actionButton=Filter&pageSizeID=5
+            <form asp-controller="Teams" asp-action="Index">
                 <div style="color: #F00;">@Html.ValidationSummary()</div>
-                <input type="submit" value="View Players" class="btn btn-link" />
+                <input type="submit" value="View Teams" class="btn btn-outline-dark" />
             </form>
             <br />
         }

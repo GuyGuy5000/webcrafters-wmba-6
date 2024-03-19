@@ -226,7 +226,7 @@ namespace wmbaApp.Controllers
                         var end = workSheet.Dimension.End;
                         int successCount = 0;
                         int errorCount = 0;
-                        if (workSheet.Cells[1, 1].Text == "Name")
+                        if (workSheet.Cells[1, 1].Text == "Diamond")
                         {
                             for (int row = start.Row + 1; row <= end.Row; row++)
                             {
