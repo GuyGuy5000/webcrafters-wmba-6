@@ -107,6 +107,12 @@
                 var startTime = $('#StartTime').val();
                 var durationHours = parseInt($('#Duration').val());
 
+                // Limit duration to a maximum of 2 hours
+                if (durationHours > 2) {
+                    durationHours = 2;
+                    $('#Duration').val(durationHours);
+                }
+
                 if (gameDate && startTime && durationHours) {
                     // Splitting the startTime string into hours and minutes
                     var [hours, minutes] = startTime.split(':');
@@ -148,6 +154,4 @@
     </script>
 }
 
-}
 
-}
