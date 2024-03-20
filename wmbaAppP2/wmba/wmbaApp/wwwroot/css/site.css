@@ -74,7 +74,7 @@ li a:hover {
 
 
 .secondLogo {
-    width: 100px; /* Adjust the width to your preferred size */
+    width: 80px; /* Adjust the width to your preferred size */
     height: auto; /* Let the height scale proportionally */
     max-width: 100%; /* Ensure the image does not exceed its original size */
     max-height: 100%; /* Ensure the image does not exceed its original size */
@@ -452,8 +452,6 @@ li a:hover {
     text-align: left;
 }
 
-@media only screen and (min-width: 590px) and (max-width: 767px) {
-}
 
 @media only screen and (min-width: 320px ) and (max-width: 590px) {
 
@@ -465,10 +463,9 @@ li a:hover {
         height: 300px;
     }
 
-
-
     .yemiNav {
         position: fixed;
+        top: 0;
         z-index: 900;
         width: 100%;
     }
@@ -486,6 +483,12 @@ li a:hover {
         margin: 0 auto;
     }
 
+    .yemiNav {
+        position: fixed;
+        top: 0;
+        z-index: 900;
+        width: 100%;
+    }
 
     .hideGameBtnLaptop p {
         margin-top: 32px;
@@ -600,7 +603,7 @@ li a:hover {
         background-color: #F7F7f7;
         border-radius: 10px 10px 0 0;
         top: 84px;
-        padding: 10px;
+        padding: 4px;
         position: fixed;
         width: 103%;
         z-index: 100;
@@ -611,7 +614,7 @@ li a:hover {
             display: flex;
             align-items: center;
             font-size: 10px;
-            padding: 12px 0;
+            padding: 4px 0;
             text-decoration: none;
             color: #000;
         }
@@ -619,7 +622,6 @@ li a:hover {
         .phoneBack i {
             font-size: 20px;
             margin-left: 20px;
-            z-index: 500;
             color: #000;
         }
 
@@ -646,11 +648,6 @@ li a:hover {
 
 /* Styles for larger screens (laptop and above) */
 @media (min-width: 992px) {
-    .yemiNav {
-        position: fixed;
-        z-index: 600;
-        width: 100%;
-    }
 
     main {
         position: relative;
@@ -678,9 +675,6 @@ li a:hover {
 
 
 .yemiNav {
-    position: fixed;
-    z-index: 600;
-    width: 100%;
     margin-bottom: 120px;
 }
 
@@ -740,6 +734,12 @@ form {
     width: 103%;
     z-index: 100;
     margin-left: -10px;
+}
+
+.phoneNav-arrow{
+    color: #020202;
+    font-size: 20px;
+    text-align: center;
 }
 
     .phoneNav a {
@@ -1025,7 +1025,8 @@ button.btn.btn-left {
     font-size: 13px;
     border: 0.3em solid var(--c);
     border-radius: 0.5em;
-    width: 12em;
+    min-width: 12em;
+    width: auto;
     height: 3em;
     text-transform: uppercase;
     font-weight: bold;
@@ -1406,11 +1407,10 @@ form .deactivateTeam {
 
     .phoneBack {
         background-color: #F7F7f7;
-        top: 111px;
-        padding: 7px;
+        top: 100px;
+        padding: 4px;
         position: fixed;
         width: 103%;
-        z-index: 900;
         margin-left: -10px;
         color: #000;
     }

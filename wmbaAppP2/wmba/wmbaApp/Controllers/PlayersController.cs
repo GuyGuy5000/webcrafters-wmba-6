@@ -309,6 +309,15 @@ namespace wmbaApp.Controllers
             }
 
             PopulateDropDownLists(player);
+
+            ViewData["Division"] = player.Team.Division.DivName;
+            Division division =  _context.Divisions.FirstOrDefault(d => d.ID == player.Team.Division.ID);
+
+            if (division != null)
+            {
+                ViewData["OneDivisionUp"] = division.DivName;
+            }
+
             return View(player);
         }
 
@@ -320,6 +329,7 @@ namespace wmbaApp.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var playerToUpdate = await _context.Players
+            .Include(p => p.Team).ThenInclude(p => p.Division)
             .FirstOrDefaultAsync(m => m.ID == id);
 
             if (playerToUpdate == null)
@@ -363,6 +373,17 @@ namespace wmbaApp.Controllers
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
             }
+
+            PopulateDropDownLists(playerToUpdate);
+
+            ViewData["Division"] = playerToUpdate.Team.Division.DivName;
+            Division division = _context.Divisions.FirstOrDefault(d => d.ID == playerToUpdate.Team.Division.ID + 1);
+
+            if (division != null)
+            {
+                ViewData["OneDivisionUp"] = division.DivName;
+            }
+
             PopulateDropDownLists(playerToUpdate);
             return View(playerToUpdate);
         }

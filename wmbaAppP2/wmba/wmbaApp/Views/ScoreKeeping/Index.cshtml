@@ -21,10 +21,24 @@
 
     <input type="hidden" id="undoLastPlayJSON" value='' />
 </div>
-<form asp-action="CancelGame">
-    <input type="hidden" asp-for="GameID" />
-    <input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" />
-</form>
+<input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" onclick="openModal()" style="min-width: 110px; margin-bottom: 40px;" />
+
+<div id="customModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="close" onclick="closeModal()">X</span>
+        <b><p id="question" style="margin: 0 20px;">Canceling a game will reset the game to before it started.<br><br>Cancel game?</br></p></b>
+        <b><p id="required"></p></b>
+        <i></i>
+        <input type="submit" id="hideBtn" value="Cancel" class="btn btn-outline-dark " />
+
+        <i id="error" class="fa-solid fa-xmark fa-f6"></i>
+        <form asp-action="CancelGame">
+            <input type="hidden" asp-for="GameID" />
+            <input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" style="min-width: 110px;" />
+        </form>
+    </div>
+</div>
+
 
 <style>
     .grid{
@@ -63,6 +77,7 @@
 </style>
 
 @section Scripts{
+    <script src="~/js/site.js"></script>
     <!--Player on base action-->
     <script type="text/javascript">
         $("input[type='button']").each(function () {
@@ -322,5 +337,4 @@
         }
 
     </script>
-
 }

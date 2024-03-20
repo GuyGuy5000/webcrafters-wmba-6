@@ -579,6 +579,8 @@ namespace wmbaApp.Controllers
                 .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
                .FirstOrDefaultAsync(g => g.ID == gameVM.GameID);
 
+            game.GameEndTime = DateTime.Now;
+
 
             foreach (PlayerLineup playerLineup in game.HomeLineup.PlayerLineups)
             {
@@ -613,6 +615,7 @@ namespace wmbaApp.Controllers
                 try
                 {
                     _context.Statistics.Update(playerStats);
+                    _context.Games.Update(game);
                     _context.SaveChanges();
                 }
                 catch (DbUpdateException dex)

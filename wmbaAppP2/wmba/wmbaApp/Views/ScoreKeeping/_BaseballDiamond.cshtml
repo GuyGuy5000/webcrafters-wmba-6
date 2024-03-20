@@ -274,7 +274,7 @@
             }
             else //bottom half of the inning
             {
-                <button id="btnEndInning" type="button" class="btn-skip-prompt" style="left: 270px; top:-80px;" onclick="UpdateGame('endInning')">End Inning</button>
+                <button id="btnEndInning" type="button" class="btn-end-inning-prompt" onclick="UpdateGame('endInning')">End Inning</button>
             }
         }
 
@@ -557,6 +557,18 @@
         height: 35px;
         position: relative;
         top: -50px;
+        width: 160px;
+    }
+
+    .btn-end-inning-prompt {
+        border: 1px solid #000;
+        border-radius: 5px;
+        font-size: 17px;
+        font-weight: 600;
+        height: 35px;
+        left: 270px;
+        position: relative;
+        top:-80px;
         width: 160px;
     }
 
@@ -879,6 +891,15 @@
             left: 70px;
             top: -208px;
         }
+
+        .btn-end-inning-prompt {
+            font-size: 10px;
+            left: 151px;
+            height: 28px;
+            top: -100px;
+            width: 90px;
+        }
+
         /*Inning tracker CSS*/
         .inning-info-container {
             margin: 0;
@@ -993,6 +1014,14 @@
             font-size: 10px;
             height: 28px;
             top: -65px;
+            width: 90px;
+        }
+
+        .btn-end-inning-prompt {
+            font-size: 10px;
+            height: 28px;
+            left: 102px;
+            top: -102px;
             width: 90px;
         }
 

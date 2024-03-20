@@ -92,21 +92,19 @@
 
 <div class="text-center" style="margin-top: 50px;">
     @{
-
-        if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 0)
-        {
-            if (Model.Innings.Count < 4)
-            {
-                <a asp-action="StartGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
-                    <span></span><span></span><span></span><span></span>
-                    START GAME
-                </a>
-            }
-            else
-            {
-                //put a button to redirect to game results view (N.Y.I) here
-            }
-        }
+        if (Model.GameStartTime <= DateTime.Now && Model.GameEndTime >= DateTime.Now)
+            if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 0)
+                if (Model.Innings.Count < 3)
+                {
+                    <a asp-action="StartGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                        <span></span><span></span><span></span><span></span>
+                        START GAME
+                    </a>
+                }
+                else
+                {
+                    //put a button to redirect to game results view (N.Y.I) here
+                }
     }
     <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-outline-dark ">Edit Game</a>
     <a asp-action="Index" class="btn btn-outline-dark ">Back to Game List</a>

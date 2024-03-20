@@ -47,6 +47,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    let phoneNavToggle = document.getElementById("phoneNavToggle");
+    function TogglePhoneNav() {
+        let phoneNavIcons = document.getElementById("phoneNavIcons");
+
+        console.log(1);
+
+        //hide nav bar
+        if (phoneNavToggle.innerHTML == "⮟") {
+            phoneNavIcons.style.display = "none";
+            phoneNavToggle.innerHTML = "⮝";
+        }
+        //show nav bar
+        else {
+            phoneNavIcons.style.display = "block";
+            phoneNavToggle.innerHTML = "⮟";
+        }
+    }
+
+    phoneNavToggle.addEventListener("click", TogglePhoneNav);
+
     // Call the hideNavBar function when the page loads
     document.addEventListener("DOMContentLoaded", function () {
         hideNavBar();
