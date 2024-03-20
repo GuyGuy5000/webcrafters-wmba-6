@@ -96,10 +96,24 @@
                 calculateEndDateTime();
             });
 
+            $('#Duration').keyup(function () {
+                // Limit duration to a maximum of 2 hours
+                var durationHours = parseInt($(this).val());
+                if (durationHours > 2) {
+                    $(this).val(2);
+                }
+            });
+
             function calculateEndDateTime() {
                 var gameDate = $('#GameDate').val();
                 var startTime = $('#StartTime').val();
                 var durationHours = parseInt($('#Duration').val());
+
+                // Limit duration to a maximum of 2 hours
+                if (durationHours > 2) {
+                    durationHours = 2;
+                    $('#Duration').val(durationHours);
+                }
 
                 if (gameDate && startTime && durationHours) {
                     // Splitting the startTime string into hours and minutes
@@ -146,8 +160,8 @@
         });
     </script>
 
-        
-<script type="text/javascript">
+
+    <script type="text/javascript">
         $('#submitGameLocationCreate').click(function (event) {
             event.preventDefault();
             ClearErrors();
@@ -192,10 +206,10 @@
             }
             return false;
         });
-        
-       
-           
-        
+
+
+
+
         $('#addGameLocationModal').on('hide.bs.modal', function () {
             document.getElementById("createGameLocationForm").reset(); //to clear the data in the popup form
             ClearErrors();
@@ -206,6 +220,8 @@
         function ClearErrors() {
             //Empty out the list of validation errors if there are any
             var ul = document.getElementById("ErrorList");
+
+
             while (ul.firstChild) {
                 ul.removeChild(ul.firstChild);
             }
