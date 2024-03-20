@@ -102,12 +102,34 @@
                 var durationHours = parseInt($('#Duration').val());
 
                 if (gameDate && startTime && durationHours) {
-                    var startDate = new Date(gameDate + 'T' + startTime);
+                    // Splitting the startTime string into hours and minutes
+                    var [hours, minutes] = startTime.split(':');
+
+                    // Convert hours and minutes to integers
+                    hours = parseInt(hours);
+                    minutes = parseInt(minutes);
+
+                    // Subtract 4 hours from the hours component
+                    hours -= 4;
+
+                    // If the result is negative, adjust it to the previous day
+                    if (hours < 0) {
+                        // Subtract one day from the gameDate
+                        var previousDay = new Date(gameDate);
+                        previousDay.setDate(previousDay.getDate() - 1);
+                        gameDate = previousDay.toISOString().split('T')[0]; // Get the date in 'YYYY-MM-DD' format
+                        hours += 24; // Add 24 hours to get the correct hour on the previous day
+                    }
+
+                    // Combine the adjusted hours and minutes into a string
+                    var adjustedStartTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+
+                    var startDate = new Date(gameDate + 'T' + adjustedStartTime);
 
                     // Convert duration from hours to milliseconds
                     var durationMilliseconds = durationHours * 60 * 60 * 1000;
 
-                    var endDate = new Date(startDate.getTime() + durationMilliseconds-(4*60*60*1000));
+                    var endDate = new Date(startDate.getTime() + durationMilliseconds);
 
                     // Format end time to ISO string (e.g., "YYYY-MM-DDTHH:mm")
                     var endTime = endDate.toISOString().slice(0, 16);
@@ -120,6 +142,7 @@
                     $('#GameStartTime').val(startTimeISO);
                 }
             }
+
         });
     </script>
 
