@@ -31,18 +31,34 @@
                 </select>
                 <span asp-validation-for="AwayTeamID" class="text-danger"></span>
             </div>
+        <div class="form-group">
+            <label class="control-label required-label">Date</label>
+            <input type="date" id="GameDate" class="form-control" />
+            <span class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
-            <label asp-for="GameStartTime" class="control-label required-label"></label>
-                <input asp-for="GameStartTime" class="form-control" />
-                <span asp-validation-for="GameStartTime" class="text-danger"></span>
-            </div>
+        <div class="form-group">
+            <label class="control-label required-label">Start Time</label>
+            <input type="time" id="StartTime" class="form-control" />
+            <span class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
+        <div class="form-group">
+            <label class="control-label required-label">Duration (in hours)</label>
+            <input type="number" id="Duration" class="form-control" />
+            <span class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
             <label asp-for="GameEndTime" class="control-label required-label"></label>
-                <input asp-for="GameEndTime" class="form-control" />
-                <span asp-validation-for="GameEndTime" class="text-danger"></span>
-            </div>
+            <input asp-for="GameEndTime" id="GameEndTime" class="form-control" readonly />
+            <span asp-validation-for="GameEndTime" class="text-danger"></span>
+        </div>
+
+        <input type="hidden" id="GameStartTime" name="GameStartTime" />
+
+       
+
 
         @* game location *@
         <div class="form-group">
@@ -74,6 +90,40 @@
     <script src="~/js/modal.js"></script>
     <script src="~/js/refreshDDL.js"></script>
 
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#Duration, #StartTime, #GameDate').change(function () {
+                calculateEndDateTime();
+            });
+
+            function calculateEndDateTime() {
+                var gameDate = $('#GameDate').val();
+                var startTime = $('#StartTime').val();
+                var durationHours = parseInt($('#Duration').val());
+
+                if (gameDate && startTime && durationHours) {
+                    var startDate = new Date(gameDate + 'T' + startTime);
+
+                    // Convert duration from hours to milliseconds
+                    var durationMilliseconds = durationHours * 60 * 60 * 1000;
+
+                    var endDate = new Date(startDate.getTime() + durationMilliseconds-(4*60*60*1000));
+
+                    // Format end time to ISO string (e.g., "YYYY-MM-DDTHH:mm")
+                    var endTime = endDate.toISOString().slice(0, 16);
+
+                    // Set GameEndTime
+                    $('#GameEndTime').val(endTime);
+
+                    // Set GameStartTime
+                    var startTimeISO = startDate.toISOString().slice(0, 16);
+                    $('#GameStartTime').val(startTimeISO);
+                }
+            }
+        });
+    </script>
+
+        
 <script type="text/javascript">
         $('#submitGameLocationCreate').click(function (event) {
             event.preventDefault();
@@ -119,7 +169,10 @@
             }
             return false;
         });
-
+        
+       
+           
+        
         $('#addGameLocationModal').on('hide.bs.modal', function () {
             document.getElementById("createGameLocationForm").reset(); //to clear the data in the popup form
             ClearErrors();
