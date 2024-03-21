@@ -25,7 +25,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace wmbaApp.Controllers
 {
-[AllowAnonymous]
+[Authorize]
     public class GamesController : ElephantController
     {
         private readonly WmbaContext _context;
