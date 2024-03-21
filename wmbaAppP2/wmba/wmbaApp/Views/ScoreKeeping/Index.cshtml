@@ -83,6 +83,9 @@
         $("input[type='button']").each(function () {
             $(`#${this.id}`).click(function () {
                 $('#scoreKeepingMain input').prop("disabled", true);
+                new Promise(r => setTimeout(r, 3500)).then(function () {
+                    $('#scoreKeepingMain input').prop("disabled", false); //re-enable buttons after updating the partial views
+                })
             });
         });
 
@@ -309,10 +312,6 @@
                 success: function (result) {
                     $("#ScoreBar").html(""); //reset the div
                     $("#ScoreBar").html(result); // set the div to the result of the postback
-                    
-                    new Promise(r => setTimeout(r, 1000)).then(function () {
-                        $('#scoreKeepingMain input').prop("disabled", false); //re-enable buttons after updating the partial views
-                    })
                 },
                 error: function (result, status, err) {
                     window.alert("Update score " + result.responseText + " " + status.responseText, err.Message);
