@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
@@ -24,6 +25,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace wmbaApp.Controllers
 {
+[AllowAnonymous]
     public class GamesController : ElephantController
     {
         private readonly WmbaContext _context;
