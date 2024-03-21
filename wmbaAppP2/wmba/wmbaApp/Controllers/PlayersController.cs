@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -18,6 +19,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace wmbaApp.Controllers
 {
+[Authorize]
     public class PlayersController : ElephantController
     {
         private readonly WmbaContext _context;
