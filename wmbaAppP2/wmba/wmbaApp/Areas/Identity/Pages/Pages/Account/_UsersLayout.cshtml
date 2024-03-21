@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/login-design.css" asp-append-version="true" />
+
+<div class="row justify-content-center">
+    <div class="col-5 mt-5">
+        <div class="card header-login">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Identity/Account/Login">
+                            Login
+                        </a>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Identity/Account/Register">
+                            Register
+                        </a>
+
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <div class="col-10 my-4">
+                        @RenderBody()
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(function () {
+            let viewingPage = location.pathname;
+            $('.nav-tabs li a').each(function () {
+                let $this = $(this);
+                if (viewingPage.toLowerCase().indexOf($this.attr('href').toLowerCase()) !== -1) {
+                    $this.addClass('active');
+                }
+            });
+
+            $('.nav-tabs li a').click(function () {
+                $('.nav-tabs li a').removeClass('active');
+                $(this).addClass('active'); 
+            });
+        });
+    </script>
+}
