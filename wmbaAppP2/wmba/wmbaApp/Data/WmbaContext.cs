@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Drawing.Drawing2D;
 using wmbaApp.Models;
 using wmbaApp.ViewModels;
@@ -7,10 +7,35 @@ namespace wmbaApp.Data
 {
     /// <summary>
     /// Context class for code first DB approach
-    /// - Nadav Hilu, Emmanuel James
+    /// - Nadav Hilu, Emmanuel James, Farooq Jidelola
     /// </summary>
     public class WmbaContext : DbContext
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        //Property to hold the UserName value
+        public string UserName
+        {
+            get; private set;
+        }
+
+        public WmbaContext(DbContextOptions<WmbaContext> options, IHttpContextAccessor httpContextAccessor)
+            : base(options)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                //We have a HttpContext, but there might not be anyone Authenticated
+                UserName = _httpContextAccessor.HttpContext?.User.Identity.Name;
+                UserName ??= "Unknown";
+            }
+            else
+            {
+                //No HttpContext so seeding data
+                UserName = "Seed Data";
+            }
+        }
+
         public WmbaContext(DbContextOptions<WmbaContext> options) : base(options)
         { 
         }
@@ -75,11 +100,6 @@ namespace wmbaApp.Data
                 .HasIndex(pa => pa.PlayerActionName)
                 .IsUnique();
 
-            ////Unique constraint for position names
-            //modelBuilder.Entity<Position>()
-            //    .HasIndex(p => p.PosName)
-            //    .IsUnique();
-
             //Many to many junction table
             modelBuilder.Entity<DivisionCoach>()
                 .HasKey(dc => new { dc.DivisionID, dc.CoachID });
@@ -135,13 +155,6 @@ namespace wmbaApp.Data
                 .HasForeignKey(pbp => pbp.PlayerActionID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            ////Prevent cascade delete from position to player_position
-            //modelBuilder.Entity<Position>()
-            //    .HasMany<PlayerPosition>(p => p.PlayerPositions)
-            //    .WithOne(pl => pl.Position)
-            //    .HasForeignKey(pl => pl.PositionID)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
             //Unique composite PK for division_coach
             modelBuilder.Entity<DivisionCoach>()
                 .HasIndex(dc => new { dc.CoachID, dc.DivisionID})
@@ -151,11 +164,6 @@ namespace wmbaApp.Data
             modelBuilder.Entity<GameTeam>()
                 .HasIndex(gt => new { gt.TeamID, gt.GameID })
                 .IsUnique();
-
-            ////Unique composite PK for game_team
-            //modelBuilder.Entity<PlayerPosition>()
-            //    .HasIndex(pp => new { pp.PlayerID })
-            //    .IsUnique();
 
             //Unique composite PK for Player Jersey Number
             modelBuilder.Entity<Player>()
@@ -170,6 +178,44 @@ namespace wmbaApp.Data
             modelBuilder.Entity<GameLocation>()
                 .HasIndex(p => p.Name)
                 .IsUnique();
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            OnBeforeSaving();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            OnBeforeSaving();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void OnBeforeSaving()
+        {
+            var entries = ChangeTracker.Entries();
+            foreach (var entry in entries)
+            {
+                if (entry.Entity is IAuditable trackable)
+                {
+                    var now = DateTime.UtcNow;
+                    switch (entry.State)
+                    {
+                        case EntityState.Modified:
+                            trackable.UpdatedOn = now;
+                            trackable.UpdatedBy = UserName;
+                            break;
+
+                        case EntityState.Added:
+                            trackable.CreatedOn = now;
+                            trackable.CreatedBy = UserName;
+                            trackable.UpdatedOn = now;
+                            trackable.UpdatedBy = UserName;
+                            break;
+                    }
+                }
+            }
         }
     }
 }
