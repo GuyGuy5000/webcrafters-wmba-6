@@ -1,4 +1,4 @@
-// Function to update the modal content based on selected checkboxes
+//Function to update the modal content based on selected checkboxes.
 function updatePreviewModal() {
     var selectedHomePlayers = [];
     var selectedAwayPlayers = [];
