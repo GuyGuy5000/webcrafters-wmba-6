@@ -158,10 +158,8 @@
             }
 
         });
-    </script>
 
-
-    <script type="text/javascript">
+        ////////////////////////////// GAME LOCATION ///////////////////
         $('#submitGameLocationCreate').click(function (event) {
             event.preventDefault();
             ClearErrors();
@@ -207,9 +205,6 @@
             return false;
         });
 
-
-
-
         $('#addGameLocationModal').on('hide.bs.modal', function () {
             document.getElementById("createGameLocationForm").reset(); //to clear the data in the popup form
             ClearErrors();
@@ -220,8 +215,6 @@
         function ClearErrors() {
             //Empty out the list of validation errors if there are any
             var ul = document.getElementById("ErrorList");
-
-
             while (ul.firstChild) {
                 ul.removeChild(ul.firstChild);
             }
