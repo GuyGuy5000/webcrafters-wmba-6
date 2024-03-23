@@ -89,7 +89,7 @@
             </div>
         </nav>
 
-        <nav class="phoneNav">
+        <nav class="phoneNav" id="phoneNav">
             <a asp-controller="Home" asp-action="Index" class="phoneIcon "><i class="fa fa-home"></i><br>Home</a>
             <a asp-controller="Teams" asp-action="Index" class="phoneIcon "> <i class="fa-solid fa-users iconP"></i><br>Team</a>
             <a asp-controller="Players" asp-action="Index" class="phoneIcon "><i class="fa-solid fa-user-plus iconP"></i><br>Player</a>
@@ -97,16 +97,19 @@
         </nav>
 
 
-        <button type="button" class="btn btn-outline-dark" >
+        <button type="button" class="btn btn-outline-dark">
             Preview Lineup
         </button>
 
         <nav class="scoreKeepingNav" id="scoreBar">
-            <a href="#BaseballDiamond" class="phoneIcon"><i class="fa-solid fa-baseball iconP"></i><br>Score</a>
-            <a href="#homeLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#homeLineUp"><i class="fa-solid fa-shirt iconP"></i><br>My Team</a>
-            <a href="#awayLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#awayLineUp"><i class="fa-solid fa-shirt iconP" style="color: #808080;"></i><br>Opponent</a>
-            <a href="#playByPlay" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#playByPlay"><i class="fa-solid fa-list iconP"></i><br>Play-by-Play</a>
-            <a href="#" class="phoneIcon"><i class="fa-solid fa-chart-simple iconP"></i><br>Stats</a>
+            <input id="btnScorekeepingNav" type="button" value="V" style="margin: 0 42.5%; width: 15%; border-radius: 15px 15px 5px 5px; border: 1px solid #FFF; background-color: #17254c; color: #FFF;" />
+            <div id="navToggleContainer">
+                <a href="#BaseballDiamond" class="phoneIcon"><i class="fa-solid fa-baseball iconP"></i><br>Score</a>
+                <a href="#homeLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#homeLineUp"><i class="fa-solid fa-shirt iconP"></i><br>My Team</a>
+                <a href="#awayLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#awayLineUp"><i class="fa-solid fa-shirt iconP" style="color: #808080;"></i><br>Opponent</a>
+                <a href="#playByPlay" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#playByPlay"><i class="fa-solid fa-list iconP"></i><br>Play-by-Play</a>
+                <a href="#" class="phoneIcon"><i class="fa-solid fa-chart-simple iconP"></i><br><s>Stats</s></a>
+            </div>
         </nav>
 
 
@@ -138,6 +141,23 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        let btnScorekeepingNav = document.getElementById("btnScorekeepingNav");
+        btnScorekeepingNav.addEventListener("click", function () { ToggleScorekeepingNav(); });
+        function ToggleScorekeepingNav() {
+
+            let navToggleContainer = document.getElementById("navToggleContainer");
+            if (btnScorekeepingNav.value == "V") {
+                navToggleContainer.style.display = "none";
+                btnScorekeepingNav.value = "^";
+            }
+            else {
+                navToggleContainer.style.display = "block";
+                btnScorekeepingNav.value = "V";
+            }
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

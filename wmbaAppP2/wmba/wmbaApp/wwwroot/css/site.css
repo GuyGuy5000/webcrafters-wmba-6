@@ -97,9 +97,7 @@ li a:hover {
         }
 
     .errorDash {
-     
-       
-       /* position: relative;
+        /* position: relative;
         top: 30px;*/
     }
 }
@@ -745,9 +743,12 @@ form {
 }
 
 /* Default styles for tablets and phones */
+.phoneNav {
+    background-color: #f7F7f7;
+}
+
 .phoneNav,
 .scoreKeepingNav {
-    background-color: #f7F7f7;
     border-radius: 10px 10px 0 0;
     bottom: 0;
     position: fixed;
@@ -758,6 +759,7 @@ form {
 
 
     .scoreKeepingNav a {
+        background-color: #f7F7f7;
         color: rgb(57, 69, 64);
         float: left;
         font-size: 10px;
@@ -1024,8 +1026,8 @@ button.btn.btn-left {
 /*.phoneNav a.active,
 .scoreKeepingNav a.active {
     color: rgba(4, 98, 251);*/ /* Active link text color */
-    /*font-weight: bold;*/ /* Bold font for active link */
-    /* Add any other styles for active links */
+/*font-weight: bold;*/ /* Bold font for active link */
+/* Add any other styles for active links */
 /*}*/
 
 
@@ -1456,7 +1458,7 @@ form .deactivateTeam {
         padding: 7px;
         position: fixed;
         width: 103%;
-      /*  z-index: 900;*/
+        /*  z-index: 900;*/
         margin-left: -10px;
         color: #000;
     }
@@ -1466,13 +1468,14 @@ form .deactivateTeam {
         /* Adjust the value as needed */
     }
 
-    form .deactivateMain{
+    form .deactivateMain {
         width: 120px;
     }
 
     form .deactivateTp {
         width: 260px;
     }
+
     .backMargin {
         margin-bottom: 40px;
     }
@@ -1508,7 +1511,7 @@ form .deactivateTeam {
         width: 140px;
     }
 
- 
+
     .table-responsive .gameTable {
         width: 50%;
         margin: 0 auto;
@@ -1527,9 +1530,8 @@ form .deactivateTeam {
     .absolute-top {
         position: fixed;
         top: -11px;
-        left: 0; 
-        z-index: 1000; 
-        
+        left: 0;
+        z-index: 1000;
     }
 }
 
@@ -1687,14 +1689,14 @@ form .deactivateTeam {
 
 @media only screen and (min-width: 320px) and (max-width: 768px) {
 
-    #pageSizeModal{
+    #pageSizeModal {
         width: 100%;
     }
 }
 
-    #team-related-content {
-        display: none; /* Initially hide the team related content */
-    }
+#team-related-content {
+    display: none; /* Initially hide the team related content */
+}
 
 
 
@@ -1770,22 +1772,22 @@ form .deactivateTeam {
     min-height: 100vh; /* Optional: ensures the content is centered vertically on the page */
 }
 
-.specific-table{
+.specific-table {
     text-align: left;
     margin-bottom: 40px;
-
 }
 
     .specific-table tr {
         padding-bottom: 60px;
     }
+
 .statsHeading {
     font-weight: bold; /* Make the font bolder */
     font-size: 1.1em; /* Example font size, adjust as needed*/
     gap: 19px;
 }
 /**Stats AbbvMeaning Ends*/
-    footer {
+footer {
     background-color: #17254c;
     height: 40px;
     font-weight: 700;
@@ -1798,4 +1800,4 @@ form .deactivateTeam {
 }
 
 
-    /******Footer Ends*************/
+/******Footer Ends*************/

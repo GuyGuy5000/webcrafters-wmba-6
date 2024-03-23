@@ -247,9 +247,11 @@ function showMenu() {
     if (window.location.href.includes("ScoreKeeping")) {
 
         document.getElementById("scoreBar").style.display = "block";
+        document.getElementById("phoneNav").style.display = "none";
     } else {
         // Hides the navigation bar on all other pages
         document.getElementById("scoreBar").style.display = "none";
+        document.getElementById("phoneNav").style.display = "block";
     }
 }
 
