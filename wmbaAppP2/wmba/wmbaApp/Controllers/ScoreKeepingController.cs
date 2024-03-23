@@ -1,4 +1,5 @@
-﻿using Humanizer;
+using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,7 @@ using wmbaApp.ViewModels;
 
 namespace wmbaApp.Controllers
 {
+    [Authorize(Roles = "Admin,ScoreKeeper")]
     public class ScoreKeepingController : ElephantController
     {
         private readonly WmbaContext _context;
