@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +14,7 @@ using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
-[Authorize]
+    [Authorize]
     public class TeamsController : ElephantController
     {
         private readonly WmbaContext _context;
@@ -25,6 +25,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public async Task<IActionResult> Index(string SearchString, int? DivisionID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -131,6 +132,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> InactiveIndex(string SearchString, int? DivisionID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -237,6 +239,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Teams/Details/5
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -261,6 +264,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             PopulateDropDownLists();
@@ -272,6 +276,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,TmName,TmAbbreviation,DivisionID")] Team team, int? coachID, string submitButton = "")
         {
             PopulateDropDownLists();
@@ -325,7 +330,8 @@ namespace wmbaApp.Controllers
             return View(team);
         }
 
-        // GET: Teams/Edit/5 
+        // GET: Teams/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -355,6 +361,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, int? coachID)
         {
             var teamToUpdate = await _context.Teams
@@ -494,6 +501,7 @@ namespace wmbaApp.Controllers
         //}
 
         // GET: Teams/Inactive/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -516,6 +524,7 @@ namespace wmbaApp.Controllers
         // POST: Teams/Inactive/5
         [HttpPost, ActionName("MakeInactive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeInactiveConfirmed(int id, string deactivate)
         {
             if (_context.Teams == null)
@@ -578,6 +587,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams/Active/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeActive(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -600,6 +610,7 @@ namespace wmbaApp.Controllers
         // POST: Teams/Active/5
         [HttpPost, ActionName("MakeActive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeActiveConfirmed(int id)
         {
             if (_context.Teams == null)
