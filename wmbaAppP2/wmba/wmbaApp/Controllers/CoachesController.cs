@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
-[Authorize]
+    [Authorize]
     public class CoachesController : ElephantController
     {
         private readonly WmbaContext _context;
@@ -111,6 +111,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Coaches/Details/5
+        [Authorize(Roles = "Admin,Coach")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Coaches == null)
@@ -131,6 +132,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Coaches/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -141,6 +143,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,CoachFirstName,CoachLastName,CoachEmail,CoachPhone")] Coach coach)
         {
             if (ModelState.IsValid)
@@ -153,6 +156,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Coaches/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Coaches == null)
@@ -169,6 +173,7 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
             return View(coach);
         }
 
@@ -177,6 +182,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id)
         {
             var coachToUpdate = await _context.Coaches
@@ -214,6 +220,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Coaches/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Coaches == null)
@@ -234,6 +241,7 @@ namespace wmbaApp.Controllers
         // POST: Coaches/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Coaches == null)
