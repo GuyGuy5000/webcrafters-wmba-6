@@ -31,26 +31,35 @@ namespace wmbaApp.Controllers
             //get game using game ID
             var game = await _context.Games
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Division)
+                .Include(p => p.AwayTeam)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.ID == scoreKeeping.GameID);
 
+            //set info for partial views relating to the bottom navigation tabs
+            ViewData["HomeLineUp"] = game.HomeLineup;
+            ViewData["HomeTeamName"] = game.HomeTeam.TmName;
+
+            ViewData["AwayLineUp"] = game.AwayLineup;
+            ViewData["AwayTeamName"] = game.AwayTeam.TmName;
+
+
             try
             {
-                game.HasStarted = true;
+                game.HasStarted = true; //indicate that the game started
                 _context.Games.Update(game);
                 _context.SaveChanges();
             }
             catch (DbUpdateException dex)
             {
-                ModelState.AddModelError("", "Unable to save inning. Try again, and if the problem persists see your system administrator.");
+                ModelState.AddModelError("", "Unable to save. Try again, and if the problem persists see your system administrator.");
             }
 
 
             //update scorekeeping to match what is in the db
-            scoreKeeping.LineUp = game.HomeLineup.PlayerLineups.Select(pl => new PlayerScoreKeepingVM(pl.Player.FullName, pl.ID)).ToList();
+            scoreKeeping.LineUp = game.HomeLineup.PlayerLineups.Select(pl => new PlayerScoreKeepingVM(pl.Player.FullName, pl.Player.ID)).ToList();
             scoreKeeping.HomeTeamScore = game.HomeTeamScore;
             scoreKeeping.AwayTeamScore = game.AwayTeamScore;
             scoreKeeping.CurrentInning = game.CurrentInning;
@@ -114,7 +123,7 @@ namespace wmbaApp.Controllers
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
-                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
+                .Include(g => g.Innings)
                .FirstOrDefaultAsync(g => g.ID == gameVM.GameID);
 
 
@@ -130,7 +139,7 @@ namespace wmbaApp.Controllers
 
                 previousInning.HomeTeamScore = previousInningVM.HomeTeamScore;
                 previousInning.AwayTeamScore = previousInningVM.AwayTeamScore;
-                //previousInning.PlayByPlays = previousInningVM.PlayByPlays;
+                previousInning.PlayByPlays = previousInningVM.PlayByPlays.Select(pbp => new PlayByPlay { PlayerID = pbp.PlayerID, InningID = pbp.InningID, PlayerActionID = pbp.PlayerActionID }).ToList();
 
                 game.Innings.Add(previousInning);
 
@@ -499,6 +508,13 @@ namespace wmbaApp.Controllers
             return PartialView("_ScoreBar", game);
         }
 
+        public IActionResult UpdatePlayByPlayPartial(string gameJSON)
+        {
+            GameScoreKeepingVM game = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
+
+            return PartialView("_PlayByPlay", game);
+        }
+
         public IActionResult UpdateInningsTablePartial(string gameJSON)
         {
             GameScoreKeepingVM game = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameJSON);
@@ -623,7 +639,6 @@ namespace wmbaApp.Controllers
                     ModelState.AddModelError("", "Unable to save inning. Try again, and if the problem persists see your system administrator.");
                 }
             }
-
 
             return RedirectToAction("Index", "Games");
         }

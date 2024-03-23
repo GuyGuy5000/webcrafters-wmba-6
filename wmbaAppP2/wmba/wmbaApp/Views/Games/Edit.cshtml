@@ -1,7 +1,7 @@
 @model wmbaApp.Models.Game
 <hr />
 <partial name="_addGameLocationModal" />
-<form asp-action="Edit" id="editform"  class="mx-auto mt-4 games-editform"  style="width: 80%;">
+<form asp-action="Edit" id="editform" class="mx-auto mt-4 games-editform" style="width: 80%;">
     <fieldset>
         <partial name="_ViewHeading" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -32,14 +32,26 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="GameStartTime" id="disable" class="control-label required-label"></label>
-            <input asp-for="GameStartTime" class="form-control" />
-            <span asp-validation-for="GameStartTime" class="text-danger"></span>
+            <label class="control-label required-label">Date</label>
+            <input type="date" id="GameDate" class="form-control" />
+            <span class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="GameEndTime" id="disable" class="control-label required-label"></label>
-            <input asp-for="GameEndTime" class="form-control" />
+            <label class="control-label required-label">Start Time</label>
+            <input type="time" id="StartTime" class="form-control" />
+            <span class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label required-label">Duration (in hours)</label>
+            <input type="number" id="Duration" class="form-control" max="2" />
+            <span class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="GameEndTime" class="control-label required-label"></label>
+            <input asp-for="GameEndTime" id="GameEndTime" class="form-control" readonly />
             <span asp-validation-for="GameEndTime" class="text-danger"></span>
         </div>
 
@@ -57,12 +69,9 @@
         </div>
 
         <div class="form-group">
-            <input type="submit" id="btnView" value="Save" class="btn btn-outline-dark " />
-            <button type="button" id="tmsBck" class="btn btn-outline-dark  " onclick="openModal()">
-                Back
-            </button>
+            <input type="submit" id="btnView" value="Save" class="btn btn-outline-dark" />
+            <button type="button" id="tmsBck" class="btn btn-outline-dark" onclick="openModal()">Back</button>
         </div>
-
 
         <div id="customModal" class="modal">
             <div class="modal-content">
@@ -71,7 +80,7 @@
                 <b><p id="required">All Fields are required</p></b>
                 <i></i>
                 <i id="saveCheck" class="fa-solid fa-question fa-f6"></i>
-                <input type="submit" id="hideBtn" value="Save" class="btn btn-outline-dark " />
+                <input type="submit" id="hideBtn" value="Save" class="btn btn-outline-dark" />
 
                 <i id="error" class="fa-solid fa-xmark fa-f6"></i>
                 <a asp-action="Index" id="bck" class="btn btn-outline-dark" onclick="closeModal()">Back</a>
@@ -80,7 +89,6 @@
     </fieldset>
 </form>
 
-            
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -89,62 +97,61 @@
     <script src="~/js/modal.js"></script>
     <script src="~/js/refreshDDL.js"></script>
     <script type="text/javascript">
-        $('#submitGameLocationCreate').click(function (event) {
-            event.preventDefault();
-            ClearErrors();
-            var form = $('#createGameLocationForm');
-            if (form.valid()) {
-                $.ajax({
-                    type: "POST",
-                    url: form.attr('action'),
-                    data: form.serialize(),
-                    success: function () {
-                        $('#addGameLocationModal').modal('hide');
-                    },
-                    error: function (xhr) { //Note: xhr is the XMLHttpRequest
-                        var errorMessages = [];
-                        switch (xhr.status) {
-                            case 401:
-                                errorMessages.push("You must be logged in first.");
-                                break;
-                            case 403:
-                                errorMessages.push("You are not authorized for this action.");
-                                break;
-                            default:
-                                //Messages coming from the Model State Errors
-                                //We split on the | delimeter and the .slice removes the last one
-                                errorMessages = xhr.responseText.split("|").slice(0, -1);
-                        }
-                        //This checks if there are any elements with some content
-                        //and if not then it provides a default feedback message.
-                        if (!errorMessages.some((str) => str !== "")) {
-                            errorMessages.push("Error: Unable to complete operation");
-                        }
-                        //Put the messages in the ErrorList ul contained in the 'ValidaitonSummary' div.
-                        var ul = document.getElementById("ErrorList");
-                        for (var i = 0; i < errorMessages.length; i++) {
-                            var errorMessage = errorMessages[i];
-                            var li = document.createElement("li");
-                            li.innerHTML = errorMessage;
-                            ul.appendChild(li);
-                        }
+        $(document).ready(function () {
+            $('#Duration, #StartTime, #GameDate').change(function () {
+                calculateEndDateTime();
+            });
+
+            function calculateEndDateTime() {
+                var gameDate = $('#GameDate').val();
+                var startTime = $('#StartTime').val();
+                var durationHours = parseInt($('#Duration').val());
+
+                // Limit duration to a maximum of 2 hours
+                if (durationHours > 2) {
+                    durationHours = 2;
+                    $('#Duration').val(durationHours);
+                }
+
+                if (gameDate && startTime && durationHours) {
+                    // Splitting the startTime string into hours and minutes
+                    var [hours, minutes] = startTime.split(':');
+
+                    // Convert hours and minutes to integers
+                    hours = parseInt(hours);
+                    minutes = parseInt(minutes);
+
+                    // Subtract 4 hours from the hours component
+                    hours -= 4;
+
+                    // If the result is negative, adjust it to the previous day
+                    if (hours < 0) {
+                        // Subtract one day from the gameDate
+                        var previousDay = new Date(gameDate);
+                        previousDay.setDate(previousDay.getDate() - 1);
+                        gameDate = previousDay.toISOString().split('T')[0]; // Get the date in 'YYYY-MM-DD' format
+                        hours += 24; // Add 24 hours to get the correct hour on the previous day
                     }
-                });
+
+                    // Combine the adjusted hours and minutes into a string
+                    var adjustedStartTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+
+                    var startDate = new Date(gameDate + 'T' + adjustedStartTime);
+
+                    // Convert duration from hours to milliseconds
+                    var durationMilliseconds = durationHours * 60 * 60 * 1000;
+
+                    var endDate = new Date(startDate.getTime() + durationMilliseconds);
+
+                    // Format end time to ISO string (e.g., "YYYY-MM-DDTHH:mm")
+                    var endTime = endDate.toISOString().slice(0, 16);
+
+                    // Set GameEndTime
+                    $('#GameEndTime').val(endTime);
+                }
             }
-            return false;
         });
-        $('#addGameLocationModal').on('hide.bs.modal', function () {
-            document.getElementById("createGameLocationForm").reset();//to clear the data in the popup form
-            ClearErrors();
-            var selectedOption = $('#GameLocationID').val();//Return to the current selected value
-            refreshDDL('GameLocationID', '/Games/GetGameLocations/' + selectedOption, false, null, true, 'Select Location', true);
-        });
-        function ClearErrors() {
-            //Empty out the list of validation errors if there are any
-            var ul = document.getElementById("ErrorList");
-            while (ul.firstChild) {
-                ul.removeChild(ul.firstChild);
-            }
-        }
     </script>
 }
+
+

@@ -15,7 +15,8 @@
             <label asp-for="DivisionID" class="control-label required-label"></label>
             <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID">
                 <option value="">Select a Division</option>
-            </select>
+            </select>Create and add players
+
             <br />
             <span asp-validation-for="DivisionID" class="text-danger"></span>
         </div>
@@ -31,8 +32,8 @@
         <br />
         <div class="form-group">
             <input type="submit" name="submitButton" value="Create and add players" class="btn btn-outline-dark crud deactivateTeam" />
-            <input type="submit" id="submitCreate" name="submitButton" value="Create" onclick="openModal()" class="btn btn-outline-dark deactivateTeam" />
-            <a asp-action="Index" type="button" class="btn btn-outline-dark deactivateTeam">Back to Teams list</a>
+            <input type="submit" id="submitCreate" name="submitButton" value="Create" onclick="openModal()" class="btn btn-outline-dark deactivate" />
+            <a asp-action="Index" type="button" class="btn btn-outline-dark deactivate">Back to Teams list</a>
         </div>
     </fieldset>
 </form>

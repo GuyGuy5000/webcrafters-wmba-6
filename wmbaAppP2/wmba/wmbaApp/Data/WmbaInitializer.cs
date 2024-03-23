@@ -221,7 +221,7 @@ namespace wmbaApp.Data
                             // Check if the reverse game pair has already been created
                             if (!createdGamePairs.Contains((homeTeam.ID, awayTeam.ID)))
                             {
-                                DateTime start = DateTime.Now;
+                                DateTime start = DateTime.Now.AddMinutes(-DateTime.Now.Minute).AddSeconds(-DateTime.Now.Second);
 
                                 // checking to see the last game
                                 DateTime? lastScheduledGameTime;

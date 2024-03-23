@@ -7,9 +7,9 @@
     </div>
 
     <div class="grid">
-        <input id="btnUndoLast" type="button" value="Undo Last Action" onclick="UndoLastAction()" class="btn-action" />
+        <input id="btnUndoLast" type="button" value="Undo" onclick="UndoLastAction()" class="btn-action btn-outline-dark" />
         <div></div>
-        <input id="btnAddToVisitorTeam" type="button" value="Add score to Visitor" class="btn-action" />
+        <input id="btnAddToVisitorTeam" type="button" value="Add score" class="btn-action btn-outline-dark" />
     </div>
     <div id="BaseballDiamond">
         <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
@@ -19,10 +19,20 @@
         <partial name="_InningsTable" model="@Model" />
     </div>
 
+    <input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" onclick="openModal()" style="min-width: 110px; margin-bottom: 60px;" />
+
     <input type="hidden" id="undoLastPlayJSON" value='' />
 </div>
-<input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" onclick="openModal()" style="min-width: 110px; margin-bottom: 40px;" />
 
+
+<!--popup modals-->
+<partial name="_HomeLineUp" model="@((Lineup)ViewData["HomeLineUp"])" />
+<partial name="_AwayLineUp" model="@((Lineup)ViewData["AwayLineUp"])" />
+<div id="playByPlayPartial">
+    <partial name="_PlayByPlay" model="@Model" />
+</div>
+
+<!--cancel game popup-->
 <div id="customModal" class="modal">
     <div class="modal-content">
         <span class="close" id="close" onclick="closeModal()">X</span>
@@ -39,16 +49,17 @@
     </div>
 </div>
 
-
 <style>
-    .grid{
+    .grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
     }
 
     .btn-action {
-        border: 1px solid #000;
+        color: #2e8b43;
+        background-color: #fff;
         border-radius: 5px;
+        border: 1px solid #2e8b43;
         display: block;
         font-size: 17px;
         font-weight: 600;
@@ -276,6 +287,7 @@
                     else {
                         UpdateScorePartial();
                         UpdateInningsTablePartial();
+                        UpdatePlayByPlayPartial();
                     }
                 },
                 error: function (result, status, err) {
@@ -296,6 +308,8 @@
                     AssignClickEvents();
                     UpdateScorePartial();
                     UpdateInningsTablePartial();
+                    UpdatePlayByPlayPartial();
+
                 },
                 error: function (result, status, err) {
                     window.alert("Update new inning " + result.responseText + " " + status.responseText, err.Message);
@@ -331,6 +345,22 @@
                 },
                 error: function (result, status, err) {
                     window.alert("Update innings " + result.responseText + " " + status.responseText, err.Message);
+                }
+            });
+        }
+
+        function UpdatePlayByPlayPartial() {
+            //postback
+            $.ajax({
+                url: "@Url.Action("UpdatePlayByPlayPartial", "ScoreKeeping")",
+                data: { gameJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
+                type: "Post",
+                success: function (result) {
+                    $("#playByPlayPartial").html(""); //reset the div
+                    $("#playByPlayPartial").html(result); // set the div to the result of the postback
+                },
+                error: function (result, status, err) {
+                    window.alert("Update play by play " + result.responseText + " " + status.responseText, err.Message);
                 }
             });
         }

@@ -12,7 +12,7 @@
     <input type="hidden" name="TeamID" value="@team.ID" />
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    <a asp-action="InactiveIndex" asp-route-TeamID="@team.ID" class="btn btn-center btn-outline-dark">Currently viewing: Active players</a>
+    <a asp-action="InactiveIndex" asp-route-TeamID="@team.ID" class="btn btn-center btn-outline-dark deactivateTp"> View inactive players</a>
     <br />
     <div class="form-horizontal">
         <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter" style="background-color: white;  ">
@@ -62,14 +62,14 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
                     </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit Player">
+                    <td class="GameCrud">
+                        <a asp-action="Edit" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-dark" role="button" data-bs-toggle="tooltip" title="Edit Player">
                             EDIT
                         </a>
-                        <a asp-action="Details" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Player Details">
+                        <a asp-action="Details" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-dark" role="button" data-bs-toggle="tooltip" title="Player Details">
                             DETAILS
                         </a>
-                        <a asp-action="MakeInactive" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Deactivate Player">
+                        <a asp-action="MakeInactive" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-dark" role="button" data-bs-toggle="tooltip" title="Deactivate Player">
                             ACTIVE
                         </a>
                     </td>

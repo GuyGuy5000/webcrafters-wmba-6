@@ -53,6 +53,7 @@ namespace wmbaApp.Controllers
                 .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Where(g => g.GameEndTime > DateTime.Now)
                 .OrderBy(g => g.GameStartTime)
                 .AsNoTracking();
 

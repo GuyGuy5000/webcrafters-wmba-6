@@ -269,7 +269,7 @@
                 <!--Batter actions prompt-->
                 if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
                 {
-                    <button id="btnSkip" type="button" class="btn-skip-prompt">Skip This Batter</button>
+                    <button id="btnSkip" type="button" class="btn-skip-prompt btn-outline-dark">Skip Batter</button>
                 }
             }
             else //bottom half of the inning
@@ -281,119 +281,6 @@
     </div>
 </section>
 
-<section>
-    <div class="inning-tracker-container">
-        <!--Play by play-->
-        <div id="playByPlayContainer" class="play-by-play-container">
-            <h4 style="text-align: center; font-weight: 800;">Play-By-Play</h4>
-            <ol class="play-by-play-list">
-                @{
-                    string playByPlayOutput = "";
-                    foreach (PlayByPlay play in Model.PlayByPlays)
-                    {
-                        switch (play.PlayerAction.PlayerActionName)
-                        {
-                            case "Single":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>1B</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Double":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>2B</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Triple":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>3B</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Home Run":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>HR</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Ball":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>B</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Strike":
-                                playByPlayOutput += $"<li><div class='red-play-indicator'>K</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Foul Ball":
-                                playByPlayOutput += $"<li><div class='red-play-indicator'>FB</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Foul Tip":
-                                playByPlayOutput += $"<li><div class='red-play-indicator'>FT</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Fly Out":
-                                playByPlayOutput += $"<li><div class='red-play-indicator'>FO</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Ground Out":
-                                playByPlayOutput += $"<li><div class='red-play-indicator'>GO</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Hit By Pitch":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>HBP</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Intentional Walk":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>IBB</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Catcher Interference":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>CI</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Home Base":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>R</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "First Base":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>1ST</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Second Base":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>2ND</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Third Base":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>3RD</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Out":
-                                playByPlayOutput += $"<li><div class='red-play-indicator'>O</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-
-                            case "Walk":
-                                playByPlayOutput += $"<li><div class='green-play-indicator'>BB</div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
-                                break;
-                        }
-                    }
-                    @Html.Raw(playByPlayOutput)
-                }
-            </ol>
-        </div>
-        <div style="overflow-y: scroll;">
-            <h4 style="text-align: center; font-weight: 800;">Lineup</h4>
-            <div>
-                @{
-                    string lineUpOutput = "";
-                    for (int i = 0; i < Model.Players.Count; i++)
-                    {
-                        if (i == Model.CurrentBatter)
-                            lineUpOutput += $"<li style='background-color: #17254c; color: #FFF;'>{Model.Players[i].Name}</li>";
-                        else
-                            lineUpOutput += $"<li>{Model.Players[i].Name}</li>";
-                    }
-                }
-                <ol>
-                    @Html.Raw(lineUpOutput)
-                </ol>
-            </div>
-        </div>
-    </div>
-</section>
 
 
 <style>
@@ -568,7 +455,7 @@
         height: 35px;
         left: 270px;
         position: relative;
-        top:-80px;
+        top: -80px;
         width: 160px;
     }
 
@@ -711,52 +598,14 @@
         margin: 0 0 0 4px;
     }
 
-    /*Play by play*/
-    .play-by-play-container {
-        overflow-y: scroll;
-        width: 100%;
-    }
-
-    .play-by-play-list {
-        margin: 0 auto;
-        text-align: left;
-    }
-
-        .play-by-play-list li {
-            background-color: rgba(0,0,0,0.1);
-            font-size: 16px;
-            height: 30px;
-            list-style-type: none;
-            margin: 5px 25px;
-        }
-
-    .green-play-indicator,
-    .red-play-indicator {
-        display: inline-block;
-        font-size: 18px;
-        font-weight: 800;
-        height: 30px;
-        margin-right: 10px;
-        text-align: center;
-        width: 30px;
-    }
-
-    .green-play-indicator {
-        background-color: #1B1;
-    }
-
-    .red-play-indicator {
-        background-color: #A00;
-        color: #FFF;
-    }
 
 
     /*     .batter-up-next-dropdown{
-                                                    font-weight: 600;
-                                                    position: relative;
-                                                    left: -28px;
-                                                    max-width: 180px;
-                                                } */
+                font-weight: 600;
+                position: relative;
+                left: -28px;
+                max-width: 180px;
+            } */
 
     /* Tablet */
     @@media only screen and (min-width: 426px) and (max-width: 768px) {
@@ -899,7 +748,6 @@
             top: -100px;
             width: 90px;
         }
-
         /*Inning tracker CSS*/
         .inning-info-container {
             margin: 0;
@@ -918,30 +766,12 @@
             font-size: 20px;
             margin: 0 0 0 4px;
         }
-
-        .play-by-play-list {
-            padding-left: 0;
-        }
-
-            .play-by-play-list li {
-                font-size: 12px;
-                height: 27px;
-                margin: 5px 0;
-            }
-
-        .green-play-indicator,
-        .red-play-indicator {
-            font-size: 16px;
-            height: 27px;
-            margin-right: 5px;
-            width: 27px;
-        }
         /*         .batter-up-next-dropdown {
-                                                        font-size: 14px;
-                                                        left: -24px;
-                                                        top: -60px;
-                                                        width: 140px;
-                                                    } */
+                        font-size: 14px;
+                        left: -24px;
+                        top: -60px;
+                        width: 140px;
+                    } */
     }
 
     /* phone */
@@ -1121,28 +951,11 @@
             margin: 0 0 0 1px;
         }
 
-        .play-by-play-list {
-            padding-left: 0;
-        }
-
-            .play-by-play-list li {
-                font-size: 12px;
-                height: 18px;
-                margin: 5px 0;
-            }
-
-        .green-play-indicator,
-        .red-play-indicator {
-            font-size: 12px;
-            height: 18px;
-            margin-right: 2px;
-            width: 18px;
-        }
         /*         .batter-up-next-dropdown {
-                                                        font-size: 12px;
-                                                        left: -8px;
-                                                        top: -50px;
-                                                        width: 110px;
-                                                    } */
+                        font-size: 12px;
+                        left: -8px;
+                        top: -50px;
+                        width: 110px;
+                    } */
     }
 </style>

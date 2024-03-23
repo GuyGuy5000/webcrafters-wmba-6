@@ -200,7 +200,9 @@ namespace wmbaApp.Controllers
             }
 
             var statistic = await _context.Statistics
+                .Include(p => p.Players)
                 .FirstOrDefaultAsync(m => m.ID == id);
+                 
             if (statistic == null)
             {
                 return NotFound();

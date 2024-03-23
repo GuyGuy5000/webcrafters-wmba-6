@@ -6,7 +6,7 @@
         {
             <ul class="pagination justify-content-center pagination-sm" style="margin:20px 0">
                 <li class="page-item active">
-                    <button type="button" title="Click to change page size." data-bs-toggle="modal" data-bs-target="#pageSizeModal" class="btn pageBtn page-link" style="background-color: #2e8b43; color: #fff; border: #17254C;">
+                    <button type="button" title="Click to change page size." data-bs-toggle="modal" data-bs-target="#pageSizeModal" class="btn pageNod pageBtn page-link" style="background-color: #2e8b43; color: #fff; border: #17254C; ">
                         No Data 
                     </button>
                 </li>
@@ -31,7 +31,7 @@
             var stepForward = (Model.PageIndex + jumpAmount > Model.TotalPages) ? Model.TotalPages : Model.PageIndex + jumpAmount;
             <ul class="pagination justify-content-center pagination-sm" style="margin:20px 0">
                 <li class="page-item">
-                    <button type="submit" name="page" value="1" @prevDisabled class="btn pageBtn page-link">
+                    <button type="submit" name="page" value="1" @prevDisabled class="btn pageBtn pageNod page-link">
                         <span></span><span></span><span></span><span></span>
                         &lArr;&nbsp;
                     </button>

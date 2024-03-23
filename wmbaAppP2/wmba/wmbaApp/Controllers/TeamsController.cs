@@ -524,18 +524,35 @@ namespace wmbaApp.Controllers
                      .Include(t => t.Division)
                      .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
                      .Include(t => t.Players)
-                     .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                     .Include(t => t.HomeGames)
+                     .Include(t => t.AwayGames)
                      .AsNoTracking()
                      .FirstOrDefaultAsync(m => m.ID == id);
 
             if (deactivate == "Deactivate team and active players")
             {
-                foreach (Player p in team.Players)
+                if (team.HomeGames.Any(g => g.GameEndTime > DateTime.Now) || team.AwayGames.Any(g => g.GameEndTime > DateTime.Now))
                 {
-                    if (p.IsActive)
-                        p.IsActive = false;
-                    _context.Players.Update(p);
+                    ModelState.AddModelError("FK2", $"Unable to make a team that has upcoming games inactive. Reassign or cancel the upcoming games for this team");
                 }
+                else
+                {
+                    foreach (Player p in team.Players)
+                    {
+                        if (p.IsActive)
+                            p.IsActive = false;
+                        _context.Players.Update(p);
+                    }
+                    if (team != null)
+                    {
+                        team.IsActive = false;
+                        _context.Teams.Update(team);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+
             }
             else
             {
@@ -551,9 +568,16 @@ namespace wmbaApp.Controllers
                 }
 
                 int activeGames = 0;
-                foreach (GameTeam g in team.GameTeams)
+                foreach (Game g in team.HomeGames)
                 {
-                    if (g.Game.GameEndTime > DateTime.Now)
+                    if (g.GameEndTime > DateTime.Now)
+                    {
+                        activeGames++;
+                    }
+                }
+                foreach (Game g in team.AwayGames)
+                {
+                    if (g.GameEndTime > DateTime.Now)
                     {
                         activeGames++;
                     }
@@ -565,14 +589,7 @@ namespace wmbaApp.Controllers
                 return View(team);
             }
 
-            if (team != null)
-            {
-                team.IsActive = false;
-                _context.Teams.Update(team);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return View();
         }
 
         // GET: Teams/Active/5

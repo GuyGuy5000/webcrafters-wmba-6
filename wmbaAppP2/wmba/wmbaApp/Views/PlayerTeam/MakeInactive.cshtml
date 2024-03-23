@@ -127,7 +127,7 @@
 
     <form asp-action="MakeInactive">
         <input type="hidden" asp-for="ID" />
-        <input asp-route-TeamID="@team.ID" type="submit" value="Deactivate" class="btn btn-outline-dark " />
+        <input asp-route-TeamID="@team.ID" type="submit" value="Deactivate" class="btn btn-outline-dark deactivate" />
         <a asp-action="Index" asp-route-TeamID="@team.ID" type="button" class="btn btn-outline-dark deactivateTeam">Back to players list</a>
     </form>
 </div>

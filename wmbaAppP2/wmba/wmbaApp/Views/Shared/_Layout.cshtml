@@ -58,11 +58,11 @@
                                 Tools
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
+                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
                                 <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Divisions" asp-action="Index">Divisions</a>
-                                <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
-                                <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Home" asp-action="UnderConstruction">Import Teams</a>
-                                <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Lookup" asp-action="Index">Lookup</a>
+                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
+                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Home" asp-action="UnderConstruction">Import Teams</a>
+                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Lookup" asp-action="Index">Lookup</a>
                                 <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Coaches" asp-action="Create">Create Coaches</a>
                             </div>
                         </li>
@@ -90,16 +90,26 @@
         </nav>
 
         <nav class="phoneNav">
-            <div id="phoneNavArrow" class="phoneNav-arrow">
-                <button id="phoneNavToggle" style="width: 100%; height: 28px; padding: 0;">&#11167;</button><!--11167 down  11165 up -->
-            </div>
-            <div id="phoneNavIcons">
-                <a asp-controller="Home" asp-action="Index" class="phoneIcon"><i class="fa fa-home"></i><br>Home</a>
-                <a asp-controller="Teams" asp-action="Index" class="phoneIcon"> <i class="fa-solid fa-users iconP"></i><br>Team</a>
-                <a asp-controller="Players" asp-action="Index" class="phoneIcon"><i class="fa-solid fa-user-plus iconP"></i><br>Player</a>
-                <a asp-controller="Games" asp-action="Index" class="phoneIcon"><i class="fa-solid fa-baseball-bat-ball iconP"></i><br>Games</a>
-            </div>
+            <a asp-controller="Home" asp-action="Index" class="phoneIcon "><i class="fa fa-home"></i><br>Home</a>
+            <a asp-controller="Teams" asp-action="Index" class="phoneIcon "> <i class="fa-solid fa-users iconP"></i><br>Team</a>
+            <a asp-controller="Players" asp-action="Index" class="phoneIcon "><i class="fa-solid fa-user-plus iconP"></i><br>Player</a>
+            <a asp-controller="Games" asp-action="Index" class="phoneIcon "><i class="fa-solid fa-baseball-bat-ball iconP"></i><br>Games</a>
         </nav>
+
+
+        <button type="button" class="btn btn-outline-dark" >
+            Preview Lineup
+        </button>
+
+        <nav class="scoreKeepingNav" id="scoreBar">
+            <a href="#BaseballDiamond" class="phoneIcon"><i class="fa-solid fa-baseball iconP"></i><br>Score</a>
+            <a href="#homeLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#homeLineUp"><i class="fa-solid fa-shirt iconP"></i><br>My Team</a>
+            <a href="#awayLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#awayLineUp"><i class="fa-solid fa-shirt iconP" style="color: #808080;"></i><br>Opponent</a>
+            <a href="#playByPlay" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#playByPlay"><i class="fa-solid fa-list iconP"></i><br>Play-by-Play</a>
+            <a href="#" class="phoneIcon"><i class="fa-solid fa-chart-simple iconP"></i><br>Stats</a>
+        </nav>
+
+
 
 
         <nav class="phoneBack" id="phoneBack">

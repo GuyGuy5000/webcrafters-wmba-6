@@ -31,18 +31,34 @@
                 </select>
                 <span asp-validation-for="AwayTeamID" class="text-danger"></span>
             </div>
+        <div class="form-group">
+            <label class="control-label required-label">Date</label>
+            <input type="date" id="GameDate" class="form-control" />
+            <span class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
-            <label asp-for="GameStartTime" class="control-label required-label"></label>
-                <input asp-for="GameStartTime" class="form-control" />
-                <span asp-validation-for="GameStartTime" class="text-danger"></span>
-            </div>
+        <div class="form-group">
+            <label class="control-label required-label">Start Time</label>
+            <input type="time" id="StartTime" class="form-control" />
+            <span class="text-danger"></span>
+        </div>
 
-            <div class="form-group">
+        <div class="form-group">
+            <label class="control-label required-label">Duration (in hours)</label>
+            <input type="number" id="Duration" class="form-control" max="2"/>
+            <span class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
             <label asp-for="GameEndTime" class="control-label required-label"></label>
-                <input asp-for="GameEndTime" class="form-control" />
-                <span asp-validation-for="GameEndTime" class="text-danger"></span>
-            </div>
+            <input asp-for="GameEndTime" id="GameEndTime" class="form-control" readonly />
+            <span asp-validation-for="GameEndTime" class="text-danger"></span>
+        </div>
+
+        <input type="hidden" id="GameStartTime" name="GameStartTime" />
+
+       
+
 
         @* game location *@
         <div class="form-group">
@@ -74,7 +90,78 @@
     <script src="~/js/modal.js"></script>
     <script src="~/js/refreshDDL.js"></script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#Duration, #StartTime, #GameDate').change(function () {
+                calculateEndDateTime();
+            });
+
+            $('#Duration').keyup(function () {
+                // Limit duration to a maximum of 2 hours
+                var durationHours = parseInt($(this).val());
+                if (durationHours > 2) {
+                    $(this).val(2);
+                }
+            });
+
+            function calculateEndDateTime() {
+                var gameDate = $('#GameDate').val();
+                var startTime = $('#StartTime').val();
+                var durationHours = parseInt($('#Duration').val());
+
+                // Limit duration to a maximum of 2 hours
+                if (durationHours > 2) {
+                    durationHours = 2;
+                    $('#Duration').val(durationHours);
+                }
+
+                if (gameDate && startTime && durationHours) {
+                    // Splitting the startTime string into hours and minutes
+                    var [hours, minutes] = startTime.split(':');
+
+                    // Convert hours and minutes to integers
+                    hours = parseInt(hours);
+                    minutes = parseInt(minutes);
+
+                    // Subtract 4 hours from the hours component
+                    hours -= 4;
+
+                    // If the result is negative, adjust it to the previous day
+                    if (hours < 0) {
+                        // Subtract one day from the gameDate
+                        var previousDay = new Date(gameDate);
+                        previousDay.setDate(previousDay.getDate() - 1);
+                        gameDate = previousDay.toISOString().split('T')[0]; // Get the date in 'YYYY-MM-DD' format
+                        hours += 24; // Add 24 hours to get the correct hour on the previous day
+                    }
+
+                    // Combine the adjusted hours and minutes into a string
+                    var adjustedStartTime = ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2);
+
+                    var startDate = new Date(gameDate + 'T' + adjustedStartTime);
+
+                    // Convert duration from hours to milliseconds
+                    var durationMilliseconds = durationHours * 60 * 60 * 1000;
+
+                    var endDate = new Date(startDate.getTime() + durationMilliseconds);
+
+                    // Format end time to ISO string (e.g., "YYYY-MM-DDTHH:mm")
+                    var endTime = endDate.toISOString().slice(0, 16);
+
+                    // Set GameEndTime
+                    $('#GameEndTime').val(endTime);
+
+                    // Set GameStartTime
+                    var startTimeISO = startDate.toISOString().slice(0, 16);
+                    $('#GameStartTime').val(startTimeISO);
+                }
+            }
+
+        });
+    </script>
+
+
+    <script type="text/javascript">
         $('#submitGameLocationCreate').click(function (event) {
             event.preventDefault();
             ClearErrors();
@@ -120,6 +207,9 @@
             return false;
         });
 
+
+
+
         $('#addGameLocationModal').on('hide.bs.modal', function () {
             document.getElementById("createGameLocationForm").reset(); //to clear the data in the popup form
             ClearErrors();
@@ -130,6 +220,8 @@
         function ClearErrors() {
             //Empty out the list of validation errors if there are any
             var ul = document.getElementById("ErrorList");
+
+
             while (ul.firstChild) {
                 ul.removeChild(ul.firstChild);
             }

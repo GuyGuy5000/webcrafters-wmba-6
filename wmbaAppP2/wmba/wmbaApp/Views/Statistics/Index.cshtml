@@ -3,15 +3,15 @@
 @using wmbaApp.Models;
 <partial name="_ViewHeading" />
 
-<a asp-action="DownloadStatisticsReport" class="btn btn-info float-end d-none d-lg-table-cell">Download Statistics Report</a>
+<a asp-action="DownloadStatisticsReport" class="btn btn-outline-dark float-end d-none d-lg-table-cell deactivateTeam">Download Stats</a>
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
 
     <br />
     <div class="form-horizontal">
-        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            <p class="filSearch">Filter/Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter" style="text-align: center;">
+            <p class="filSearch">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
@@ -50,78 +50,78 @@
                 </th>
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsGP
+                        GP
                     </h6>
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsPA
+                       PA
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsAB
+                       AB
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsAVG
+                        AVG
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsOBP
+                     OBP
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsOPS
+                        OPS
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsSLG
+                        SLG
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsH
+                        Hit
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
-                    <h5>
-                        StatsR
-                    </h5>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsK
+                    <h6>
+                        Run
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsHR
+                        K
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsRBI
+                       HR
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                        StatsBB
+                        RBI
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        BB
                     </h6>
                 </th>
 
@@ -180,8 +180,8 @@
                     </td>
                     <td>
 
-                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title=" @ViewData["ControllerFriendlyName"] Detail">
-                            &#x270E;
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-dark" role="button" data-bs-toggle="tooltip" title=" @ViewData["ControllerFriendlyName"] Detail">
+                            Details
                         </a>
                         @*                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
                     &#x274C;

@@ -39,7 +39,7 @@
 
             <form asp-action="MakeInactive" class="mb-0">
                 <input type="hidden" asp-for="ID" />
-                <input type="submit" name="deactivate" value="Deactivate team and active players" class="btn btn-outline-dark mt-2 deactivate" />
+                <input type="submit" name="deactivate" value="Deactivate team and active players" class="btn btn-outline-dark mt-2 deactivateTp deactivate" /><br>
                 <a asp-action="Index" type="button" class="btn  mt-2 deactivate ">
                     <span></span><span></span><span></span><span></span>
                 Back to Teams list</a>
@@ -51,7 +51,7 @@
         {
             <form asp-action="MakeInactive" class="mb-0">
                 <input type="hidden" asp-for="ID" />
-                <input type="submit" name="deactivate" value="Deactivate" class="btn btn-outline-dark  mt-2"  />
+                <input type="submit" name="deactivate" value="Deactivate" class="btn btn-outline-dark  mt-2 deactivateMain" />
                 <a asp-action="Index" type="button" class="btn mt-2 deactivateTeam">
                     <span></span><span></span><span></span><span></span>
                 Back to Teams list</a>
