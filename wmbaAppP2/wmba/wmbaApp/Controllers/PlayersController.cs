@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -19,7 +19,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace wmbaApp.Controllers
 {
-[Authorize]
+    [Authorize]
     public class PlayersController : ElephantController
     {
         private readonly WmbaContext _context;
@@ -30,6 +30,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public async Task<IActionResult> Index(string SearchString, int? TeamID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -127,6 +128,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players
+        [Authorize(Roles = "Admin,Coach")]
         public async Task<IActionResult> InactiveIndex(string SearchString, int? TeamID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -225,6 +227,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Players/Details/5
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Players == null)
@@ -246,6 +249,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players/Create
+        [Authorize(Roles = "Admin,Convenor")]
         public IActionResult Create()
         {
             Player player = new Player();
@@ -258,6 +262,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber," +
             "PlyrMemberID,TeamID,StatisticID")] Player player)
         {
@@ -294,6 +299,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players/Edit/5
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Players == null)
@@ -302,7 +308,7 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-                .Include(p=>p.Team).ThenInclude(p=>p.Division)
+                .Include(p => p.Team).ThenInclude(p => p.Division)
                 .FirstOrDefaultAsync(f => f.ID == id);
 
             if (player == null)
@@ -310,18 +316,44 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            //Getting and moving a player just 1 step above in a division and team
+            int? presentDivisionId = player.Team?.DivisionID;
+            string presentDivisionName;
+            if (presentDivisionId != null)
+            {
+                presentDivisionName = _context.Divisions.FirstOrDefault(d => d.ID == presentDivisionId).DivName;
+            }
+            else
+            {
+                presentDivisionName = string.Empty;
+            }
+            ViewData["presentDivisionId"] = presentDivisionId;
+            ViewData["presentDivisionName"] = presentDivisionName;
+
+            ViewData["nextDivision"] = _context.Divisions
+                .Where(d => d.ID == presentDivisionId + 1)
+                .Select(d => new SelectListItem { Value = d.ID.ToString(), Text = d.DivName })
+                .ToList();
+
+            // Teams in the division
+            var teamsInDivision = _context.Teams.Where(t => t.DivisionID == presentDivisionId).ToList();
+            ViewData["TeamsInDivision"] = new SelectList(teamsInDivision, "ID", "TmName");
+
             PopulateDropDownLists(player);
             return View(player);
         }
+
 
         // POST: Players/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Edit(int id)
         {
             var playerToUpdate = await _context.Players
+                .Include(t=>t.Team).ThenInclude(t=>t.Division)
             .FirstOrDefaultAsync(m => m.ID == id);
 
             if (playerToUpdate == null)
@@ -407,6 +439,7 @@ namespace wmbaApp.Controllers
         //}
 
         // GET: Players/Inactive/5
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Players == null)
@@ -425,6 +458,7 @@ namespace wmbaApp.Controllers
         // POST: Players/Inactive/5
         [HttpPost, ActionName("MakeInactive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> MakeInactiveConfirmed(int id)
         {
             if (_context.Players == null)
@@ -449,6 +483,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Players/Active/5
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> MakeActive(int? id)
         {
             if (id == null || _context.Players == null)
@@ -468,6 +503,7 @@ namespace wmbaApp.Controllers
         // POST: Players/Active/5
         [HttpPost, ActionName("MakeActive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> MakeActiveConfirmed(int id)
         {
             if (_context.Players == null)
@@ -614,9 +650,6 @@ namespace wmbaApp.Controllers
 
             return Json(teams);
         }
-
-
-
 
         //#region PositionCheckboxes
         //private void PopulateAssignedPositionCheckboxes(Player player)
