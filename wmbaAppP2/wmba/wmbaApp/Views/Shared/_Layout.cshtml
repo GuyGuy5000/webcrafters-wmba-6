@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,11 +26,12 @@
 
 </head>
 <body class="home-page ">
-    <header>
-
-
-
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light yemiNav border-bottom box-shadow mb-0" id="navBar">
+    @* removing nav bar at login and register page *@
+    @if (!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Login", StringComparison.OrdinalIgnoreCase) &&
+          !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Register", StringComparison.OrdinalIgnoreCase))
+    {
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light yemiNav border-bottom box-shadow mb-0" id="navBar">
             <div class="container-fluid" style="padding-bottom: 0px;">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img class="secondLogo img-fluid " src="~/Image/WMBA (9).png" alt="Logo" tabindex="1" />
@@ -64,17 +65,16 @@
                                 <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Home" asp-action="UnderConstruction">Import Teams</a>
                                 <a class="nav-link text-dark custom-hover-effect" asp-area="" asp-controller="Lookup" asp-action="Index">Lookup</a>
                                 <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Coaches" asp-action="Create">Create Coaches</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain User Roles</a>
                             </div>
                         </li>
-
+                            
                     </ul>
                     <div class="help-icon d-sm-inline-flex justify-content-between" id="help-icon" style="margin-top: 25px;" accesskey="h">
                         <span class="icon fa-solid fa-question"></span>
                     </div>
+                        
                 </div>
-
-
-
 
                 <div class="help-box" id="help-box">
                     <div class="help-content">
@@ -86,8 +86,9 @@
                         <button id="nextBtn" tabindex="15">Next</button>
                     </div>
                 </div>
+                    
             </div>
-<partial name="_LoginPartial" />
+                <partial name="_LoginPartial" />
         </nav>
 
         <nav class="phoneNav">
@@ -103,9 +104,9 @@
                 <i class="fa-solid fa-angle-left" style="color: black"></i>
             </a>
         </nav>
-
-
+            
     </header>
+    }
     <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
