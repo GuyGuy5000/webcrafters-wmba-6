@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,10 +12,11 @@ using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace wmbaApp.Controllers
 {
-[Authorize]
+    [Authorize]
     public class StatisticsController : ElephantController
     {
         private readonly WmbaContext _context;
@@ -28,6 +28,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Statistics
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Index(string SearchString, int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             ViewData["Filtering"] = "btn-outline-secondary";
@@ -194,6 +195,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Statistics/Details/5
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Statistics == null)
@@ -212,6 +214,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Statistics/Create
+        [Authorize(Roles = "Admin,Convenor")]
         public IActionResult Create()
         {
             return View();
@@ -222,6 +225,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Create([Bind("ID,StatsGP,StatsPA,StatsAB,StatsAVG,StatsOBP,StatsOPS,StatsSLG,StatsH,StatsR,StatsK,StatsHR,StatsRBI,StatsBB")] Statistic statistic)
         {
             try
@@ -258,6 +262,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Statistics/Edit/5
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Statistics == null)
@@ -278,6 +283,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Edit(int id)
         {
 
@@ -324,6 +330,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Statistics/Delete/5
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Statistics == null)
@@ -344,6 +351,7 @@ namespace wmbaApp.Controllers
         // POST: Statistics/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Statistics == null)
