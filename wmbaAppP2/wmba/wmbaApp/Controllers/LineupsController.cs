@@ -17,6 +17,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using wmbaApp.ViewModels;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Numerics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace wmbaApp.Controllers
 {
@@ -36,6 +37,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Lineups/Create
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public IActionResult Create(int gameId)
         {
             var game = _context.Games
@@ -57,6 +59,7 @@ namespace wmbaApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Create([Bind("ID")] Lineup lineup, int gameId, List<int> SelectedPlayers)
         {
             if (ModelState.IsValid)
@@ -96,6 +99,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Lineups/Edit/5
+        [Authorize(Roles = "Admin,Coach")]
         public IActionResult Edit(int gameId)
         {
             var firstCreatedLineup = _context.Lineups
@@ -122,6 +126,7 @@ namespace wmbaApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Coach")]
         public async Task<IActionResult> Edit(int id, [Bind("ID")] Lineup lineup, int gameId, List<int> SelectedPlayers)
         {
             if (id != lineup.ID)
@@ -165,6 +170,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Lineups/Details/5
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
