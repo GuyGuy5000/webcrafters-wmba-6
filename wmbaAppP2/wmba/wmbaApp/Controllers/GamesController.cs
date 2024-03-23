@@ -1,4 +1,4 @@
-﻿/// <summary>
+/// <summary>
 /// Game
 /// Farooq Jidelola
 /// </summary>
@@ -25,7 +25,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace wmbaApp.Controllers
 {
-[Authorize]
+    [Authorize]
     public class GamesController : ElephantController
     {
         private readonly WmbaContext _context;
@@ -35,6 +35,7 @@ namespace wmbaApp.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public async Task<IActionResult> Index(string SearchString, int? TeamID,
                     int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -121,6 +122,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Games/Create
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public IActionResult Create()
         {
             PopulateDropDownLists();
@@ -132,6 +134,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Create([Bind("ID,GameStartTime,GameEndTime,IsActive,GameLocationID,HomeTeamID,AwayTeamID,DivisionID")] Game game,
             int? selectedDivision, IFormFile theExcel)
         {
@@ -155,6 +158,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Games/Edit/5
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Games == null)
@@ -186,6 +190,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Edit(int id)
         {
             var gameToUpdate = await _context.Games
@@ -231,6 +236,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Games/Details/5
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -255,7 +261,8 @@ namespace wmbaApp.Controllers
             return View(game);
         }
 
-       // GET: Games/Delete/5
+        // GET: Games/Delete/5
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Games == null)
@@ -279,6 +286,7 @@ namespace wmbaApp.Controllers
         // POST: Games/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Games == null)
@@ -472,6 +480,7 @@ namespace wmbaApp.Controllers
             return Redirect("Index");
         }
 
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public IActionResult DownloadGamesFixtures()
         {
             var sumQ = _context.Games
@@ -480,7 +489,8 @@ namespace wmbaApp.Controllers
                 .OrderBy(r => r.Division.DivName)
                 .Select(r => new
                 {
-                    Games = r.FullVersus,
+                    Home_Team = r.HomeTeam.TmName,
+                    Visitor_Team = r.AwayTeam.TmName,
                     Game_Details = r.Summary,
                     Game_Division = r.Division.DivName,
                     Game_Location = r.GameLocation.Name,
@@ -503,7 +513,7 @@ namespace wmbaApp.Controllers
 
                     //Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
                     //Make Date and Patient Bold
-                    workSheet.Cells[4, 1, numRows + 3, 1].Style.Font.Bold = true;
+                    workSheet.Cells[5, 1, numRows + 3, 1].Style.Font.Bold = true;
 
                     //Set Style and backgound colour of headings
                     using (ExcelRange headings = workSheet.Cells[3, 1, 3, 7])
@@ -561,7 +571,7 @@ namespace wmbaApp.Controllers
             return NotFound("No data.");
         }
 
-
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
         public async Task<IActionResult> StartGame(int? id)
         {
             if (id == null)
