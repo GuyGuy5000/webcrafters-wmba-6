@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -331,25 +332,38 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams/Edit/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Coach")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Teams == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
+            // Get the team
             var team = await _context.Teams
-            .Include(t => t.Division)
-            .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
-            .Include(t => t.Players)
-            .Include(t => t.GameTeams).ThenInclude(t => t.Game)
-            .AsNoTracking()
-            .FirstOrDefaultAsync(m => m.ID == id);
+           .Include(t => t.Division)
+           .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+           .Include(t => t.Players)
+           .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+           .AsNoTracking()
+           .FirstOrDefaultAsync(m => m.ID == id);
+
             if (team == null)
             {
                 return NotFound();
             }
+
+            // making sure the login coach is same as coach associated to the team
+            var userId = User.FindFirst(ClaimTypes.Email)?.Value;
+            var findingCoach = await _context.DivisionCoaches
+                .AnyAsync(dc => dc.TeamID == team.ID && dc.Coach.CoachEmail == userId);
+
+            if (!findingCoach)
+            {
+                return Forbid();
+            }
+
 
             PopulateDropDownLists(team);
 
@@ -361,7 +375,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Coach")]
         public async Task<IActionResult> Edit(int id, int? coachID)
         {
             var teamToUpdate = await _context.Teams
@@ -375,6 +389,17 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            // making sure the login coach is same as coach associated to the team
+            var userId = User.FindFirst(ClaimTypes.Email)?.Value;
+            var findingCoach = await _context.DivisionCoaches
+                .AnyAsync(dc => dc.TeamID == teamToUpdate.ID && dc.Coach.CoachEmail == userId);
+
+            if (!findingCoach)
+            {
+                return Forbid();
+            }
+
 
             PopulateDropDownLists(teamToUpdate);
 
