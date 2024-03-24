@@ -91,6 +91,11 @@
     <script src="~/js/site.js"></script>
     <!--Postback ajax scripts-->
     <script type="text/javascript">
+
+        $("#btnAddToVisitorTeam").click(function () {
+            IncrementAwayTeamScore();
+        });
+
         $("input[type='button']").each(function () {
             $(`#${this.id}`).click(function () {
                 $('#scoreKeepingMain input').prop("disabled", true);
@@ -99,8 +104,6 @@
                 })
             });
         });
-
-        AssignClickEvents();
 
         //shows the batter action prompt
         function ShowBatterAction() {
@@ -140,10 +143,6 @@
             $("#btnSkip").click(function () {
                 SkipBatter();
             });
-
-            $("#btnAddToVisitorTeam").click(function () {
-                IncrementAwayTeamScore();
-            });
         }
 
         //handles any runners that are on base
@@ -156,7 +155,6 @@
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    AssignClickEvents();
                     UpdateGame('');
                 },
                 error: function (result, status, err) {
@@ -175,7 +173,6 @@
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    AssignClickEvents();
                     UpdateGame('');
                 },
                 error: function (result, status, err) {
@@ -194,7 +191,6 @@
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    AssignClickEvents();
                     UpdateGame('');
                 },
                 error: function (result, status, err) {
@@ -213,7 +209,6 @@
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    AssignClickEvents();
                     UpdateGame('');
                 },
                 error: function (result, status, err) {
@@ -232,7 +227,6 @@
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    AssignClickEvents();
                     UpdateGame('');
                 },
                 error: function (result, status, err) {
@@ -258,7 +252,6 @@
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    AssignClickEvents();
                     undoJSON.val("");
                     UpdateGame('');
                 },
@@ -289,6 +282,8 @@
                         UpdateInningsTablePartial();
                         UpdatePlayByPlayPartial();
                     }
+                    AssignClickEvents();
+
                 },
                 error: function (result, status, err) {
                     window.alert("Update game " + result.responseText + " " + status.responseText, err.Message);
@@ -305,7 +300,6 @@
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    AssignClickEvents();
                     UpdateScorePartial();
                     UpdateInningsTablePartial();
                     UpdatePlayByPlayPartial();

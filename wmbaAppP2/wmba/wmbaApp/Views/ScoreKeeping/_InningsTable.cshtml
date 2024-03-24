@@ -79,7 +79,7 @@
                 }
             }
             <td>
-                @Model.HomeTeamScore
+                @Model.Innings.Sum(i => i.HomeTeamScore)
             </td>
         </tr>
         <tr>
@@ -95,7 +95,7 @@
                 }
             }
             <td>
-                @Model.AwayTeamScore
+                @Model.Innings.Sum(i => i.AwayTeamScore)
             </td>
         </tr>
     </table>

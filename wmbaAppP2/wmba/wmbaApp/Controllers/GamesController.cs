@@ -588,7 +588,7 @@ namespace wmbaApp.Controllers
 
             var scoreKeeping = new GameScoreKeepingVM(game.ID, homeTeamName, awayTeamName, lineUp);
 
-            return RedirectToAction("Index", "ScoreKeepingAwayTeam", scoreKeeping);
+            return RedirectToAction("Index", "ScoreKeeping", scoreKeeping);
         }
 
         private bool GameExists(int id)
