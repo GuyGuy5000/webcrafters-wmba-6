@@ -592,9 +592,10 @@ li a:hover {
     }
 
 
-    .modal {
-        width: 150px;
-    }
+   .modal {
+    width: 90%;
+    margin-left: 45px;
+}
 
     .phoneBack {
         background-color: #F7F7f7;
