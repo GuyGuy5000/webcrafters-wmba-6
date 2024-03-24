@@ -460,7 +460,7 @@ namespace wmbaApp.Controllers
             InningScoreKeepingVM undoInningVM = undoGameVM.Innings[undoGameVM.CurrentInning];
 
             var gameToUndo = await _context.Games
-               .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
+               .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays)
               .FirstOrDefaultAsync(g => g.ID == undoGameVM.GameID);
 
             //undo the game using the undo JSONs
@@ -477,11 +477,11 @@ namespace wmbaApp.Controllers
                     Inning inningToUndo = gameToUndo.Innings.ToArray()[undoGameVM.CurrentInning];
                     inningToUndo.HomeTeamScore = undoInningVM.HomeTeamScore;
                     inningToUndo.AwayTeamScore = undoInningVM.AwayTeamScore;
-                    //inningToUndo.PlayByPlays = undoInningVM.PlayByPlays;
 
                     var undoInning = gameToUndo.Innings.ToArray()[gameToUndo.Innings.Count - 1];
                     gameToUndo.Innings.Remove(undoInning);
 
+                    _context.PlayByPlays.RemoveRange(undoInning.PlayByPlays);
                     _context.Innings.Remove(undoInning);
                     _context.SaveChanges();
                 }

@@ -103,13 +103,15 @@ namespace wmbaApp.Controllers
             if (theFile == null)
             {
                 ModelState.AddModelError("", "Choose a file to continue.");
-                return View("Index", viewModelList);
+                return View("ImportTeams");
             }
 
             //if the file format is csv
             if (theFile.ContentType == "text/csv")
             {
                 ValidateCSVFile(theFile);
+                if (!ModelState.IsValid) //if there were validation errors return to index
+                    return View("ImportTeams");
                 using var memoryStream = new MemoryStream();
                 await theFile.CopyToAsync(memoryStream);
                 StreamReader reader = new(memoryStream);
@@ -129,6 +131,8 @@ namespace wmbaApp.Controllers
                     excel = new ExcelPackage(memoryStream);
                 }
                 ValidateExcelFile(excel);
+                if (!ModelState.IsValid) //if there were validation errors return to index
+                    return View("ImportTeams");
                 ImportTeamExcel(excel);
                 ImportPlayerExcel(excel);
 
@@ -138,9 +142,9 @@ namespace wmbaApp.Controllers
                 ModelState.AddModelError("", "File is the wrong type. Only excel and CSV files are allowed");
             }
             if (!ModelState.IsValid) //if there were validation errors return to index
-                return View("Index", viewModelList);
+                return View("ImportTeams");
 
-            return View("UnderConstruction", viewModelList);
+            return View("ImportTeams");
         }
 
 
@@ -195,7 +199,9 @@ namespace wmbaApp.Controllers
         }
         private void ImportTeamCSV(StreamReader reader)
         {
-            Collection<string> importedTeams = new();
+            List<string> importedTeams = new(); //used to keep track of which teams were attempted to be imported.
+            List<Team> successfullyImportedTeams = new();
+            List<Team> failedImportedTeams = new();
             string feedBack = "";
             string[] headers = reader.ReadLine().Split(","); //order of the headers: [0]ID,[1]First Name,[2]Last Name,[3]Member ID,[4]Season,[5]Division,[6]Club,[7]Team
             var lines = reader.ReadToEnd().Split("\n"); //get all lines after the header
@@ -222,39 +228,31 @@ namespace wmbaApp.Controllers
                         // Row by row...
                         t.TmName = teamName;
                         t.DivisionID = (int)divID;
+                        importedTeams.Add(t.TmName);
                         _context.Teams.Add(t);
                         _context.SaveChanges();
                         successCount++;
-                        importedTeams.Add(t.TmName);
+                        successfullyImportedTeams.Add(t);
                     }
                     catch (DbUpdateException dex)
                     {
                         errorCount++;
                         if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
                         {
-                            //feedBack += "Error: Record " + t.TmName + " was rejected as a duplicate."
-                            //        + "<br />";
+                            successfullyImportedTeams.Add(t);
+                            failedImportedTeams.Add(t);
                         }
                         else
                         {
-                            //feedBack += "Error: Record " + t.TmName + " caused an error."
-                            //        + "<br />";
+                            failedImportedTeams.Add(t);
                         }
                         _context.Remove(t);
                     }
                     catch (Exception ex)
                     {
                         errorCount++;
-                        if (ex.GetBaseException().Message.Contains("correct format"))
-                        {
-                            //feedBack += "Error: Record " + t.TmName + " was rejected becuase the standard charge was not in the correct format."
-                            //        + "<br />";
-                        }
-                        else
-                        {
-                            //feedBack += "Error: Record " + t.TmName + " caused and error."
-                            //        + "<br />";
-                        }
+
+                        failedImportedTeams.Add(t);
                     }
             }
 
@@ -262,11 +260,17 @@ namespace wmbaApp.Controllers
                         " Teams with " + successCount.ToString() + " inserted and " +
                         errorCount.ToString() + " rejected";
 
+            ViewData["SuccessfullyImportedTeams"] = successfullyImportedTeams;
+            ViewData["FailedImportedTeams"] = failedImportedTeams;
+
+
             TempData["TeamImportFeedback"] = feedBack;
         }
 
         private void ImportPlayerCSV(StreamReader reader)
         {
+            List<Player> succesfullyImportedPlayers = new();
+            List<Player> failedImportedPlayers = new();
             string feedBack = "";
             string[] headers = reader.ReadLine().Split(",");
             var lines = reader.ReadToEnd().Split("\n");
@@ -283,11 +287,11 @@ namespace wmbaApp.Controllers
 
                 string teamName = data[7]; //check to see if the team name contains a division
                 if (data[7].Contains("U "))
-                    teamName = teamName.Split("U ")[1]; //if yes, split and get everything after the division
+                    teamName = teamName.Split("U ")[1].Trim(); //if yes, split and get everything after the division
 
                 try
                 {
-                    int? teamID = _context.Teams.FirstOrDefault(t => t.TmName == teamName)?.ID;
+                    int? teamID = _context.Teams.FirstOrDefault(t => t.TmName.ToLower() == teamName.ToLower())?.ID;
 
                     // Row by row...
                     p.PlyrFirstName = data[1];
@@ -297,35 +301,13 @@ namespace wmbaApp.Controllers
                     _context.Players.Add(p);
                     _context.SaveChanges();
                     successCount++;
-                }
-                catch (DbUpdateException dex)
-                {
-                    errorCount++;
-                    if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
-                    {
-                        //feedBack += "Error: Record " + p.PlyrMemberID + " was rejected as a duplicate."
-                        //        + "<br />";
-                    }
-                    else
-                    {
-                        //feedBack += "Error: Record " + p.PlyrMemberID + " caused an error."
-                        //        + "<br />";
-                    }
-                    _context.Remove(p);
+                    succesfullyImportedPlayers.Add(p);
                 }
                 catch (Exception ex)
                 {
                     errorCount++;
-                    if (ex.GetBaseException().Message.Contains("correct format"))
-                    {
-                        //feedBack += "Error: Record " + p.PlyrMemberID + " was rejected becuase the standard charge was not in the correct format."
-                        //        + "<br />";
-                    }
-                    else
-                    {
-                        //feedBack += "Error: Record " + p.PlyrMemberID + " caused and error."
-                        //        + "<br />";
-                    }
+                    p.Team = new Team { TmName = data[7] };
+                    failedImportedPlayers.Add(p);
                 }
             }
 
@@ -333,6 +315,8 @@ namespace wmbaApp.Controllers
                         " Players with " + successCount.ToString() + " inserted and " +
                         errorCount.ToString() + " rejected";
             TempData["PlayerImportFeedback"] = feedBack;
+            ViewData["SuccesfullyImportedPlayers"] = succesfullyImportedPlayers;
+            ViewData["FailedImportedPlayers"] = failedImportedPlayers;
         }
 
         private void ValidateExcelFile(ExcelPackage excel)
