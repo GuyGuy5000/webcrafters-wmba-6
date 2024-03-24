@@ -10,6 +10,10 @@
     padding: 0px 0px 0px 0px;
 }
 
+.card-header {
+    background-color: #17254c;
+}
+
 .header-login ul.nav-tabs {
     margin: 0px 0px -1px 0px;
 }
@@ -20,7 +24,7 @@
 
 .header-login a.nav-link {
     font-size: 1rem;
-    color: #000;
+    color: #fff;
     text-align: center;
     padding: 1rem;
 }
@@ -34,6 +38,15 @@
 .first-section, .second-section, a {
     text-decoration: none;
     color: #000;
+}
+
+#login-submit {
+    font-size: 18px;
+    height: 55px;
+    right: 20px;
+    border-color: #17254c;
+    background-color: #17254c;
+    color: #fff;
 }
 
 @media only screen and (min-width: 1001px) and (max-width: 1440px) {
