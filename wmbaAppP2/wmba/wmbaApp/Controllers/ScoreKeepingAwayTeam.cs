@@ -559,12 +559,12 @@ namespace wmbaApp.Controllers
         public async Task<IActionResult> CancelGame(int gameID)
         {
             var game = await _context.Games
-                .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
-                .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
+                .Include(p => p.HomeTeam)
+                .Include(p => p.AwayTeam)
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Division)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
-                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
+                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays)
                .FirstOrDefaultAsync(g => g.ID == gameID);
 
             game.HasStarted = false;
@@ -596,12 +596,9 @@ namespace wmbaApp.Controllers
             GameScoreKeepingVM gameVM = JsonConvert.DeserializeObject<GameScoreKeepingVM>(gameScoreKeepingJSON);
 
             var game = await _context.Games
-                .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
-                .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
-                .Include(p => p.AwayTeam).ThenInclude(p => p.Division)
-                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(p => p.AwayTeam)
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
-                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pbp => pbp.Player)
+                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays)
                .FirstOrDefaultAsync(g => g.ID == gameVM.GameID);
 
             game.GameEndTime = DateTime.Now;

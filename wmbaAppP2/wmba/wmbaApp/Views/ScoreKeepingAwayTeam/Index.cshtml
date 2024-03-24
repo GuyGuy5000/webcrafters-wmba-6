@@ -283,9 +283,9 @@
                         UpdateInningsTablePartial();
                         UpdatePlayByPlayPartial();
                         UpdateBaseballDiamondPartial();
+                        AssignClickEvents();
                     }
 
-                    AssignClickEvents();
 
                 },
                 error: function (result, status, err) {
@@ -307,7 +307,7 @@
                     UpdateScorePartial();
                     UpdateInningsTablePartial();
                     UpdatePlayByPlayPartial();
-
+                    AssignClickEvents();
                 },
                 error: function (result, status, err) {
                     window.alert("Update new inning " + result.responseText + " " + status.responseText, err.Message);

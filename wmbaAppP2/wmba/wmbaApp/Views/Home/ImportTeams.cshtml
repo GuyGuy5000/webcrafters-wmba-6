@@ -4,7 +4,7 @@
 @{
     if (ViewData["SuccessfullyImportedTeams"] != null)
     {
-        <h2>Succesfully Imported:</h2>
+        <h2>Players Succesfully Imported:</h2>
         <form asp-action="ImportTeams" method="get">
             <table class="table mt-3 playerTable">
                 <thead>
@@ -80,7 +80,7 @@
 @{
     if (ViewData["FailedImportedTeams"] != null)
     {
-        <h2>Failed To Import:</h2>
+        <h2>Players Failed To Import:</h2>
         <form asp-action="ImportTeams" method="get">
             <table class="table mt-3 playerTable">
                 <thead>

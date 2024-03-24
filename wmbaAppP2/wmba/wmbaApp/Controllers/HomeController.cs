@@ -251,19 +251,16 @@ namespace wmbaApp.Controllers
                     catch (Exception ex)
                     {
                         errorCount++;
-
                         failedImportedTeams.Add(t);
+                        _context.Remove(t);
                     }
             }
 
             feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
                         " Teams with " + successCount.ToString() + " inserted and " +
                         errorCount.ToString() + " rejected";
-
             ViewData["SuccessfullyImportedTeams"] = successfullyImportedTeams;
             ViewData["FailedImportedTeams"] = failedImportedTeams;
-
-
             TempData["TeamImportFeedback"] = feedBack;
         }
 
@@ -314,9 +311,9 @@ namespace wmbaApp.Controllers
             feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
                         " Players with " + successCount.ToString() + " inserted and " +
                         errorCount.ToString() + " rejected";
-            TempData["PlayerImportFeedback"] = feedBack;
             ViewData["SuccesfullyImportedPlayers"] = succesfullyImportedPlayers;
             ViewData["FailedImportedPlayers"] = failedImportedPlayers;
+            TempData["PlayerImportFeedback"] = feedBack;
         }
 
         private void ValidateExcelFile(ExcelPackage excel)
@@ -359,7 +356,9 @@ namespace wmbaApp.Controllers
         }
         private void ImportTeamExcel(ExcelPackage excel)
         {
-            Collection<string> importedTeams = new();
+            List<string> importedTeams = new(); //used to keep track of which teams were attempted to be imported.
+            List<Team> successfullyImportedTeams = new();
+            List<Team> failedImportedTeams = new();
             string feedBack = "";
             var workSheet = excel.Workbook.Worksheets[0];
             var start = workSheet.Dimension.Start;
@@ -371,58 +370,57 @@ namespace wmbaApp.Controllers
             {
                 Team t = new();
 
-                if (!importedTeams.Contains(workSheet.Cells[row, 8].Text)) //check to see if a team was already imported
+
+                string teamName = workSheet.Cells[row, 8].Text.Trim(); //check to see if the team name contains a division
+                if (workSheet.Cells[row, 8].Text.Contains("U "))
+                    teamName = teamName.Split("U ")[1].Trim(); //if yes, split and get everything after the division
+
+                if (!importedTeams.Contains(teamName)) //check to see if a team was already imported
                     try
                     {
                         int? divID = _context.Divisions.FirstOrDefault(d => d.DivName == workSheet.Cells[row, 6].Text.ToUpper())?.ID;
 
                         // Row by row...
-                        t.TmName = workSheet.Cells[row, 8].Text;
+                        t.TmName = teamName;
                         t.DivisionID = (int)divID;
+                        importedTeams.Add(t.TmName);
                         _context.Teams.Add(t);
                         _context.SaveChanges();
                         successCount++;
-                        importedTeams.Add(t.TmName);
+                        successfullyImportedTeams.Add(t);
                     }
                     catch (DbUpdateException dex)
                     {
                         errorCount++;
                         if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
                         {
-                            //feedBack += "Error: Record " + t.TmName + " was rejected as a duplicate."
-                            //        + "<br />";
+                            successfullyImportedTeams.Add(t);
+                            failedImportedTeams.Add(t);
                         }
                         else
                         {
-                            //feedBack += "Error: Record " + t.TmName + " caused an error."
-                            //        + "<br />";
+                            failedImportedTeams.Add(t);
                         }
-                        //Here is the trick to using SaveChanges in a loop.  You must remove the 
-                        //offending object from the cue or it will keep raising the same error.
                         _context.Remove(t);
                     }
                     catch (Exception ex)
                     {
                         errorCount++;
-                        if (ex.GetBaseException().Message.Contains("correct format"))
-                        {
-                            //feedBack += "Error: Record " + t.TmName + " was rejected becuase the standard charge was not in the correct format."
-                            //        + "<br />";
-                        }
-                        else
-                        {
-                            //feedBack += "Error: Record " + t.TmName + " caused and error."
-                            //        + "<br />";
-                        }
+                        failedImportedTeams.Add(t);
+                        _context.Remove(t);
                     }
             }
             feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
                         " Teams with " + successCount.ToString() + " inserted and " +
                         errorCount.ToString() + " rejected";
+            ViewData["SuccessfullyImportedTeams"] = successfullyImportedTeams;
+            ViewData["FailedImportedTeams"] = failedImportedTeams;
             TempData["TeamImportFeedback"] = feedBack;
         }
         private void ImportPlayerExcel(ExcelPackage excel)
         {
+            List<Player> succesfullyImportedPlayers = new();
+            List<Player> failedImportedPlayers = new();
             string feedBack = "";
             var workSheet = excel.Workbook.Worksheets[0];
             var start = workSheet.Dimension.Start;
@@ -433,9 +431,14 @@ namespace wmbaApp.Controllers
             for (int row = start.Row + 1; row <= end.Row; row++)
             {
                 Player p = new();
+
+                string teamName = workSheet.Cells[row, 8].Text.Trim(); //check to see if the team name contains a division
+                if (workSheet.Cells[row, 8].Text.Contains("U "))
+                    teamName = teamName.Split("U ")[1].Trim(); //if yes, split and get everything after the division
+
                 try
                 {
-                    int? teamID = _context.Teams.FirstOrDefault(t => t.TmName == workSheet.Cells[row, 8].Text)?.ID;
+                    int? teamID = _context.Teams.FirstOrDefault(t => t.TmName.ToLower() == teamName.ToLower())?.ID;
 
                     // Row by row...
                     p.PlyrFirstName = workSheet.Cells[row, 2].Text;
@@ -445,42 +448,20 @@ namespace wmbaApp.Controllers
                     _context.Players.Add(p);
                     _context.SaveChanges();
                     successCount++;
-                }
-                catch (DbUpdateException dex)
-                {
-                    errorCount++;
-                    if (dex.GetBaseException().Message.Contains("UNIQUE constraint failed"))
-                    {
-                        //feedBack += "Error: Record " + p.PlyrMemberID + " was rejected as a duplicate."
-                        //        + "<br />";
-                    }
-                    else
-                    {
-                        //feedBack += "Error: Record " + p.PlyrMemberID + " caused an error."
-                        //        + "<br />";
-                    }
-                    //Here is the trick to using SaveChanges in a loop.  You must remove the 
-                    //offending object from the cue or it will keep raising the same error.
-                    _context.Remove(p);
+                    succesfullyImportedPlayers.Add(p);
                 }
                 catch (Exception ex)
                 {
                     errorCount++;
-                    if (ex.GetBaseException().Message.Contains("correct format"))
-                    {
-                        //feedBack += "Error: Record " + p.PlyrMemberID + " was rejected becuase the standard charge was not in the correct format."
-                        //        + "<br />";
-                    }
-                    else
-                    {
-                        //feedBack += "Error: Record " + p.PlyrMemberID + " caused and error."
-                        //        + "<br />";
-                    }
+                    p.Team = new Team { TmName = workSheet.Cells[row, 8].Text };
+                    failedImportedPlayers.Add(p);
                 }
             }
             feedBack += "Finished Importing " + (successCount + errorCount).ToString() +
                         " Players with " + successCount.ToString() + " inserted and " +
                         errorCount.ToString() + " rejected";
+            ViewData["SuccesfullyImportedPlayers"] = succesfullyImportedPlayers;
+            ViewData["FailedImportedPlayers"] = failedImportedPlayers;
             TempData["PlayerImportFeedback"] = feedBack;
         }
 
