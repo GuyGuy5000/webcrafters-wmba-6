@@ -13,6 +13,7 @@ using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace wmbaApp.Controllers
 {
@@ -28,16 +29,16 @@ namespace wmbaApp.Controllers
 
 
         // GET: Statistics
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,IntermediateC,RookieC")]
         public async Task<IActionResult> Index(string SearchString, int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             ViewData["Filtering"] = "btn-outline-secondary";
             int numberFilters = 0;
 
-            string[] sortOptions = new[] { "Player" };
+            string[] sortOptions = new[] { "Player", "Team", "Division" };
 
             var statistics = _context.Statistics
-                .Include(s => s.Players)
+                .Include(s => s.Players).ThenInclude(p => p.Team).ThenInclude(p => p.Division)
                 .AsNoTracking();
 
             // Give feedback about the state of the filters
@@ -91,6 +92,34 @@ namespace wmbaApp.Controllers
                         .OrderByDescending(p => p.Players.FirstOrDefault().PlyrFirstName);
                 }
             }
+            else if (sortField == "Team")
+            {
+
+                if (sortDirection == "asc")
+                {
+                    statistics = statistics
+                        .OrderBy(p => p.Players.FirstOrDefault().Team.TmName);
+                }
+                else
+                {
+                    statistics = statistics
+                        .OrderByDescending(p => p.Players.FirstOrDefault().Team.TmName);
+                }
+            }
+            else if (sortField == "Division")
+            {
+
+                if (sortDirection == "asc")
+                {
+                    statistics = statistics
+                        .OrderBy(p => p.Players.FirstOrDefault().Team.Division.DivName);
+                }
+                else
+                {
+                    statistics = statistics
+                        .OrderByDescending(p => p.Players.FirstOrDefault().Team.Division.DivName);
+                }
+            }
 
 
 
@@ -108,7 +137,7 @@ namespace wmbaApp.Controllers
             return View(pagedData);
         }
 
-
+        [Authorize(Roles = "Admin")]
         public IActionResult DownloadStatisticsReport()
         {
             // Get the data from the database
@@ -195,7 +224,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Statistics/Details/5
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,IntermediateC,RookieC")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Statistics == null)
@@ -208,6 +237,27 @@ namespace wmbaApp.Controllers
             if (statistic == null)
             {
                 return NotFound();
+            }
+
+            //finding my logged in convenor by their roles
+            var userId = User.FindFirst(ClaimTypes.Role)?.Value;
+            var player = await _context.Players
+                    .Include(p => p.Team).ThenInclude(p => p.Division)
+                    .Include(t => t.Statistics)
+                    .FirstOrDefaultAsync(p => p.ID == id);
+
+            // my logged in user must have access to their division only
+            if (userId == "RookieC" && player.Team.Division.DivName != "9U")
+            {
+                return Forbid();
+            }
+            else if (userId == "IntermediateC" && (player.Team.Division.DivName != "11U" && player.Team.Division.DivName != "13U"))
+            {
+                return Forbid();
+            }
+            else if (userId == "Convenor" && (player.Team.Division.DivName != "15U" && player.Team.Division.DivName != "18U"))
+            {
+                return Forbid();
             }
 
             return View(statistic);
@@ -262,7 +312,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Statistics/Edit/5
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,IntermediateC,RookieC")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Statistics == null)
@@ -275,6 +325,36 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            // finding my logged in convenor
+            var userId = User.FindFirst(ClaimTypes.Email)?.Value;
+            var player = await _context.Players
+                    .Include(p => p.Team).ThenInclude(p => p.Division)
+                    .Include(t => t.Statistics)
+                    .FirstOrDefaultAsync(p => p.ID == id);
+
+            // making show my logged in convenor got access to only players stats in certain division
+            if (userId == "RookieC" && player.Team.Division.DivName != "9U")
+            {
+                return Forbid();
+            }
+            else if (userId == "IntermediateC" && player.Team.Division.DivName != "11U")
+            {
+                return Forbid();
+            }
+            else if (userId == "IntermediateC" && player.Team.Division.DivName != "13U")
+            {
+                return Forbid();
+            }
+            else if (userId == "Convenor" && player.Team.Division.DivName != "15U")
+            {
+                return Forbid();
+            }
+            else if (userId == "Convenor" && player.Team.Division.DivName != "18U")
+            {
+                return Forbid();
+            }
+
             return View(statistic);
         }
 
@@ -300,6 +380,34 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            // finding my logged in convenor
+            var userId = User.FindFirst(ClaimTypes.Email)?.Value;
+            var player = await _context.Players
+                    .Include(p => p.Team).ThenInclude(p => p.Division)
+                    .Include(t => t.Statistics)
+                    .FirstOrDefaultAsync(p => p.ID == id);
+
+            // making show my logged in convenor got access to only players stats in certain division
+            if (userId == "RookieC" && player.Team.Division.DivName != "9U")
+            {
+                return Forbid();
+            }
+            else if (userId == "IntermediateC" && player.Team.Division.DivName != "11U")
+            {
+                return Forbid();
+            }
+            else if (userId == "IntermediateC" && player.Team.Division.DivName != "13U")
+            {
+                return Forbid();
+            }
+            else if (userId == "Convenor" && player.Team.Division.DivName != "15U")
+            {
+                return Forbid();
+            }
+            else if (userId == "Convenor" && player.Team.Division.DivName != "18U")
+            {
+                return Forbid();
+            }
 
             if (await TryUpdateModelAsync<Statistic>(statisticsToUpdate, "",
                s => s.StatsGP, s => s.StatsPA, s => s.StatsAB, s => s.StatsAVG, s => s.StatsOBP, s => s.StatsOPS, s => s.StatsSLG,
