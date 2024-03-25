@@ -72,24 +72,31 @@ namespace wmbaApp.Data
                     context.SaveChanges();
                 }
 
-                //Coach seed data
+                // Coach seed data
                 string[] firstNames = new string[] { "Lyric", "Antoinette", "Kendal", "Vivian", "Ruth", "Jamison", "Emilia", "Natalee", "Yadiel", "Jakayla", "Lukas", "Moses", "Kyler", "Karla", "Chanel", "Tyler", "Camilla", "Quintin", "Braden", "Clarence", "Anthony", "Bruce", "Murphy", "Rosa", "John", "Leia", "Kylie", "Derek", "Luna", "Daisy", "Kody", "Blaine", "Jonas", "Lennon", "Marlee", "Chandler", "Louisa", "Harris", "Lia", "Byron", "Erin", "Maia", "Clark", "Kelly", "Robin", "Julio", "Abraham" };
                 string[] lastNames = new string[] { "Watts", "Randall", "Arias", "Weber", "Stone", "Carlson", "Robles", "Frederick", "Parker", "Morris", "Soto", "Orozco", "Boyer", "Burns", "Cobb", "Blankenship", "Houston", "Estes", "Atkins", "Miranda", "Zuniga", "Ward", "Mayo", "Costa", "Reeves", "Cook", "Krueger", "Crane", "Watts", "Little", "Henderson", "Bishop" };
-                //add coaches if none exist
+
+                // Add coaches if none exist
                 if (!context.Coaches.Any())
                 {
                     int teamsCount = context.Teams.Count();
-                    for (int i = 0; i <= teamsCount; i++)
+                    for (int i = 0; i < teamsCount && i < firstNames.Length && i < lastNames.Length; i++)
                     {
+                        string coachFirstName = firstNames[i];
+                        string coachLastName = lastNames[i];
+                        string coachEmail = $"{char.ToLower(coachFirstName[0])}{coachLastName.ToLower()}@outlook.com";
+
                         context.Coaches.Add(
                             new Coach
                             {
-                                CoachFirstName = firstNames[i],
-                                CoachLastName = lastNames[i]
+                                CoachFirstName = coachFirstName,
+                                CoachLastName = coachLastName,
+                                CoachEmail = coachEmail
                             });
                     }
                     context.SaveChanges();
                 }
+
 
                 //DivisionCoach seed data
                 if (!context.DivisionCoaches.Any())
