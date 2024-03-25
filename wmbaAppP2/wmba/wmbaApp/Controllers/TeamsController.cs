@@ -26,7 +26,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams
-        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper,IntermediateC,RookieC")]
         public async Task<IActionResult> Index(string SearchString, int? DivisionID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -133,7 +133,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper,IntermediateC,RookieC")]
         public async Task<IActionResult> InactiveIndex(string SearchString, int? DivisionID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -240,7 +240,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Teams/Details/5
-        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper,IntermediateC,RookieC")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Teams == null)
