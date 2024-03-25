@@ -1,3 +1,6 @@
+/// <summary>
+/// Farooq Jidelola
+/// </summary>
 using wmbaApp.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +23,8 @@ namespace wmbaApp.Data
                 //Creating Roles
                 var RoleManager = applicationBuilder.ApplicationServices.CreateScope()
                     .ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-                string[] roleNames = { "Admin", "Coach", "ScoreKeeper", "Convenor" };
+                //RookieConvenor = RookieC, IntermediateC = IntermediateConvenor
+                string[] roleNames = { "Admin", "Coach", "ScoreKeeper", "Convenor", "RookieC", "IntermediateC" };
 
                 IdentityResult roleResult;
                 foreach (var roleName in roleNames)
@@ -109,6 +112,42 @@ namespace wmbaApp.Data
                     }
                 }
 
+                //User:RookieConvenor
+                if (userManager.FindByEmailAsync("rookie1convenor@outlook.com").Result == null)
+                {
+                    IdentityUser user = new IdentityUser
+                    {
+                        UserName = "rookie1convenor@outlook.com",
+                        Email = "rookie1convenor@outlook.com",
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult result = userManager.CreateAsync(user, "Wmba@team6").Result;
+
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(user, "RookieC").Wait();
+                    }
+                }
+
+                //User:IntermediateConvenor
+                if (userManager.FindByEmailAsync("intermediate1convenor@outlook.com").Result == null)
+                {
+                    IdentityUser user = new IdentityUser
+                    {
+                        UserName = "intermediate1convenor@outlook.com",
+                        Email = "intermediate1convenor@outlook.com",
+                        EmailConfirmed = true
+                    };
+
+                    IdentityResult result = userManager.CreateAsync(user, "Wmba@team6").Result;
+
+                    if (result.Succeeded)
+                    {
+                        userManager.AddToRoleAsync(user, "IntermediateC").Wait();
+                    }
+                }
+
                 //User:Convenor
                 if (userManager.FindByEmailAsync("convenor@outlook.com").Result == null)
                 {
@@ -126,6 +165,7 @@ namespace wmbaApp.Data
                         userManager.AddToRoleAsync(user, "Convenor").Wait();
                     }
                 }
+
 
                 //User:Me
                 if (userManager.FindByEmailAsync("fjidelola1@ncstudents.niagaracollege.ca").Result == null)
@@ -226,5 +266,3 @@ namespace wmbaApp.Data
     }
 
 }
-
-
