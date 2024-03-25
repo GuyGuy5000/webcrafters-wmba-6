@@ -40,7 +40,7 @@
     color: #000;
 }
 
-#login-submit {
+#login-submit, #registerSubmit {
     font-size: 18px;
     height: 55px;
     right: 20px;
