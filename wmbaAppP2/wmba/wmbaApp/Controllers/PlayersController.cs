@@ -250,7 +250,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players/Create
-        [Authorize(Roles = "Admin,Convenor,Coach")]
+        [Authorize(Roles = "Admin,Coach")]
         public IActionResult Create()
         {
             Player player = new Player();
@@ -263,7 +263,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor,Coach")]
+        [Authorize(Roles = "Admin,Coach")]
         public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber," +
             "PlyrMemberID,TeamID,StatisticID")] Player player)
         {
@@ -300,7 +300,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players/Edit/5
-        [Authorize(Roles = "Admin,Convenor,Coach")]
+        [Authorize(Roles = "Admin,Coach")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Players == null)
@@ -365,7 +365,7 @@ namespace wmbaApp.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var playerToUpdate = await _context.Players
-                .Include(t=>t.Team).ThenInclude(t=>t.Division)
+                .Include(t => t.Team).ThenInclude(t => t.Division)
             .FirstOrDefaultAsync(m => m.ID == id);
 
             if (playerToUpdate == null)
@@ -462,7 +462,7 @@ namespace wmbaApp.Controllers
         //}
 
         // GET: Players/Inactive/5
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Players == null)
@@ -555,7 +555,7 @@ namespace wmbaApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("InactiveIndex");
         }
-[Authorize(Roles = "Admin,Convenor,Coach")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public IActionResult DownloadInactivePlayersReport()
         {
             // Get the data from the database
@@ -673,94 +673,6 @@ namespace wmbaApp.Controllers
 
             return Json(teams);
         }
-
-        //#region PositionCheckboxes
-        //private void PopulateAssignedPositionCheckboxes(Player player)
-        //{
-        //    //For this to work, you must have Included the FunctionRooms 
-        //    //in the Function
-        //    var allOptions = _context.Positions;
-        //    var currentOptionIDs = new HashSet<int>(player.PlayerPositions.Select(b => b.PositionID));
-        //    var checkBoxes = new List<CheckOptionVM>();
-        //    foreach (var option in allOptions)
-        //    {
-        //        checkBoxes.Add(new CheckOptionVM
-        //        {
-        //            ID = option.ID,
-        //            DisplayText = option.PosName,
-        //            Assigned = currentOptionIDs.Contains(option.ID)
-        //        });
-        //    }
-        //    ViewData["PositionOptions"] = checkBoxes;
-        //}
-
-        ////For the posiionList
-        //private void PopulateAssignedPositionLists(Player player)
-        //{
-        //    //For this to work, you must have Included the child collection in the parent object
-        //    var allOptions = _context.Positions;
-        //    var currentOptionsHS = new HashSet<int>(player.PlayerPositions.Select(b => b.PositionID));
-        //    //Instead of one list with a boolean, we will make two lists
-        //    var selected = new List<ListOptionVM>();
-        //    var available = new List<ListOptionVM>();
-        //    foreach (var r in allOptions)
-        //    {
-        //        if (currentOptionsHS.Contains(r.ID))
-        //        {
-        //            selected.Add(new ListOptionVM
-        //            {
-        //                ID = r.ID,
-        //                DisplayText = r.PosName
-        //            });
-        //        }
-        //        else
-        //        {
-        //            available.Add(new ListOptionVM
-        //            {
-        //                ID = r.ID,
-        //                DisplayText = r.PosName
-        //            });
-        //        }
-        //    }
-
-        //    ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-        //    ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-        //}
-
-        //private void UpdatePlayerPositionsListboxes(string[] selectedOptions, Player playerToUpdate)
-        //{
-        //    if (selectedOptions == null)
-        //    {
-        //        playerToUpdate.PlayerPositions = new List<PlayerPosition>();
-        //        return;
-        //    }
-
-        //    var selectedOptionsHS = new HashSet<string>(selectedOptions);
-        //    var currentOptionsHS = new HashSet<int>(playerToUpdate.PlayerPositions.Select(b => b.PositionID));
-        //    foreach (var r in _context.Positions)
-        //    {
-        //        if (selectedOptionsHS.Contains(r.ID.ToString()))//it is selected
-        //        {
-        //            if (!currentOptionsHS.Contains(r.ID))
-        //            {
-        //                playerToUpdate.PlayerPositions.Add(new PlayerPosition
-        //                {
-        //                    PositionID = r.ID,
-        //                    PlayerID = playerToUpdate.ID
-        //                });
-        //            }
-        //        }
-        //        else //not selected
-        //        {
-        //            if (currentOptionsHS.Contains(r.ID))
-        //            {
-        //                PlayerPosition positionToRemove = playerToUpdate.PlayerPositions.FirstOrDefault(d => d.PositionID == r.ID);
-        //                _context.Remove(positionToRemove);
-        //            }
-        //        }
-        //    }
-        //}
-        //#endregion
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.ID == id);
