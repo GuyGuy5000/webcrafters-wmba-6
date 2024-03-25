@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -299,7 +300,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players/Edit/5
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Players == null)
@@ -315,6 +316,17 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            // making sure the login coach is same as coach associated to the team
+            var userId = User.FindFirst(ClaimTypes.Email)?.Value;
+            var findingCoach = await _context.DivisionCoaches
+                .AnyAsync(dc => dc.TeamID == player.TeamID && dc.Coach.CoachEmail == userId);
+
+            if (!findingCoach)
+            {
+                return Forbid();
+            }
+
 
             //Getting and moving a player just 1 step above in a division and team
             int? presentDivisionId = player.Team?.DivisionID;
@@ -349,7 +361,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Edit(int id)
         {
             var playerToUpdate = await _context.Players
@@ -360,6 +372,17 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            // making sure the login coach is same as coach associated to the team
+            var userId = User.FindFirst(ClaimTypes.Email)?.Value;
+            var findingCoach = await _context.DivisionCoaches
+                .AnyAsync(dc => dc.TeamID == playerToUpdate.TeamID && dc.Coach.CoachEmail == userId);
+
+            if (!findingCoach)
+            {
+                return Forbid();
+            }
+
 
 
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
