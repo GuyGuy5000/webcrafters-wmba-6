@@ -31,7 +31,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players
-        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper,IntermediateC,RookieC")]
         public async Task<IActionResult> Index(string SearchString, int? TeamID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -129,7 +129,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players
-        [Authorize(Roles = "Admin,Coach")]
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper,IntermediateC,RookieC")]
         public async Task<IActionResult> InactiveIndex(string SearchString, int? TeamID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -228,7 +228,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Players/Details/5
-        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
+        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper,IntermediateC,RookieC")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Players == null)
@@ -250,7 +250,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players/Create
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public IActionResult Create()
         {
             Player player = new Player();
@@ -263,7 +263,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber," +
             "PlyrMemberID,TeamID,StatisticID")] Player player)
         {
@@ -361,7 +361,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor,Coach")]
+        [Authorize(Roles = "Admin,Coach")]
         public async Task<IActionResult> Edit(int id)
         {
             var playerToUpdate = await _context.Players
@@ -481,7 +481,7 @@ namespace wmbaApp.Controllers
         // POST: Players/Inactive/5
         [HttpPost, ActionName("MakeInactive")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeInactiveConfirmed(int id)
         {
             if (_context.Players == null)
@@ -506,7 +506,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: Players/Active/5
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeActive(int? id)
         {
             if (id == null || _context.Players == null)
@@ -526,7 +526,7 @@ namespace wmbaApp.Controllers
         // POST: Players/Active/5
         [HttpPost, ActionName("MakeActive")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> MakeActiveConfirmed(int id)
         {
             if (_context.Players == null)
@@ -555,7 +555,7 @@ namespace wmbaApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("InactiveIndex");
         }
-
+[Authorize(Roles = "Admin,Convenor,Coach")]
         public IActionResult DownloadInactivePlayersReport()
         {
             // Get the data from the database
