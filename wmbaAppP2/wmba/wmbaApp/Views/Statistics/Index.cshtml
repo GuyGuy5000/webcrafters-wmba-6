@@ -1,4 +1,4 @@
-﻿﻿@using wmbaApp.Utilities;
+﻿@using wmbaApp.Utilities;
 @model IEnumerable<wmbaApp.Models.Statistic>
 @using wmbaApp.Models;
 <partial name="_ViewHeading" />
@@ -35,96 +35,20 @@
     <table class="table mt-3">
         <thead>
             <tr>
-
-
-                @*                 <th class="d-sm-table-cell d-md-table-cell">
-                <h6 class="non-button-input" id="heading">
-                Player
-                </h6>
-
-                </th> *@
                 <th class="d-sm-table-cell d-md-table-cell">
                     <input type="submit" name="actionButton" value="Player" class="non-button-input" title="Sort by Full Name" />
                     <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
-
-                </th>
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsGP
-                    </h6>
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsPA
-                    </h6>
+                    <input type="submit" name="actionButton" value="Team" class="non-button-input" title="Sort by Team" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
+                </th>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <input type="submit" name="actionButton" value="Division" class="non-button-input" title="Sort by Division" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
                 </th>
 
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsAB
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsAVG
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsOBP
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsOPS
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsSLG
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsH
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h5>
-                        StatsR
-                    </h5>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsK
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsHR
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsRBI
-                    </h6>
-                </th>
-
-                <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        StatsBB
-                    </h6>
-                </th>
-
+               
                 <th style="min-width:120px">
                     @*                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a Players Statistics">
                     <strong>&#x270D; Create </strong>
@@ -140,52 +64,17 @@
                         @Html.DisplayFor(modelItem => item.Players.FirstOrDefault().FullName)
                     </td>
                     <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsGP)
+                        @Html.DisplayFor(modelItem => item.Players.FirstOrDefault().Team.TmName)
                     </td>
                     <td class="d-sm-table-cell d-md-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsPA)
+                        @Html.DisplayFor(modelItem => item.Players.FirstOrDefault().Team.Division.DivName)
                     </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsAB)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsAVG)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsOBP)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsOPS)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsSLG)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsH)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsR)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsK)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsHR)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsRBI)
-                    </td>
-                    <td class="d-none d-lg-table-cell">
-                        @Html.DisplayFor(modelItem => item.StatsBB)
-                    </td>
+                    
                     <td>
 
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title=" @ViewData["ControllerFriendlyName"] Detail">
                             &#x270E;
                         </a>
-                        @*                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                    &#x274C;
-                    </a> *@
                     </td>
                 </tr>
             }
