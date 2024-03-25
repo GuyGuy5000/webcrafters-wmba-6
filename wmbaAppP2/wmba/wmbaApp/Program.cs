@@ -1,3 +1,4 @@
+using wmbaApp.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using wmbaApp.Data;
+using wmbaApp.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +62,18 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 //To give access to IHttpContextAccessor for Audit Data with IAuditable
 builder.Services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+//For email service configuration
+builder.Services.AddSingleton<IEmailConfiguration>(builder.Configuration
+                .GetSection("EmailConfiguration").Get<EmailConfiguration>());
+
+//For the Identity System
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+//Email with added methods for production use.
+builder.Services.AddTransient<IEmailer, Emailer>();
+
+
 
 builder.Services.AddControllersWithViews();
 
