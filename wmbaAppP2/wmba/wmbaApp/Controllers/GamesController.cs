@@ -571,7 +571,7 @@ namespace wmbaApp.Controllers
             return NotFound("No data.");
         }
 
-        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
+        [Authorize(Roles = "Admin,ScoreKeeper")]
         public async Task<IActionResult> StartGame(int? id)
         {
             if (id == null)
