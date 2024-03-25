@@ -293,7 +293,7 @@ li a:hover {
 
 .first-section, .second-section, a {
     text-decoration: none;
-    color: #000;
+    color: #fff;
 }
 
 @keyframes fadeIn {
