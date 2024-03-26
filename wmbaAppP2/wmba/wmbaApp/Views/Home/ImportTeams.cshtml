@@ -50,7 +50,7 @@
                                                 {
                                                     playerList += players[i].FullName + " <br />";
                                                 }
-                                                <a style="color: #020202;" role="button" data-bs-toggle="collapse" href="#collapsePlayer@(item.TmName)"
+                                                <a style="color: #020202;" role="button" data-bs-toggle="collapse" href="#collapsePlayer@(item.TmName.Replace(" ", "-"))"
                                                    aria-expanded="false" aria-controls="collapsePlayer@(item.TmName.Replace(" ", "-"))">
                                                     @firstPlayer <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Players">@playerCount</span>
                                                 </a>
@@ -126,11 +126,11 @@
                                                 {
                                                     playerList += players[i].FullName + " <br />";
                                                 }
-                                                <a style="color: #020202;" role="button" data-bs-toggle="collapse" href="#collapsePlayer@(item.TmName)"
-                                                   aria-expanded="false" aria-controls="collapsePlayer@(item.TmName.Replace(" ", "-"))">
+                                                <a style="color: #020202;" role="button" data-bs-toggle="collapse" href="#collapsePlayer@(item.TmName.Replace(" ", "_"))"
+                                                   aria-expanded="false" aria-controls="collapsePlayer@(item.TmName.Replace(" ", "_"))">
                                                     @firstPlayer <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Players">@playerCount</span>
                                                 </a>
-                                                <div class="collapse" id="collapsePlayer@(item.TmName.Replace(" ", "-"))">
+                                                <div class="collapse" id="collapsePlayer@(item.TmName.Replace(" ", "_"))">
                                                     @Html.Raw(playerList)
                                                 </div>
                                             }
