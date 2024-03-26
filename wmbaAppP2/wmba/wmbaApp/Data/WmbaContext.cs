@@ -22,7 +22,6 @@ namespace wmbaApp.Data
         public DbSet<GameTeam> GameTeams { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Player> Players { get; set; }
-        //public DbSet<PlayerPosition> PlayerPositions { get; set; }
         public DbSet<GameLocation> GameLocations { get; set; }
         public DbSet<Statistic> Statistics { get; set; }
 
@@ -75,11 +74,6 @@ namespace wmbaApp.Data
                 .HasIndex(pa => pa.PlayerActionName)
                 .IsUnique();
 
-            ////Unique constraint for position names
-            //modelBuilder.Entity<Position>()
-            //    .HasIndex(p => p.PosName)
-            //    .IsUnique();
-
             //Many to many junction table
             modelBuilder.Entity<DivisionCoach>()
                 .HasKey(dc => new { dc.DivisionID, dc.CoachID });
@@ -87,10 +81,6 @@ namespace wmbaApp.Data
             //Many to many junction table
             modelBuilder.Entity<GameTeam>()
                 .HasKey(gt => new { gt.TeamID, gt.GameID });
-
-            ////Many to many junction table
-            //modelBuilder.Entity<PlayerPosition>()
-            //    .HasKey(pp => new { pp.PlayerID, pp.PositionID });
 
             //Prevent cascade delete from division to teams
             modelBuilder.Entity<Division>()
@@ -135,13 +125,6 @@ namespace wmbaApp.Data
                 .HasForeignKey(pbp => pbp.PlayerActionID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            ////Prevent cascade delete from position to player_position
-            //modelBuilder.Entity<Position>()
-            //    .HasMany<PlayerPosition>(p => p.PlayerPositions)
-            //    .WithOne(pl => pl.Position)
-            //    .HasForeignKey(pl => pl.PositionID)
-            //    .OnDelete(DeleteBehavior.Restrict);
-
             //Unique composite PK for division_coach
             modelBuilder.Entity<DivisionCoach>()
                 .HasIndex(dc => new { dc.CoachID, dc.DivisionID})
@@ -151,11 +134,6 @@ namespace wmbaApp.Data
             modelBuilder.Entity<GameTeam>()
                 .HasIndex(gt => new { gt.TeamID, gt.GameID })
                 .IsUnique();
-
-            ////Unique composite PK for game_team
-            //modelBuilder.Entity<PlayerPosition>()
-            //    .HasIndex(pp => new { pp.PlayerID })
-            //    .IsUnique();
 
             //Unique composite PK for Player Jersey Number
             modelBuilder.Entity<Player>()
