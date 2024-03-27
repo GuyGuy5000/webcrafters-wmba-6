@@ -35,7 +35,7 @@ namespace wmbaApp.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
+        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC,ScoreKeeper")]
         public async Task<IActionResult> Index(string SearchString, int? TeamID,
                     int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -134,7 +134,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC")]
+        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC,Scorekeeper")]
         public async Task<IActionResult> Create([Bind("ID,GameStartTime,GameEndTime,IsActive,GameLocationID,HomeTeamID,AwayTeamID,DivisionID")] Game game,
             int? selectedDivision, IFormFile theExcel)
         {
@@ -158,7 +158,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Games/Edit/5
-        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC")]
+        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC,ScoreKeeper")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Games == null)
@@ -190,7 +190,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC")]
+        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC,ScoreKeeper")]
         public async Task<IActionResult> Edit(int id)
         {
             var gameToUpdate = await _context.Games
@@ -236,7 +236,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Games/Details/5
-        [Authorize(Roles = "Admin,Convenor,Coach,ScoreKeeper")]
+        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC,ScoreKeeper")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -262,7 +262,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Games/Delete/5
-        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC")]
+        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC,ScoreKeeper")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Games == null)
@@ -286,7 +286,7 @@ namespace wmbaApp.Controllers
         // POST: Games/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC")]
+        [Authorize(Roles = "Admin,Convenor,Coach,IntermediateC,RookieC,ScoreKeeper")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Games == null)
