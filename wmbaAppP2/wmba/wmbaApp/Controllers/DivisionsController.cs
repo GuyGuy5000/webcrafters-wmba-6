@@ -30,21 +30,13 @@ namespace wmbaApp.Controllers
         // GET: Divisions
         public async Task<IActionResult> Index(int? page, int? pageSizeID)
         {
-            var user = await _AppContext.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
-
-
-            if (user == null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            var userRole = await _AppContext.UserRoles.FirstOrDefaultAsync(u => u.UserId == user.Id);
-
-            var role = await _AppContext.Roles.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
+            //get all roles belonging to the user
+            var rolesDivIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
 
             var divisions =   _context.Divisions
             .Include(d => d.DivisionCoaches)
             .Include(d => d.Teams)
-            .Where(d => d.ID == role.DivID)
+            .Where(d => rolesDivIDs.Contains(d.ID)) //check for a matching division ID inside of the list of roles division IDs
             .AsNoTracking();
 
 

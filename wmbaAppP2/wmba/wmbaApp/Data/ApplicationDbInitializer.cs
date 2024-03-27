@@ -20,7 +20,7 @@ namespace wmbaApp.Data
                 var RoleManager = applicationBuilder.ApplicationServices.CreateScope()
                     .ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
                 //RookieConvenor = RookieC, IntermediateC = IntermediateConvenor
-                string[] roleNames = { "Admin", "Coach", "ScoreKeeper", "Convenor", "Rookie Convenor", "Intermediate Convenor" };
+                string[] roleNames = { "Admin", "Coach", "ScoreKeeper", "Convenor", "Rookie Convenor", "11U Convenor", "Intermediate Convenor" };
 
                 IdentityResult roleResult;
                 foreach (var roleName in roleNames)
@@ -28,10 +28,15 @@ namespace wmbaApp.Data
                     var roleExist = await RoleManager.RoleExistsAsync(roleName);
                     if (!roleExist)
                     {
-                        if (roleName != "Rookie Convenor")
-                        roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName));
+                        if (roleName == "Rookie Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 1 ,0)); //hard coded ID for demo purposes
+                        else if (roleName == "11U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 2, 0)); //hard coded ID for demo purposes
+                        else if (roleName == "Coach")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 0, 1)); //hard coded IDs for demo purposes
+
                         else
-                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 1 ,0));
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName));
                     }
                 }
 
@@ -126,6 +131,7 @@ namespace wmbaApp.Data
                     if (result.Succeeded)
                     {
                         userManager.AddToRoleAsync(user, "Rookie Convenor").Wait();
+                        userManager.AddToRoleAsync(user, "11U Convenor").Wait();
                     }
                 }
 

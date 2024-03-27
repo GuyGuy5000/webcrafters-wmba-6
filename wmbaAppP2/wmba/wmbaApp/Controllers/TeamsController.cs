@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,13 +14,16 @@ using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
+    [Authorize]
     public class TeamsController : ElephantController
     {
         private readonly WmbaContext _context;
+        private readonly ApplicationDbContext _AppContext;
 
-        public TeamsController(WmbaContext context)
+        public TeamsController(WmbaContext context, ApplicationDbContext appContext)
         {
             _context = context;
+            _AppContext = appContext;
         }
 
         // GET: Teams
@@ -36,6 +40,8 @@ namespace wmbaApp.Controllers
             string[] sortOptions = new[] { "Team", "Division", "Coaches" };
             PopulateDropDownLists();
 
+            var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+
             var teams = _context.Teams
             .Include(t => t.Division)
             .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
@@ -43,7 +49,7 @@ namespace wmbaApp.Controllers
             .Include(t => t.GameTeams).ThenInclude(t => t.Game)
             .Include(t => t.HomeGames)
             .Include(t => t.AwayGames)
-            .Where(t => t.IsActive)
+            .Where(t => t.IsActive && rolesTeamIDs.Contains(t.ID))
             .AsNoTracking();
 
             //Add as many filters as needed
@@ -330,6 +336,11 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, id.Value))
+                return RedirectToAction("Index", "Teams");
 
             var team = await _context.Teams
             .Include(t => t.Division)
