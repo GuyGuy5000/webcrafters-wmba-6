@@ -1,0 +1,39 @@
+﻿@model wmbaApp.Models.Team
+
+<h4>Are you sure you want to delete @Model.TmName?</h4>
+
+<div>
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TmName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TmName)
+        </dd>
+    </dl>
+    @{
+        if (!ViewData.ModelState.IsValid)
+        {
+            /* redirect to player index with the team name as a search string.
+             * Can be changed later redirect to a specific index that shows only one team's players at a time */
+            <form asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@Model?.ID">
+                <div style="color: #F00;">@Html.ValidationSummary()</div>
+                <input type="submit" value="View Players" class="btn btn-link" />
+            </form>
+            <br />
+        }
+    }
+        <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-outline-dark" />
+        <div>
+            <a asp-action="Index" class="btn ">
+                <span></span><span></span><span></span><span></span>
+                Back to Teams List</a>
+        </div>
+    </form>
+</div>
+@section Scripts {
+}

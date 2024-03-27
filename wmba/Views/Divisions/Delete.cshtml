@@ -1,0 +1,35 @@
+﻿@model wmbaApp.Models.Division
+
+<h4>Are you sure you want to delete @Model.DivName?</h4>
+<div>
+    <h4>Division</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DivName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DivName)
+        </dd>
+    </dl>
+    
+    @{
+        if (!ViewData.ModelState.IsValid)
+        {
+            /* redirect to player index with the team name as a search string.
+            * Can be changed later redirect to a specific index that shows only one team's players at a time */
+
+            //Teams?sortDirection=asc&sortField=&DivisionID=3&SearchString=&actionButton=Filter&pageSizeID=5
+            <form asp-controller="Teams" asp-action="Index">
+                <div style="color: #F00;">@Html.ValidationSummary()</div>
+                <input type="submit" value="View Teams" class="btn btn-outline-dark" />
+            </form>
+            <br />
+        }
+    }
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-outline-dark " /> 
+        <a asp-action="Index" class="btn btn-outline-dark">Back to Division List</a>
+    </form>
+</div>

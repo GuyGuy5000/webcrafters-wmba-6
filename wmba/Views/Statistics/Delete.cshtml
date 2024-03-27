@@ -1,0 +1,109 @@
+﻿@model wmbaApp.Models.Statistic
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<partial name="_ViewHeading" />
+<div>
+
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsGP)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsGP)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsPA)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsPA)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsAB)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsAB)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsAVG)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsAVG)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsOBP)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsOBP)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsOPS)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsOPS)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsSLG)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsSLG)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsH)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsH)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsR)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsR)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsK)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsK)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsHR)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsHR)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsRBI)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsRBI)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StatsBB)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StatsBB)
+        </dd>
+    </dl>
+    
+    @{
+        if (!ViewData.ModelState.IsValid)
+        {
+            /* redirect to player index with the team name as a search string.
+            * Can be changed later redirect to a specific index that shows only one team's players at a time */
+            <form asp-controller="Statistics" asp-action="Index" asp-route-TeamID="@Model?.ID">
+                <div style="color: #F00;">@Html.ValidationSummary()</div>
+                <input type="submit" value="View Players" class="btn btn-link" />
+            </form>
+            <br />
+        }
+    }
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-outline-dark " /> 
+        <a asp-action="Index" class="btn btn-outline-dark">Back to Staistics List</a>
+    </form>
+</div>

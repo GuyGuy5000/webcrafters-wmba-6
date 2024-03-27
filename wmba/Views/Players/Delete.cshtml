@@ -1,0 +1,154 @@
+﻿@model wmbaApp.Models.Player
+
+<partial name="_ViewHeading" />
+<div>
+
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PlyrFirstName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PlyrFirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PlyrLastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PlyrLastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PlyrJerseyNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PlyrJerseyNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TeamID)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Team.TmName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StatisticID)
+        </dt>
+    </dl>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsGP)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsPA)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsAB)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsAVG)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsOBP)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsOPS)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsSLG)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsH)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsR)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsK)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsHR)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsRBI)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Statistics.StatsBB)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsGP)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsPA)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsAB)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsAVG)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsOBP)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsOPS)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsSLG)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsH)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsR)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsK)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsHR)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsRBI)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Statistics.StatsBB)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @{
+        if (!ViewData.ModelState.IsValid)
+        {
+            /* redirect to player index with the team name as a search string.
+            * Can be changed later redirect to a specific index that shows only one team's players at a time */
+            <form asp-controller="Player" asp-action="Index" asp-route-TeamID="@Model?.ID">
+                <div style="color: #F00;">@Html.ValidationSummary()</div>
+                <input type="submit" value="View Players" class="btn btn-link" />
+            </form>
+            <br />
+        }
+    }
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Delete" class="btn btn-outline-dark " /> |
+        <a asp-action="Index" class="btn btn-outline-dark">Back to Players List</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        GenerateContextHelp(["<p>This page lets you delete a player.</p>",
+            "<p>Click the Delete button to delete a player.</p>",
+            "<p>Click the Back to Players list button to go back to the players list.</p>"]);
+    </script>
+}

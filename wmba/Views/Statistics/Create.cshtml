@@ -1,0 +1,88 @@
+﻿@model wmbaApp.Models.Statistic
+
+
+<hr />
+
+        <form asp-action="Create" class="mx-auto mt-4 editform" id="createForm" style="width: 80%;">
+            <fieldset>
+        <partial name="_ViewHeading" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="StatsGP" class="control-label"></label>
+            <input asp-for="StatsGP" class="form-control" />
+            <span asp-validation-for="StatsGP" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsPA" class="control-label"></label>
+            <input asp-for="StatsPA" class="form-control" />
+            <span asp-validation-for="StatsPA" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsAB" class="control-label"></label>
+            <input asp-for="StatsAB" class="form-control" />
+            <span asp-validation-for="StatsAB" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsAVG" class="control-label"></label>
+            <input asp-for="StatsAVG" class="form-control" />
+            <span asp-validation-for="StatsAVG" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsOBP" class="control-label"></label>
+            <input asp-for="StatsOBP" class="form-control" />
+            <span asp-validation-for="StatsOBP" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsOPS" class="control-label"></label>
+            <input asp-for="StatsOPS" class="form-control" />
+            <span asp-validation-for="StatsOPS" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsSLG" class="control-label"></label>
+            <input asp-for="StatsSLG" class="form-control" />
+            <span asp-validation-for="StatsSLG" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsH" class="control-label"></label>
+            <input asp-for="StatsH" class="form-control" />
+            <span asp-validation-for="StatsH" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsR" class="control-label"></label>
+            <input asp-for="StatsR" class="form-control" />
+            <span asp-validation-for="StatsR" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsK" class="control-label"></label>
+            <input asp-for="StatsK" class="form-control" />
+            <span asp-validation-for="StatsK" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsHR" class="control-label"></label>
+            <input asp-for="StatsHR" class="form-control" />
+            <span asp-validation-for="StatsHR" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsRBI" class="control-label"></label>
+            <input asp-for="StatsRBI" class="form-control" />
+            <span asp-validation-for="StatsRBI" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StatsBB" class="control-label"></label>
+            <input asp-for="StatsBB" class="form-control" />
+            <span asp-validation-for="StatsBB" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-outline-dark " />
+        </div>
+    </fieldset>
+    <div>
+
+        <a asp-action="Index" class="btn btn-outline-dark">Back to Staistics List</a>
+    </div>
+        </form>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

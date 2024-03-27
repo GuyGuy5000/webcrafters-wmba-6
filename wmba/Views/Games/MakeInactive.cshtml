@@ -1,0 +1,26 @@
+﻿@model wmbaApp.Models.Game
+
+<h2>Are you sure you want to deactivate this Game?</h2>
+<br />
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameTeams)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameStartTime)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameEndTime)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameLocation)
+        </dd>
+    </dl>
+    <form asp-action="MakeInactive">
+        <input type="hidden" asp-for="ID" />
+        <input type="submit" value="Deactivate" class="btn btn-outline-dark " />
+        <a asp-action="Index" class="btn btn-outline-dark">Back to Players List</a>
+    </form>
+</div>
