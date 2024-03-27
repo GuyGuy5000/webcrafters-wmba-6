@@ -2,6 +2,7 @@
 using System;
 using System.Security.Claims;
 using wmbaApp.Data;
+using wmbaApp.Models;
 
 namespace wmbaApp.Utilities
 {
@@ -53,6 +54,10 @@ namespace wmbaApp.Utilities
                                 .Select(ur => ur.RoleId)
                                 .ToList();
 
+            var roles = appContext.Roles
+                            .Where(r => userRoles.Contains(r.Id))
+                            .ToList();
+
             //get all roles belonging to the user, using userRole IDs
             return appContext.Roles
                     .Where(r => userRoles.Contains(r.Id))
@@ -61,13 +66,13 @@ namespace wmbaApp.Utilities
         }
 
         /// <summary>
-        /// Validates that a user is assigned to a team using the teamID parameter
+        /// used to validate that a user is assigned to a division using the division parameter
         /// </summary>
         /// <param name="appContext"></param>
         /// <param name="user"></param>
-        /// <param name="teamID"></param>
-        /// <returns></returns>
-        public async static Task<bool> IsAuthorizedForTeam(ApplicationDbContext appContext, ClaimsPrincipal user, int teamID)
+        /// <param name="division"></param>
+        /// <returns>Returns true if user has a role containing the division's ID</returns>
+        public async static Task<bool> IsAuthorizedForDivision(ApplicationDbContext appContext, ClaimsPrincipal user, Division division)
         {
             //get user
             var account = await appContext.Users.FirstOrDefaultAsync(u => u.UserName == user.Identity.Name);
@@ -79,13 +84,53 @@ namespace wmbaApp.Utilities
                                 .ToList();
 
             //get all teamIDs assigned to the roles of the user
-            var roleTeamIDs = appContext.Roles
+            var roles = appContext.Roles
                             .Where(r => userRoles.Contains(r.Id))
-                            .Select(r => r.TeamID)
                             .ToList();
 
+            //admin role is always authorized
+            if (roles.Any(r => r.Name.ToLower() == "admin"))
+                return true;
+
+            //returns bool if any roles match the value in teamID parameter
+            if (roles.Any(r => r.DivID == division.ID))
+                return true;
+            else
+                return false;
+        }
+
+
+        /// <summary>
+        /// used to validate that a user is assigned to a team using the team parameter
+        /// </summary>
+        /// <param name="appContext"></param>
+        /// <param name="user"></param>
+        /// <param name="team"></param>
+        /// <returns>Returns true if user has a role containing the teamID</returns>
+        public async static Task<bool> IsAuthorizedForTeam(ApplicationDbContext appContext, ClaimsPrincipal user, Team team)
+        {
+            //get user
+            var account = await appContext.Users.FirstOrDefaultAsync(u => u.UserName == user.Identity.Name);
+
+            //get all user role IDs
+            var userRoles = appContext.UserRoles
+                                .Where(u => u.UserId == account.Id)
+                                .Select(ur => ur.RoleId)
+                                .ToList();
+
+            //get all teamIDs assigned to the roles of the user
+            var roles = appContext.Roles
+                            .Where(r => userRoles.Contains(r.Id))
+                            .ToList();
+
+            if (roles.Any(r => r.Name.ToLower() == "admin")) //admin role is always authorized
+                return true;
+
+            if (roles.Any(r => r.DivID == team.DivisionID)) //if a role has access to the whole division, the team is included
+                return true;
+
             //returns bool if any roleTeamIDs match the value in teamID parameter
-            if (roleTeamIDs.Contains(teamID))
+            if (roles.Any(r => r.TeamID == team.ID))
                 return true;
             else
                 return false;

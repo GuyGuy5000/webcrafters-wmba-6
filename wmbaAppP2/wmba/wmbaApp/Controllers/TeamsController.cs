@@ -41,6 +41,7 @@ namespace wmbaApp.Controllers
             PopulateDropDownLists();
 
             var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+            var rolesDivisionIDs= await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
 
             var teams = _context.Teams
             .Include(t => t.Division)
@@ -49,7 +50,7 @@ namespace wmbaApp.Controllers
             .Include(t => t.GameTeams).ThenInclude(t => t.Game)
             .Include(t => t.HomeGames)
             .Include(t => t.AwayGames)
-            .Where(t => t.IsActive && rolesTeamIDs.Contains(t.ID))
+            .Where(t => t.IsActive && (rolesTeamIDs.Contains(t.ID) || rolesDivisionIDs.Contains(t.DivisionID)))
             .AsNoTracking();
 
             //Add as many filters as needed
@@ -148,12 +149,15 @@ namespace wmbaApp.Controllers
             string[] sortOptions = new[] { "Team", "Division", "Coaches" };
             PopulateDropDownLists();
 
+            var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+            var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
             var teams = _context.Teams
             .Include(t => t.Division)
             .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
             .Include(t => t.Players)
             .Include(t => t.GameTeams).ThenInclude(t => t.Game)
-            .Where(t => !t.IsActive)
+            .Where(t => t.IsActive && (rolesTeamIDs.Contains(t.ID) || rolesDivisionIDs.Contains(t.DivisionID)))
             .AsNoTracking();
 
             //Add as many filters as needed
@@ -261,6 +265,9 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, team))
+                return RedirectToAction("Index", "Teams");
+
             return View(team);
         }
 
@@ -278,6 +285,9 @@ namespace wmbaApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,TmName,TmAbbreviation,DivisionID")] Team team, int? coachID, string submitButton = "")
         {
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, team))
+                return RedirectToAction("Index", "Teams");
+
             PopulateDropDownLists();
             if (ModelState.IsValid)
             {
@@ -337,11 +347,6 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
-            var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
-
-            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, id.Value))
-                return RedirectToAction("Index", "Teams");
-
             var team = await _context.Teams
             .Include(t => t.Division)
             .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
@@ -353,6 +358,9 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, team))
+                return RedirectToAction("Index", "Teams");
 
             PopulateDropDownLists(team);
 
@@ -377,6 +385,9 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, teamToUpdate))
+                return RedirectToAction("Index", "Teams");
 
             PopulateDropDownLists(teamToUpdate);
 
@@ -519,6 +530,9 @@ namespace wmbaApp.Controllers
             if (team == null)
                 return NotFound();
 
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, team))
+                return RedirectToAction("Index", "Teams");
+
             return View(team);
         }
 
@@ -531,6 +545,7 @@ namespace wmbaApp.Controllers
             {
                 return Problem("Entity set 'WmbaContext.Players' is null.");
             }
+
             var team = await _context.Teams
                      .Include(t => t.Division)
                      .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
@@ -539,6 +554,9 @@ namespace wmbaApp.Controllers
                      .Include(t => t.AwayGames)
                      .AsNoTracking()
                      .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, team))
+                return RedirectToAction("Index", "Teams");
 
             if (deactivate == "Deactivate team and active players")
             {
@@ -620,6 +638,9 @@ namespace wmbaApp.Controllers
             if (team == null)
                 return NotFound();
 
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, team))
+                return RedirectToAction("Index", "Teams");
+
             return View(team);
         }
 
@@ -632,6 +653,7 @@ namespace wmbaApp.Controllers
             {
                 return Problem("Entity set 'WmbaContext.Players' is null.");
             }
+
             var team = await _context.Teams
                      .Include(t => t.Division)
                      .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
@@ -645,6 +667,9 @@ namespace wmbaApp.Controllers
                 team.IsActive = true;
                 _context.Teams.Update(team);
             }
+
+            if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, team))
+                return RedirectToAction("Index", "Teams");
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

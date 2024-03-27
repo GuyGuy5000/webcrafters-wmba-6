@@ -62,6 +62,9 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForDivision(_AppContext, User, division))
+                return RedirectToAction("Index", "Divisions");
+
             return View(division);
         }
 
@@ -78,6 +81,9 @@ namespace wmbaApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,DivName")] Division division)
         {
+            if (!await UserRolesHelper.IsAuthorizedForDivision(_AppContext, User, division))
+                return RedirectToAction("Index", "Divisions");
+
             try
             {
                 if (ModelState.IsValid)
@@ -117,10 +123,15 @@ namespace wmbaApp.Controllers
             }
 
             var division = await _context.Divisions.FindAsync(id);
+
             if (division == null)
             {
                 return NotFound();
             }
+
+            if (!await UserRolesHelper.IsAuthorizedForDivision(_AppContext, User, division))
+                return RedirectToAction("Index", "Divisions");
+
             return View(division);
         }
 
@@ -138,6 +149,9 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            if (!await UserRolesHelper.IsAuthorizedForDivision(_AppContext, User, divisionsToUpdate))
+                return RedirectToAction("Index", "Divisions");
 
             if (await TryUpdateModelAsync<Division>(divisionsToUpdate, "",
                 d => d.DivName))
@@ -183,6 +197,9 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForDivision(_AppContext, User, division))
+                return RedirectToAction("Index", "Divisions");
+
             return View(division);
         }
 
@@ -196,6 +213,10 @@ namespace wmbaApp.Controllers
                 return Problem("There are no Divisions to delete.");
             }
             var division = await _context.Divisions.FindAsync(id);
+
+            if (!await UserRolesHelper.IsAuthorizedForDivision(_AppContext, User, division))
+                return RedirectToAction("Index", "Divisions");
+
             try
             {
                 if (division != null)
