@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -13,22 +15,36 @@ using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
+    [Authorize]
     public class DivisionsController : ElephantController
     {
         private readonly WmbaContext _context;
+        private readonly ApplicationDbContext _AppContext;
 
-        public DivisionsController(WmbaContext context)
+        public DivisionsController(WmbaContext context, ApplicationDbContext appContext)
         {
             _context = context;
+            _AppContext = appContext;
         }
 
         // GET: Divisions
         public async Task<IActionResult> Index(int? page, int? pageSizeID)
         {
+            var user = await _AppContext.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+
+
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var userRole = await _AppContext.UserRoles.FirstOrDefaultAsync(u => u.UserId == user.Id);
+
+            var role = await _AppContext.Roles.FirstOrDefaultAsync(r => r.Id == userRole.RoleId);
 
             var divisions =   _context.Divisions
             .Include(d => d.DivisionCoaches)
             .Include(d => d.Teams)
+            .Where(d => d.ID == role.DivID)
             .AsNoTracking();
 
 

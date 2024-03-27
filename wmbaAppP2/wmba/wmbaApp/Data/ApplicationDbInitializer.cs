@@ -14,7 +14,6 @@ namespace wmbaApp.Data
             try
             {
                 //Creating database and apply migration if database does not exist
-                //context.Database.EnsureDeleted();
                 context.Database.Migrate();
 
                 //Creating Roles
@@ -29,7 +28,10 @@ namespace wmbaApp.Data
                     var roleExist = await RoleManager.RoleExistsAsync(roleName);
                     if (!roleExist)
                     {
+                        if (roleName != "Rookie Convenor")
                         roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName));
+                        else
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 1 ,0));
                     }
                 }
 
