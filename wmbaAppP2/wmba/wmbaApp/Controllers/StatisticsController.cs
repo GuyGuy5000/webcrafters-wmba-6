@@ -12,9 +12,11 @@ using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace wmbaApp.Controllers
 {
+    [Authorize]
     public class StatisticsController : ElephantController
     {
         private readonly WmbaContext _context;

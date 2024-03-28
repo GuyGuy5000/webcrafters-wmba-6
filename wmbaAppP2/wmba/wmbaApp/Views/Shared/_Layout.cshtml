@@ -67,6 +67,9 @@
                             </div>
                         </li>
                     </ul>
+                    <div>
+                        <partial name="_LoginPartial" />
+                    </div>
                     <div class="help-icon d-sm-inline-flex justify-content-between" id="help-icon" style="margin-top: 25px;" accesskey="h">
                         <span class="icon fa-solid fa-question"></span>
                     </div>
@@ -88,7 +91,7 @@
             </div>
         </nav>
 
-        <nav class="phoneNav" id="phoneNav">
+        <nav class="phoneNav">
             <a asp-controller="Home" asp-action="Index" class="phoneIcon "><i class="fa fa-home"></i><br>Home</a>
             <a asp-controller="Teams" asp-action="Index" class="phoneIcon "> <i class="fa-solid fa-users iconP"></i><br>Team</a>
             <a asp-controller="Players" asp-action="Index" class="phoneIcon "><i class="fa-solid fa-user-plus iconP"></i><br>Player</a>

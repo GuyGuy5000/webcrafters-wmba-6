@@ -40,18 +40,36 @@ namespace wmbaApp.Controllers
             string[] sortOptions = new[] { "Team", "Division", "Coaches" };
             PopulateDropDownLists();
 
-            var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
-            var rolesDivisionIDs= await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+            IQueryable<Team> teams;
 
-            var teams = _context.Teams
-            .Include(t => t.Division)
-            .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
-            .Include(t => t.Players)
-            .Include(t => t.GameTeams).ThenInclude(t => t.Game)
-            .Include(t => t.HomeGames)
-            .Include(t => t.AwayGames)
-            .Where(t => t.IsActive && (rolesTeamIDs.Contains(t.ID) || rolesDivisionIDs.Contains(t.DivisionID)))
-            .AsNoTracking();
+            if (User.IsInRole("Admin"))
+            {
+                teams = _context.Teams
+                .Include(t => t.Division)
+                .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                .Include(t => t.Players)
+                .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                .Include(t => t.HomeGames)
+                .Include(t => t.AwayGames)
+                .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                teams = _context.Teams
+                .Include(t => t.Division)
+                .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                .Include(t => t.Players)
+                .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                .Include(t => t.HomeGames)
+                .Include(t => t.AwayGames)
+                .Where(t => t.IsActive && (rolesTeamIDs.Contains(t.ID) || rolesDivisionIDs.Contains(t.DivisionID)))
+                .AsNoTracking();
+            }
+
+
 
             //Add as many filters as needed
             if (DivisionID.HasValue)

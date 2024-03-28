@@ -83,7 +83,7 @@ namespace wmbaApp.Utilities
                                 .Select(ur => ur.RoleId)
                                 .ToList();
 
-            //get all teamIDs assigned to the roles of the user
+            //get all roles assigned to the roles of the user
             var roles = appContext.Roles
                             .Where(r => userRoles.Contains(r.Id))
                             .ToList();
@@ -118,7 +118,7 @@ namespace wmbaApp.Utilities
                                 .Select(ur => ur.RoleId)
                                 .ToList();
 
-            //get all teamIDs assigned to the roles of the user
+            //get all roles assigned to the roles of the user
             var roles = appContext.Roles
                             .Where(r => userRoles.Contains(r.Id))
                             .ToList();
@@ -136,5 +136,77 @@ namespace wmbaApp.Utilities
                 return false;
         }
 
+        /// <summary>
+        /// used to validate that a user is assigned to a game using the game parameter
+        /// </summary>
+        /// <param name="appContext"></param>
+        /// <param name="user"></param>
+        /// <param name="game"></param>
+        /// <returns>Returns true if user has a role containing the teams in the game</returns>
+        public async static Task<bool> IsAuthorizedForGame(ApplicationDbContext appContext, ClaimsPrincipal user, Game game)
+        {
+            //get user
+            var account = await appContext.Users.FirstOrDefaultAsync(u => u.UserName == user.Identity.Name);
+
+            //get all user role IDs
+            var userRoles = appContext.UserRoles
+                                .Where(u => u.UserId == account.Id)
+                                .Select(ur => ur.RoleId)
+                                .ToList();
+
+            //get all roles assigned to the roles of the user
+            var roles = appContext.Roles
+                            .Where(r => userRoles.Contains(r.Id))
+                            .ToList();
+
+            if (roles.Any(r => r.Name.ToLower() == "admin")) //admin role is always authorized
+                return true;
+
+            if (roles.Any(r => r.DivID == game.DivisionID)) //if a role has access to the whole division, the team is included
+                return true;
+
+            //returns bool if any roleTeamIDs match the value in teamID parameter
+            if (roles.Any(r => r.TeamID == game.AwayTeamID || r.TeamID == game.HomeTeamID))
+                return true;
+            else
+                return false;
+        }
+
+
+        /// <summary>
+        /// used to validate that a user is assigned to a player using the player parameter
+        /// </summary>
+        /// <param name="appContext"></param>
+        /// <param name="user"></param>
+        /// <param name="player"></param>
+        /// <returns>Returns true if user has a role containing the teams in the game</returns>
+        public async static Task<bool> IsAuthorizedForPlayer(ApplicationDbContext appContext, ClaimsPrincipal user, Player player)
+        {
+            //get user
+            var account = await appContext.Users.FirstOrDefaultAsync(u => u.UserName == user.Identity.Name);
+
+            //get all user role IDs
+            var userRoles = appContext.UserRoles
+                                .Where(u => u.UserId == account.Id)
+                                .Select(ur => ur.RoleId)
+                                .ToList();
+
+            //get all roles assigned to the roles of the user
+            var roles = appContext.Roles
+                            .Where(r => userRoles.Contains(r.Id))
+                            .ToList();
+
+            if (roles.Any(r => r.Name.ToLower() == "admin")) //admin role is always authorized
+                return true;
+
+            if (roles.Any(r => r.DivID == player.Team.DivisionID)) //if a role has access to the whole division, the team is included
+                return true;
+
+            //returns bool if any roleTeamIDs match the value in teamID parameter
+            if (roles.Any(r => r.TeamID == player.TeamID))
+                return true;
+            else
+                return false;
+        }
     }
 }

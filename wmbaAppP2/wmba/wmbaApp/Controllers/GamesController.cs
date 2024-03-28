@@ -8,11 +8,13 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using wmbaApp.CustomControllers;
@@ -24,13 +26,17 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace wmbaApp.Controllers
 {
+    [Authorize]
     public class GamesController : ElephantController
     {
         private readonly WmbaContext _context;
+        private readonly ApplicationDbContext _AppContext;
 
-        public GamesController(WmbaContext context)
+        public GamesController(WmbaContext context, ApplicationDbContext appContext)
         {
             _context = context;
+            _AppContext = appContext;
+
         }
 
         public async Task<IActionResult> Index(string SearchString, int? TeamID,
@@ -45,17 +51,38 @@ namespace wmbaApp.Controllers
             // NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Teams", "Location" };
 
-         PopulateDropDownLists();
+            PopulateDropDownLists();
 
-           var games = _context.Games
-                .Include(g => g.GameLocation)
-                .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
-                .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
-                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
-                .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
-                .Where(g => g.GameEndTime > DateTime.Now)
-                .OrderBy(g => g.GameStartTime)
-                .AsNoTracking();
+            IQueryable<Game> games;
+
+            if (User.IsInRole("Admin"))
+            {
+                games = _context.Games
+                 .Include(g => g.GameLocation)
+                 .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
+                 .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
+                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                 .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                 .OrderBy(g => g.GameStartTime)
+                 .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                games = _context.Games
+                     .Include(g => g.GameLocation)
+                     .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
+                     .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
+                     .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                     .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                     .Where(g => g.GameEndTime > DateTime.Now && ((rolesTeamIDs.Contains(g.HomeTeamID) || rolesTeamIDs.Contains(g.AwayTeamID) || rolesDivisionIDs.Contains(g.DivisionID))))
+                     .OrderBy(g => g.GameStartTime)
+                     .AsNoTracking();
+            }
+
+
 
 
             if (!System.String.IsNullOrEmpty(SearchString))
@@ -67,8 +94,6 @@ namespace wmbaApp.Controllers
 
                 numberFilters++;
             }
-
-
 
             // Give feedback about the state of the filters
             if (numberFilters != 0)
@@ -135,6 +160,9 @@ namespace wmbaApp.Controllers
         public async Task<IActionResult> Create([Bind("ID,GameStartTime,GameEndTime,IsActive,GameLocationID,HomeTeamID,AwayTeamID,DivisionID")] Game game,
             int? selectedDivision, IFormFile theExcel)
         {
+            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+                return RedirectToAction("Index", "Games");
+
             if (selectedDivision.HasValue)
             {
                 ViewData["HomeTeamID"] = new SelectList(_context.Teams.Where(t => t.DivisionID == selectedDivision && t.IsActive == true), "ID", "TmName");
@@ -175,6 +203,9 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+                return RedirectToAction("Index", "Games");
+
             ViewData["HomeLineupID"] = new SelectList(_context.Lineups, "ID", "ID", game.HomeLineupID);
             ViewData["AwayLineupID"] = new SelectList(_context.Lineups, "ID", "ID", game.AwayLineupID);
             PopulateDropDownLists(game);
@@ -200,6 +231,9 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, gameToUpdate))
+                return RedirectToAction("Index", "Games");
 
             if (await TryUpdateModelAsync<Game>(gameToUpdate, "",
                 t => t.GameStartTime, t => t.GameEndTime, t => t.GameLocationID, t => t.DivisionID,
@@ -251,11 +285,13 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+                return RedirectToAction("Index", "Games");
 
             return View(game);
         }
 
-       // GET: Games/Delete/5
+        // GET: Games/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Games == null)
@@ -273,6 +309,9 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+                return RedirectToAction("Index", "Games");
+
             return View(game);
         }
 
@@ -288,6 +327,9 @@ namespace wmbaApp.Controllers
             var game = await _context.Games.FindAsync(id);
             if (game != null)
             {
+                if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+                    return RedirectToAction("Index", "Games");
+
                 _context.Games.Remove(game);
             }
 
@@ -300,7 +342,7 @@ namespace wmbaApp.Controllers
             return RedirectToAction("Create", "Lineups", new { gameId });
         }
 
-       #region selectlist
+        #region selectlist
         private SelectList DivisionSelectList(int? selectedId)
         {
             return new SelectList(_context
@@ -472,20 +514,36 @@ namespace wmbaApp.Controllers
             return Redirect("Index");
         }
 
-        public IActionResult DownloadGamesFixtures()
+        public async Task<IActionResult> DownloadGamesFixtures()
         {
-            var sumQ = _context.Games
-                .Include(r => r.HomeTeam)
-                .Include(r => r.AwayTeam)
-                .OrderBy(r => r.Division.DivName)
-                .Select(r => new
-                {
-                    Games = r.FullVersus,
-                    Game_Details = r.Summary,
-                    Game_Division = r.Division.DivName,
-                    Game_Location = r.GameLocation.Name,
-                })
-                .AsNoTracking();
+            IQueryable<Game> sumQ;
+
+            if (User.IsInRole("Admin"))
+            {
+                sumQ = _context.Games
+                 .Include(g => g.GameLocation)
+                 .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
+                 .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
+                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                 .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                 .OrderBy(g => g.GameStartTime)
+                 .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                sumQ = _context.Games
+                     .Include(g => g.GameLocation)
+                     .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
+                     .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
+                     .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                     .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                     .Where(g => g.GameEndTime > DateTime.Now && ((rolesTeamIDs.Contains(g.HomeTeamID) || rolesTeamIDs.Contains(g.AwayTeamID) || rolesDivisionIDs.Contains(g.DivisionID))))
+                     .OrderBy(g => g.GameStartTime)
+                     .AsNoTracking();
+            }
 
             //How many rows?
             int numRows = sumQ.Count();
@@ -580,6 +638,9 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+
+            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+                return RedirectToAction("Index", "Games");
 
             var gameId = game.ID;
             var homeTeamName = game.HomeTeam.TmName;

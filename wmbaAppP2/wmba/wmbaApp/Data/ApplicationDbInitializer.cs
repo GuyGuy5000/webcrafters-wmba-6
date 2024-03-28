@@ -14,13 +14,12 @@ namespace wmbaApp.Data
             try
             {
                 //Creating database and apply migration if database does not exist
-                context.Database.Migrate();
 
                 //Creating Roles
                 var RoleManager = applicationBuilder.ApplicationServices.CreateScope()
                     .ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
                 //RookieConvenor = RookieC, IntermediateC = IntermediateConvenor
-                string[] roleNames = { "Admin", "Coach", "ScoreKeeper", "Convenor", "Rookie Convenor", "11U Convenor", "Intermediate Convenor" };
+                string[] roleNames = { "Admin", "Coach", "ScoreKeeper", "Convenor", "9U Convenor", "11U Convenor", "13U Convenor", "15U Convenor", "18U Convenor" };
 
                 IdentityResult roleResult;
                 foreach (var roleName in roleNames)
@@ -28,13 +27,16 @@ namespace wmbaApp.Data
                     var roleExist = await RoleManager.RoleExistsAsync(roleName);
                     if (!roleExist)
                     {
-                        if (roleName == "Rookie Convenor")
-                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 1 ,0)); //hard coded ID for demo purposes
-                        else if (roleName == "11U Convenor")
-                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 2, 0)); //hard coded ID for demo purposes
-                        else if (roleName == "Coach")
-                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 0, 1)); //hard coded IDs for demo purposes
-
+                        if (roleName == "9U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 1, 0)); //hard coded IDs for demo purposes
+                        if (roleName == "11U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 2, 0)); //hard coded IDs for demo purposes
+                        if (roleName == "13U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 3, 0)); //hard coded IDs for demo purposes
+                        if (roleName == "15U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 4, 0)); //hard coded IDs for demo purposes
+                        if (roleName == "18U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 5, 0)); //hard coded IDs for demo purposes
                         else
                             roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName));
                     }
@@ -130,8 +132,8 @@ namespace wmbaApp.Data
 
                     if (result.Succeeded)
                     {
-                        userManager.AddToRoleAsync(user, "Rookie Convenor").Wait();
-                        userManager.AddToRoleAsync(user, "11U Convenor").Wait();
+                        userManager.AddToRoleAsync(user, "Convenor").Wait();
+                        userManager.AddToRoleAsync(user, "9U Convenor").Wait();
                     }
                 }
 
@@ -149,17 +151,19 @@ namespace wmbaApp.Data
 
                     if (result.Succeeded)
                     {
-                        userManager.AddToRoleAsync(user, "Intermediate Convenor").Wait();
+                        userManager.AddToRoleAsync(user, "Convenor").Wait();
+                        userManager.AddToRoleAsync(user, "11U Convenor").Wait();
+                        userManager.AddToRoleAsync(user, "13U Convenor").Wait();
                     }
                 }
 
                 //User:Convenor
-                if (userManager.FindByEmailAsync("convenor@outlook.com").Result == null)
+                if (userManager.FindByEmailAsync("seniorconvenor@outlook.com").Result == null)
                 {
                     IdentityUser user = new IdentityUser
                     {
-                        UserName = "convenor@outlook.com",
-                        Email = "convenor@outlook.com",
+                        UserName = "seniorconvenor@outlook.com",
+                        Email = "seniorconvenor@outlook.com",
                         EmailConfirmed = true
                     };
 
@@ -168,6 +172,8 @@ namespace wmbaApp.Data
                     if (result.Succeeded)
                     {
                         userManager.AddToRoleAsync(user, "Convenor").Wait();
+                        userManager.AddToRoleAsync(user, "15U Convenor").Wait();
+                        userManager.AddToRoleAsync(user, "18U Convenor").Wait();
                     }
                 }
 

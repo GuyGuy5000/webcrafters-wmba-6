@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,13 +19,17 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace wmbaApp.Controllers
 {
+    [Authorize]
     public class PlayersController : ElephantController
     {
         private readonly WmbaContext _context;
+        private readonly ApplicationDbContext _AppContext;
 
-        public PlayersController(WmbaContext context)
+        public PlayersController(WmbaContext context, ApplicationDbContext appContext)
         {
             _context = context;
+            _AppContext = appContext;
+
         }
 
         // GET: Players
@@ -42,11 +47,27 @@ namespace wmbaApp.Controllers
 
             PopulateDropDownLists();
 
-            var players = _context.Players
+            IQueryable<Player> players;
+
+            if (User.IsInRole("Admin"))
+            {
+                players = _context.Players
                 .Include(t => t.Team).ThenInclude(t => t.Division)
                 .Include(t => t.Statistics)
                 .Where(t => t.IsActive)
                 .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                players = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => t.IsActive && (rolesTeamIDs.Contains(t.TeamID) || rolesDivisionIDs.Contains(t.Team.DivisionID)))
+                .AsNoTracking();
+            }
 
             //Add as many filters as needed
             if (TeamID.HasValue)
@@ -59,8 +80,7 @@ namespace wmbaApp.Controllers
             {
                 players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
-                                       );
+                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper()));
 
                 numberFilters++;
             }
@@ -139,11 +159,27 @@ namespace wmbaApp.Controllers
 
             PopulateDropDownLists();
 
-            var players = _context.Players
+            IQueryable<Player> players;
+
+            if (User.IsInRole("Admin"))
+            {
+                players = _context.Players
                 .Include(t => t.Team).ThenInclude(t => t.Division)
                 .Include(t => t.Statistics)
-                .Where(t => !t.IsActive)
+                .Where(t => t.IsActive)
                 .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                players = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => !t.IsActive && (rolesTeamIDs.Contains(t.TeamID) || rolesDivisionIDs.Contains(t.Team.DivisionID)))
+                .AsNoTracking();
+            }
 
             //Add as many filters as needed
             if (TeamID.HasValue)
@@ -240,6 +276,9 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
+                return RedirectToAction("Index", "Players");
+
             return View(player);
         }
 
@@ -308,6 +347,9 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
+                return RedirectToAction("Index", "Players");
+
             PopulateDropDownLists(player);
             return View(player);
         }
@@ -327,6 +369,8 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, playerToUpdate))
+                return RedirectToAction("Index", "Players");
 
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
                 t => t.PlyrFirstName, t => t.PlyrLastName, t => t.TeamID, t => t.PlyrJerseyNumber, t => t.PlyrMemberID,
@@ -460,6 +504,9 @@ namespace wmbaApp.Controllers
             if (player == null)
                 return NotFound();
 
+            if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
+                return RedirectToAction("Index", "Players");
+
             return View(player);
         }
 
@@ -479,6 +526,9 @@ namespace wmbaApp.Controllers
 
             if (player != null)
             {
+                if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
+                    return RedirectToAction("Index", "Players");
+
                 if (player.Team.IsActive)
                 {
                     player.IsActive = true;
@@ -495,14 +545,17 @@ namespace wmbaApp.Controllers
             return RedirectToAction("InactiveIndex");
         }
 
-        public IActionResult DownloadInactivePlayersReport()
+        public async Task<IActionResult> DownloadInactivePlayersReport()
         {
-            // Get the data from the database
-            var inactivePlayersData = _context.Players
-                .Include(p => p.Team)
-                .Include(p => p.Statistics)
-                .Where(p => !p.IsActive)
 
+            IQueryable<dynamic> inactivePlayersData;
+
+            if (User.IsInRole("Admin"))
+            {
+                inactivePlayersData = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => t.IsActive)
                 .OrderBy(ip => ip.PlyrFirstName) // Change to the actual property for sorting
                 .Select(ip => new
                 {
@@ -513,6 +566,28 @@ namespace wmbaApp.Controllers
                     Division = ip.Team.Division.DivName,
                 })
                 .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                inactivePlayersData = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => t.IsActive && (rolesTeamIDs.Contains(t.TeamID) || rolesDivisionIDs.Contains(t.Team.DivisionID)))
+                .OrderBy(ip => ip.PlyrFirstName) // Change to the actual property for sorting
+                .Select(ip => new
+                {
+                    Member_ID = ip.PlyrMemberID,
+                    First_Name = ip.PlyrFirstName,
+                    Last_Name = ip.PlyrLastName,
+                    Team = ip.Team.TmName,
+                    Division = ip.Team.Division.DivName,
+                })
+                .AsNoTracking();
+            }
+
 
 
             // How many rows?

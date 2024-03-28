@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
@@ -12,7 +13,7 @@ namespace wmbaApp.Data
     /// </summary>
     public static class WmbaInitializer
     {
-        public static void Seed(IApplicationBuilder applicationBuilder)
+        public static async void Seed(IApplicationBuilder applicationBuilder)
         {
             WmbaContext context = applicationBuilder.ApplicationServices.CreateScope()
                 .ServiceProvider.GetRequiredService<WmbaContext>();
@@ -324,6 +325,109 @@ namespace wmbaApp.Data
                         teamID++;
                     }
                     context.SaveChanges();
+                }
+
+
+
+                //Roles and User Seed
+                ApplicationDbContext appContext = applicationBuilder.ApplicationServices.CreateScope()
+                    .ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                appContext.Database.Migrate();
+
+
+                //Creating Roles
+                var RoleManager = applicationBuilder.ApplicationServices.CreateScope()
+                    .ServiceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
+                //RookieConvenor = RookieC, IntermediateC = IntermediateConvenor
+                string[] roleNames = { "Admin", "Coach", "ScoreKeeper", "Convenor", "9U Convenor", "11U Convenor", "13U Convenor", "15U Convenor", "18U Convenor" };
+
+                IdentityResult roleResult;
+                foreach (var roleName in roleNames)
+                {
+                    var roleExist = await RoleManager.RoleExistsAsync(roleName);
+                    if (!roleExist)
+                    {
+                        if (roleName == "9U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 1, 0)); //hard coded IDs for demo purposes
+                        if (roleName == "11U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 2, 0)); //hard coded IDs for demo purposes
+                        if (roleName == "13U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 3, 0)); //hard coded IDs for demo purposes
+                        if (roleName == "15U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 4, 0)); //hard coded IDs for demo purposes
+                        if (roleName == "18U Convenor")
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName, 5, 0)); //hard coded IDs for demo purposes
+                        else
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(roleName));
+                    }
+                }
+
+                //Coach and Scorekeeper roles seed data
+                if (appContext.Roles.Count() <= 9)
+                {
+                    foreach (Team team in context.Teams)
+                    {
+                        var coachRoleExist = await RoleManager.RoleExistsAsync(team.TmName + " Coach");
+                        var scorekeeperRoleExist = await RoleManager.RoleExistsAsync(team.TmName + " Coach");
+                        if (!coachRoleExist)
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(team.TmName + " Coach", 0, team.ID));
+
+                        if (!scorekeeperRoleExist)
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(team.TmName + " Scorekeeper", 0, team.ID));
+                    }
+                }
+
+
+                //Coach and scorekeeper user seed data
+                if (!appContext.Users.Any())
+                {
+                    var userManager = applicationBuilder.ApplicationServices.CreateScope()
+                        .ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+                    foreach (Coach coach in context.Coaches)
+                    {
+                        if (userManager.FindByEmailAsync($"{coach.FullName.Replace(" ", "")}@outlook.com").Result == null)
+                        {
+                            IdentityUser user = new IdentityUser
+                            {
+                                UserName = $"{coach.FullName.Replace(" ", "")}@outlook.com",
+                                Email = $"{coach.FullName.Replace(" ", "")}@outlook.com",
+                                EmailConfirmed = true
+                            };
+
+                            IdentityResult result = userManager.CreateAsync(user, "Wmba@team6").Result;
+
+                            if (result.Succeeded)
+                            {
+                                int? teamID = coach.DivisionCoaches.FirstOrDefault()?.TeamID;
+                                if (teamID.HasValue)
+                                    userManager.AddToRoleAsync(user, appContext.Roles.FirstOrDefault(r => r.TeamID == teamID).Name).Wait();
+                                userManager.AddToRoleAsync(user, "Coach").Wait();
+                            }
+                        }
+                    }
+
+                    foreach (Team team in context.Teams)
+                    {
+                        if (userManager.FindByEmailAsync($"scorekeeper{team.ID}outlook.com").Result == null)
+                        {
+                            IdentityUser user = new IdentityUser
+                            {
+                                UserName = $"scorekeeper{team.ID}@outlook.com",
+                                Email = $"scorekeeper{team.ID}@outlook.com",
+                                EmailConfirmed = true
+                            };
+
+                            IdentityResult result = userManager.CreateAsync(user, "Wmba@team6").Result;
+
+                            if (result.Succeeded)
+                            {
+                                userManager.AddToRoleAsync(user, appContext.Roles.FirstOrDefault(r => r.TeamID == team.ID).Name).Wait();
+                                userManager.AddToRoleAsync(user, "Scorekeeper").Wait();
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception)

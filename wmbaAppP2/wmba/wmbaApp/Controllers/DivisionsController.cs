@@ -15,7 +15,7 @@ using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Convenor")]
     public class DivisionsController : ElephantController
     {
         private readonly WmbaContext _context;
@@ -30,14 +30,27 @@ namespace wmbaApp.Controllers
         // GET: Divisions
         public async Task<IActionResult> Index(int? page, int? pageSizeID)
         {
-            //get all roles belonging to the user
-            var rolesDivIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+            IQueryable<Division> divisions;
 
-            var divisions =   _context.Divisions
-            .Include(d => d.DivisionCoaches)
-            .Include(d => d.Teams)
-            .Where(d => rolesDivIDs.Contains(d.ID)) //check for a matching division ID inside of the list of roles division IDs
-            .AsNoTracking();
+            if (User.IsInRole("Admin"))
+            {
+                divisions = _context.Divisions
+                .Include(d => d.DivisionCoaches)
+                .Include(d => d.Teams)
+                .AsNoTracking();
+            }
+            else
+            {
+                //get all roles belonging to the user
+                var rolesDivIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                divisions = _context.Divisions
+                .Include(d => d.DivisionCoaches)
+                .Include(d => d.Teams)
+                .Where(d => rolesDivIDs.Contains(d.ID)) //check for a matching division ID inside of the list of roles division IDs
+                .AsNoTracking();
+            }
+
 
 
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
@@ -176,10 +189,10 @@ namespace wmbaApp.Controllers
                 {
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
-               
+
             }
             return RedirectToAction("Details", new { divisionsToUpdate.ID });
-          
+
         }
 
         // GET: Divisions/Delete/5
@@ -243,7 +256,7 @@ namespace wmbaApp.Controllers
 
         private bool DivisionExists(int id)
         {
-          return _context.Divisions.Any(e => e.ID == id);
+            return _context.Divisions.Any(e => e.ID == id);
         }
     }
 }
