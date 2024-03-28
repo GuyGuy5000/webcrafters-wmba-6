@@ -1,14 +1,26 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+﻿
+// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 // Done By: Emmanuel James
 // Last Modified: 2024/01/23
 // Write your JavaScript code.
 
 
+function section() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 
+}
+
+section();
 
 document.addEventListener("DOMContentLoaded", function () {
     const links = document.querySelectorAll("nav a");
+    const phoneNavLinks = document.querySelectorAll(".phoneNav a");
+    const scoreKeepingNavLinks = document.querySelectorAll(".scoreKeepingNav a");
+
 
     // Function to set the active link based on the current URL
     function setActiveLink() {
@@ -28,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     $('#clickGame').on('click', function () {
         // Submit the form when the user confirms the save action
-       
+
     });
 
 
@@ -57,16 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
         hideNavBar();
     });
 
-    $(document).ready(function () {
-        $('#filterBtn').on('click', function (e) {
-            e.preventDefault(); // Prevent the default form submission behavior
-            $('#seacrchBtnChange').css('color', 'white');
-        });
-    });
-
-
-
-    changeTextColor()
 
     hideNavBar();
     document.addEventListener('DOMContentLoaded', function () {
@@ -93,9 +95,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     setBack();
+
+
+
+
     document.addEventListener('DOMContentLoaded', function () {
         setBack();
-
+        showMenu();
 
         const phoneBack = document.querySelector(".phoneBack a");
         if (phoneBack) {
@@ -107,6 +113,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Set the active link on page load
     setActiveLink();
+    setActiveLink(phoneNavLinks);
+    setActiveLink(scoreKeepingNavLinks);
 
     links.forEach(function (link) {
         link.addEventListener("click", function (event) {
@@ -243,5 +251,36 @@ $(document).ready(function () {
 
 });
 
+function showMenu() {
+    if (window.location.href.includes("ScoreKeeping")) {
+
+        document.getElementById("scoreBar").style.display = "block";
+    } else {
+        // Hides the navigation bar on all other pages
+        document.getElementById("scoreBar").style.display = "none";
+    }
+}
+
+showMenu();
+
+$(document).ready(function () {
+    $('#scoreLink').click(function () {
+        // Show or hide score related content here
+        // For example:
+        $('#inning-info-container').toggle();
+    });
+
+    $('#teamLink').click(function () {
+        // Show or hide team related content here
+        // For example:
+        $('#team-related-content').toggle();
+    });
 
 
+    $('#playsLink').click(function () {
+        // Show or hide team related content here
+        // For example:
+        $('#inning-tracker-container').toggle();
+    });
+    // Similarly handle click events for other icons
+});
