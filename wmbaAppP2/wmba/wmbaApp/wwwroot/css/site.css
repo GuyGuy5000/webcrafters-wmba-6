@@ -878,22 +878,20 @@ fieldset {
 /* Button Styles */
 
 
-.btn-primary {
-    background-color: #007bff;
-    color: #fff;
-    border: 1px solid #007bff;
-}
+
 
 .backBtn {
     width: 120px;
 }
 
-.btn-outline-dark:hover {
+.btn-outline-dark:hover,
+.btn-primary:hover {
     color: white;
     background-color: #2e8b43;
 }
 
-.btn-outline-dark {
+.btn-outline-dark,
+.btn-primary {
     background-color: transparent;
     color: #666362;
     border: 1px solid #2e8b43;

@@ -38,10 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    $('#clickGame').on('click', function () {
-        // Submit the form when the user confirms the save action
-
-    });
 
 
     // Define the hideNavBar function
@@ -220,10 +216,7 @@ $(document).ready(function () {
     });
 
 
-    //$('#btnView').on('click', function () {
-    //    // Submit the form when the user confirms the save action
-    //    $('#bck').show();
-    //});
+ 
 
     // Handle the click event for the "Back" button
     $('#tmsBck').on('click', function () {
