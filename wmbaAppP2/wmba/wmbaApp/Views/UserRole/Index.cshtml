@@ -1,0 +1,69 @@
+﻿@model IEnumerable<wmbaApp.ViewModels.UserVM>
+
+@{
+    ViewBag.Title = "User Roles";
+}
+<div class="container">
+
+    <h2>User Role Assignments</h2>
+
+    <table class="table" style="overflow: scroll;">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.UserName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserRoles)
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserName)
+                </td>
+                <td>
+                    @{
+                        foreach (var r in item.UserRoles)
+                        {
+                            @:  @r <br />
+                        }
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                       role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                        Edit
+                    </a>
+                </td>
+                @{
+                    // if (item.UserRoles.Any(ur => ur == "Coach" || ur == "Scorekeeper"))
+                    // {
+                    //     <td>
+                    //         <a asp-action="AssignTeams" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                    //            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                    //             Teams
+                    //         </a>
+                    //     </td>
+                    // }
+                    // else
+                    // {
+                    //     <td></td>
+                    // }
+                }
+            </tr>
+        }
+    </table>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

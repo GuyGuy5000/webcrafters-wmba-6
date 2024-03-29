@@ -86,7 +86,8 @@ namespace wmbaApp.Data
                             new Coach
                             {
                                 CoachFirstName = firstNames[i],
-                                CoachLastName = lastNames[i]
+                                CoachLastName = lastNames[i],
+                                CoachEmail = $"{firstNames[i]}{lastNames[i]}@outlook.com"
                             });
                     }
                     context.SaveChanges();
@@ -384,12 +385,12 @@ namespace wmbaApp.Data
 
                     foreach (Coach coach in context.Coaches)
                     {
-                        if (userManager.FindByEmailAsync($"{coach.FullName.Replace(" ", "")}@outlook.com").Result == null)
+                        if (userManager.FindByEmailAsync(coach.CoachEmail).Result == null)
                         {
                             IdentityUser user = new IdentityUser
                             {
-                                UserName = $"{coach.FullName.Replace(" ", "")}@outlook.com",
-                                Email = $"{coach.FullName.Replace(" ", "")}@outlook.com",
+                                UserName = $"{coach.CoachEmail}@outlook.com",
+                                Email = $"{coach.CoachEmail}@outlook.com",
                                 EmailConfirmed = true
                             };
 

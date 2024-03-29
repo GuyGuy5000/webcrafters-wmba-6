@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,12 @@ namespace wmbaApp.Controllers
     public class DivisionCoachController : ElephantController
     {
         private readonly WmbaContext _context;
+        private readonly ApplicationDbContext _applicationDbContext;
 
-        public DivisionCoachController(WmbaContext context)
+        public DivisionCoachController(WmbaContext context, ApplicationDbContext applicationDbContext)
         {
             _context = context;
+            _applicationDbContext = applicationDbContext;
         }
 
         // GET: DivisionCoach

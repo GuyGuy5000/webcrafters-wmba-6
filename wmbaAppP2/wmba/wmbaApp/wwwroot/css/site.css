@@ -1648,14 +1648,14 @@ form .deactivateTeam {
     section .diamond-container .btn-skip-prompt {
         font-size: 10px;
         height: 26px;
-        width: 60px;
+        width: 90px;
     }
 
     #scoreKeepingMain #btnAddToVisitorTeam,
     #scoreKeepingMain #btnUndoLast {
         font-size: 10px;
         height: 26px;
-        width: 60px;
+        width: 70px;
     }
 }
 

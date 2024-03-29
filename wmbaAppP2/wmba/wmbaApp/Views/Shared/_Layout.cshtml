@@ -29,101 +29,105 @@
     <header>
 
 
+        @* removing nav bar at login and register page *@
+        @if (!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Login", StringComparison.OrdinalIgnoreCase) &&
+        !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Register", StringComparison.OrdinalIgnoreCase))
+        {
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light yemiNav border-bottom box-shadow mb-0" id="navBar">
+                <div class="container-fluid" style="padding-bottom: 0px;">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img class="secondLogo img-fluid " src="~/Image/WMBA (9).png" alt="Logo" tabindex="1" />
+                    </a>
+                    <button class="navbar-toggler text-white hamburger-icon" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light yemiNav border-bottom box-shadow mb-0" id="navBar">
-            <div class="container-fluid" style="padding-bottom: 0px;">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                    <img class="secondLogo img-fluid " src="~/Image/WMBA (9).png" alt="Logo" tabindex="1" />
+                    <div class="navbar-collapse text-white collapse d-sm-inline-flex justify-content-between">
+                        <ul class="navbar-nav flex-grow-1">
+
+                            <li class="nav-item">
+                                <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-white  dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-target="#navbarDropdown">
+                                    Tools
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
+                                    <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Divisions" asp-action="Index">Divisions</a>
+                                    <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
+                                    <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Home" asp-action="ImportTeams">Import Teams</a>
+                                    <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Lookup" asp-action="Index">Lookup</a>
+                                    <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Coaches" asp-action="Create">Create Coaches</a>
+                                    <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain Users</a>
+                                </div>
+                            </li>
+                        </ul>
+                        <div>
+                            <partial name="_LoginPartial" />
+                        </div>
+                        <div class="help-icon d-sm-inline-flex justify-content-between" id="help-icon" style="margin-top: 25px;" accesskey="h">
+                            <span class="icon fa-solid fa-question"></span>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="help-box" id="help-box">
+                        <div class="help-content">
+                            <p>This is the first explanation.</p>
+                        </div>
+                        <div class="help-actions">
+                            <label id="pageNum" style="margin-right: 10px"></label>
+                            <button id="skipBtn" tabindex="15">Skip</button>
+                            <button id="nextBtn" tabindex="15">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <nav class="phoneNav">
+                <a asp-controller="Home" asp-action="Index" class="phoneIcon "><i class="fa fa-home"></i><br>Home</a>
+                <a asp-controller="Teams" asp-action="Index" class="phoneIcon "> <i class="fa-solid fa-users iconP"></i><br>Team</a>
+                <a asp-controller="Players" asp-action="Index" class="phoneIcon "><i class="fa-solid fa-user-plus iconP"></i><br>Player</a>
+                <a asp-controller="Games" asp-action="Index" class="phoneIcon "><i class="fa-solid fa-baseball-bat-ball iconP"></i><br>Games</a>
+            </nav>
+
+
+            <button type="button" class="btn btn-outline-dark">
+                Preview Lineup
+            </button>
+
+            <nav class="scoreKeepingNav" id="scoreBar">
+                <input id="btnScorekeepingNav" type="button" value="V" style="margin: 0 42.5%; width: 15%; border-radius: 15px 15px 5px 5px; border: 1px solid #FFF; background-color: #17254c; color: #FFF;" />
+                <div id="navToggleContainer">
+                    <a href="#BaseballDiamond" class="phoneIcon"><i class="fa-solid fa-baseball iconP"></i><br>Score</a>
+                    <a href="#homeLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#homeLineUp"><i class="fa-solid fa-shirt iconP"></i><br>My Team</a>
+                    <a href="#awayLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#awayLineUp"><i class="fa-solid fa-shirt iconP" style="color: #808080;"></i><br>Opponent</a>
+                    <a href="#playByPlay" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#playByPlay"><i class="fa-solid fa-list iconP"></i><br>Play-by-Play</a>
+                    <a href="#" class="phoneIcon"><i class="fa-solid fa-chart-simple iconP"></i><br><s>Stats</s></a>
+                </div>
+            </nav>
+
+
+
+
+            <nav class="phoneBack" id="phoneBack">
+                <a href="javascript:void(0);" onclick="back()">
+                    <i class="fa-solid fa-angle-left" style="color: black"></i>
                 </a>
-                <button class="navbar-toggler text-white hamburger-icon" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            </nav>
 
-                <div class="navbar-collapse text-white collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-
-                        <li class="nav-item">
-                            <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-white  dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
-                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-target="#navbarDropdown">
-                                Tools
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
-                                <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Divisions" asp-action="Index">Divisions</a>
-                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
-                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Home" asp-action="ImportTeams">Import Teams</a>
-                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Lookup" asp-action="Index">Lookup</a>
-                                <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Coaches" asp-action="Create">Create Coaches</a>
-                            </div>
-                        </li>
-                    </ul>
-                    <div>
-                        <partial name="_LoginPartial" />
-                    </div>
-                    <div class="help-icon d-sm-inline-flex justify-content-between" id="help-icon" style="margin-top: 25px;" accesskey="h">
-                        <span class="icon fa-solid fa-question"></span>
-                    </div>
-                </div>
-
-
-
-
-                <div class="help-box" id="help-box">
-                    <div class="help-content">
-                        <p>This is the first explanation.</p>
-                    </div>
-                    <div class="help-actions">
-                        <label id="pageNum" style="margin-right: 10px"></label>
-                        <button id="skipBtn" tabindex="15">Skip</button>
-                        <button id="nextBtn" tabindex="15">Next</button>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
-        <nav class="phoneNav">
-            <a asp-controller="Home" asp-action="Index" class="phoneIcon "><i class="fa fa-home"></i><br>Home</a>
-            <a asp-controller="Teams" asp-action="Index" class="phoneIcon "> <i class="fa-solid fa-users iconP"></i><br>Team</a>
-            <a asp-controller="Players" asp-action="Index" class="phoneIcon "><i class="fa-solid fa-user-plus iconP"></i><br>Player</a>
-            <a asp-controller="Games" asp-action="Index" class="phoneIcon "><i class="fa-solid fa-baseball-bat-ball iconP"></i><br>Games</a>
-        </nav>
-
-
-        <button type="button" class="btn btn-outline-dark">
-            Preview Lineup
-        </button>
-
-        <nav class="scoreKeepingNav" id="scoreBar">
-            <input id="btnScorekeepingNav" type="button" value="V" style="margin: 0 42.5%; width: 15%; border-radius: 15px 15px 5px 5px; border: 1px solid #FFF; background-color: #17254c; color: #FFF;" />
-            <div id="navToggleContainer">
-                <a href="#BaseballDiamond" class="phoneIcon"><i class="fa-solid fa-baseball iconP"></i><br>Score</a>
-                <a href="#homeLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#homeLineUp"><i class="fa-solid fa-shirt iconP"></i><br>My Team</a>
-                <a href="#awayLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#awayLineUp"><i class="fa-solid fa-shirt iconP" style="color: #808080;"></i><br>Opponent</a>
-                <a href="#playByPlay" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#playByPlay"><i class="fa-solid fa-list iconP"></i><br>Play-by-Play</a>
-                <a href="#" class="phoneIcon"><i class="fa-solid fa-chart-simple iconP"></i><br><s>Stats</s></a>
-            </div>
-        </nav>
-
-
-
-
-        <nav class="phoneBack" id="phoneBack">
-            <a href="javascript:void(0);" onclick="back()">
-                <i class="fa-solid fa-angle-left" style="color: black"></i>
-            </a>
-        </nav>
-
-
+        }
     </header>
     <div class="container-fluid">
         <main role="main" class="pb-3">

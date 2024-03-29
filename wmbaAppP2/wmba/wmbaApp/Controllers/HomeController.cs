@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System.Collections.ObjectModel;
@@ -16,11 +19,14 @@ namespace wmbaApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly WmbaContext _context;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public HomeController(ILogger<HomeController> logger, WmbaContext context)
+        public HomeController(ILogger<HomeController> logger, WmbaContext context, RoleManager<ApplicationRole> roleManager)
         {
             _logger = logger;
             _context = context;
+            this._roleManager = roleManager;
+
         }
 
         public IActionResult UnderConstruction()
@@ -199,7 +205,7 @@ namespace wmbaApp.Controllers
                 ModelState.AddModelError("", "An unknown error occured.  Try again, and if the problem persists see your system administrator.");
             }
         }
-        private void ImportTeamCSV(StreamReader reader)
+        private async void ImportTeamCSV(StreamReader reader)
         {
             List<string> importedTeams = new(); //used to keep track of which teams were attempted to be imported.
             List<Team> successfullyImportedTeams = new();
@@ -235,6 +241,10 @@ namespace wmbaApp.Controllers
                         _context.SaveChanges();
                         successCount++;
                         successfullyImportedTeams.Add(t);
+                        IdentityResult roleResult;
+                        roleResult = await _roleManager.CreateAsync(new ApplicationRole(t.TmName, 0, t.ID));
+
+
                     }
                     catch (DbUpdateException dex)
                     {
@@ -265,7 +275,6 @@ namespace wmbaApp.Controllers
             ViewData["FailedImportedTeams"] = failedImportedTeams;
             TempData["TeamImportFeedback"] = feedBack;
         }
-
         private void ImportPlayerCSV(StreamReader reader)
         {
             List<Player> succesfullyImportedPlayers = new();
@@ -356,7 +365,7 @@ namespace wmbaApp.Controllers
                 ModelState.AddModelError("", "No data detected. Please ensure that the data you want to import starts at Cell 2A of the spreadsheet");
 
         }
-        private void ImportTeamExcel(ExcelPackage excel)
+        private async void ImportTeamExcel(ExcelPackage excel)
         {
             List<string> importedTeams = new(); //used to keep track of which teams were attempted to be imported.
             List<Team> successfullyImportedTeams = new();
@@ -390,6 +399,8 @@ namespace wmbaApp.Controllers
                         _context.SaveChanges();
                         successCount++;
                         successfullyImportedTeams.Add(t);
+                        IdentityResult roleResult;
+                        roleResult = await _roleManager.CreateAsync(new ApplicationRole(t.TmName, 0, t.ID));
                     }
                     catch (DbUpdateException dex)
                     {

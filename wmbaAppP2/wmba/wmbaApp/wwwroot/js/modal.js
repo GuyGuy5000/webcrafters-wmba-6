@@ -71,3 +71,26 @@ $(document).ready(function () {
         }
     });
 });
+
+
+//User Roles
+$(document).ready(function () {
+    if ($('input[name="selectedRoles"][value="Convenor"]').prop('checked')) {
+        $('#additionalRoles').show();
+    }
+    $('input[name="selectedRoles"][value="Convenor"]').change(function () {
+        if ($(this).is(':checked')) {
+            $('#additionalRoles').show();
+        } else {
+            $('input[name="selectedRoles"][value*="Convenor"]').each(function (index, value) {
+                value.checked = false;
+                console.log(value.checked);
+            });
+            $('#additionalRoles').hide();
+
+        }
+    });
+});
+
+
+

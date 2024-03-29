@@ -604,6 +604,7 @@ namespace wmbaApp.Controllers
                .FirstOrDefaultAsync(g => g.ID == gameVM.GameID);
 
             game.GameEndTime = DateTime.Now;
+            game.HasStarted = false;
 
 
             foreach (PlayerLineup playerLineup in game.AwayLineup.PlayerLineups)

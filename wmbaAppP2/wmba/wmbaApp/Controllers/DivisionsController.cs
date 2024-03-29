@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
@@ -20,11 +21,14 @@ namespace wmbaApp.Controllers
     {
         private readonly WmbaContext _context;
         private readonly ApplicationDbContext _AppContext;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public DivisionsController(WmbaContext context, ApplicationDbContext appContext)
+
+        public DivisionsController(WmbaContext context, ApplicationDbContext appContext, RoleManager<ApplicationRole> roleManager)
         {
             _context = context;
             _AppContext = appContext;
+            _roleManager = roleManager;
         }
 
         // GET: Divisions
@@ -103,6 +107,8 @@ namespace wmbaApp.Controllers
                 {
                     _context.Add(division);
                     await _context.SaveChangesAsync();
+                    IdentityResult roleResult;
+                    roleResult = await _roleManager.CreateAsync(new ApplicationRole(division.DivName + " Convenor", division.ID, 0));
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -136,7 +142,6 @@ namespace wmbaApp.Controllers
             }
 
             var division = await _context.Divisions.FindAsync(id);
-
             if (division == null)
             {
                 return NotFound();
@@ -173,6 +178,13 @@ namespace wmbaApp.Controllers
                 {
                     _context.Update(divisionsToUpdate);
                     await _context.SaveChangesAsync();
+                    var role = _roleManager.Roles.FirstOrDefault(r => r.DivID == divisionsToUpdate.ID);
+                    if (role != null)
+                    {
+                        role.Name = divisionsToUpdate.DivName + " Convenor";
+                        _AppContext.Roles.Update(role);
+                        await _AppContext.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -237,6 +249,12 @@ namespace wmbaApp.Controllers
                     _context.Divisions.Remove(division);
                 }
                 await _context.SaveChangesAsync();
+                var role = _roleManager.Roles.FirstOrDefault(r => r.DivID == division.ID);
+                if (role != null)
+                {
+                    _AppContext.Roles.Remove(role);
+                    await _AppContext.SaveChangesAsync();
+                }
                 return Redirect(ViewData["returnURL"].ToString());
             }
             catch (DbUpdateException dex)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +20,13 @@ namespace wmbaApp.Controllers
     {
         private readonly WmbaContext _context;
         private readonly ApplicationDbContext _AppContext;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public TeamsController(WmbaContext context, ApplicationDbContext appContext)
+        public TeamsController(WmbaContext context, ApplicationDbContext appContext, RoleManager<ApplicationRole> roleManager)
         {
             _context = context;
             _AppContext = appContext;
+            _roleManager = roleManager;
         }
 
         // GET: Teams
@@ -325,6 +328,8 @@ namespace wmbaApp.Controllers
                     }
 
                     await _context.SaveChangesAsync();
+                    IdentityResult roleResult;
+                    roleResult = await _roleManager.CreateAsync(new ApplicationRole(team.TmName, 0, team.ID));
 
                     if (!String.IsNullOrEmpty(submitButton))
                     {
@@ -422,7 +427,7 @@ namespace wmbaApp.Controllers
                     {
                         var divisionCoachToUpdate = await _context.DivisionCoaches.FirstOrDefaultAsync(dc => dc.TeamID == teamToUpdate.ID);
                         var divisionCoach = teamToUpdate.DivisionCoaches.FirstOrDefault(dc => dc.TeamID == teamToUpdate.ID);
-
+                        
                         if (divisionCoachToUpdate != null)
                         {
                             _context.DivisionCoaches.Remove(divisionCoachToUpdate);
@@ -447,6 +452,14 @@ namespace wmbaApp.Controllers
 
                     _context.Update(teamToUpdate);
                     await _context.SaveChangesAsync();
+
+                    var role = _roleManager.Roles.FirstOrDefault(r => r.TeamID == teamToUpdate.ID);
+                    if (role != null)
+                    {
+                        role.Name = teamToUpdate.TmName;
+                        _AppContext.Roles.Update(role);
+                        await _AppContext.SaveChangesAsync();
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -603,6 +616,12 @@ namespace wmbaApp.Controllers
                     }
 
                     await _context.SaveChangesAsync();
+                    var role = _roleManager.Roles.FirstOrDefault(r => r.TeamID == team.ID);
+                    if (role != null)
+                    {
+                        _AppContext.Roles.Remove(role);
+                        await _AppContext.SaveChangesAsync();
+                    }
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -698,6 +717,8 @@ namespace wmbaApp.Controllers
                 return RedirectToAction("Index", "Teams");
 
             await _context.SaveChangesAsync();
+            IdentityResult roleResult;
+            roleResult = await _roleManager.CreateAsync(new ApplicationRole(team.TmName, 0, team.ID));
             return RedirectToAction(nameof(Index));
         }
 
