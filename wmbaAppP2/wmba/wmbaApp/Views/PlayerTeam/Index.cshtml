@@ -12,22 +12,26 @@
     <input type="hidden" name="TeamID" value="@team.ID" />
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    <a asp-action="InactiveIndex" asp-route-TeamID="@team.ID" class="btn btn-center btn-outline-dark deactivateTp"> View inactive players</a>
+
     <br />
     <div class="form-horizontal">
-        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter" style="background-color: white;  ">
-            <p class="filSearch ">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p id="seacrchBtnChange" class="filSearch" style="color: #2e8b43;">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
-        <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
                 <div class="row">
+
+                    <div class="col-md-4 activeView">
+                        <label class="control-label ">Click to View Inactive Players:</label>
+                        <a asp-action="InactiveIndex" asp-route-TeamID="@team.ID" class="btn  btn-outline-dark btn-center view deactivateTeam" title="Click to toggle between active and inactive teams">Currently viewing: Active Players</a>
+                    </div>
                     <div class="col-md-4">
-                        <label class="control-label">Filter by name:</label>
+                        <label class="control-label">Search by Player Name:</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
                     </div>
                     <div class="col-md-4 align-self-end">
-                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-dark" />
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" id="filterBtn" onclick="change()" />
                         <a asp-action="Index" asp-route-TeamID="@team.ID" class="btn btn-outline-dark">Clear</a>
                     </div>
                 </div>

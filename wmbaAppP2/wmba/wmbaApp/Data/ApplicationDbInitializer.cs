@@ -64,24 +64,6 @@ namespace wmbaApp.Data
                     }
                 }
 
-                //User:Coach
-                if (userManager.FindByEmailAsync("coach@outlook.com").Result == null)
-                {
-                    IdentityUser user = new IdentityUser
-                    {
-                        UserName = "coach@outlook.com",
-                        Email = "coach@outlook.com",
-                        EmailConfirmed = true
-                    };
-
-                    IdentityResult result = userManager.CreateAsync(user, "Wmba@team6").Result;
-
-                    if (result.Succeeded)
-                    {
-                        userManager.AddToRoleAsync(user, "Coach").Wait();
-                    }
-                }
-
                 //User:Coach:Navy Mustangs
                 if (userManager.FindByEmailAsync("lwatts@outlook.com").Result == null)
                 {
@@ -97,24 +79,6 @@ namespace wmbaApp.Data
                     if (result.Succeeded)
                     {
                         userManager.AddToRoleAsync(user, "Coach").Wait();
-                    }
-                }
-
-                //User:ScoreKeeper
-                if (userManager.FindByEmailAsync("scorekeeper@outlook.com").Result == null)
-                {
-                    IdentityUser user = new IdentityUser
-                    {
-                        UserName = "scorekeeper@outlook.com",
-                        Email = "scorekeeper@outlook.com",
-                        EmailConfirmed = true
-                    };
-
-                    IdentityResult result = userManager.CreateAsync(user, "Wmba@team6").Result;
-
-                    if (result.Succeeded)
-                    {
-                        userManager.AddToRoleAsync(user, "ScoreKeeper").Wait();
                     }
                 }
 

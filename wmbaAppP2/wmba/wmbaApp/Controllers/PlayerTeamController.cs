@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,13 +15,17 @@ using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
+    [Authorize]
     public class PlayerTeamController : ElephantController
     {
         private readonly WmbaContext _context;
+        private readonly ApplicationDbContext _AppContext;
 
-        public PlayerTeamController(WmbaContext context)
+        public PlayerTeamController(WmbaContext context, ApplicationDbContext appContext)
         {
             _context = context;
+            _AppContext = appContext;
+
         }
 
         // GET: Players
@@ -34,15 +39,32 @@ namespace wmbaApp.Controllers
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
-            string[] sortOptions = new[] { "Player Full Name", "Team" };
+            string[] sortOptions = new[] { "Name", "Team" };
 
-            var players = _context.Players
-            .Include(t => t.Team)
-            .Include(t => t.Statistics)
-            .Where(t => t.IsActive)
-            .AsNoTracking();
+            PopulateDropDownLists();
 
-            //Add as many filters as needed
+            IQueryable<Player> players;
+
+            if (User.IsInRole("Admin"))
+            {
+                players = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => t.IsActive)
+                .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                players = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => t.IsActive)
+                .AsNoTracking();
+            }
+
             if (TeamID.HasValue)
             {
                 players = players.Where(p => p.TeamID == TeamID);
@@ -52,8 +74,7 @@ namespace wmbaApp.Controllers
             {
                 players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
-                                       );
+                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper()));
 
                 numberFilters++;
             }
@@ -80,7 +101,7 @@ namespace wmbaApp.Controllers
                 }
             }
             //Now we know which field and direction to sort by
-            if (sortField == "Player Full Name")
+            if (sortField == "Name")
             {
 
                 if (sortDirection == "asc")
@@ -128,8 +149,6 @@ namespace wmbaApp.Controllers
             return View(pagedData);
         }
 
-
-
         // GET: PlayerTeam/Details/5
         public async Task<IActionResult> Details(int? id, int? TeamID)
         {
@@ -162,6 +181,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: PlayerTeam/Create
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Create(int? TeamID)
         {
             var team = await _context.Teams
@@ -191,13 +211,28 @@ namespace wmbaApp.Controllers
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Player Full Name", "Team" };
 
-            var players = _context.Players
-            .Include(t => t.Team)
-            .Include(t => t.Statistics)
-            .Where(t => !t.IsActive)
-            .AsNoTracking();
+            IQueryable<Player> players;
 
-            //Add as many filters as needed
+            if (User.IsInRole("Admin"))
+            {
+                players = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => !t.IsActive)
+                .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                players = _context.Players
+                .Include(t => t.Team).ThenInclude(t => t.Division)
+                .Include(t => t.Statistics)
+                .Where(t => !t.IsActive && (rolesTeamIDs.Contains(t.TeamID) || rolesDivisionIDs.Contains(t.Team.DivisionID)))
+                .AsNoTracking();
+            }
+
             if (TeamID.HasValue)
             {
                 players = players.Where(p => p.TeamID == TeamID);
@@ -207,8 +242,7 @@ namespace wmbaApp.Controllers
             {
                 players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
                                        || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
-                                       );
+                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper()));
 
                 numberFilters++;
             }
@@ -235,7 +269,7 @@ namespace wmbaApp.Controllers
                 }
             }
             //Now we know which field and direction to sort by
-            if (sortField == "Player Full Name")
+            if (sortField == "Name")
             {
 
                 if (sortDirection == "asc")
@@ -288,6 +322,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber,PlyrMemberID,TeamID,StatsID")] Player player, int? TeamID, string submitButton = "")
         {
             var team = await _context.Teams
@@ -340,6 +375,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: PlayerTeam/Edit/5
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Edit(int? id, int? TeamID)
         {
             if (id == null || _context.Players == null)
@@ -372,6 +408,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Edit(int id, int? TeamID)
         {
 
@@ -503,6 +540,7 @@ namespace wmbaApp.Controllers
         //}
 
         // GET: PlayerTeam/Inactive/5
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeInactive(int? id, int? TeamID)
         {
             var team = await _context.Teams
@@ -532,6 +570,7 @@ namespace wmbaApp.Controllers
         // POST: PlayerTeam/Inactive/5
         [HttpPost, ActionName("MakeInactive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeInactiveConfirmed(int id, int? TeamID)
         {
             var team = await _context.Teams
@@ -575,6 +614,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players/Active/5
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeActive(int? id, int? TeamID)
         {
             var team = await _context.Teams
@@ -604,6 +644,7 @@ namespace wmbaApp.Controllers
         // POST: Players/Active/5
         [HttpPost, ActionName("MakeActive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeActiveConfirmed(int id, int? TeamID)
         {
             var team = await _context.Teams
@@ -642,6 +683,30 @@ namespace wmbaApp.Controllers
 
             await _context.SaveChangesAsync();
             return RedirectToAction("InactiveIndex", new { TeamID = team.ID });
+        }
+
+        #region SelectLists
+        private SelectList TeamSelectList(int? selectedId)
+        {
+            return new SelectList(_context.Teams.Where(t => t.IsActive), "ID", "TmName", selectedId);
+        }
+
+        private SelectList DivisionSelectList(int? selectedId)
+        {
+            return new SelectList(_context.Divisions, "ID", "DivName", selectedId);
+        }
+
+
+        private SelectList StatisticSelectList(int? selectedId)
+        {
+            return new SelectList(_context.Statistics, "ID", "ID", selectedId);
+        }
+        #endregion
+        private void PopulateDropDownLists(Player player = null)
+        {
+            ViewData["TeamID"] = TeamSelectList(player?.TeamID);
+            ViewData["DivisionID"] = DivisionSelectList(player?.Team?.DivisionID);
+            ViewData["StatisticID"] = StatisticSelectList(player?.StatisticID);
         }
 
         private bool PlayerExists(int id)

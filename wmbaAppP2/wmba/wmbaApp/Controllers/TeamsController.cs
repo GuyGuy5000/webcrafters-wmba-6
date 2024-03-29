@@ -290,6 +290,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams/Create
+        [Authorize(Roles = "Admin,Convenor")]
         public IActionResult Create()
         {
             PopulateDropDownLists();
@@ -301,6 +302,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Create([Bind("ID,TmName,TmAbbreviation,DivisionID")] Team team, int? coachID, string submitButton = "")
         {
             if (!await UserRolesHelper.IsAuthorizedForTeam(_AppContext, User, team))
@@ -358,6 +360,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams/Edit/5 
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -390,6 +393,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Edit(int id, int? coachID)
         {
             var teamToUpdate = await _context.Teams
@@ -532,6 +536,7 @@ namespace wmbaApp.Controllers
         //}
 
         // GET: Teams/Inactive/5
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -557,6 +562,7 @@ namespace wmbaApp.Controllers
         // POST: Teams/Inactive/5
         [HttpPost, ActionName("MakeInactive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> MakeInactiveConfirmed(int id, string deactivate)
         {
             if (_context.Teams == null)
@@ -640,6 +646,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams/Active/5
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> MakeActive(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -665,6 +672,7 @@ namespace wmbaApp.Controllers
         // POST: Teams/Active/5
         [HttpPost, ActionName("MakeActive")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> MakeActiveConfirmed(int id)
         {
             if (_context.Teams == null)

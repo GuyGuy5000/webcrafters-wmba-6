@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using wmbaApp.CustomControllers;
@@ -5,6 +6,7 @@ using wmbaApp.Data;
 
 namespace wmbaApp.Controllers
 {
+    [Authorize(Roles ="Admin,Convenor")]
     public class LookupController : CognizantController
     {
         private readonly WmbaContext _context;

@@ -166,7 +166,7 @@ namespace wmbaApp.Controllers
                 players = _context.Players
                 .Include(t => t.Team).ThenInclude(t => t.Division)
                 .Include(t => t.Statistics)
-                .Where(t => t.IsActive)
+                .Where(t => !t.IsActive)
                 .AsNoTracking();
             }
             else

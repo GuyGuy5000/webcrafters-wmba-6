@@ -371,10 +371,7 @@ namespace wmbaApp.Data
                         var coachRoleExist = await RoleManager.RoleExistsAsync(team.TmName + " Coach");
                         var scorekeeperRoleExist = await RoleManager.RoleExistsAsync(team.TmName + " Coach");
                         if (!coachRoleExist)
-                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(team.TmName + " Coach", 0, team.ID));
-
-                        if (!scorekeeperRoleExist)
-                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(team.TmName + " Scorekeeper", 0, team.ID));
+                            roleResult = await RoleManager.CreateAsync(new ApplicationRole(team.TmName, 0, team.ID));
                     }
                 }
 
