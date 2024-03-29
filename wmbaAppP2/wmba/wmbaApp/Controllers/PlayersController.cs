@@ -330,7 +330,30 @@ namespace wmbaApp.Controllers
             return View(player);
         }
 
+
         // GET: Players/Edit/5
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null || _context.Players == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var player = await _context.Players
+        //        .Include(p=>p.Team).ThenInclude(p=>p.Division)
+        //        .FirstOrDefaultAsync(f => f.ID == id);
+
+        //    if (player == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
+        //        return RedirectToAction("Index", "Players");
+
+        //    PopulateDropDownLists(player);
+        //    return View(player);
+        //}
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Players == null)
@@ -339,7 +362,7 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-                .Include(p=>p.Team).ThenInclude(p=>p.Division)
+                .Include(p => p.Team).ThenInclude(p => p.Division)
                 .FirstOrDefaultAsync(f => f.ID == id);
 
             if (player == null)
@@ -350,9 +373,14 @@ namespace wmbaApp.Controllers
             if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
                 return RedirectToAction("Index", "Players");
 
+            // Ensure that the player's team is not null before accessing DivisionID
+            int currentDivisionId = player.Team?.DivisionID ?? 0;
+            ViewData["CurrentDivisionId"] = currentDivisionId;
+
             PopulateDropDownLists(player);
             return View(player);
         }
+
 
         // POST: Players/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

@@ -22,18 +22,29 @@
             <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
         </div>
 
-        @* for division dropdown *@
+        @{
+            var divisions = ViewData["DivisionID"] as IEnumerable<SelectListItem>;
+            int currentDivisionId = ViewData["CurrentDivisionId"] != null ? (int)ViewData["CurrentDivisionId"] : 0;
+            int nextDivisionId = currentDivisionId + 1;
+        }
+
         <div class="form-group">
             <label asp-for="Team.DivisionID" class="control-label"></label>
             <select asp-for="Team.DivisionID" class="form-control" id="divisionDropdown">
                 <option value="">Select Division</option>
-                @foreach (var division in ViewData["DivisionID"] as SelectList)
+              
+                @foreach (var division in divisions)
                 {
-                    <option value="@division.Value">@division.Text</option>
+                    if (division.Value == nextDivisionId.ToString()||division.Value==currentDivisionId.ToString())
+                    {
+                        <option value="@division.Value">@division.Text</option>
+                    }
                 }
             </select>
             <span asp-validation-for="Team.DivisionID" class="text-danger"></span>
         </div>
+
+
 
 
         <div class="form-group">
