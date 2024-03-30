@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using wmbaApp.Data.Migrations;
 using wmbaApp.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NuGet.Packaging;
 
 namespace wmbaApp.Controllers
 {
@@ -39,11 +41,17 @@ namespace wmbaApp.Controllers
             {
                 var _user = await _userManager.FindByIdAsync(u.ID);
                 u.UserRoles = (List<string>)await _userManager.GetRolesAsync(_user);
-                u.UserRoles.Sort();
+                u.UserRoles = u.UserRoles
+                                .Where(r => r == "Admin"
+                                    || r == "Convenor"
+                                    || r == "Coach"
+                                    || r == "ScoreKeeper")
+                                .OrderBy(r => r)
+                                .ToList();
                 //Note: we needed the explicit cast above because GetRolesAsync() returns an IList<string>
             };
 
-            return View(users.OrderBy(u => u.UserRoles.FirstOrDefault()));
+            return View(users.OrderBy(u => u.UserRoles.FirstOrDefault(ur => ur == "Admin" || ur == "Convenor" || ur == "Coach" || ur == "ScoreKeeper")));
         }
 
         #region Edit
@@ -94,9 +102,19 @@ namespace wmbaApp.Controllers
                 UserName = _user.UserName,
                 UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
             };
+
+            var teams = ((List<string>)await _userManager.GetRolesAsync(_user))
+                                                .Where(r => r != "Admin"
+                                                && r != "Convenor"
+                                                && r != "Coach"
+                                                && r != "ScoreKeeper"
+                                                && !r.Contains("U Convenor"));
+            List<string> allSelectedRoles = new List<string>(selectedRoles);
+            allSelectedRoles.AddRange(teams);
+
             try
             {
-                await UpdateUserRoles(selectedRoles, user);
+                await UpdateUserRoles(allSelectedRoles.ToArray(), user);
                 return RedirectToAction("Index");
             }
             catch (Exception)
@@ -142,14 +160,14 @@ namespace wmbaApp.Controllers
                 UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
             };
 
-            PopulateAssignedTeamData(user);
+            PopulateTeamRoles(user);
             return View(user);
         }
 
         // POST: Users/AssignTeams/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AssignTeams(string Id, string[] selectedRoles)
+        public async Task<IActionResult> AssignTeams(string Id, string[] selectedTeams)
         {
             var _user = await _userManager.FindByIdAsync(Id);   //IdentityRole
             UserVM user = new UserVM
@@ -158,9 +176,18 @@ namespace wmbaApp.Controllers
                 UserName = _user.UserName,
                 UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
             };
+            var teams = ((List<string>)await _userManager.GetRolesAsync(_user))
+                                                            .Where(r => r == "Admin"
+                                                            || r == "Convenor"
+                                                            || r == "Coach"
+                                                            || r == "ScoreKeeper" 
+                                                            || r.Contains("U Convenor"));
+            List<string> allSelectedTeams = new List<string>(selectedTeams);
+            allSelectedTeams.AddRange(teams);
+
             try
             {
-                await UpdateUserRoles(selectedRoles, user);
+                await UpdateUserRoles(allSelectedTeams.ToArray(), user);
                 return RedirectToAction("Index");
             }
             catch (Exception)
@@ -169,7 +196,6 @@ namespace wmbaApp.Controllers
                                 "Unable to save changes.");
             }
 
-            PopulateAssignedTeamData(user);
             PopulateTeamRoles(user);
             return View(user);
         }
@@ -220,26 +246,6 @@ namespace wmbaApp.Controllers
             ViewBag.Roles = viewModel;
         }
 
-        private void PopulateAssignedTeamData(UserVM user)
-        {
-            //Prepare checkboxes for all Roles
-            var allTeams = _WmbaContext.Teams
-                                .Where(t => t.IsActive)
-                                .ToList<Team>();
-
-            var currentRoles = user.UserRoles;
-            var viewModel = new List<RoleVM>();
-            foreach (var r in allTeams)
-            {
-                viewModel.Add(new RoleVM
-                {
-                    RoleID = r.ID.ToString(),
-                    RoleName = r.TmName,
-                    Assigned = currentRoles.Contains(r.TmName)
-                });
-            }
-            ViewBag.Teams = viewModel;
-        }
         private void PopulateTeamRoles(UserVM user)
         {
             //get all divisions and include all active teams
@@ -254,17 +260,18 @@ namespace wmbaApp.Controllers
                                 || r.Name == "Coach"
                                 || !r.Name.Contains("U Convenor"));
             var currentRoles = user.UserRoles;
-            
+
+            var divisionsList = new List<Division>();
             foreach (Division d in allDivisions)
             {
-                //create new viewModel
+                //create new viewModel to hold teams in d
                 var viewModel = new List<RoleVM>();
-                 
+
                 //for every team in this division
                 foreach (Team t in d.Teams)
                 {
                     //if the team roles list contains the team
-                    if  (allTeamRoles.Any(tr => tr.TeamID == t.ID))
+                    if (allTeamRoles.Any(tr => tr.TeamID == t.ID))
                     {
                         viewModel.Add(new RoleVM
                         {
@@ -274,11 +281,15 @@ namespace wmbaApp.Controllers
                         });
                     }
                 }
+                //create a dynamic ViewData key that holds all teams in that division
+                string selectedRole = viewModel.FirstOrDefault(r => r.Assigned)?.RoleName;
 
-                //create a dynamic ViewData model that holds all teams in that division
-                ViewData[$"{d.DivName}"] = viewModel;
+
+                ViewData[$"{d.DivName}"] = new SelectList(viewModel, "RoleName", "RoleName", selectedRole);
+                divisionsList.Add(d);
             }
-
+            //Holds all divisons to be looped through in the view
+            ViewData[$"DivisionsList"] = divisionsList;
         }
 
         private async Task UpdateUserRoles(string[] selectedRoles, UserVM userToUpdate)

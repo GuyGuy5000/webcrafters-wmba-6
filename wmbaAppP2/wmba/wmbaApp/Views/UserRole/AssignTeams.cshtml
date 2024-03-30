@@ -1,4 +1,5 @@
 ﻿@model wmbaApp.ViewModels.UserVM
+@using wmbaApp.ViewModels;
 
 @{
     ViewBag.Title = "Edit Roles";
@@ -6,10 +7,11 @@
 
 <h2>Edit Role Assignments</h2>
 
-<form asp-action="Edit">
+<form asp-action="AssignTeams">
     <hr />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input type="hidden" asp-for="ID" />
+    <input type="hidden" id="selectedTeams"/>
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
@@ -18,9 +20,17 @@
                 <span asp-validation-for="UserName" class="text-danger"></span>
             </div>
 
-            <div class="form-group">
-                
-            </div>
+            @{
+                foreach (Division d in ViewData["DivisionsList"] as List<Division>)
+                {
+                    <div class="form-group">
+                        <label class="control-label"></label>
+                        <label class="control-label">@d.DivName</label>
+                        @Html.DropDownList("selectedTeams", (SelectList)ViewData[d.DivName], "Select a team", new { @class = "form-control", id=$"{d.DivName}" })
+                        <br />
+                    </div>
+                }
+            }
         </div>
     </div>
 
@@ -32,8 +42,21 @@
         </div>
     </div>
 </form>
-
 <div>
     <partial name="_BackToList" />
 </div>
 
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('select[name="selectedRoles"]').each(function (index, value) {
+                value.change(function (one) {
+                    console.log(one);
+                })
+            });
+        }
+    </script>
+
+
+
+}

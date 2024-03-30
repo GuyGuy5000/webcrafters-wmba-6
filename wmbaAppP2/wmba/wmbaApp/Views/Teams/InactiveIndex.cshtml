@@ -42,43 +42,30 @@
             </div>
         </div>
     </div>
-    <table class="table mt-3">
+    <table class="table mt-3 playerTable">
         <thead>
             <tr>
-                <style>
-                    .clickable-header {
-                        cursor: pointer;
-                        padding: 8px 13px;
-                        background-color: #001F3F;
-                        color: #fff;
-                        border: 1px solid #001F3F;
-                        border-radius: 5px;
-                        display: inline-block;
-                    }
-
-                    .hover:hover {
-                        background-color: #4CBB17;
-                        border-color: #001F3F;
-                    }
-                </style>
-
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <input type="submit" name="actionButton" value="Team" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Team Name" />
+                    <input type="submit" name="actionButton" value="Team" data-bs-toggle="tooltip" title="Sort Team Name" class="non-button-input" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move"></i>
                 </th>
+
+
                 <!-- Coaches -->
-                <th class="d-none d-lg-table-cell">
-                    <h5>
+                <th class="d-none d-xxl-table-cell">
+                    <h6 class="non-button-input" id="heading">
                         Coaches
-                    </h5>
+                    </h6>
                 </th>
                 <!-- Division -->
-                <th class="">
-                    <input type="submit" value="Division" name="actionButton" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Division Name" />
+                <th class="d-none d-xxl-table-cell">
+                    <input type="submit" value="Division" name="actionButton" class="non-button-input" data-bs-toggle="tooltip" title="Sort Division Name" />
+                    <i class="fa-solid fa-arrows-up-down arrow  non-button-input"></i>
                 </th>
                 <!-- Create New Team -->
                 <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a new team">
-                        <strong>&#x270D; Create  Team</strong>
+                    <a asp-action="Create" class="btn btn-right btn-sm btn btn-outline-dark btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team">
+                        <strong> Create  </strong>
                     </a>
                 </th>
             </tr>
@@ -88,7 +75,7 @@
             {
                 <tr>
                     <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.TmName)</td>
-                    <td class="">
+                    <td class="d-none d-xxl-table-cell">
                         @{
                             int coachCount = item.DivisionCoaches.Count;
                             if (coachCount > 0)
@@ -119,13 +106,13 @@
                     </td>
                     <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
                     <td>
-                        <a asp-controller="PlayerTeam" asp-action="InactiveIndex" asp-route-TeamID="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                        <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             <span></span><span></span><span></span><span></span>
                             DETAILS
                         </a>
-                        <a asp-action="MakeActive" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Reactivate @ViewData["ControllerFriendlyName"]">
+                        <a asp-action="MakeActive" asp-route-id="@item.ID" class="btn btn-sm MakeInactive" role="button" data-bs-toggle="tooltip" title="Activate @ViewData["ControllerFriendlyName"]">
                             <span></span><span></span><span></span><span></span>
-                            REACTIVATE
+                            INACTIVE
                         </a>
                     </td>
                 </tr>
@@ -134,8 +121,8 @@
     </table>
     <partial name="_PagingNavBar" />
 </form>
-<div class="clickable-header">
-    <a href="@Url.Action("Index", "Teams")">Back</a>
+<div class="clickable-header btn d-none d-lg-block  btn-center">
+    <a href="@Url.Action("Index", "Home")">Back</a>
 </div>
 @section Scripts {
     <script type="text/javascript">
@@ -144,5 +131,4 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
-
 }

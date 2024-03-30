@@ -13,17 +13,20 @@ using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace wmbaApp.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Admin,Convenor,Coach")]
     public class StatisticsController : ElephantController
     {
         private readonly WmbaContext _context;
+        private readonly ApplicationDbContext _AppContext;
 
-        public StatisticsController(WmbaContext context)
+        public StatisticsController(WmbaContext context, ApplicationDbContext appContext)
         {
             _context = context;
+            _AppContext = appContext;
         }
 
 
@@ -35,9 +38,27 @@ namespace wmbaApp.Controllers
 
             string[] sortOptions = new[] { "Player" };
 
-            var statistics = _context.Statistics
-                .Include(s => s.Players)
+            IQueryable<Statistic> statistics;
+
+            if (User.IsInRole("Admin"))
+            {
+                statistics = _context.Statistics
+                .Include(s => s.Players).ThenInclude(p => p.Team)
+                .Where(s => s.Players.First().IsActive)
                 .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                statistics = _context.Statistics
+                .Include(s => s.Players).ThenInclude(p => p.Team)
+                .Where(s => s.Players.First().IsActive && (rolesTeamIDs.Contains(s.Players.First().TeamID) || rolesDivisionIDs.Contains(s.Players.First().Team.DivisionID)))
+                .AsNoTracking();
+            }
+
+
 
             // Give feedback about the state of the filters
             if (numberFilters != 0)
@@ -108,14 +129,33 @@ namespace wmbaApp.Controllers
         }
 
 
-        public IActionResult DownloadStatisticsReport()
+        public async Task<IActionResult> DownloadStatisticsReport()
         {
+
+            IQueryable<Statistic> statistics;
+
+            if (User.IsInRole("Admin"))
+            {
+                statistics = _context.Statistics
+                .Include(s => s.Players).ThenInclude(p => p.Team)
+                .Where(s => s.Players.First().IsActive)
+                .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                statistics = _context.Statistics
+                .Include(s => s.Players).ThenInclude(p => p.Team)
+                .Where(s => s.Players.First().IsActive && (rolesTeamIDs.Contains(s.Players.First().TeamID) || rolesDivisionIDs.Contains(s.Players.First().Team.DivisionID)))
+                .AsNoTracking();
+            }
             // Get the data from the database
-            var statisticsData = _context.Statistics
+            var statisticsData = statistics
                 .OrderBy(r => r.StatsGP) // Change to the actual property for player name
                 .Select(r => new
                 {
-
                     GP = r.StatsGP,
                     PA = r.StatsPA,
                     AVG = r.StatsAVG,

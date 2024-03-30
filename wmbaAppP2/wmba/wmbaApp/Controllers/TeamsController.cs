@@ -54,6 +54,7 @@ namespace wmbaApp.Controllers
                 .Include(t => t.GameTeams).ThenInclude(t => t.Game)
                 .Include(t => t.HomeGames)
                 .Include(t => t.AwayGames)
+                .Where(t => t.IsActive)
                 .AsNoTracking();
             }
             else
@@ -170,16 +171,35 @@ namespace wmbaApp.Controllers
             string[] sortOptions = new[] { "Team", "Division", "Coaches" };
             PopulateDropDownLists();
 
-            var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
-            var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+            IQueryable<Team> teams;
 
-            var teams = _context.Teams
-            .Include(t => t.Division)
-            .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
-            .Include(t => t.Players)
-            .Include(t => t.GameTeams).ThenInclude(t => t.Game)
-            .Where(t => t.IsActive && (rolesTeamIDs.Contains(t.ID) || rolesDivisionIDs.Contains(t.DivisionID)))
-            .AsNoTracking();
+            if (User.IsInRole("Admin"))
+            {
+                teams = _context.Teams
+                .Include(t => t.Division)
+                .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                .Include(t => t.Players)
+                .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                .Include(t => t.HomeGames)
+                .Include(t => t.AwayGames)
+                .Where(t => !t.IsActive)
+                .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                teams = _context.Teams
+                .Include(t => t.Division)
+                .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                .Include(t => t.Players)
+                .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                .Include(t => t.HomeGames)
+                .Include(t => t.AwayGames)
+                .Where(t => !t.IsActive && (rolesTeamIDs.Contains(t.ID) || rolesDivisionIDs.Contains(t.DivisionID)))
+                .AsNoTracking();
+            }
 
             //Add as many filters as needed
             if (DivisionID.HasValue)
@@ -427,7 +447,7 @@ namespace wmbaApp.Controllers
                     {
                         var divisionCoachToUpdate = await _context.DivisionCoaches.FirstOrDefaultAsync(dc => dc.TeamID == teamToUpdate.ID);
                         var divisionCoach = teamToUpdate.DivisionCoaches.FirstOrDefault(dc => dc.TeamID == teamToUpdate.ID);
-                        
+
                         if (divisionCoachToUpdate != null)
                         {
                             _context.DivisionCoaches.Remove(divisionCoachToUpdate);
@@ -624,7 +644,6 @@ namespace wmbaApp.Controllers
                     }
                     return RedirectToAction(nameof(Index));
                 }
-
             }
             else
             {
@@ -657,6 +676,24 @@ namespace wmbaApp.Controllers
                 if (activeGames > 0)
                 {
                     ModelState.AddModelError("FK2", $"Unable to make a team that has upcoming games inactive. Reassign or cancel the upcoming games for this team");
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (team != null)
+                    {
+                        team.IsActive = false;
+                        _context.Teams.Update(team);
+                    }
+
+                    await _context.SaveChangesAsync();
+                    var teamrole = _roleManager.Roles.FirstOrDefault(r => r.TeamID == team.ID);
+                    if (teamrole != null)
+                    {
+                        _AppContext.Roles.Remove(teamrole);
+                        await _AppContext.SaveChangesAsync();
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
                 return View(team);
             }

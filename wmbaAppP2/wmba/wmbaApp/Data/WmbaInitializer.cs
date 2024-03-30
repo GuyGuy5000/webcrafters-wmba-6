@@ -389,8 +389,8 @@ namespace wmbaApp.Data
                         {
                             IdentityUser user = new IdentityUser
                             {
-                                UserName = $"{coach.CoachEmail}@outlook.com",
-                                Email = $"{coach.CoachEmail}@outlook.com",
+                                UserName = $"{coach.CoachEmail}",
+                                Email = $"{coach.CoachEmail}",
                                 EmailConfirmed = true
                             };
 

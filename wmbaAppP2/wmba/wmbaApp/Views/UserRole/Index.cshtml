@@ -40,19 +40,19 @@
                     </a>
                 </td>
                 @{
-                    // if (item.UserRoles.Any(ur => ur == "Coach" || ur == "Scorekeeper"))
-                    // {
-                    //     <td>
-                    //         <a asp-action="AssignTeams" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-                    //            role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                    //             Teams
-                    //         </a>
-                    //     </td>
-                    // }
-                    // else
-                    // {
-                    //     <td></td>
-                    // }
+                    if (item.UserRoles.Any(ur => ur == "Coach" || ur == "ScoreKeeper"))
+                    {
+                        <td>
+                            <a asp-action="AssignTeams" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                               role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                Teams
+                            </a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
                 }
             </tr>
         }
