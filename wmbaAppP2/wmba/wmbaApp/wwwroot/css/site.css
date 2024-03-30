@@ -1259,6 +1259,12 @@ form .deactivate {
 form .deactivateTeam {
     width: 270px;
 }
+
+form .btn-active-toggle {
+    position: unset;
+    width: 300px;
+    margin: 0 -5px;
+}
 /* Add this to your existing CSS or create a new file and link it */
 .gameDetails {
     font-size: 15px;
@@ -1916,6 +1922,10 @@ form .deactivateTeam {
     .loginClass {
         margin-top: 10px; /* Adjusted margin for smaller screens */
         margin-bottom: 10px; /* Adjusted margin for smaller screens */
+    }
+
+    form .btn-active-toggle{
+        width: 250px;
     }
 }
 

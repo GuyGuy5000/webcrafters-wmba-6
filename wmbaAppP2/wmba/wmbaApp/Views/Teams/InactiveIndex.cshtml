@@ -10,8 +10,9 @@
 
     <br />
     <div class="form-horizontal">
-        <button class="btn  btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            <p class="filSearch">Search <i class="fa-solid fa-magnifying-glass"></i> </p>@ViewData["numberFilters"]
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <span></span><span></span><span></span><span></span>
+            <p class="filSearch ">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
         <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
@@ -20,8 +21,7 @@
 
                     <div class="col-md-4 activeView">
                         <label class="control-label">Click to view Inactive Players:</label>
-                        <a asp-action="Index" class="btn  btn-center btn-outline-dark lbl">
-                            <span></span><span></span><span></span><span></span>
+                        <a asp-action="Index" class="btn  btn-center btn-outline-dark lbl btn-active-toggle">
                             Currently viewing: Inactive teams</a>
                     </div>
 
@@ -64,9 +64,12 @@
                 </th>
                 <!-- Create New Team -->
                 <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-right btn-sm btn btn-outline-dark btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team">
-                        <strong> Create  </strong>
-                    </a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Convenor") || User.IsInRole("Coach"))
+                    {
+                        <a asp-action="Create" class="btn btn-right btn-sm btn btn-outline-dark btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team">
+                            <strong> Create  </strong>
+                        </a>
+                    }
                 </th>
             </tr>
         </thead>
@@ -110,10 +113,13 @@
                             <span></span><span></span><span></span><span></span>
                             DETAILS
                         </a>
-                        <a asp-action="MakeActive" asp-route-id="@item.ID" class="btn btn-sm MakeInactive" role="button" data-bs-toggle="tooltip" title="Activate @ViewData["ControllerFriendlyName"]">
-                            <span></span><span></span><span></span><span></span>
-                            INACTIVE
-                        </a>
+                        @if (!User.IsInRole("ScoreKeeper"))
+                        {
+                            <a asp-action="MakeActive" asp-route-id="@item.ID" class="btn btn-sm MakeInactive" role="button" data-bs-toggle="tooltip" title="Activate @ViewData["ControllerFriendlyName"]">
+                                <span></span><span></span><span></span><span></span>
+                                REACTIVATE
+                            </a>
+                        }
                     </td>
                 </tr>
             }

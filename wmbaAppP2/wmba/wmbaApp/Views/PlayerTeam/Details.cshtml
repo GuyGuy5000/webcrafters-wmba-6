@@ -127,9 +127,12 @@
 
 <div>
     @{
-        if (Model.IsActive)
+        @if (!User.IsInRole("ScoreKeeper"))
         {
-            <a asp-action="Edit" asp-route-id="@Model?.ID" asp-route-TeamID="@team.ID" class="btn  btn-outline-dark">Edit</a>
+            if (Model.IsActive)
+            {
+                <a asp-action="Edit" asp-route-id="@Model?.ID" asp-route-TeamID="@team.ID" class="btn  btn-outline-dark">Edit</a>
+            }
         }
     }
     <a asp-action="Index" asp-route-TeamID="@team.ID" type="button" class="btn  btn-outline-dark deactivateTeam">Back to players list</a>

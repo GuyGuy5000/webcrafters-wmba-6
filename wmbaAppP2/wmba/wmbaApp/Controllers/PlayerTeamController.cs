@@ -181,7 +181,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: PlayerTeam/Create
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Create(int? TeamID)
         {
             var team = await _context.Teams
@@ -199,6 +199,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> InactiveIndex(string SearchString, int? TeamID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -322,7 +323,7 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Create([Bind("ID,PlyrFirstName,PlyrLastName,PlyrJerseyNumber,PlyrMemberID,TeamID,StatsID")] Player player, int? TeamID, string submitButton = "")
         {
             var team = await _context.Teams

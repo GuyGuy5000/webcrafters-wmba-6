@@ -569,7 +569,7 @@ namespace wmbaApp.Controllers
         //}
 
         // GET: Teams/Inactive/5
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -595,7 +595,7 @@ namespace wmbaApp.Controllers
         // POST: Teams/Inactive/5
         [HttpPost, ActionName("MakeInactive")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeInactiveConfirmed(int id, string deactivate)
         {
             if (_context.Teams == null)
@@ -702,7 +702,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Teams/Active/5
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeActive(int? id)
         {
             if (id == null || _context.Teams == null)
@@ -728,7 +728,7 @@ namespace wmbaApp.Controllers
         // POST: Teams/Active/5
         [HttpPost, ActionName("MakeActive")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeActiveConfirmed(int id)
         {
             if (_context.Teams == null)

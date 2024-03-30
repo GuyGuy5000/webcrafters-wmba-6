@@ -7,10 +7,10 @@
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
-    
+
     <br />
     <div class="form-horizontal">
-        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter" >
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
             <span></span><span></span><span></span><span></span>
             <p class="filSearch ">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
@@ -20,9 +20,8 @@
 
                     <div class="col-md-4 activeView">
                         <label class="control-label ">Click to View Inactive Teams:</label>
-                        
-                        <a asp-action="InactiveIndex" class="btn  btn-outline-dark btn-center view deactivateTeam" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
-                        <span></span><span></span><span></span><span></span>
+
+                        <a asp-action="InactiveIndex" class="btn  btn-outline-dark btn-center view deactivateTeam btn-active-toggle" title="Click to toggle between active and inactive teams">Currently viewing: Active teams</a>
                     </div>
 
                     <div class="col-md-4">
@@ -64,9 +63,12 @@
                 </th>
                 <!-- Create New Team -->
                 <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-right btn-sm btn btn-outline-dark btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team">
-                        <strong> Create  </strong>
-                    </a>
+                    @if (User.IsInRole("Admin") || User.IsInRole("Convenor") || User.IsInRole("Coach"))
+                    {
+                        <a asp-action="Create" class="btn btn-right btn-sm btn btn-outline-dark btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team">
+                            <strong> Create  </strong>
+                        </a>
+                    }
                 </th>
             </tr>
         </thead>
@@ -107,25 +109,32 @@
                     <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
                     <td>
                         @{
-                            if (item.HomeGames.Any(g => g.HasStarted) || item.AwayGames.Any(g => g.HasStarted))
+                            if (User.IsInRole("Admin") || User.IsInRole("Convenor") || User.IsInRole("Coach"))
                             {
-
-                            }
-                            else
-                            {
-                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                                    EDIT
-                                </a>
+                                if (!item.HomeGames.Any(g => g.HasStarted) || !item.AwayGames.Any(g => g.HasStarted))
+                                {
+                                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                        EDIT
+                                    </a>
+                                }
                             }
                         }
                         <a asp-controller="PlayerTeam" asp-action="Index" asp-route-TeamID="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                             <span></span><span></span><span></span><span></span>
                             DETAILS
                         </a>
-                        <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm MakeInactive" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
-                            <span></span><span></span><span></span><span></span>
-                            ACTIVE
-                        </a>
+                        @{
+                            if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                            {
+                                if (!item.HomeGames.Any(g => g.HasStarted) || !item.AwayGames.Any(g => g.HasStarted))
+                                {
+                                    <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm MakeInactive" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
+                                        <span></span><span></span><span></span><span></span>
+                                        ACTIVE
+                                    </a>
+                                }
+                            }
+                        }
                     </td>
                 </tr>
             }

@@ -65,16 +65,21 @@
 
 
                     <th style="min-width:150px" class="d-flex justify-content-end pe-3">
-                        <a asp-action="Create" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Create a new Game">
-                            <strong> Create </strong>
-                        </a>
-                        <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn d-none d-lg-block" role="button" data-bs-toggle="tooltip" title="Download Games Roaster">
-                            <strong>&#x1F4C4; Download Games</strong>
-                        </a>
+            
+                        @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                        {
+                            <a asp-action="Create" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Create a new Game">
+                                <strong> Create </strong>
+                            </a>
+ 
+                        }
+                        @if (!User.IsInRole("ScoreKeeper"))
+                        {
+                            <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn d-none d-lg-block" role="button" data-bs-toggle="tooltip" title="Download Games Roaster">
+                                <strong>&#x1F4C4; Download Games</strong>
+                            </a>
+                        }
                     </th>
-
-
-
                 </tr>
             </thead>
             <tbody>
@@ -94,28 +99,73 @@
                             @Html.DisplayFor(modelItem => item.GameLocation.Name)
                         </td>
                         <td class="GameCrud">
-                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                                <span></span><span></span><span></span><span></span>
-                                EDIT
-                            </a>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                    <span></span><span></span><span></span><span></span>
+                                    EDIT
+                                </a>
+                            }
                             <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
                                 <span></span><span></span><span></span><span></span>
                                 DETAILS
                             </a>
                             @{
-                                if (item.GameStartTime <= DateTime.Now && item.GameEndTime >= DateTime.Now)
-                                    if (item.HomeLineup != null && item.HomeLineup.PlayerLineups.Count > 0)
-                                        if (item.Innings.Count < 3)
-                                        {
-                                            <a asp-action="StartGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
-                                                <span></span><span></span><span></span><span></span>
-                                                START GAME
-                                            </a>
-                                        }
-                                        else
-                                        {
-                                            //put a button to redirect to game results view (N.Y.I) here
-                                        }
+                                if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                                {
+                                    if (item.GameStartTime <= DateTime.Now && item.GameEndTime >= DateTime.Now)
+                                        if (item.HomeLineup != null && item.HomeLineup.PlayerLineups.Count > 0)
+                                            if (item.Innings.Count < 3)
+                                            {
+                                                <a asp-action="StartGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                                    <span></span><span></span><span></span><span></span>
+                                                    HOME GAME
+                                                </a>
+                                                <a asp-action="StartAwayGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                                    <span></span><span></span><span></span><span></span>
+                                                    AWAY GAME
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                //put a button to redirect to game results view (N.Y.I) here
+                                            }
+                                }
+                                else
+                                {
+                                    if (User.IsInRole(item.HomeTeam.TmName))
+                                    {
+                                        if (item.GameStartTime <= DateTime.Now && item.GameEndTime >= DateTime.Now)
+                                            if (item.HomeLineup != null && item.HomeLineup.PlayerLineups.Count > 0)
+                                                if (item.Innings.Count < 3)
+                                                {
+                                                    <a asp-action="StartGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                                        <span></span><span></span><span></span><span></span>
+                                                        START GAME
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    //put a button to redirect to game results view (N.Y.I) here
+                                                }
+                                    }
+                                    else
+                                    {
+                                        if (item.GameStartTime <= DateTime.Now && item.GameEndTime >= DateTime.Now)
+                                            if (item.HomeLineup != null && item.HomeLineup.PlayerLineups.Count > 0)
+                                                if (item.Innings.Count < 3)
+                                                {
+                                                    <a asp-action="StartAwayGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                                        <span></span><span></span><span></span><span></span>
+                                                        START GAME
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    //put a button to redirect to game results view (N.Y.I) here
+                                                }
+                                    }
+                                }
                             }
                         </td>
                     </tr>

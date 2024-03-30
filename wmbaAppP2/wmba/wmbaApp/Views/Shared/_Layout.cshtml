@@ -45,31 +45,37 @@
 
                     <div class="navbar-collapse text-white collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
-
                             <li class="nav-item">
                                 <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
                             </li>
+
                             <li class="nav-item">
                                 <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
                             </li>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link text-white  dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
-                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-target="#navbarDropdown">
-                                    Tools
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
-                                    <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Divisions" asp-action="Index">Divisions</a>
-                                    <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
-                                    <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Home" asp-action="ImportTeams">Import Teams</a>
-                                    <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Lookup" asp-action="Index">Lookup</a>
-                                    <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Coaches" asp-action="Create">Create Coaches</a>
-                                    <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain Users</a>
-                                </div>
-                            </li>
+                            @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link text-white  dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
+                                       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-target="#navbarDropdown">
+                                        Tools
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
+                                        <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Divisions" asp-action="Index">Divisions</a>
+                                        <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
+                                        <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Home" asp-action="ImportTeams">Import Teams</a>
+                                        <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Lookup" asp-action="Index">Maintain Lookups</a>
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain Users</a>
+                                        }
+                                    </div>
+                                </li>
+                            }
+
                         </ul>
                         <div>
                             <partial name="_LoginPartial" />

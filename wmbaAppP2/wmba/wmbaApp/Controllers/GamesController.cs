@@ -661,6 +661,38 @@ namespace wmbaApp.Controllers
             return RedirectToAction("Index", "ScoreKeeping", scoreKeeping);
         }
 
+        public async Task<IActionResult> StartAwayGame(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var game = await _context.Games
+                .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
+                .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
+                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+                return RedirectToAction("Index", "Games");
+
+            var gameId = game.ID;
+            var homeTeamName = game.HomeTeam.TmName;
+            var awayTeamName = game.AwayTeam.TmName;
+            var lineUp = game.AwayLineup.PlayerLineups.Select(pl => new PlayerScoreKeepingVM(pl.Player.FullName, pl.ID)).ToList(); ;
+
+            var scoreKeeping = new GameScoreKeepingVM(game.ID, homeTeamName, awayTeamName, lineUp);
+
+            return RedirectToAction("Index", "ScoreKeepingAwayTeam", scoreKeeping);
+        }
+
         private bool GameExists(int id)
         {
             return _context.Games.Any(e => e.ID == id);
