@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -14,12 +13,11 @@ using wmbaApp.Models;
 
 namespace wmbaApp.Controllers
 {
-    [Authorize(Roles = "Admin,Convenor")]
-    public class GameLocationsController : LookupsController
+    public class GameLocationController : LookupsController
     {
         private readonly WmbaContext _context;
 
-        public GameLocationsController(WmbaContext context)
+        public GameLocationController(WmbaContext context)
         {
             _context = context;
         }
@@ -109,6 +107,7 @@ namespace wmbaApp.Controllers
             }
 
             var gameLocation = await _context.GameLocations.FindAsync(id);
+
             if (gameLocation == null)
             {
                 return NotFound();
@@ -199,7 +198,7 @@ namespace wmbaApp.Controllers
             {
                 _context.GameLocations.Remove(gameLocation);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -307,7 +306,7 @@ namespace wmbaApp.Controllers
 
         private bool GameLocationExists(int id)
         {
-          return _context.GameLocations.Any(e => e.ID == id);
+            return _context.GameLocations.Any(e => e.ID == id);
         }
     }
 }
