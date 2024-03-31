@@ -2,7 +2,7 @@
 <div class="card mb-sm-3" style="min-width: 18rem;">
     <h4 class="card-header" id="GameLocation">Game Location</h4>
     <div class="card-body">
-        <form asp-action="InsertFromExcel" asp-controller="GameLocations" method="post" enctype="multipart/form-data">
+        <form asp-action="InsertFromExcel" asp-controller="GameLocation" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-4">
@@ -29,8 +29,8 @@
     </div>
 
     <div class="card-footer">
-        <a asp-controller="GameLocations" asp-action="Create" class="btn btn-outline-dark">Create</a> 
-        <a asp-controller="GameLocations" asp-action="Edit" class="btn btn-outline-dark">Edit</a> 
-        <a asp-controller="GameLocations" asp-action="Delete" class="btn btn-outline-dark">Delete</a>
+        <a asp-controller="GameLocation" asp-action="Create" class="btn btn-outline-dark">Create</a> 
+        <a asp-controller="GameLocation" asp-action="Edit" class="btn btn-outline-dark linkClick">Edit</a> 
+        <a asp-controller="GameLocation" asp-action="Delete" class="btn btn-outline-dark linkClick">Delete</a>
     </div>
 </div>
