@@ -181,6 +181,7 @@ namespace wmbaApp.Controllers
             {
                 try
                 {
+                    divisionsToUpdate.DivName = divisionsToUpdate.DivName.ToUpper();
                     _context.Update(divisionsToUpdate);
                     await _context.SaveChangesAsync();
                     var role = _roleManager.Roles.FirstOrDefault(r => r.DivID == divisionsToUpdate.ID);
