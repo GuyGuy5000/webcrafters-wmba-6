@@ -18,13 +18,12 @@
     <None Include="Areas\Identity\Pages\Account\Manage\_ManageNav.cshtml" />
     <None Include="Areas\Identity\Pages\Account\Manage\_ViewImports.cshtml" />
     <None Include="Areas\Identity\Pages\Account\Register.cshtml" />
-    <None Include="Areas\Identity\Pages\Account\ResendEmailConfirmation.cshtml" />
     <None Include="Areas\Identity\Pages\Account\ResetPassword.cshtml" />
     <None Include="Areas\Identity\Pages\Account\_UsersLayout.cshtml" />
     <None Include="Areas\Identity\Pages\Account\_ViewImports.cshtml" />
-    <None Include="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
-    <None Include="Areas\Identity\Pages\_ViewImports.cshtml" />
-    <None Include="Areas\Identity\Pages\_ViewStart.cshtml" />
+    <None Include="Views\GameLocation\Create.cshtml" />
+    <None Include="Views\GameLocation\Delete.cshtml" />
+    <None Include="Views\GameLocation\Edit.cshtml" />
     <None Include="Views\Lineups\Create.cshtml" />
     <None Include="Views\Lineups\Details.cshtml" />
     <None Include="Views\UserRole\Edit.cshtml" />
@@ -33,6 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    <PackageReference Include="MailKit" Version="4.4.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.17" />
