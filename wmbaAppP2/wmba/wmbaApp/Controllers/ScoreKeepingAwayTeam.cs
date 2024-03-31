@@ -630,11 +630,33 @@ namespace wmbaApp.Controllers
                     playerStats.StatsRBI += statsToAdd.RBI;
                     playerStats.StatsBB += statsToAdd.BB;
 
-                    //double AVG = (int)playerStats.StatsH / (int)playerStats.StatsAB;
-                    //playerStats.StatsAVG = Math.Round(AVG, 3);
+                    double AVG = (double)playerStats.StatsH / (double)playerStats.StatsAB;
+                    playerStats.StatsAVG = Math.Round(AVG, 3);
 
-                    //double OBP = ((int)playerStats.StatsH + (int)playerStats.StatsBB + (int)playerStats.StatsHBP)/ ((int)playerStats.StatsAB + (int)playerStats.StatsBB + (int)playerStats.StatsSAC);
-                    //playerStats.StatsOBP = Math.Round(OBP, 3);
+                    double OBP = ((double)playerStats.StatsH + (double)playerStats.StatsBB) / ((double)playerStats.StatsAB + (double)playerStats.StatsBB);
+                    playerStats.StatsOBP = Math.Round(OBP, 3);
+
+                    //get the count 
+                    var bases = _context.PlayByPlays
+                                    .Include(pa => pa.PlayerAction)
+                                    .Where(pbp => pbp.PlayerID == player.ID
+                                    && (pbp.PlayerAction.PlayerActionName.ToLower() == "single"
+                                        || pbp.PlayerAction.PlayerActionName.ToLower() == "double"
+                                        || pbp.PlayerAction.PlayerActionName.ToLower() == "triple"
+                                        || pbp.PlayerAction.PlayerActionName.ToLower() == "home run"
+                                    )).ToList();
+
+                    int singles = bases.Count(play => play.PlayerAction.PlayerActionName.ToLower() == "single");
+                    int doubles = bases.Count(play => play.PlayerAction.PlayerActionName.ToLower() == "double") * 2;
+                    int triples = bases.Count(play => play.PlayerAction.PlayerActionName.ToLower() == "triple") * 3;
+                    int homeRuns = bases.Count(play => play.PlayerAction.PlayerActionName.ToLower() == "home run") * 4;
+                    int totalBases = singles + doubles + triples + homeRuns;
+
+                    double SLG = ((double)totalBases / (double)playerStats.StatsAB);
+                    playerStats.StatsSLG = Math.Round(SLG, 3);
+
+                    double OPS = OBP + SLG;
+                    playerStats.StatsOPS = Math.Round(OPS, 3);
                 }
 
                 try
@@ -706,6 +728,7 @@ namespace wmbaApp.Controllers
             inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "single"));
 
             currentBatter.FirstBase = true;
+            currentBatter.PlateAppearances++;
             currentBatter.Singles++;
             currentBatter.Hits++;
             currentBatter.AtBats++;
@@ -722,6 +745,7 @@ namespace wmbaApp.Controllers
             inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "double"));
 
             currentBatter.SecondBase = true;
+            currentBatter.PlateAppearances++;
             currentBatter.Doubles++;
             currentBatter.Hits++;
             currentBatter.AtBats++;
@@ -738,6 +762,7 @@ namespace wmbaApp.Controllers
             inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "triple"));
 
             currentBatter.ThirdBase = true;
+            currentBatter.PlateAppearances++;
             currentBatter.Triples++;
             currentBatter.Hits++;
             currentBatter.AtBats++;
@@ -753,6 +778,7 @@ namespace wmbaApp.Controllers
         {
             inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "home run"));
 
+            currentBatter.PlateAppearances++;
             currentBatter.Runs++;
             currentBatter.HR++;
             currentBatter.Hits++;
@@ -828,6 +854,7 @@ namespace wmbaApp.Controllers
         {
             inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "fly out"));
 
+            currentBatter.PlateAppearances++;
             currentBatter.Outs++;
             if (playerOnFirst != null)
                 inning.HandleFirstBase = true;
@@ -840,6 +867,7 @@ namespace wmbaApp.Controllers
         {
             inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "ground out"));
 
+            currentBatter.PlateAppearances++;
             currentBatter.Outs++;
             if (playerOnFirst != null)
                 inning.HandleFirstBase = true;
@@ -872,6 +900,7 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
+            currentBatter.PlateAppearances++;
             currentBatter.FirstBase = true;
             inning.CurrentBatter++;
         }
@@ -899,6 +928,7 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
+            currentBatter.PlateAppearances++;
             currentBatter.FirstBase = true;
             inning.CurrentBatter++;
         }
@@ -926,6 +956,7 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
+            currentBatter.PlateAppearances++;
             currentBatter.FirstBase = true;
             inning.CurrentBatter++;
         }
@@ -934,6 +965,7 @@ namespace wmbaApp.Controllers
         {
             inning.PlayByPlays.Add(GetPlayByPlay(currentBatter.ID, "out"));
 
+            currentBatter.PlateAppearances++;
             currentBatter.Outs++;
             inning.CurrentBatter++;
         }
@@ -964,11 +996,11 @@ namespace wmbaApp.Controllers
                         }
                     }
                 }
+                currentBatter.PlateAppearances++;
                 currentBatter.FirstBase = true;
                 inning.CurrentBatter++;
             }
         }
-
         #endregion
 
         #region PlayByPlayMethods

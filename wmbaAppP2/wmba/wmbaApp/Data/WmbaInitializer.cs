@@ -144,23 +144,25 @@ namespace wmbaApp.Data
                 {
                     foreach (Player player in context.Players.ToList())
                     {
+                        int PA;
+                        int AB;
                         context.Statistics.Add(
                             new Statistic
                             {
-                                StatsGP = random.Next(1, 162),  // Assuming a baseball season with 162 games
-                                StatsPA = random.Next(1, 600), // A random range for plate appearances
-                                StatsAB = random.Next(1, 500),  // A random range for at-bats
+                                StatsGP = random.Next(80, 162),  // Assuming a baseball season with 162 games
+                                StatsPA = PA = random.Next(500, 700), // A random range for plate appearances
+                                StatsAB = AB = random.Next(PA-220, 520),  // A random range for at-bats
                                                                 //next double creates a random number between 0.0 and 1.0
                                 StatsAVG = Math.Round(random.NextDouble(), 3),  // Random AVG between 0 and 1 with 3 decimal places
                                 StatsOBP = Math.Round(random.NextDouble(), 3),  // Random OBP between 0 and 1 with 3 decimal places
                                 StatsOPS = Math.Round(random.NextDouble(), 3),  // Random OPS between 0 and 1 with 3 decimal places
                                 StatsSLG = Math.Round(random.NextDouble(), 3),  // Random SLG between 0 and 1 with 3 decimal places
-                                StatsH = random.Next(0, 200),
-                                StatsR = random.Next(0, 100),
-                                StatsK = random.Next(0, 200),
-                                StatsHR = random.Next(0, 50),
-                                StatsRBI = random.Next(0, 1000),
-                                StatsBB = random.Next(0, 50)
+                                StatsH = random.Next(100, 200),
+                                StatsR = random.Next(60, 100),
+                                StatsK = random.Next(100, 200),
+                                StatsHR = random.Next(0, 30),
+                                StatsRBI = random.Next(30, 120),
+                                StatsBB = random.Next(10, 50)
                             });
                         context.SaveChanges();
                         player.StatisticID = context.Statistics.Count();
@@ -428,7 +430,7 @@ namespace wmbaApp.Data
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
             }
