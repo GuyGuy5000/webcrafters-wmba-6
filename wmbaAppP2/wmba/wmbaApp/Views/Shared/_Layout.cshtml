@@ -32,7 +32,8 @@
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Register", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ForgotPassword", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ResendEmailConfirmation", StringComparison.OrdinalIgnoreCase) &&
-        !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/LoginWith2fa", StringComparison.OrdinalIgnoreCase))
+        !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/LoginWith2fa", StringComparison.OrdinalIgnoreCase) &&
+        !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/RegisterConfirmation", StringComparison.OrdinalIgnoreCase))
         {
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light yemiNav border-bottom box-shadow mb-0" id="navBar">
                 <div class="container-fluid" style="padding-bottom: 0px;">
