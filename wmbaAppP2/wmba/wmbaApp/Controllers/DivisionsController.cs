@@ -102,16 +102,21 @@ namespace wmbaApp.Controllers
                 return RedirectToAction("Index", "Divisions");
 
             try
-            {
-                if (ModelState.IsValid)
-                {
-                    _context.Add(division);
-                    await _context.SaveChangesAsync();
-                    IdentityResult roleResult;
-                    roleResult = await _roleManager.CreateAsync(new ApplicationRole(division.DivName + " Convenor", division.ID, 0));
-                    return RedirectToAction(nameof(Index));
-                }
-            }
+{
+    if (ModelState.IsValid)
+    {
+        if (!string.IsNullOrEmpty(division.DivName))
+        {
+            division.DivName = division.DivName.ToUpper();
+        }
+
+        _context.Add(division);
+        await _context.SaveChangesAsync();
+        IdentityResult roleResult;
+        roleResult = await _roleManager.CreateAsync(new ApplicationRole(division.DivName + " Convenor", division.ID, 0));
+        return RedirectToAction(nameof(Index));
+    }
+}
             catch (DbUpdateException)
             {
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
