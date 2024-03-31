@@ -45,8 +45,7 @@ namespace wmbaApp.Controllers
                                 .Where(r => r == "Admin"
                                     || r == "Convenor"
                                     || r == "Coach"
-                                    || r == "ScoreKeeper"
-                                    || r.EndsWith("U Convenor"))
+                                    || r == "ScoreKeeper")
                                 .OrderBy(r => r)
                                 .ToList();
                 //Note: we needed the explicit cast above because GetRolesAsync() returns an IList<string>
@@ -315,9 +314,7 @@ namespace wmbaApp.Controllers
                 //for data returned by EF when working async.  Pulling it into an IList<>
                 //first means we can safely loop over the colleciton making async calls and avoid
                 //the error 'New transaction is not allowed because there are other threads running in the session'
-                IList<ApplicationRole> allRoles = _context.Roles.Where(r => r.Name == "Admin" || r.Name == "Convenor" || r.Name == "ScoreKeeper"
-           || r.Name == "Coach" || r.Name == "9U Convenor" || r.Name == "11U Convenor"
-           || r.Name == "13U Convenor" || r.Name == "15U Convenor" || r.Name == "18U Convenor" || r.Name.EndsWith(" Convenor")).ToList<ApplicationRole>();
+                IList<ApplicationRole> allRoles = _context.Roles.ToList<ApplicationRole>();
 
                 foreach (var r in allRoles)
                 {
