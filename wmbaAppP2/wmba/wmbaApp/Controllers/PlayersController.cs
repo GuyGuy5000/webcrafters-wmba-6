@@ -383,6 +383,7 @@ namespace wmbaApp.Controllers
             {
                 try
                 {
+                playerToUpdate.PlyrJerseyNumber = null;
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Details", new { playerToUpdate.ID });
@@ -669,9 +670,23 @@ namespace wmbaApp.Controllers
         }
 
         private SelectList DivisionSelectList(int? selectedId)
-        {
-            return new SelectList(_context.Divisions, "ID", "DivName", selectedId);
-        }
+{
+    var divisions = _context.Divisions.OrderBy(d => d.ID).ToList();
+    var currentDivsion = divisions.FirstOrDefault(d => d.ID == selectedId);
+    var nextDivision = _context.Divisions.FirstOrDefault(d => d.ID > selectedId);
+    List<Division> divisionList = new List<Division>();
+    if (currentDivsion != null)
+    {
+        divisionList.Add(currentDivsion);
+    }
+
+    if (nextDivision != null)
+    {
+        divisionList.Add(nextDivision);
+    }
+
+    return new SelectList(divisionList, "ID", "DivName", selectedId);
+}
 
 
         private SelectList StatisticSelectList(int? selectedId)
