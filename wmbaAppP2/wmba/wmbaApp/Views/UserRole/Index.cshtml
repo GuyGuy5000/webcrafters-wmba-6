@@ -3,61 +3,105 @@
 @{
     ViewBag.Title = "User Roles";
 }
-<div class="container">
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+    <div class="container">
 
-    <h2>User Role Assignments</h2>
+        <h2 class="text-center">User Role Assignments</h2>
 
-    <table class="table" style="overflow: scroll;">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.UserName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UserRoles)
-            </th>
-            <th></th>
-            <th></th>
-        </tr>
 
-        @foreach (var item in Model)
-        {
+
+        <br />
+        <div class="form-horizontal">
+            <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                <span></span><span></span><span></span><span></span>
+                <p id="seacrchBtnChange" class="filSearch" style="color: #2e8b43;">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+            </button>
+            <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+                <div class="card card-body bg-light">
+                    <div class="row">
+
+
+
+                      
+
+                        <div class="col-md-4">
+                            <label class="control-label">Search by Username/Role:</label>
+                            @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-4 align-self-end">
+                            <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" id="filterBtn" onclick="change()" />
+                            <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <table class="table" style="overflow: scroll;">
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserName)
-                </td>
-                <td>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="d-flex align-items-center">
+                        <input type="submit" name="actionButton" value="UserName" class="non-button-input" data-bs-toggle="tooltip" title="Sort User-Name" />
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input " id="move" style="margin-left: 5px;"></i>
+                    </div>
+                </th>
+
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <div class="d-flex align-items-center">
+                        <input type="submit" name="actionButton" value="UserRoles" class="non-button-input" data-bs-toggle="tooltip" title="Sort User-Roles" />
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input " id="move" style="margin-left: 5px;"></i>
+                    </div>
+                </th>
+
+
+                <th></th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserName)
+                    </td>
+                    <td>
+                        @{
+                            foreach (var r in item.UserRoles)
+                            {
+                                @:  @r <br />
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                           role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            Edit
+                        </a>
+                    </td>
                     @{
-                        foreach (var r in item.UserRoles)
+                        if (item.UserRoles.Any(ur => ur == "Coach" || ur == "ScoreKeeper"))
                         {
-                            @:  @r <br />
+                            <td>
+                                <a asp-action="AssignTeams" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                                   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                    Teams
+                                </a>
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
                         }
                     }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-                       role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                        Edit
-                    </a>
-                </td>
-                @{
-                    if (item.UserRoles.Any(ur => ur == "Coach" || ur == "ScoreKeeper"))
-                    {
-                        <td>
-                            <a asp-action="AssignTeams" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
-                               role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
-                                Teams
-                            </a>
-                        </td>
-                    }
-                    else
-                    {
-                        <td></td>
-                    }
-                }
-            </tr>
-        }
-    </table>
-</div>
+                </tr>
+            }
+
+        </table>
+    </div>
+    <partial name="_PagingNavBar" />
+</form>
 
 @section Scripts {
     <script type="text/javascript">
@@ -67,3 +111,4 @@
         })
     </script>
 }
+
