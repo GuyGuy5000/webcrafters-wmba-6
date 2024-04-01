@@ -24,6 +24,14 @@
 
         }
     }
+    else if (ViewData["ActionName"].ToString() == "FinishedGames")
+    {
+        {
+            <div class="text-center d-flex align-items-center justify-content-center">
+                <h2 style="margin-top: 50px;" class="ms-2">Finished @ViewData["ControllerFriendlyName"]</h2>
+            </div>
+        }
+    }
     else if (ViewData["ActionName"].ToString() == "Delete" ||
                 ViewData["ActionName"].ToString() == "Remove")
     {

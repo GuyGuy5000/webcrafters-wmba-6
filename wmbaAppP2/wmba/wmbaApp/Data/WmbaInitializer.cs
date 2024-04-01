@@ -184,7 +184,7 @@ namespace wmbaApp.Data
 
                 //player action seed data
                 string[] actions = { "Single", "Double", "Triple", "Home Run", "Ball", "Strike", "Foul Ball", "Foul Tip", "Fly Out", "Ground Out", "Hit By Pitch", "Intentional Walk", "Catcher Interference",
-                    "Home Base" ,"First Base", "Second Base", "Third Base", "Out", "Walk"};
+                    "Run" ,"First Base", "Second Base", "Third Base", "Out", "Walk"};
                 if (!context.PlayerActions.Any())
                 {
                     foreach (string actionName in actions)

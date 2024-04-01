@@ -15,7 +15,10 @@
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
                 <div class="row">
-
+                    <div class="col-md-4 activeView">
+                        <label class="control-label ">Click to View upcoming games:</label>
+                        <a asp-action="FinishedGames" class="btn  btn-outline-dark btn-center view deactivateTeam btn-active-toggle" title="Click to toggle between finished and upcoming games">Currently viewing: upcoming games</a>
+                    </div>
                     <div class="col-md-4">
                         <label class="control-label">Search By Team/Location:</label>
                         @Html.TextBox("SearchString", null, new { @class = "form-control" })
@@ -24,9 +27,6 @@
                         <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
                         <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
                     </div>
-
-
-
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@
                         }
                         @if (!User.IsInRole("ScoreKeeper"))
                         {
-                            <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn d-none d-lg-block" role="button" data-bs-toggle="tooltip" title="Download Games Roaster">
+                            <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn d-none d-lg-block" role="button" data-bs-toggle="tooltip" title="Download Games Roster">
                                 <strong>&#x1F4C4; Download Games</strong>
                             </a>
                         }

@@ -146,6 +146,113 @@ namespace wmbaApp.Controllers
         }
 
 
+        public async Task<IActionResult> FinishedGames(string SearchString, int? TeamID,
+            int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
+        {
+            // Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+            // Then in each "test" for filtering, add to the count of Filters applied
+
+            // List of sort options.
+            // NOTE: make sure this array has matching values to the column headings
+            string[] sortOptions = new[] { "Teams", "Location" };
+
+            PopulateDropDownLists();
+
+            IQueryable<Game> games;
+
+            if (User.IsInRole("Admin"))
+            {
+                games = _context.Games
+                 .Include(g => g.GameLocation)
+                 .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
+                 .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
+                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                 .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                 .Where(g => g.GameEndTime < DateTime.Now)
+                 .OrderBy(g => g.GameStartTime)
+                 .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                games = _context.Games
+                     .Include(g => g.GameLocation)
+                     .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
+                     .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
+                     .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                     .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                     .Where(g => g.GameEndTime < DateTime.Now && ((rolesTeamIDs.Contains(g.HomeTeamID) || rolesTeamIDs.Contains(g.AwayTeamID) || rolesDivisionIDs.Contains(g.DivisionID))))
+                     .OrderBy(g => g.GameStartTime)
+                     .AsNoTracking();
+            }
+
+
+
+
+            if (!System.String.IsNullOrEmpty(SearchString))
+            {
+                games = games.Where(g => g.GameLocation.Name.ToUpper().Contains(SearchString.ToUpper())
+                || g.HomeTeam.TmName.ToUpper().Contains(SearchString.ToUpper())
+                || g.AwayTeam.TmName.ToUpper().Contains(SearchString.ToUpper())
+                || g.Division.DivName.ToUpper().Contains(SearchString.ToUpper()));
+
+                numberFilters++;
+            }
+
+            // Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                // Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                // Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+            }
+
+            if (!System.String.IsNullOrEmpty(actionButton)) // Form submitted!
+            {
+                page = 1; // Reset page to start
+
+                if (sortOptions.Contains(actionButton)) // Change of sort is requested
+                {
+                    if (actionButton == sortField) // Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton; // Sort by the button clicked
+                }
+            }
+
+            // Sort data based on the selected field and direction
+            if (sortField == "Teams")
+            {
+                games = sortDirection == "asc" ? games.OrderBy(g => g.HomeTeam) : games.OrderByDescending(g => g.HomeTeam);
+            }
+            else if (sortField == "Location")
+            {
+                games = sortDirection == "asc" ? games.OrderBy(g => g.GameLocation.Name) : games.OrderByDescending(g => g.GameLocation.Name);
+            }
+
+
+            // Store sort field and direction in ViewData
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+            // Set page size
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+
+            // Paginate the data
+            var pagedData = await PaginatedList<Game>.CreateAsync(games, page ?? 1, pageSize);
+
+            return View(pagedData);
+        }
+
+
         // GET: Games/Create
         [Authorize(Roles = "Admin,Convenor")]
         public IActionResult Create()
@@ -294,6 +401,101 @@ namespace wmbaApp.Controllers
             if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
                 return RedirectToAction("Index", "Games");
 
+            return View(game);
+        }
+
+        // GET: Games/Details/5
+        [Authorize]
+        public async Task<IActionResult> GameSummary(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var game = await _context.Games
+                .Include(g => g.GameLocation)
+                .Include(p => p.HomeTeam)
+                .Include(p => p.AwayTeam)
+                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
+                .Include(g => g.Innings).ThenInclude(i => i.PlayByPlays).ThenInclude(pl => pl.PlayerAction)
+                .FirstOrDefaultAsync(m => m.ID == id);
+
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+                return RedirectToAction("Index", "Games");
+
+            var plays = game.Innings.SelectMany(i => i.PlayByPlays);
+            List<Statistic> gameStats= new();
+
+            if (plays.Any(p => game.HomeLineup.PlayerLineups.Any(pl => pl.PlayerID == p.PlayerID))) //if plays contain players from the homelineup
+            {
+                foreach (Player player in game.HomeLineup.PlayerLineups.Select(p => p.Player)) //get stats from homelineup
+                {
+                    List<PlayByPlay> playerPlays = plays.Where(p => p.PlayerID == player.ID).ToList();
+
+                    Statistic playerStats = new()
+                    {
+                        StatsAB = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "single"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "double"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "triple"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "out"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "fly out"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "ground out"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "home run"),
+
+                        StatsR = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "run"
+                                                || p.PlayerAction.PlayerActionName.ToLower() == "home run"),
+
+                        StatsH = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "single"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "double"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "triple"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "home run"),
+
+                        StatsBB = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "walk"),
+                        StatsHR = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "home run"),
+                    };
+                    playerStats.Players.Add(player);
+                    gameStats.Add(playerStats);
+                }
+            }
+            else
+            {
+                foreach (Player player in game.AwayLineup.PlayerLineups.Select(p => p.Player)) //get stats from awaylineup
+                {
+                    List<PlayByPlay> playerPlays = plays.Where(p => p.PlayerID == player.ID).ToList();
+
+                    Statistic playerStats = new()
+                    {
+                        StatsAB = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "single"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "double"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "triple"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "out"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "fly out"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "ground out"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "home run"),
+
+                        StatsR = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "run"),
+
+                        StatsH = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "single"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "double"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "triple"
+                                                 || p.PlayerAction.PlayerActionName.ToLower() == "home run"),
+
+                        StatsBB = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "walk"),
+                        StatsHR = playerPlays.Count(p => p.PlayerAction.PlayerActionName.ToLower() == "home run"),
+                    };
+                    playerStats.Players.Add(player);
+                    gameStats.Add(playerStats);
+                }
+            }
+
+            ViewBag.GameStats = gameStats;
             return View(game);
         }
 

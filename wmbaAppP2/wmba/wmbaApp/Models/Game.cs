@@ -145,18 +145,18 @@ namespace wmbaApp.Models
 
 
 
-        [Display(Name = "Home Team:")]
+        [Display(Name = "Home:")]
         [Required(ErrorMessage = "Home Team name is required")]
         public int HomeTeamID { get; set; }
         [ForeignKey("HomeTeamID")]
-        [Display(Name = "Home Team:")]
+        [Display(Name = "Home:")]
         public Team HomeTeam { get; set; }
 
-        [Display(Name = "Visitor Team:")]
+        [Display(Name = "Visitor:")]
         [Required(ErrorMessage = "Visitor Team name is required")]
         public int AwayTeamID { get; set; }
         [ForeignKey("AwayTeamID")]
-        [Display(Name = "Home Team:")]
+        [Display(Name = "Visitor:")]
         public Team AwayTeam { get; set; }
 
         [Display(Name = "Division:")]

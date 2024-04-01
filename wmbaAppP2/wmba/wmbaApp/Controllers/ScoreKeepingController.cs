@@ -8,6 +8,7 @@ using Newtonsoft.Json.Serialization;
 using OfficeOpenXml.Drawing.Chart;
 using System;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using wmbaApp.CustomControllers;
@@ -171,6 +172,7 @@ namespace wmbaApp.Controllers
                 {
                     player.Runs++;
                     player.ThirdBase = false;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "run"));
                 }
                 else if (senderAction == "stay")
                 {
@@ -180,6 +182,7 @@ namespace wmbaApp.Controllers
                 {
                     player.Outs++;
                     player.ThirdBase = false;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "out"));
                 }
 
                 inning.HandleThirdBase = false;
@@ -192,11 +195,13 @@ namespace wmbaApp.Controllers
                 {
                     player.SecondBase = false;
                     player.ThirdBase = true;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "third base"));
                 }
                 else if (senderAction == "home")
                 {
                     player.Runs++;
                     player.SecondBase = false;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "run"));
                 }
                 else if (senderAction == "stay")
                 {
@@ -206,6 +211,7 @@ namespace wmbaApp.Controllers
                 {
                     player.Outs++;
                     player.SecondBase = false;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "out"));
                 }
 
                 inning.HandleSecondBase = false;
@@ -217,16 +223,19 @@ namespace wmbaApp.Controllers
                 {
                     player.FirstBase = false;
                     player.SecondBase = true;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "second base"));
                 }
                 else if (senderAction == "3rd")
                 {
                     player.FirstBase = false;
                     player.ThirdBase = true;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "third base"));
                 }
                 else if (senderAction == "home")
                 {
                     player.Runs++;
                     player.FirstBase = false;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "run"));
                 }
                 else if (senderAction == "stay")
                 {
@@ -235,6 +244,7 @@ namespace wmbaApp.Controllers
                 {
                     player.Outs++;
                     player.FirstBase = false;
+                    inning.PlayByPlays.Add(GetPlayByPlay(player.ID, "out"));
                 }
 
                 inning.HandleFirstBase = false;
@@ -421,6 +431,7 @@ namespace wmbaApp.Controllers
             {
                 inning.PlayerOnThird.Runs++;
                 inning.PlayerOnThird.ThirdBase = false;
+                inning.PlayByPlays.Add(GetPlayByPlay(inning.PlayerOnThird.ID, "third base"));
             }
 
             PopulateDropDownLists(inning);
@@ -565,6 +576,11 @@ namespace wmbaApp.Controllers
             {
                 foreach (Inning i in game.Innings)
                 {
+                    foreach (PlayByPlay play in i.PlayByPlays)
+                    {
+                        _context.PlayByPlays.Remove(play);
+                    }
+                    i.PlayByPlays.Clear();
                     _context.Innings.Remove(i);
                 }
 
@@ -621,7 +637,6 @@ namespace wmbaApp.Controllers
                     playerStats.StatsHR += statsToAdd.HR;
                     playerStats.StatsRBI += statsToAdd.RBI;
                     playerStats.StatsBB += statsToAdd.BB;
-
                 }
 
                 double AVG = (double)playerStats.StatsH / (double)playerStats.StatsAB;
@@ -783,6 +798,7 @@ namespace wmbaApp.Controllers
                 playerOnFirst.Runs++;
                 playerOnFirst.FirstBase = false;
                 currentBatter.RBI++;
+                inning.PlayByPlays.Add(GetPlayByPlay(playerOnFirst.ID, "run"));
             }
             if (playerOnSecond != null)
             {
@@ -790,7 +806,7 @@ namespace wmbaApp.Controllers
                 playerOnSecond.Runs++;
                 playerOnSecond.SecondBase = false;
                 currentBatter.RBI++;
-
+                inning.PlayByPlays.Add(GetPlayByPlay(playerOnSecond.ID, "run"));
             }
             if (playerOnThird != null)
             {
@@ -798,6 +814,7 @@ namespace wmbaApp.Controllers
                 playerOnThird.Runs++;
                 playerOnThird.ThirdBase = false;
                 currentBatter.RBI++;
+                inning.PlayByPlays.Add(GetPlayByPlay(playerOnThird.ID, "run"));
             }
         }
 
@@ -893,8 +910,9 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
-            currentBatter.FirstBase = true;
+
             currentBatter.PlateAppearances++;
+            currentBatter.FirstBase = true;
             inning.CurrentBatter++;
         }
 
@@ -921,8 +939,9 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
-            currentBatter.FirstBase = true;
+
             currentBatter.PlateAppearances++;
+            currentBatter.FirstBase = true;
             inning.CurrentBatter++;
         }
 
@@ -949,8 +968,9 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
-            currentBatter.FirstBase = true;
+
             currentBatter.PlateAppearances++;
+            currentBatter.FirstBase = true;
             inning.CurrentBatter++;
         }
 
@@ -989,12 +1009,12 @@ namespace wmbaApp.Controllers
                         }
                     }
                 }
-                currentBatter.FirstBase = true;
+
                 currentBatter.PlateAppearances++;
+                currentBatter.FirstBase = true;
                 inning.CurrentBatter++;
             }
         }
-
         #endregion
 
         #region PlayByPlayMethods
@@ -1002,7 +1022,7 @@ namespace wmbaApp.Controllers
         public PlayByPlay GetPlayByPlay(int playerID, string actionName)
         {
             //get action and player from db
-            var playerAction = _context.PlayerActions.FirstOrDefault(pa => pa.PlayerActionName.ToLower() == actionName);
+            var playerAction = _context.PlayerActions.FirstOrDefault(pa => pa.PlayerActionName.ToLower() == actionName.ToLower());
             var player = _context.Players.FirstOrDefault(p => p.ID == playerID);
 
             //return a PlayByPlay with player and playerAction that aren't null
