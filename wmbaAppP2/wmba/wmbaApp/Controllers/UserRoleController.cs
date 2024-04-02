@@ -29,7 +29,7 @@ namespace wmbaApp.Controllers
 
 
         // GET: User
-        public async Task<IActionResult> Index(int? page, int? ID, int? pageSizeID, string SearchString,
+        public async Task<IActionResult> Index(int? page, int? pageSizeID, string SearchString,
              string actionButton, string sortDirection = "asc", string sortField = "")
         {
 
@@ -43,21 +43,17 @@ namespace wmbaApp.Controllers
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "UserName", "UserRoles" };
 
-            IQueryable<UserVM> users = _context.Users.Select(u => new UserVM
-            {
-                ID = u.Id,
-                UserName = u.UserName
-            });
+            var users = _context.Users
+                            .OrderBy(u => u.UserName)
+                            .Select(u => new UserVM
+                            {
+                                ID = u.Id,
+                                UserName = u.UserName,
+                                UserRoles = new List<string>(
+                                    _userManager.GetRolesAsync(_userManager.FindByIdAsync(u.Id).Result).Result
+                                )
+                            });
 
-
-
-            if (ID.HasValue)
-            {
-
-                int idValue = ID.Value;
-                users = users.Where(u => Convert.ToInt32(u.ID) == idValue);
-                numberFilters++;
-            }
 
             //Give feedback about the state of the filters
             if (numberFilters != 0)
@@ -73,11 +69,9 @@ namespace wmbaApp.Controllers
             if (!System.String.IsNullOrEmpty(SearchString))
             {
                 var upperSearchString = SearchString.ToUpper();
-                users = users.Where(u => u.UserName.ToUpper().Contains(SearchString.ToUpper())
-                    || u.UserRoles.Any(r => r.ToUpper().Contains(SearchString.ToUpper())));
+                users = users.Where(u => u.UserName.ToUpper().Contains(upperSearchString));
                 numberFilters++;
             }
-
 
 
 
@@ -94,60 +88,27 @@ namespace wmbaApp.Controllers
                     sortField = actionButton;//Sort by the button clicked
                 }
             }
-            //Now we know which field and direction to sort by
             if (sortField == "UserName")
-            {
+                if (sortDirection == "asc")
+                {
+                    users = users
+                    .OrderBy(u => u.UserName);
+                }
+                else
+                {
+                    users = users
+                    .OrderByDescending(u => u.UserName);
+                }
 
-                if (sortDirection == "asc")
-                {
-                    users = users
-                        .OrderBy(u => u.UserName);
-                }
-                else
-                {
-                    users = users
-                        .OrderByDescending(u => u.UserName);
-                }
-            }
-            else
-            {
-                if (sortDirection == "asc")
-                {
-                    users = users
-                        .OrderBy(u => u.UserRoles);
-                }
-                else
-                {
-                    users = users
-                        .OrderByDescending(u => u.UserRoles);
-                }
-            }
 
             ViewData["sortField"] = sortField;
             ViewData["sortDirection"] = sortDirection;
 
-            var usersQuery = _context.Users
-                .OrderBy(u => u.UserName)
-                .Select(u => new UserVM
-                {
-                    ID = u.Id,
-                    UserName = u.UserName
-                });
 
             int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
             ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
 
-            var pagedData = await PaginatedList<UserVM>.CreateAsync(usersQuery.AsNoTracking(), page ?? 1, pageSize);
-
-            foreach (var user in pagedData)
-            {
-                var _user = await _userManager.FindByIdAsync(user.ID);
-                var userRoles = await _userManager.GetRolesAsync(_user);
-                user.UserRoles = userRoles
-                    .Where(r => r == "Admin" || r == "Convenor" || r == "Coach" || r == "ScoreKeeper")
-                    .OrderBy(r => r)
-                    .ToList();
-            }
+            var pagedData = await PaginatedList<UserVM>.CreateAsync(users.AsQueryable(), page ?? 1, pageSize);
 
             return View(pagedData);
         }
