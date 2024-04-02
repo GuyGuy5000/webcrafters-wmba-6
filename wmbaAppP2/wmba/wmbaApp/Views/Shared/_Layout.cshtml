@@ -22,8 +22,6 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
-    <script src="~/js/context-help.js"></script>
-
 </head>
 <body class="home-page ">
     <header>
@@ -77,14 +75,15 @@
                                     </div>
                                 </li>
                             }
-
                         </ul>
+                        <div class="help-icon-container" id="help-icon" accesskey="h">
+                            <span class="help-icon fa-solid fa-question"></span>
+                        </div>
                         <div>
                             <partial name="_LoginPartial" />
                         </div>
-                        <div class="help-icon d-sm-inline-flex justify-content-between" id="help-icon" style="margin-top: 25px;" accesskey="h">
-                            <span class="icon fa-solid fa-question"></span>
-                        </div>
+
+
                     </div>
 
 
@@ -155,6 +154,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/context-help.js"></script>
     <script type="text/javascript">
         let btnScorekeepingNav = document.getElementById("btnScorekeepingNav");
         btnScorekeepingNav.addEventListener("click", function () { ToggleScorekeepingNav(); });

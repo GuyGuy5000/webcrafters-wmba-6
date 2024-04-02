@@ -264,22 +264,28 @@ li a:hover {
 
 /******Header Ends**********/
 /******Context help starts*********/
-.help-icon {
+.help-icon-container {
     align-items: center;
-    background-color: #000;
+    background-color: #2e8b43;
+    border: 2px solid #FFF;
     border-radius: 100%;
     cursor: pointer;
-    height: 30px;
+    height: 40px;
     justify-content: center;
-    margin-bottom: 20px;
-    width: 28px;
+    margin: 3px;
+    width: 40px;
     z-index: 1000;
+}
+
+.help-icon {
+    font-size: 30px;
+    color: #fff;
+    padding: 1px;
+    margin: 3px 0 0 7px;
 }
 
 .icon {
     font-size: 70px;
-    margin-top: 35px;
-    margin-bottom: 10px;
     color: #fff;
     padding: 1px;
 }
@@ -310,7 +316,7 @@ li a:hover {
 
     100% {
         opacity: 1;
-        right: -105px;
+        right: -140px;
     }
 }
 
@@ -320,7 +326,7 @@ li a:hover {
     border-radius: 9px;
     box-shadow: 0 0 1px rgba(4, 98, 251);
     display: none;
-    right: -105px;
+    right: -140px;
     padding: 17px;
     position: fixed;
     top: 105px;
