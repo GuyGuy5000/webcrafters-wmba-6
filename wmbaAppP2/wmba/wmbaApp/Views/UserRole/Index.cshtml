@@ -1,4 +1,4 @@
-﻿@model IEnumerable<wmbaApp.ViewModels.UserVM>
+﻿    @model IEnumerable<wmbaApp.ViewModels.UserVM>
 
 @{
     ViewBag.Title = "User Roles";
@@ -70,7 +70,7 @@
                         @{
                             foreach (var r in item.UserRoles)
                             {
-                                @:  @r <br />
+                                @:  @((r == "Admin" || r == "Convenor" || r == "Coach" || r == "ScoreKeeper") ? Html.Raw(r + "<br />") : "")
                             }
                         }
                     </td>
