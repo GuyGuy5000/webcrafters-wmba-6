@@ -192,10 +192,9 @@
         </tbody>
     </table>
     <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
 </form>
-<div class="clickable-header">
-    <a href="@Url.Action("Index", "Home")">Back</a>
-</div>
+
 @section Scripts {
     <script type="text/javascript">
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -204,5 +203,17 @@
         })
     </script>
 
-
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This page displays the statistics of players during games.</p>",
+            "<p>Use the search bar to find specific players by their first or last name.</p>",
+            "<p>Clicking 'Filter' allows you to filter the statistics based on your search criteria.</p>",
+            "<p>You can view detailed statistics of each player, including games played (GP), plate appearances (PA), at bats (AB), batting average (AVG), on-base percentage (OBP), on-base plus slugging (OPS), slugging percentage (SLG), hits, runs scored, strikeouts (K), home runs (HR), runs batted in (RBI), and walks (BB).</p>",
+            "<p>To download the statistics report, click on the 'Download Stats' button.</p>",
+            "<p>Use the pagination navigation bar at the bottom to navigate between pages of statistics.</p>",
+            "<p>Clicking 'Details' allows you to view more detailed information about a player's statistics.</p>"
+        ]);
+    </script>
 }
+
+

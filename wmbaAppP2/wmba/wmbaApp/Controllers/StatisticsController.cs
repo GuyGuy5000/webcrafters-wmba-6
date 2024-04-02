@@ -33,7 +33,7 @@ namespace wmbaApp.Controllers
         // GET: Statistics
         public async Task<IActionResult> Index(string SearchString, int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
-            ViewData["Filtering"] = "btn-outline-secondary";
+            ViewData["Filtering"] = " btn-outline-dark";
             int numberFilters = 0;
 
             string[] sortOptions = new[] { "Player" };
@@ -64,7 +64,7 @@ namespace wmbaApp.Controllers
             if (numberFilters != 0)
             {
                 // Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
+                ViewData["Filtering"] = " btn-outline-dark";
                 // Show how many filters have been applied
                 ViewData["numberFilters"] = "(" + numberFilters.ToString()
                     + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";

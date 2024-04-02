@@ -141,15 +141,27 @@
         </tbody>
     </table>
     <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
 </form>
-<div class="clickable-header btn d-none d-lg-block  btn-center">
-    <a href="@Url.Action("Index", "Home")">Back</a>
-</div>
+
 @section Scripts {
     <script type="text/javascript">
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+    </script>
+
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This is the Teams page where you can manage teams and their associated information.</p>",
+            "<p>Use the search and filtering options to find specific teams or filter by divisions.</p>",
+            "<p>Clicking 'Create' allows you to add a new team.</p>",
+            "<p>You can view active teams and their details, edit team information, or make a team inactive if no games or active players are associated with it.</p>",
+            "<p>If a team has active players or upcoming games, you'll receive notifications and options to resolve these before deactivating the team.</p>",
+            "<p>For deactivating a team with active players, you can choose to deactivate players individually, deactivate games, or deactivate the team along with its players and games.</p>",
+            "<P>You can adjust the number of users displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+            "<p>Use the search bar to view deactivated teams, games, or players and reactivate them as needed.</p>"
+        ]);
     </script>
 }

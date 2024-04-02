@@ -1,6 +1,4 @@
-﻿
-//onload used to ensure all html was loaded before checking if GenerateContextHelp exists in the page
-window.onload = () => {
+﻿window.onload = () => {
     RemoveUnusedHelpIcon();
 
     function RemoveUnusedHelpIcon() {
@@ -13,10 +11,9 @@ window.onload = () => {
     }
 };
 
-
 function GenerateContextHelp(explanations) {
 
-    let helpIcon = document.getElementById('help-icon');
+    let helpIcons = document.querySelectorAll('.help-icon-container');
     let helpBox = document.getElementById('help-box');
     let nextButton = document.getElementById('nextBtn');
     let skipButton = document.getElementById('skipBtn');
@@ -25,20 +22,21 @@ function GenerateContextHelp(explanations) {
     let explanationIndex = 0;
     firstTimeHelp();
 
+    helpIcons.forEach(helpIcon => {
+        helpIcon.addEventListener('keydown', (event) => {
+            if (event.code == "Enter") {
+                explanationIndex = 0;
+                helpBox.style.display = 'block';
+                displayExplanation(explanationIndex);
+            }
 
-    helpIcon.addEventListener('keydown', (event) => {
-        if (event.code == "Enter") {
+        });
+
+        helpIcon.addEventListener('click', () => {
             explanationIndex = 0;
             helpBox.style.display = 'block';
             displayExplanation(explanationIndex);
-        }
-
-    });
-
-    helpIcon.addEventListener('click', () => {
-        explanationIndex = 0;
-        helpBox.style.display = 'block';
-        displayExplanation(explanationIndex);
+        });
     });
 
     nextButton.addEventListener('click', () => {
@@ -67,11 +65,11 @@ function GenerateContextHelp(explanations) {
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
-        await sleep(1000); //waits 2 seconds (2000 miliseconds)
-        //check to see if it's a first time visit to the site (will reset when the session ends)
+        await sleep(1000); // Waits 1 second (1000 milliseconds)
+        // Check if it's a first-time visit to the site (will reset when the session ends)
         if (sessionStorage["firstTimeHelpFlag"] == undefined) {
-            sessionStorage.setItem("firstTimeHelpFlag", "false"); //set flag to indicate the homepage was visited
-            //display help box
+            sessionStorage.setItem("firstTimeHelpFlag", "false"); // Set flag to indicate the homepage was visited
+            // Display help box
             helpBox.style.display = 'block';
             displayExplanation(0);
         }

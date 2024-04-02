@@ -36,12 +36,15 @@
 
 
 
-    <table class="table coachTable">
+    <table class="table playerTable">
         <thead>
             <tr>
-                <th class="d-sm-table-cell d-md-table-cell">
-                    <input type="submit" name="actionButton" value="Coach Name" class="non-button-input" title="Sort by Full Name" />
-                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
+                <th class="d-sm-table-cell d-md-table-cell ">
+                    <div class="coachName">
+                        <input type="submit" name="actionButton" value="Coach Name" class="non-button-input" title="Sort by Full Name" />
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input coachIcon"></i>
+                    </div>
+                    
                  
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
@@ -97,8 +100,20 @@
         </tbody>
     </table>
     <partial name="_PagingNavBar" />
+   
+        <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
+   
 </form>
 
-<div class="clickable-header btn d-none d-lg-block  btn-center">
-    <a href="@Url.Action("Index", "Home")">Back</a>
-</div>
+@section Scripts {
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This is the coach page, showing the coach's name, team, and division. You can create, edit, or delete coach information using the buttons provided.</p>",
+            "<p>Clicking the 'Create' button allows you to add a new coach to the system.</p>",
+            "<p>Clicking the 'Edit' button lets you modify the details of an existing coach.</p>",
+            "<P>You can adjust the number of coaches displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+            "<p>Clicking the 'Delete' button removes a coach from the system. Please use caution when deleting coach records.</p>"
+        ]);
+    </script>
+}
+

@@ -28,7 +28,7 @@ namespace wmbaApp.Controllers
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
+            ViewData["Filtering"] = " btn-outline-dark";
             int numberFilters = 0;
             //Then in each "test" for filtering, add to the count of Filters applied
 
@@ -66,7 +66,7 @@ namespace wmbaApp.Controllers
             if (numberFilters != 0)
             {
                 //Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
+                ViewData["Filtering"] = " btn-outline-dark";
                 //Show how many filters have been applied
                 ViewData["numberFilters"] = "(" + numberFilters.ToString()
                     + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";

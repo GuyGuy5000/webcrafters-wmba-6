@@ -3,7 +3,7 @@
 <partial name="_ViewHeading" />
 
 <form asp-action="Index" method="get">
-    <table class="table mt-3">
+    <table class="table mt-3 playerTable">
         <thead>
             <tr>
 
@@ -62,6 +62,7 @@
         </tbody>
     </table>
     <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
 </form>
 @section Scripts {
     <script type="text/javascript">
@@ -72,8 +73,13 @@
     </script>
 
     <script>
-        GenerateContextHelp(["<p>This page lists all Division Coaches you have access to. From here you can create, edit, and delete Division Coaches.</p>",
-            "<p>Click one of the three buttons in a team's row to edit, view, or delete that division coach.</p>",
+        GenerateContextHelp(["<p>This is the division coach page, showing the division coach's name. You can create, edit, or delete division information using the buttons provided.</p>",
+            "<p>Clicking the 'Create' button allows you to add a new division coach to the system.</p>",
+            "<p>Clicking the 'Edit' button lets you modify the details of an existing division coach.</p>",
+            "<P>You can adjust the number of division coach displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+            "<p>Clicking the 'Delete' button removes a division from the system. Please use caution when deleting division coach records.</p>"
          ]);
     </script>
 }
+
+

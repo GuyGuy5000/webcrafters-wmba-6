@@ -43,7 +43,7 @@ namespace wmbaApp.Controllers
                     int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             // Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
+            ViewData["Filtering"] = " btn-outline-dark";
             int numberFilters = 0;
             // Then in each "test" for filtering, add to the count of Filters applied
 
@@ -100,7 +100,7 @@ namespace wmbaApp.Controllers
             if (numberFilters != 0)
             {
                 // Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
+                ViewData["Filtering"] = " btn-outline-dark";
                 // Show how many filters have been applied
                 ViewData["numberFilters"] = "(" + numberFilters.ToString()
                     + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
@@ -725,36 +725,20 @@ namespace wmbaApp.Controllers
         }
 
         [Authorize(Roles ="Admin,Convenor,Coach")]
-        public async Task<IActionResult> DownloadGamesFixtures()
+        public IActionResult DownloadGamesFixtures()
         {
-            IQueryable<Game> sumQ;
-
-            if (User.IsInRole("Admin"))
-            {
-                sumQ = _context.Games
-                 .Include(g => g.GameLocation)
-                 .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
-                 .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
-                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
-                 .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
-                 .OrderBy(g => g.GameStartTime)
-                 .AsNoTracking();
-            }
-            else
-            {
-                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
-                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
-
-                sumQ = _context.Games
-                     .Include(g => g.GameLocation)
-                     .Include(g => g.AwayTeam).ThenInclude(p => p.Division)
-                     .Include(g => g.HomeTeam).ThenInclude(p => p.Division)
-                     .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
-                     .Include(g => g.AwayLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
-                     .Where(g => g.GameEndTime > DateTime.Now && ((rolesTeamIDs.Contains(g.HomeTeamID) || rolesTeamIDs.Contains(g.AwayTeamID) || rolesDivisionIDs.Contains(g.DivisionID))))
-                     .OrderBy(g => g.GameStartTime)
-                     .AsNoTracking();
-            }
+            var sumQ = _context.Games
+                .Include(r => r.HomeTeam)
+                .Include(r => r.AwayTeam)
+                .OrderBy(r => r.Division.DivName)
+                .Select(r => new
+                {
+                    Games = r.FullVersus,
+                    Game_Details = r.Summary,
+                    Game_Division = r.Division.DivName,
+                    Game_Location = r.GameLocation.Name,
+                })
+                .AsNoTracking();
 
             //How many rows?
             int numRows = sumQ.Count();

@@ -49,11 +49,10 @@
         </tbody>
     </table>
     <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
 </form>
 
-<div class="clickable-header btn d-none d-lg-block  btn-center">
-    <a href="@Url.Action("Index", "Home")">Back</a>
-</div>
+
 @section Scripts {
     <script type="text/javascript">
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -62,5 +61,15 @@
         })
     </script>
 
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This is the division page, showing the division's name. You can create, edit, or delete division information using the buttons provided.</p>",
+            "<p>Clicking the 'Create' button allows you to add a new division to the system.</p>",
+            "<p>Clicking the 'Edit' button lets you modify the details of an existing division.</p>",
+            "<P>You can adjust the number of division displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+            "<p>Clicking the 'Delete' button removes a division from the system. Please use caution when deleting division records.</p>"
+        ]);
+    </script>
     
 }
+

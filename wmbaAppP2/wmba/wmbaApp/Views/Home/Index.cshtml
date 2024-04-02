@@ -9,7 +9,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-@if (!User.Identity.IsAuthenticated)
+@if(!User.Identity.IsAuthenticated)
 {
     <div class="col-md-6 welcomeContainer">
         <div class="childWelcomeContainer">
@@ -152,6 +152,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 }
@@ -224,7 +225,9 @@ else if  (User.IsInRole("Convenor"))
 
                             <span></span><span></span><span></span><span></span>
                             <i class="fa-solid fa-angles-right" tabindex="8"></i>
+
                         </a>
+
                     </p>
                 </div>
 
@@ -242,28 +245,32 @@ else if  (User.IsInRole("Convenor"))
 
 
             <div class="parent-section">
-                <div class="col-md-6 reAlignGrid">
-                    <div class="first-section-container move ">
-
-
-                        <a asp-controller="Statistics" asp-action="Index" class="second-section stat-container link-container">
+                <div class="col-md-6">
+                    <div class="first-section-container move">
+                        <a asp-controller="Home" asp-action="ImportTeams" class="first-section link-container">
                             <div>
-                                <i class="fa-solid fa-chart-simple icon iconsReset"></i>
-                                <h3>Stats</h3>
+                                <i class="fa-solid fa-file-import icons"></i>
+                                <h3>Import Teams</h3>
                             </div>
                         </a>
 
-@*                         <a asp-controller="Divisions" asp-action="Index" class="second-section link-container">
+                        <a asp-controller="Statistics" asp-action="Index" class="first-section link-container">
+                            <div>
+                                <i class="fa-solid fa-chart-simple icons"></i>
+                                <h3>Stats</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="second-section-container">
+                        <a asp-controller="Divisions" asp-action="Index" class="second-section link-container">
                             <div>
                                 <i class="fa-solid fa-baseball-bat-ball icon"></i>
                                 <h3>Division</h3>
                             </div>
-                        </a> *@
-
-                    </div>
-
-                    <div class="second-section-container">
-
+                        </a>
 
                         <a asp-controller="Teams" asp-action="Index" class="second-section link-container">
                             <div>
@@ -371,51 +378,37 @@ else if (User.IsInRole("Coach"))
 
 
             <div class="parent-section">
-                <div class="col-md-6">
-                    <div class="first-section-container move">
-                        <a asp-controller="Home" asp-action="ImportTeams" class="first-section link-container">
-                            <div>
-                                <i class="fa-solid fa-file-import icons"></i>
-                                <h3>Import Teams</h3>
-                            </div>
-                        </a>
 
-                        <a asp-controller="Statistics" asp-action="Index" class="first-section link-container">
-                            <div>
-                                <i class="fa-solid fa-chart-simple icons"></i>
-                                <h3>Stats</h3>
-                            </div>
-                        </a>
-                    </div>
-                </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6 gameTeamsPlayers">
                     <div class="second-section-container">
-                        <a asp-controller="Divisions" asp-action="Index" class="second-section link-container">
-                            <div>
-                                <i class="fa-solid fa-baseball-bat-ball icon"></i>
-                                <h3>Division</h3>
-                            </div>
-                        </a>
+                        <div class=" gameTeamsPlayers">
+                            <a asp-controller="Statistics" asp-action="Index" class="second-section link-container ">
+                                <div>
+                                    <i class="fa-solid fa-baseball-bat-ball icon"></i>
+                                    <h3>Stats</h3>
+                                </div>
+                            </a>
 
-                        <a asp-controller="Teams" asp-action="Index" class="second-section link-container">
-                            <div>
-                                <i class="fa-solid fa-users icon"></i>
-                                <h3>Teams</h3>
-                            </div>
-                        </a>
-
-                        <a asp-controller="Players" asp-action="Index" class="second-section link-container">
-                            <div>
-                                <i class="fa-solid fa-user-plus icon"></i>
-                                <h3>Players</h3>
-                            </div>
-                        </a>
+                            <a asp-controller="Teams" asp-action="Index" class="second-section link-container ">
+                                <div>
+                                    <i class="fa-solid fa-users icon"></i>
+                                    <h3>Teams</h3>
+                                </div>
+                            </a>
+                        </div>
+                            <a asp-controller="Players" asp-action="Index" class="second-section link-container scoreKeeperTeams">
+                                <div>
+                                    <i class="fa-solid fa-user-plus icon"></i>
+                                    <h3>Players</h3>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    
 }
 else if (User.IsInRole("ScoreKeeper"))
 {
@@ -504,33 +497,16 @@ else if (User.IsInRole("ScoreKeeper"))
 
 
             <div class="parent-section">
-                <div class="col-md-6">
-                    @*    <div class="first-section-container move">
-                <a asp-controller="Home" asp-action="ImportTeams" class="first-section link-container">
-                <div>
-                <i class="fa-solid fa-file-import icons"></i>
-                <h3>Import Teams</h3>
-                </div>
-                </a>
 
-                <a asp-controller="Statistics" asp-action="Index" class="first-section link-container">
-                <div>
-                <i class="fa-solid fa-chart-simple icons"></i>
-                <h3>Stats</h3>
-                </div>
-                </a>
-                </div> *@
-                </div>
-
-                <div class="col-md-6 divisionTeamsPlayers">
+                <div class="col-md-6 gameTeamsPlayers">
                     <div class="second-section-container">
-                        <div class=" divisionTeamsPlayers">
-@*                             <a asp-controller="Divisions" asp-action="Index" class="second-section link-container">
+                        <div class=" gameTeamsPlayers">
+                            <a asp-controller="Games" asp-action="Index" class="second-section link-container ">
                                 <div>
                                     <i class="fa-solid fa-baseball-bat-ball icon"></i>
-                                    <h3>Division</h3>
+                                    <h3>Games</h3>
                                 </div>
-                            </a> *@
+                            </a>
 
                             <a asp-controller="Teams" asp-action="Index" class="second-section link-container ">
                                 <div>

@@ -38,68 +38,98 @@
                     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                         <img class="secondLogo img-fluid " src="~/Image/WMBA (9).png" alt="Logo" tabindex="1" />
                     </a>
-                    <button class="navbar-toggler text-white hamburger-icon" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
-                            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="navbar-collapse text-white collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
-                            </li>
-                            @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link text-white  dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
-                                       data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-target="#navbarDropdown">
-                                        Tools
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
-                                        <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Divisions" asp-action="Index">Divisions</a>
-                                        <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
-                                        <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Home" asp-action="ImportTeams">Import Teams</a>
-                                        <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Lookup" asp-action="Index">Maintain Lookups</a>
-                                        @if (User.IsInRole("Admin"))
-                                        {
-                                            <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain Users</a>
-                                        }
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                        <div class="help-icon-container" id="help-icon" accesskey="h">
-                            <span class="help-icon fa-solid fa-question"></span>
-                        </div>
-                        <div>
-                            <partial name="_LoginPartial" />
-                        </div>
+                    @if (ViewContext.RouteData.Values["controller"] != null)
+                    {
+                        @if (User.Identity.IsAuthenticated && (ViewContext.RouteData.Values["controller"].ToString() == "ScoreKeeping" || ViewContext.RouteData.Values["controller"].ToString() == "ScoreKeepingAwayTeam"))
+                        {
+                            <div class="help-icon-container" id="help-icon" accesskey="h">
+                                <span class="help-icon fa-solid fa-question"></span>
+                            </div>
 
 
-                    </div>
+                            <div class="help-box" id="help-box">
+                                <div class="help-content">
+                                    <p>This is the first explanation.</p>
+                                </div>
+                                <div class="help-actions">
+                                    <label id="pageNum" style="margin-right: 10px"></label>
+                                    <button id="skipBtn" tabindex="15">Skip</button>
+                                    <button id="nextBtn" tabindex="15">Next</button>
+                                </div>
+                            </div>
+                        }
+
+                        else
+                        {
+
+
+                            <button class="navbar-toggler text-white hamburger-icon" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+
+                            <div class="navbar-collapse text-white collapse d-sm-inline-flex justify-content-between">
+                                <ul class="navbar-nav flex-grow-1">
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
+                                    </li>
+                                    @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                                    {
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link text-white  dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
+                                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-target="#navbarDropdown">
+                                                Tools
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
+                                                <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="Divisions" asp-action="Index">Divisions</a>
+                                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Teams" asp-action="Create">Create Teams</a>
+                                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Coaches" asp-action="Index"> Coaches</a>
+                                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Home" asp-action="ImportTeams">Import Teams</a>
+                                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Lookup" asp-action="Index">Maintain Lookups</a>
+                                                @if (User.IsInRole("Admin"))
+                                                {
+                                                    <a class="nav-link text-dark menuEffect" asp-area="" asp-controller="UserRole" asp-action="Index">Maintain Users</a>
+                                                }
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                                <div class="help-icon-container" id="help-icon" accesskey="h">
+                                    <span class="help-icon fa-solid fa-question"></span>
+                                </div>
+                                <div>
+                                    <partial name="_LoginPartial" />
+                                </div>
+
+
+                            </div>
 
 
 
 
-                    <div class="help-box" id="help-box">
-                        <div class="help-content">
-                            <p>This is the first explanation.</p>
-                        </div>
-                        <div class="help-actions">
-                            <label id="pageNum" style="margin-right: 10px"></label>
-                            <button id="skipBtn" tabindex="15">Skip</button>
-                            <button id="nextBtn" tabindex="15">Next</button>
-                        </div>
-                    </div>
+                            <div class="help-box" id="help-box">
+                                <div class="help-content">
+                                    <p>This is the first explanation.</p>
+                                </div>
+                                <div class="help-actions">
+                                    <label id="pageNum" style="margin-right: 10px"></label>
+                                    <button id="skipBtn" tabindex="15">Skip</button>
+                                    <button id="nextBtn" tabindex="15">Next</button>
+                                </div>
+                            </div>
+                        }
+                    }
+                  
                 </div>
+               
             </nav>
 
             <nav class="phoneNav">
@@ -133,7 +163,7 @@
                     <i class="fa-solid fa-angle-left" style="color: black"></i>
                 </a>
             </nav>
-
+           
         }
     </header>
     <div class="container-fluid">

@@ -110,11 +110,10 @@
         </tbody>
     </table>
     <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
 </form>
 
-<div class="clickable-header btn d-none d-lg-block  btn-center">
-    <a href="@Url.Action("Index", "Home")">Back</a>
-</div>
+
 <br />
 <br />
 
@@ -125,4 +124,17 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
+
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This is the Players page, where you can manage player information. You can create, edit, or deactivate players using the buttons provided.</p>",
+            "<p>Clicking the 'Create' button allows you to add a new player to the system.</p>",
+            "<p>You can search for players by their name using the search box provided.</p>",
+            "<p>You can sort for players by clicking the 'Name' heading or the arrow beside it.</p>",
+            "<P>You can adjust the number of players displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+            "<p>Clicking the 'Edit' button lets you modify the details of an existing player.</p>",
+            "<p>Clicking the 'Active' button deactivates a player and stores them in the database. Deactivated players can be viewed by toggling the search bar to 'Currently viewing inactive players.' You can reactivate players from the deactivated players page.</p>"
+        ]);
+    </script>
 }
+

@@ -35,43 +35,34 @@
         <table class="table mt-3 gameTable">
             <thead>
                 <tr>
-
-                    <th class="d-sm-table-cell d-md-table-cell">
+                    <th>
                         <div class="d-flex align-items-center">
                             <input type="submit" name="actionButton" value="Teams" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Games" />
                             <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
                         </div>
                     </th>
-
-
                     <th class="d-none d-lg-table-cell">
                         <h6 class="non-button-input" id="heading">
                             @Html.DisplayNameFor(model => model.Summary)
                         </h6>
                     </th>
-
                     <th class="d-none d-lg-table-cell">
                         <h6 class="non-button-input" id="heading">
                             Division
                         </h6>
                     </th>
-
-                    <th class="d-sm-table-cell d-md-table-cell">
+                    <th>
                         <div class="d-flex align-items-center">
                             <input type="submit" name="actionButton" value="Location" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Location" />
                             <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
                         </div>
                     </th>
-
-
-                    <th style="min-width:150px" class="d-flex justify-content-end pe-3">
-            
+                    <th class="text-end gameBtn">
                         @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
                         {
-                            <a asp-action="Create" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Create a new Game">
+                            <a asp-action="Create" class="btn btn-sm btn-outline-dark  d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Create a new Game">
                                 <strong> Create </strong>
                             </a>
- 
                         }
                         @if (!User.IsInRole("ScoreKeeper"))
                         {
@@ -174,11 +165,10 @@
         </table>
     </div>
     <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
 </form>
 <script src="~/js/site.js"></script>
-<div class="clickable-header btn d-none d-lg-block  btn-center">
-    <a href="@Url.Action("Index", "Home")">Back</a>
-</div>
+
 
 <br />
 <br />
@@ -190,5 +180,19 @@
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
+    </script>
+
+    <script type="text/javascript">
+
+        GenerateContextHelp([
+            "<p>This page displays information about the game, including teams, date, division, and location.</p>",
+            "<p>Clicking the 'Edit' button allows you to make changes to the game details.</p>",
+            "<p>You can sort for games by clicking the 'Team' or 'Locations' heading or the arrow beside it.</p>",
+            "<p>Based on your authorization, you can download the game report, clicking on the dowload button dowloads the report in an excel file.</p>",
+            "<p>Clicking the 'Details' button shows you the lineup of home and away players along with additional game information.</p>",
+            "<P>You can adjust the number of games displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+            "<p>Clicking the 'Home' or 'Away' button will start the game for the respective team.</p>"
+        ]);
+
     </script>
 }

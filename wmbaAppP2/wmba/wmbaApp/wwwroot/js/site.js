@@ -37,19 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // Define the hideNavBar function
-    function hideNavBar() {
-        const currentUrl = window.location.href;
-        const hideBar = document.getElementById("navBar");
-        const phoneBack = document.getElementById("phoneBack");
 
-        if (hideBar && phoneBack) {
-            const mustHide = currentUrl === "https://localhost:7297/ScoreKeeping?GameID=1&HomeTeamName=Navy%20Mustangs&AwayTeamName=Green%20Jr%20Jackfish&HomeTeamScore=0&AwayTeamScore=0&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&LineUp=wmbaApp.ViewModels.PlayerScoreKeepingVM&CurrentInning=0&Score=0";
-            hideBar.classList.toggle("hidden-bar", mustHide);
-
-            // Toggle the "absolute-top" class based on the condition
-            phoneBack.classList.toggle("absolute-top", mustHide);
-        }
-    }
 
     // Call the hideNavBar function when the page loads
     document.addEventListener("DOMContentLoaded", function () {
@@ -61,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         hideNavBar();
     });
 
-
+    setBack(); 
     hideNavBar();
     document.addEventListener('DOMContentLoaded', function () {
         hideNavBar();
@@ -74,34 +62,47 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+function setBack() {
+    const currentUrl = window.location.href;
+    const phoneBack = document.getElementById("phoneBack");
 
-    function setBack() {
-        const currentUrl = window.location.href;
-        const phoneBack = document.getElementById("phoneBack");
+    if (phoneBack) {
+        // Check if it is the homepage and adjust the display property
+        const shouldHide = currentUrl === "https://localhost:7297/";
+        phoneBack.style.display = shouldHide ? "none" : "block";
+    }
+}
 
-        if (phoneBack) {
-            // Check if it is the homepage and adjust the display property
-            const shouldHide = currentUrl === "https://localhost:7297/";
-            phoneBack.style.display = shouldHide ? "none" : "block";
-        }
+function hideNavBar() {
+    const currentUrl = window.location.href;
+    const phoneBack = document.getElementById("phoneBack");
+
+    if (phoneBack) {
+        // Check if the current URL includes a string indicating a scorekeeping page
+        const shouldHide = currentUrl.includes("ScoreKeeping");
+        phoneBack.style.display = shouldHide ? "none" : "block";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    setBack();
+    hideNavBar();
+
+    const hideBar = document.querySelector(".navbar a");
+    if (hideBar) {
+        hideBar.addEventListener("click", function () {
+            game();
+        });
     }
 
-    setBack();
+    const phoneBack = document.querySelector(".phoneBack a");
+    if (phoneBack) {
+        phoneBack.addEventListener("click", function () {
+            back();
+        });
+    }
+});
 
-
-
-
-    document.addEventListener('DOMContentLoaded', function () {
-        setBack();
-        showMenu();
-
-        const phoneBack = document.querySelector(".phoneBack a");
-        if (phoneBack) {
-            phoneBack.addEventListener("click", function () {
-                back();
-            });
-        }
-    });
 
     // Set the active link on page load
     setActiveLink();
@@ -276,3 +277,5 @@ $(document).ready(function () {
     });
     // Similarly handle click events for other icons
 });
+
+

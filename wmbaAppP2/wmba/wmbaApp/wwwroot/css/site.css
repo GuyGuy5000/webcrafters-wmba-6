@@ -264,7 +264,8 @@ li a:hover {
 
 /******Header Ends**********/
 /******Context help starts*********/
-.help-icon-container {
+.help-icon-container,
+.gameHelp-icon-container {
     align-items: center;
     background-color: #2e8b43;
     border: 2px solid #FFF;
@@ -284,6 +285,13 @@ li a:hover {
     margin: 3px 0 0 7px;
 }
 
+.gameHelp-icon {
+    font-size: 30px;
+    color: #fff;
+    padding: 1px;
+    margin: 3px 0 0 7px;
+}
+
 .icon {
     font-size: 70px;
     color: #fff;
@@ -297,7 +305,10 @@ li a:hover {
     color: #fff;
     padding: 1px;
 }
-
+.icon {
+    margin-top: 50px;
+    margin-bottom: 10px;
+}
 
 .iconP {
     font-size: 70px;
@@ -1098,12 +1109,6 @@ button.btn.btn-left {
         width: 100%; /* Full width on phones */
         margin: 1em 0; /* Adjust margin for spacing */
     }
-
-    /*.gameStyle .btn {
-        left: 220px; 
-        font-size: 10px;
-        width:*/ /* Adjust position for better placement on phones */
-    /*}*/
 }
 
 @media only screen and (min-width: 320px) and (max-width: 768px) {
@@ -1148,8 +1153,7 @@ button.btn.btn-left {
     margin: 0 auto;
 }
 
-.coachTable {
-}
+
 
 
 th .gameCreateBtn {
@@ -1158,10 +1162,6 @@ th .gameCreateBtn {
     right: 213px;
 }
 
-
-/** {
-    border: 1px solid red !important;
-}*/
 
 
 .hideGameBtnLaptop {
@@ -1174,6 +1174,11 @@ th .gameCreateBtn {
     bottom: 100px;
 }
 
+/*Link-Container*/
+
+.link-container {
+    width: 450px; /* Set a default width for the link container */
+}
 
 .link-container {
     position: relative;
@@ -1196,6 +1201,19 @@ th .gameCreateBtn {
     .link-container:hover::before {
         background: rgba(0, 0, 0, 0.1); /* Adjust as needed */
     }
+
+@media (min-width: 320px) and (max-width: 768px) {
+    .link-container {
+        width: 250px; /* Full width for screens between 320px and 768px */
+        max-width: 450px; /* Set a maximum width for larger screens */
+        margin: 0 auto; /* Center the link container horizontally */
+    }
+}
+/*Link-Container Ends*/
+
+
+
+
 
 .first-section a:hover,
 .second-section a:hover {
@@ -1249,9 +1267,7 @@ th .gameCreateBtn {
     height: 307px;
 }
 
-.link-container {
-    width: 450px;
-}
+
 
 /* Make the hamburger menu icon white */
 .hamburger-icon span.navbar-toggler-icon {
@@ -1290,6 +1306,7 @@ form .btn-active-toggle {
     .parent-section {
         display: flex;
         flex-direction: column;
+        margin: 0 auto;
     }
 
     .dashboard {
@@ -1365,11 +1382,6 @@ form .btn-active-toggle {
     }
 
 
-    .link-container {
-        width: 100%;
-        max-width: 180px;
-        margin: 0 auto;
-    }
 
     .row #gameBtn {
         background-color: #17254c;
@@ -1504,11 +1516,6 @@ form .btn-active-toggle {
 
 
 @media only screen and (min-width: 765px) and (max-width: 1000px) {
-    .link-container {
-        margin: 0 auto;
-        position: relative;
-        left: 170px;
-    }
 
     .row #gameBtn {
         background-color: #17254c;
@@ -1555,9 +1562,7 @@ form .btn-active-toggle {
         font-size: 14px;
     }
 
-    .link-container {
-        width: 230px;
-    }
+
 
 
     .gameDate {
@@ -1746,21 +1751,6 @@ form .btn-active-toggle {
 
 
 
-@media only screen and (min-width: 320px) and (max-width: 558px) {
-
-    /*   .phoneBack {
-            background-color: #F7F7f7;
-            top: 111px;
-            padding: 7px;
-            position: fixed;
-            width: 103%;
-            margin-left: -10px;
-            color: #000;
-        }*/
-
-    /******Phone Back Icon Ends********/
-
-}
 
 
 
@@ -1930,7 +1920,7 @@ form .btn-active-toggle {
         margin-bottom: 10px; /* Adjusted margin for smaller screens */
     }
 
-    form .btn-active-toggle{
+    form .btn-active-toggle {
         width: 250px;
     }
 }
@@ -1947,7 +1937,7 @@ form .btn-active-toggle {
 /***Score Keeper Styles Starts+******/
 
 
-.divisionTeamsPlayers {
+.gameTeamsPlayers {
     display: flex;
     gap: 20px;
     padding-top: 50px;
@@ -1958,16 +1948,15 @@ form .btn-active-toggle {
 }
 
 @media only screen and (max-width: 768px) {
-    .divisionTeamsPlayers {
+    .gameTeamsPlayers {
         flex-direction: column; /* Change to column layout for smaller screens */
         align-items: center; /* Center items vertically */
         gap: 10px; /* Adjust the gap between items */
     }
-
-    .link-container {
-        width: 450px;
-    }
 }
+
+
+
 
 
 .reAlignGrid {
@@ -1989,6 +1978,8 @@ form .btn-active-toggle {
 
 
 
+
+
 /*User Roles Start*/
 .userRolesHeading {
     margin-top: 30px;
@@ -1998,6 +1989,11 @@ form .btn-active-toggle {
 .table.userRoles {
     margin-bottom: 30px; /* Add margin-bottom to create space between table and footer */
 }
+
+
+
+
+
 
 /* Footer Styling */
 footer {
@@ -2012,3 +2008,67 @@ footer {
     color: #fff;
 }
 /******Footer Ends*************/
+
+
+/* Center content in phone view */
+@media (max-width: 767px) {
+    .parent-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/*Home Index*/
+/* Center content in tablet view */
+@media (min-width: 768px) and (max-width: 991px) {
+    .parent-section {
+        display: flex;
+        justify-content: center;
+    }
+
+    .col-md-6 {
+        flex: 0 0 auto;
+    }
+}
+
+/*Home Index Ends*/
+
+/*Coach Starts*/
+
+@media (min-width: 320px) and (max-width: 768px) {
+    .coachName{
+        display: flex;
+    }
+    .coachIcon{
+        position: relative;
+        top: 5px;
+        left: 5px;
+    }
+}
+
+
+/*Coach Ends*/
+
+/*UserVM Starts*/
+
+@media (min-width: 320px) and (max-width: 768px) {
+    .userVmText{
+        font-size: 14px;
+    }
+
+
+}
+
+/*UserVM Ends*/
+@media (min-width: 992px) {
+    .gameBtn {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .gameCreateBtn {
+        margin-right: 20px; /* Adjust as needed */
+    }
+}

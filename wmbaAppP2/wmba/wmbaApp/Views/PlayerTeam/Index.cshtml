@@ -103,4 +103,13 @@
             return new bootstrap.Tooltip(tooltipTriggerEl)
         })
     </script>
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This is the Players page for managing player information related to the @ViewBag.Team.TeamName team in the @ViewBag.Team.DivisionName division.</p>",
+            "<p>Clicking the 'Create' button allows you to add a new player to the team.</p>",
+            "<p>You can search for players by their name using the search box provided.</p>",
+            "<p>The table displays active players with their full name and jersey number. You can click 'EDIT' to modify player details, 'DETAILS' to view player information, and 'ACTIVE' to deactivate a player.</p>",
+            "<p>If you want to view inactive players or reactivate a player, click 'Search' and select 'Currently viewing: Active Players' or 'Currently viewing: Inactive Players'.</p>"
+        ]);
+    </script>
 }
