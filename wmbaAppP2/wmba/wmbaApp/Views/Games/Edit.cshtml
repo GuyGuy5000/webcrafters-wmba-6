@@ -50,8 +50,14 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="GameEndTime" class="control-label required-label"></label>
-            <input asp-for="GameEndTime" id="GameEndTime" class="form-control" readonly />
+           
+            <input asp-for="GameEndTime" id="GameEndTime" class="form-control" type="hidden" readonly />
+            <span asp-validation-for="GameEndTime" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+           
+            <input asp-for="GameStartTime" id="GameStartTime" class="form-control" type="hidden" readonly />
             <span asp-validation-for="GameEndTime" class="text-danger"></span>
         </div>
 
@@ -83,7 +89,7 @@
                 <input type="submit" id="hideBtn" value="Save" class="btn btn-outline-dark" />
 
                 <i id="error" class="fa-solid fa-xmark fa-f6"></i>
-                <a asp-action="Index" id="bck" class="btn btn-outline-dark" onclick="closeModal()">Back</a>
+                <a asp-action="Index" id="bck" class="btn btn-outline-dark" onclick="closeModal()">Back to games</a>
             </div>
         </div>
     </fieldset>
@@ -141,6 +147,9 @@
                     // Convert duration from hours to milliseconds
                     var durationMilliseconds = durationHours * 60 * 60 * 1000;
 
+                    var startDate = new Date(startDate.getTime())
+                    var startTime = startDate.toISOString().slice(0, 16);
+                    $('#GameStartTime').val(startTime);
                     var endDate = new Date(startDate.getTime() + durationMilliseconds);
 
                     // Format end time to ISO string (e.g., "YYYY-MM-DDTHH:mm")

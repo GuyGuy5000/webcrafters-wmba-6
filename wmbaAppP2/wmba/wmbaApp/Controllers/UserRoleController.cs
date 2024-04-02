@@ -9,6 +9,7 @@ using wmbaApp.Data.Migrations;
 using wmbaApp.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using NuGet.Packaging;
+using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
@@ -26,33 +27,93 @@ namespace wmbaApp.Controllers
             _WmbaContext = wmbaContext;
         }
 
-        // GET: User
-        public async Task<IActionResult> Index()
-        {
-            var users = await (from u in _context.Users
-                               .OrderBy(u => u.UserName)
-                               select new UserVM
-                               {
-                                   ID = u.Id,
-                                   UserName = u.UserName
-                               })
-                               .ToListAsync();
-            foreach (var u in users)
-            {
-                var _user = await _userManager.FindByIdAsync(u.ID);
-                u.UserRoles = (List<string>)await _userManager.GetRolesAsync(_user);
-                u.UserRoles = u.UserRoles
-                                .Where(r => r == "Admin"
-                                    || r == "Convenor"
-                                    || r == "Coach"
-                                    || r == "ScoreKeeper")
-                                .OrderBy(r => r)
-                                .ToList();
-                //Note: we needed the explicit cast above because GetRolesAsync() returns an IList<string>
-            };
 
-            return View(users.OrderBy(u => u.UserRoles.FirstOrDefault(ur => ur == "Admin" || ur == "Convenor" || ur == "Coach" || ur == "ScoreKeeper")));
+        // GET: User
+        public async Task<IActionResult> Index(int? page, int? pageSizeID, string SearchString,
+             string actionButton, string sortDirection = "asc", string sortField = "")
+        {
+
+            PopulateDropDownLists();
+            //Count the number of filters applied - start by assuming no filters
+            ViewData["Filtering"] = "btn-outline-secondary";
+            int numberFilters = 0;
+            //Then in each "test" for filtering, add to the count of Filters applied
+
+            //List of sort options.
+            //NOTE: make sure this array has matching values to the column headings
+            string[] sortOptions = new[] { "UserName", "UserRoles" };
+
+            var users = _context.Users
+                            .OrderBy(u => u.UserName)
+                            .Select(u => new UserVM
+                            {
+                                ID = u.Id,
+                                UserName = u.UserName,
+                                UserRoles = new List<string>(
+                                    _userManager.GetRolesAsync(_userManager.FindByIdAsync(u.Id).Result).Result
+                                )
+                            });
+
+
+            //Give feedback about the state of the filters
+            if (numberFilters != 0)
+            {
+                //Toggle the Open/Closed state of the collapse depending on if we are filtering
+                ViewData["Filtering"] = " btn-danger";
+                //Show how many filters have been applied
+                ViewData["numberFilters"] = "(" + numberFilters.ToString()
+                    + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
+            }
+
+
+            if (!System.String.IsNullOrEmpty(SearchString))
+            {
+                var upperSearchString = SearchString.ToUpper();
+                users = users.Where(u => u.UserName.ToUpper().Contains(upperSearchString));
+                numberFilters++;
+            }
+
+
+
+            if (!System.String.IsNullOrEmpty(actionButton)) //Form Submitted!
+            {
+                page = 1;//Reset page to start
+
+                if (sortOptions.Contains(actionButton))//Change of sort is requested
+                {
+                    if (actionButton == sortField) //Reverse order on same field
+                    {
+                        sortDirection = sortDirection == "asc" ? "desc" : "asc";
+                    }
+                    sortField = actionButton;//Sort by the button clicked
+                }
+            }
+            if (sortField == "UserName")
+                if (sortDirection == "asc")
+                {
+                    users = users
+                    .OrderBy(u => u.UserName);
+                }
+                else
+                {
+                    users = users
+                    .OrderByDescending(u => u.UserName);
+                }
+
+
+            ViewData["sortField"] = sortField;
+            ViewData["sortDirection"] = sortDirection;
+
+
+            int pageSize = PageSizeHelper.SetPageSize(HttpContext, pageSizeID, ControllerName());
+            ViewData["pageSizeID"] = PageSizeHelper.PageSizeList(pageSize);
+
+            var pagedData = await PaginatedList<UserVM>.CreateAsync(users.AsQueryable(), page ?? 1, pageSize);
+
+            return View(pagedData);
         }
+
+
 
         #region Edit
         // GET: Users/Edit/5
@@ -180,7 +241,7 @@ namespace wmbaApp.Controllers
                                                             .Where(r => r == "Admin"
                                                             || r == "Convenor"
                                                             || r == "Coach"
-                                                            || r == "ScoreKeeper" 
+                                                            || r == "ScoreKeeper"
                                                             || r.Contains("U Convenor"));
             List<string> allSelectedTeams = new List<string>(selectedTeams);
             allSelectedTeams.AddRange(teams);
@@ -334,6 +395,17 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
+        }
+
+        private void PopulateDropDownLists(UserVM user = null)
+        {
+            int? userId = user?.ID != null ? int.Parse(user.ID) : null;
+            ViewData["ID"] = UserSelectList(userId);
+        }
+
+        private SelectList UserSelectList(int? selectedId)
+        {
+            return new SelectList(_context.Users, "ID", "UserName", selectedId);
         }
 
         protected override void Dispose(bool disposing)
