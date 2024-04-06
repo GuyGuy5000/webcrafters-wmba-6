@@ -74,6 +74,10 @@
                                     {
                                         @:  @((r == "Admin" || r == "Convenor" || r == "Coach" || r == "ScoreKeeper") ? Html.Raw(r + "<br />") : "")
                                     }
+                                    foreach (var r in item.UserRoles)
+                                    {
+                                        @:  @((r != "Admin" && r != "Convenor" && r != "Coach" && r != "ScoreKeeper") ? Html.Raw(r + "<br />") : "")
+                                    }
                                 }
                             </td>
                             <td class="GameCrud">

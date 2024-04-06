@@ -425,7 +425,8 @@ namespace wmbaApp.Controllers
                 .Include(t => t.Division)
                 .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
                 .Include(t => t.Players)
-                .Include(t => t.GameTeams).ThenInclude(t => t.Game)
+                .Include(t => t.AwayGames).ThenInclude(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups)
+                .Include(t => t.HomeGames).ThenInclude(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups)
                 .FirstOrDefaultAsync(m => m.ID == id);
 
             if (teamToUpdate == null)
@@ -477,9 +478,25 @@ namespace wmbaApp.Controllers
                     if (role != null)
                     {
                         role.Name = teamToUpdate.TmName;
+                        role.NormalizedName = teamToUpdate.TmName.ToUpper();
                         _AppContext.Roles.Update(role);
                         await _AppContext.SaveChangesAsync();
                     }
+
+                    //get all upcoming games that contain that team
+                    var gamesToRemove = _context.Games
+                        .Include(g => g.AwayTeam)
+                        .Include(g => g.HomeTeam)
+                        .Where(g => g.GameEndTime > DateTime.Now && (g.HomeTeamID == teamToUpdate.ID || g.AwayTeamID == teamToUpdate.ID));
+
+                    foreach (var game in gamesToRemove)
+                    {
+                        //if the divisions don't match, remove the game
+                        if (game.HomeTeam.DivisionID != game.AwayTeam.DivisionID)
+                            _context.Games.Remove(game);
+                    }
+                    await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {

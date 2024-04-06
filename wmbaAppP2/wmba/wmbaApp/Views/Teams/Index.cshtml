@@ -109,7 +109,7 @@
                     <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
                     <td>
                         @{
-                            if (User.IsInRole("Admin") || User.IsInRole("Convenor") || User.IsInRole("Coach"))
+                            if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
                             {
                                 if (!item.HomeGames.Any(g => g.HasStarted) || !item.AwayGames.Any(g => g.HasStarted))
                                 {
