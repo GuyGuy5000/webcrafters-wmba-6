@@ -164,13 +164,17 @@ namespace wmbaApp.Controllers
                 UserRoles = (List<string>)await _userManager.GetRolesAsync(_user)
             };
 
-            var teams = ((List<string>)await _userManager.GetRolesAsync(_user))
-                                                .Where(r => r != "Admin"
-                                                && r != "Convenor"
-                                                && r != "Coach"
-                                                && r != "ScoreKeeper"
-                                                && !r.Contains("U Convenor"));
+            var teams = new List<string>();
+            if (selectedRoles.Contains("Coach") || selectedRoles.Contains("ScoreKeeper"))
+                teams = (List<string>)(await _userManager.GetRolesAsync(_user))
+                                                    .Where(r => r != "Admin"
+                                                    && r != "Convenor"
+                                                    && r != "Coach"
+                                                    && r != "ScoreKeeper"
+                                                    && !r.Contains("U Convenor")).ToList();
+
             List<string> allSelectedRoles = new List<string>(selectedRoles);
+
             allSelectedRoles.AddRange(teams);
 
             try

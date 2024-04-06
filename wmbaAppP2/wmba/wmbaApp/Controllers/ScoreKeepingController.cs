@@ -256,6 +256,8 @@ namespace wmbaApp.Controllers
 
             if (!handleFirstBase && !handleSecondBase && !handleThirdBase)
             {
+                inning.Batter.Strikes = 0;
+                inning.Batter.Balls = 0;
                 inning.CurrentBatter++;
 
                 while (inning.Batter.FirstBase || inning.Batter.SecondBase || inning.Batter.ThirdBase)
@@ -379,6 +381,8 @@ namespace wmbaApp.Controllers
             if (inning.HandleFirstBase == false && inning.HandleSecondBase == false && inning.HandleThirdBase == false) //if all runners were handled
                 if (actionID <= 3 || actionID >= 8) //Any action that is an at bat or causes the batter to advance (based on the enum)
                 {
+                    inning.Batter.Strikes = 0;
+                    inning.Batter.Balls = 0;
                     inning.CurrentBatter++;
 
                     while (inning.Batter.FirstBase || inning.Batter.SecondBase || inning.Batter.ThirdBase)
@@ -431,7 +435,7 @@ namespace wmbaApp.Controllers
             {
                 inning.PlayerOnThird.Runs++;
                 inning.PlayerOnThird.ThirdBase = false;
-                inning.PlayByPlays.Add(GetPlayByPlay(inning.PlayerOnThird.ID, "third base"));
+                inning.PlayByPlays.Add(GetPlayByPlay(inning.PlayerOnThird.ID, "run"));
             }
 
             PopulateDropDownLists(inning);
@@ -443,6 +447,8 @@ namespace wmbaApp.Controllers
         {
             InningScoreKeepingVM inning = JsonConvert.DeserializeObject<InningScoreKeepingVM>(inningScoreKeepingJSON);
 
+            inning.Batter.Strikes = 0;
+            inning.Batter.Balls = 0;
             inning.CurrentBatter++;
 
             while (inning.Batter.FirstBase || inning.Batter.SecondBase || inning.Batter.ThirdBase)
@@ -633,7 +639,7 @@ namespace wmbaApp.Controllers
                     playerStats.StatsAB += statsToAdd.AtBats;
                     playerStats.StatsH += statsToAdd.Hits;
                     playerStats.StatsR += statsToAdd.Runs;
-                    playerStats.StatsK += statsToAdd.Strikes;
+                    playerStats.StatsK += statsToAdd.Outs;
                     playerStats.StatsHR += statsToAdd.HR;
                     playerStats.StatsRBI += statsToAdd.RBI;
                     playerStats.StatsBB += statsToAdd.BB;
@@ -642,14 +648,21 @@ namespace wmbaApp.Controllers
                 double AVG = (double)playerStats.StatsH / (double)playerStats.StatsAB;
                 playerStats.StatsAVG = Math.Round(AVG, 3);
 
-                double OBP = ((double)playerStats.StatsH + (double)playerStats.StatsBB) / ((double)playerStats.StatsAB + (double)playerStats.StatsBB);
+                //get the hit by pitch count
+                var HBP = _context.PlayByPlays
+                                .Include(pa => pa.PlayerAction)
+                                .Where(pbp => pbp.PlayerID == player.ID
+                                    && (pbp.PlayerAction.PlayerActionName.ToLower() == "hit by pitch"))
+                                .Count();
+
+                double OBP = ((double)playerStats.StatsH + (double)playerStats.StatsBB) + (double)HBP / ((double)playerStats.StatsAB + (double)playerStats.StatsBB);
                 playerStats.StatsOBP = Math.Round(OBP, 3);
 
                 //get the count 
                 var bases = _context.PlayByPlays
                                 .Include(pa => pa.PlayerAction)
                                 .Where(pbp => pbp.PlayerID == player.ID
-                                && (pbp.PlayerAction.PlayerActionName.ToLower() == "single"
+                                    && (pbp.PlayerAction.PlayerActionName.ToLower() == "single"
                                     || pbp.PlayerAction.PlayerActionName.ToLower() == "double"
                                     || pbp.PlayerAction.PlayerActionName.ToLower() == "triple"
                                     || pbp.PlayerAction.PlayerActionName.ToLower() == "home run"
@@ -866,6 +879,7 @@ namespace wmbaApp.Controllers
 
             currentBatter.PlateAppearances++;
             currentBatter.Outs++;
+            currentBatter.AtBats++;
             if (playerOnFirst != null)
                 inning.HandleFirstBase = true;
             if (playerOnSecond != null)
@@ -879,6 +893,7 @@ namespace wmbaApp.Controllers
 
             currentBatter.PlateAppearances++;
             currentBatter.Outs++;
+            currentBatter.AtBats++;
             if (playerOnFirst != null)
                 inning.HandleFirstBase = true;
             if (playerOnSecond != null)
@@ -913,6 +928,8 @@ namespace wmbaApp.Controllers
 
             currentBatter.PlateAppearances++;
             currentBatter.FirstBase = true;
+            inning.Batter.Strikes = 0;
+            inning.Batter.Balls = 0;
             inning.CurrentBatter++;
         }
 
@@ -942,6 +959,8 @@ namespace wmbaApp.Controllers
 
             currentBatter.PlateAppearances++;
             currentBatter.FirstBase = true;
+            inning.Batter.Strikes = 0;
+            inning.Batter.Balls = 0;
             inning.CurrentBatter++;
         }
 
@@ -971,6 +990,8 @@ namespace wmbaApp.Controllers
 
             currentBatter.PlateAppearances++;
             currentBatter.FirstBase = true;
+            inning.Batter.Strikes = 0;
+            inning.Batter.Balls = 0;
             inning.CurrentBatter++;
         }
 
@@ -980,6 +1001,9 @@ namespace wmbaApp.Controllers
 
             currentBatter.PlateAppearances++;
             currentBatter.Outs++;
+            currentBatter.AtBats++;
+            inning.Batter.Strikes = 0;
+            inning.Batter.Balls = 0;
             inning.CurrentBatter++;
         }
 
@@ -1011,7 +1035,10 @@ namespace wmbaApp.Controllers
                 }
 
                 currentBatter.PlateAppearances++;
+                currentBatter.BB++;
                 currentBatter.FirstBase = true;
+                inning.Batter.Strikes = 0;
+                inning.Batter.Balls = 0;
                 inning.CurrentBatter++;
             }
         }

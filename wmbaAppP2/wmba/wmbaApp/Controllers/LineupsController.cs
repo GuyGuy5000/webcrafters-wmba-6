@@ -135,27 +135,65 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            var game = _context.Games
+                                .Include(p => p.HomeTeam).ThenInclude(t => t.Players)
+                                .Include(p => p.AwayTeam).ThenInclude(t => t.Players)
+                                .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups)
+                                .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups)
+                                .FirstOrDefault(g => g.ID == gameId);
+            if (game == null)
+                return NotFound();
+
+
             if (ModelState.IsValid)
             {
-                var firstCreatedLineup = _context.Lineups
-                    .Include(l => l.PlayerLineups)
-                    .FirstOrDefault(l => l.ID == id);
+                var firstCreatedLineup = game.HomeLineup;
+                var secondCreatedLineup = game.AwayLineup;
 
-                if (firstCreatedLineup != null)
+                if (firstCreatedLineup != null && secondCreatedLineup != null)
                 {
                     firstCreatedLineup.PlayerLineups.Clear();
+                    secondCreatedLineup.PlayerLineups.Clear();
+                    _context.Lineups.Update(firstCreatedLineup);
+                    _context.Lineups.Update(secondCreatedLineup);
+                    await _context.SaveChangesAsync();
+
+
                     foreach (var playerId in SelectedPlayers)
                     {
                         var playerLineup = new PlayerLineup
                         {
-                            Lineup = firstCreatedLineup,
-                            PlayerID = playerId
+                            ID = 0,
+                            LineupID = firstCreatedLineup.ID, //assume the player comes from the home team lineup
+                            PlayerID = playerId,
                         };
-                        firstCreatedLineup.PlayerLineups.Add(playerLineup);
+
+                        //if  the home team contains the player, add to home team lineup. else add to away team lineup
+                        if (game.HomeTeam.Players.Select(p => p.ID).Any(pID => pID == playerLineup.PlayerID))
+                        {
+                            firstCreatedLineup.PlayerLineups.Add(playerLineup);
+                        }
+                        else
+                        {
+                            playerLineup.LineupID = secondCreatedLineup.ID; //change lineup ID if player is from away team lineup
+                            secondCreatedLineup.PlayerLineups.Add(playerLineup);
+                        }
+                    }
+                    try
+                    {
+                        _context.Lineups.Update(firstCreatedLineup);
+                        _context.Lineups.Update(secondCreatedLineup);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (RetryLimitExceededException /* dex */)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+                    }
+                    catch (DbUpdateException dex)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                     }
 
-                    _context.Update(firstCreatedLineup);
-                    await _context.SaveChangesAsync();
                     return RedirectToAction("Details", "Games", new { id = gameId });
                 }
                 else
