@@ -1,0 +1,120 @@
+﻿@using wmbaApp.ViewModels;
+@model IEnumerable<wmbaApp.Models.Game>
+<partial name="_ViewHeading" />
+
+
+<form asp-action="FinishedGames" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <br />
+    <div class="form-horizontal">
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p class="filSearch">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        </button>
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="col-md-4 activeView">
+                        <label class="control-label ">Click to View upcoming games:</label>
+                        <a asp-action="Index" class="btn  btn-outline-dark btn-center view deactivateTeam btn-active-toggle" title="Click to toggle between finished and upcoming games">Currently viewing: finished games</a>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Search By Team/Location:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="FinishedGames" class="btn btn-outline-dark">Clear</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table mt-3 gameTable">
+            <thead>
+                <tr>
+
+                    <th class="d-sm-table-cell d-md-table-cell">
+                        <div class="d-flex align-items-center">
+                            <input type="submit" name="actionButton" value="Teams" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Games" />
+                            <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
+                        </div>
+                    </th>
+
+
+                    <th class="d-none d-lg-table-cell">
+                        <h6 class="non-button-input" id="heading">
+                            @Html.DisplayNameFor(model => model.Summary)
+                        </h6>
+                    </th>
+
+                    <th class="d-none d-lg-table-cell">
+                        <h6 class="non-button-input" id="heading">
+                            Division
+                        </h6>
+                    </th>
+
+                    <th class="d-sm-table-cell d-md-table-cell">
+                        <div class="d-flex align-items-center">
+                            <input type="submit" name="actionButton" value="Location" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Location" />
+                            <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
+                        </div>
+                    </th>
+
+
+                    <th style="min-width:150px" class="d-flex justify-content-end pe-3">
+@*                         <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn d-none d-lg-block" role="button" data-bs-toggle="tooltip" title="Download Games Roster">
+                            <strong>&#x1F4C4; Download Games</strong>
+                        </a> *@
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullVersus)
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            @Html.DisplayFor(modelItem => item.Summary)
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            @Html.DisplayFor(modelItem => item.HomeTeam.Division.DivName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GameLocation.Name)
+                        </td>
+                        <td class="GameCrud">
+                            <a asp-action="GameSummary" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Summary">
+                                <span></span><span></span><span></span><span></span>
+                                SUMMARY
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_PagingNavBar" />
+</form>
+<script src="~/js/site.js"></script>
+<div class="clickable-header btn d-none d-lg-block  btn-center">
+    <a href="@Url.Action("Index", "Home")">Back</a>
+</div>
+
+<br />
+<br />
+<br />
+
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

@@ -1,0 +1,106 @@
+﻿@using wmbaApp.ViewModels
+@model wmbaApp.ViewModels.GameScoreKeepingVM
+
+
+<style>
+    .innings-table-container {
+        display: block;
+        margin: 0px auto 40px auto;
+        overflow-x: scroll;
+        width: 100%;
+    }
+
+    .innings-table {
+        text-align: center;
+        width: 100%;
+    }
+
+        .innings-table td,
+        .innings-table th {
+            background-color: #DEE4FE;
+            border: solid 2px #FFF;
+        }
+
+
+        .innings-table th {
+            background-color: #2e8b43;
+            color: #FFF;
+            padding: 5px 0;
+        }
+
+        .innings-table .team-th {
+            background-color: #2e8b43;
+            color: #FFF;
+            font-weight: 600;
+            padding: 5px 5px;
+        }
+
+        .innings-table .inning-heading {
+            background-color: #B88453;
+            color: #FFF;
+            font-weight: 600;
+            padding: 5px;
+        }
+</style>
+
+<section class="innings-table-container">
+    <table class="innings-table">
+        <tr>
+            <th colspan="@(Model.Innings.Count + 4)">
+                Innings
+            </th>
+        </tr>
+        <tr>
+            <td class="team-th" colspan="3">
+                Team
+            </td>
+            @{
+                for (int i = 1; i <= Model.Innings.Count; i++)
+                {
+                    <td class="inning-heading">
+                        @i
+                    </td>
+                }
+            }
+            <td class="inning-heading">
+                R
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                @Model.HomeTeamName
+            </td>
+            @{
+                foreach (InningScoreKeepingVM inning in Model.Innings)
+                {
+                    <td>
+                        @(Model.CurrentInning >= Model.Innings.IndexOf(inning) ? inning.HomeTeamScore : "")
+                    </td>
+                }
+            }
+            <td>
+                @Model.Innings.Sum(i => i.HomeTeamScore)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                @Model.AwayTeamName
+            </td>
+            @{
+                foreach (InningScoreKeepingVM inning in Model.Innings)
+                {
+                    <td>
+                        @(Model.CurrentInning >= Model.Innings.IndexOf(inning) ? inning.AwayTeamScore : "")
+                    </td>
+                }
+            }
+            <td>
+                @Model.Innings.Sum(i => i.AwayTeamScore)
+            </td>
+        </tr>
+    </table>
+</section>
+
+
+
+

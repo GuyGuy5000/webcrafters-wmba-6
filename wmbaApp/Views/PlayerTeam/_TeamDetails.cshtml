@@ -1,0 +1,92 @@
+﻿@model wmbaApp.Models.Team
+
+
+<div>
+    <h3>Current Team</h3>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TmName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TmName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Division)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Division.DivName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.Raw("Active PLayers")
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                int playerCount = Model.Players.Where(p => p.IsActive).Count();
+                if (playerCount > 0)
+                {
+                    string firstPlayer = Model.Players.FirstOrDefault(p => p.IsActive)?.FullName;
+                    if (playerCount > 1)
+                    {
+                        string playerList = "";
+                        var c = Model.Players.Where(p => p.IsActive).Skip(1).ToList();
+                        for (int i = 0; i < playerCount - 1; i++)
+                        {
+                            playerList += c[i].FullName + " <br />";
+                        }
+                        <a class="" role="button" data-bs-toggle="collapse" href="#collapsePlayers@(Model.ID)"
+                           aria-expanded="false" aria-controls="collapsePlayers@(Model.ID)">
+                            @firstPlayer <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Players">@playerCount</span>
+                        </a>
+                        <div class="collapse" id="collapsePlayers@(Model.ID)">
+                            @Html.Raw(playerList)
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="" role="button" data-bs-toggle="collapse" href="#collapsePlayers@(Model.ID)"
+                           aria-expanded="false" aria-controls="collapsePlayers@(Model.ID)">
+                            @firstPlayer <span class="badge bg-info">@playerCount</span>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <span>No active players</span>
+                }
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.Raw("Team Coaches")
+        </dt>
+        <dd class="col-sm-10">
+            @{
+                int coachCount = Model.DivisionCoaches.Count;
+                if (coachCount > 0)
+                {
+                    string firstCoach = Model.DivisionCoaches.FirstOrDefault().Coach.FullName;
+                    if (coachCount > 1)
+                    {
+                        string coachList = "";
+                        var c = Model.DivisionCoaches.ToList();
+                        for (int i = 1; i < coachCount; i++)
+                        {
+                            coachList += c[i].Coach.FullName + " <br />";
+                        }
+                        <a class="" role="button" data-bs-toggle="collapse" href="#collapseCoach@(Model.ID)"
+                           aria-expanded="false" aria-controls="collapseCoach@(Model.ID)">
+                            @firstCoach <span class="badge bg-info">@coachCount</span>
+                        </a>
+                        <div class="collapse" id="collapseCoach@(Model.ID)">
+                            @Html.Raw(coachList)
+                        </div>
+                    }
+                    else
+                    {
+                        @firstCoach
+                    }
+                }
+            }
+        </dd>
+    </dl>
+</div>

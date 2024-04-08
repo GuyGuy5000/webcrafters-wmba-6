@@ -1,0 +1,75 @@
+﻿@using wmbaApp.Utilities;
+@model IEnumerable<wmbaApp.Models.Division>
+
+<partial name="_ViewHeading" />
+
+<form asp-action="Index" method="get">
+    <table class="table mt-3 divisionTable">
+
+        <thead>
+           
+            <tr>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Division
+                    </h6>
+                </th>
+
+                <th style="min-width:120px" >
+                    <a asp-action="Create" class="btn btn-sm btn-outline-success btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new Division">
+                        <span></span><span></span><span></span><span></span>
+                        <strong> Create  </strong>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr >
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DivName)
+                    </td>
+                    <td GameCrud>
+                        <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            <span></span><span></span><span></span><span></span>
+                            EDIT
+                        </a>
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                            <span></span><span></span><span></span><span></span>
+                            DETAILS
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                            <span></span><span></span><span></span><span></span>
+                            DELETE
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
+</form>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This is the division page, showing the division's name. You can create, edit, or delete division information using the buttons provided.</p>",
+            "<p>Clicking the 'Create' button allows you to add a new division to the system.</p>",
+            "<p>Clicking the 'Edit' button lets you modify the details of an existing division.</p>",
+            "<P>You can adjust the number of division displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+            "<p>Clicking the 'Delete' button removes a division from the system. Please use caution when deleting division records.</p>"
+        ]);
+    </script>
+    
+}
+

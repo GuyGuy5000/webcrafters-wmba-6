@@ -1,0 +1,198 @@
+﻿@using wmbaApp.ViewModels;
+@model IEnumerable<wmbaApp.Models.Game>
+<partial name="_ViewHeading" />
+
+
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <br />
+    <div class="form-horizontal">
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <p class="filSearch">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        </button>
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+                    <div class="col-md-4 activeView">
+                        <label class="control-label ">Click to View upcoming games:</label>
+                        <a asp-action="FinishedGames" class="btn  btn-outline-dark btn-center view deactivateTeam btn-active-toggle" title="Click to toggle between finished and upcoming games">Currently viewing: upcoming games</a>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Search By Team/Location:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table mt-3 gameTable">
+            <thead>
+                <tr>
+                    <th>
+                        <div class="d-flex align-items-center">
+                            <input type="submit" name="actionButton" value="Teams" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Games" />
+                            <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
+                        </div>
+                    </th>
+                    <th class="d-none d-lg-table-cell">
+                        <h6 class="non-button-input" id="heading">
+                            @Html.DisplayNameFor(model => model.Summary)
+                        </h6>
+                    </th>
+                    <th class="d-none d-lg-table-cell">
+                        <h6 class="non-button-input" id="heading">
+                            Division
+                        </h6>
+                    </th>
+                    <th>
+                        <div class="d-flex align-items-center">
+                            <input type="submit" name="actionButton" value="Location" class="non-button-input" role="button" data-bs-toggle="tooltip" title="Sort by Location" />
+                            <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
+                        </div>
+                    </th>
+                    <th class="text-end gameBtn">
+                        @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                        {
+                            <a asp-action="Create" class="btn btn-sm btn-outline-dark  d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Create a new Game">
+                                <strong> Create </strong>
+                            </a>
+                        }
+                        @if (!User.IsInRole("ScoreKeeper"))
+                        {
+                            <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn d-none d-lg-block" role="button" data-bs-toggle="tooltip" title="Download Games Roster">
+                                <strong>&#x1F4C4; Download Games</strong>
+                            </a>
+                        }
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FullVersus)
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            @Html.DisplayFor(modelItem => item.Summary)
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            @Html.DisplayFor(modelItem => item.HomeTeam.Division.DivName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GameLocation.Name)
+                        </td>
+                        <td class="GameCrud">
+                            @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm" role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                    <span></span><span></span><span></span><span></span>
+                                    EDIT
+                                </a>
+                            }
+                            <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="@ViewData["ControllerFriendlyName"] Details">
+                                <span></span><span></span><span></span><span></span>
+                                DETAILS
+                            </a>
+                            @{
+                                if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+                                {
+                                    if (item.GameStartTime <= DateTime.Now && item.GameEndTime >= DateTime.Now)
+                                        if (item.HomeLineup != null && item.HomeLineup.PlayerLineups.Count > 0)
+                                            if (item.Innings.Count < 3)
+                                            {
+                                                <a asp-action="StartGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                                    <span></span><span></span><span></span><span></span>
+                                                    HOME GAME
+                                                </a>
+                                                <a asp-action="StartAwayGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                                    <span></span><span></span><span></span><span></span>
+                                                    AWAY GAME
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                //put a button to redirect to game results view (N.Y.I) here
+                                            }
+                                }
+                                else
+                                {
+                                    if (User.IsInRole(item.HomeTeam.TmName))
+                                    {
+                                        if (item.GameStartTime <= DateTime.Now && item.GameEndTime >= DateTime.Now)
+                                            if (item.HomeLineup != null && item.HomeLineup.PlayerLineups.Count > 0)
+                                                if (item.Innings.Count < 3)
+                                                {
+                                                    <a asp-action="StartGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                                        <span></span><span></span><span></span><span></span>
+                                                        START GAME
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    //put a button to redirect to game results view (N.Y.I) here
+                                                }
+                                    }
+                                    else
+                                    {
+                                        if (item.GameStartTime <= DateTime.Now && item.GameEndTime >= DateTime.Now)
+                                            if (item.HomeLineup != null && item.HomeLineup.PlayerLineups.Count > 0)
+                                                if (item.Innings.Count < 3)
+                                                {
+                                                    <a asp-action="StartAwayGame" onclick="start()" asp-route-id="@item.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game">
+                                                        <span></span><span></span><span></span><span></span>
+                                                        START GAME
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    //put a button to redirect to game results view (N.Y.I) here
+                                                }
+                                    }
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
+</form>
+<script src="~/js/site.js"></script>
+
+
+<br />
+<br />
+<br />
+
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script type="text/javascript">
+
+        GenerateContextHelp([
+            "<p>This page displays information about the game, including teams, date, division, and location.</p>",
+            "<p>Clicking the 'Edit' button allows you to make changes to the game details.</p>",
+            "<p>You can sort for games by clicking the 'Team' or 'Locations' heading or the arrow beside it.</p>",
+            "<p>Based on your authorization, you can download the game report, clicking on the dowload button dowloads the report in an excel file.</p>",
+            "<p>Clicking the 'Details' button shows you the lineup of home and away players along with additional game information.</p>",
+            "<P>You can adjust the number of games displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+            "<p>Clicking the 'Home' or 'Away' button will start the game for the respective team.</p>"
+        ]);
+
+    </script>
+}

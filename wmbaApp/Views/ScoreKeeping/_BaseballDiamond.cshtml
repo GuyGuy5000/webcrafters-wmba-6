@@ -1,0 +1,961 @@
+﻿@using wmbaApp.ViewModels
+@model wmbaApp.ViewModels.InningScoreKeepingVM
+
+
+<!--Stores the current inning's data-->
+<input type="hidden" id="inningScoreKeepingJSON" value='@Json.Serialize(Model)' />
+
+<section>
+    <!--inning count-->
+    <div class="inning-info-container">
+        <table style="margin: 0 auto;">
+            <tr>
+                <!--Balls-->
+                @{
+                    if ((string)TempData.Peek("DivisionOfGame") != "9U")
+                    {
+                        int remainingChecksBalls = 0;
+                        string outputBalls = "";
+                        for (int i = 0; i < Model.Batter.Balls; i++)
+                        {
+                            remainingChecksBalls++;
+                            outputBalls += "<div class='green-indicator'></div>";
+                        }
+                        for (int i = remainingChecksBalls; i < 4; i++)
+                        {
+                            outputBalls += "<div class='blank-indicator'></div>";
+                        }
+                        <td class="inning-info-header">
+                            <p>B:</p>
+                        </td>
+                        <td>
+                            @Html.Raw(outputBalls)
+                        </td>
+                    }
+                }
+
+                <!--Strikes-->
+                @{
+                    int remainingChecksStrikes = 0;
+                    string outputStrikes = "";
+                    for (int i = 0; i < Model.Batter.Strikes; i++)
+                    {
+                        remainingChecksStrikes++;
+                        outputStrikes += "<div class='red-indicator'></div>";
+                    }
+                    for (int i = remainingChecksStrikes; i < (int)TempData.Peek("StrikeLimit"); i++)
+                    {
+                        outputStrikes += "<div class='blank-indicator'></div>";
+                    }
+                }
+                <td class="inning-info-header">
+                    <p>S:</p>
+                </td>
+                <td>
+                    @Html.Raw(outputStrikes)
+                </td>
+
+                <!--Outs-->
+                @{
+                    int remainingChecksOuts = 0;
+                    string outputOuts = "";
+                    for (int i = 0; i < Model.TotalOutsThisInning; i++)
+                    {
+                        remainingChecksOuts++;
+                        outputOuts += "<div class='red-indicator'></div>";
+                    }
+                    for (int i = remainingChecksOuts; i < 3; i++)
+                    {
+                        outputOuts += "<div class='blank-indicator'></div>";
+                    }
+                }
+                <td class="inning-info-header">
+                    <p>O:</p>
+                </td>
+                <td>
+                    @Html.Raw(outputOuts)
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="diamond-container">
+        <!--Position labels-->
+        <div class="position-label first-base">
+            <p>1B</p>
+        </div>
+
+        <div class="position-label second-base">
+            <p>2B</p>
+        </div>
+
+        <div class="position-label third-base">
+            <p>3B</p>
+        </div>
+
+        <div class="position-label short-stop">
+            <p>SS</p>
+        </div>
+
+        <div class="position-label left-field">
+            <p>LF</p>
+        </div>
+
+        <div class="position-label center-field">
+            <p>CF</p>
+        </div>
+        <div class="position-label right-field">
+            <p>RF</p>
+        </div>
+        <!--Position labels-->
+        <!--players on base labels-->
+        <div class="player-label current-batter">
+            @Model.Batter?.Name&nbsp;
+        </div>
+        <div class="player-label first-base-label">
+            @Model.PlayerOnFirst?.Name&nbsp;
+        </div>
+        <div class="player-label second-base-label">
+            @Model.PlayerOnSecond?.Name&nbsp;
+        </div>
+        <div class="player-label third-base-label">
+            @Model.PlayerOnThird?.Name&nbsp;
+        </div>
+        <!--players on base labels-->
+        @{
+            if (Model.InningTop) //top half of the inning
+            {
+
+                <!--Player on base prompts-->
+                //check if any runners are on base
+                //if a player is on base and is flagged to be handled
+                if (Model.PlayerOnThird != null && Model.HandleThirdBase)
+                {
+                    <div class="player-on-base-prompt third-base-prompt">
+                        <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnThird.Name advance to home base?</p>
+                        <button name="playerOnBase" id="thirdBaseSafe" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                        @{
+                            if (!Model.Batter.ThirdBase) //force play actions disabled if batter hits a triple
+                            {
+                                <button name="playerOnBase" id="thirdBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
+                            }
+                        }
+                        <button name="playerOnBase" id="thirdBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
+                    </div>
+                }
+                else if (Model.PlayerOnSecond != null && Model.HandleSecondBase)
+                {
+                    <div class="player-on-base-prompt second-base-prompt">
+                        <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnSecond.Name advance?</p>
+                        @{
+                            if (Model.Batter.SecondBase) //force play actions if batter hits a double
+                            {
+                                if (Model.PlayerOnThird == null) //no runner on third base
+                                {
+                                    <button name="playerOnBase" id="secondBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                    <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                }
+                            }
+                            else if (Model.Batter.ThirdBase) //more limited force play actions if the batter hits a triple
+                            {
+                                <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                            }
+                            else // regular advance actions
+                            {
+                                if (Model.PlayerOnThird == null)
+                                {
+                                    <button name="playerOnBase" id="secondBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                    <button name="playerOnBase" id="secondBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                }
+                                <button name="playerOnBase" id="secondBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
+                            }
+                        }
+                        <button name="playerOnBase" id="secondBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
+                    </div>
+                }
+                else if (Model.PlayerOnFirst != null && Model.HandleFirstBase)
+                {
+                    <div class="player-on-base-prompt first-base-prompt">
+                        <p style="color: #000; margin-bottom: 0;">Did @Model.PlayerOnFirst.Name advance?</p>
+                        @{
+                            if (Model.Batter.FirstBase) //force play actions if batter hits a single
+                            {
+                                if (Model.PlayerOnSecond == null) //no runner on second base
+                                {
+                                    <button name="playerOnBase" id="firstBaseSecond" type="button" value="2nd" style="color: #2e8b43; background-color: #FFF;">Advance to 2nd &#10003;</button>
+
+                                    if (Model.PlayerOnThird == null) //no runner on third base either
+                                    {
+                                        <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                        <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                    }
+                                }
+                            }
+                            else if (Model.Batter.SecondBase) //more limited force play actions if the batter hits a double
+                            {
+                                if (Model.PlayerOnThird == null)
+                                {
+                                    <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                    <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                }
+                            }
+                            else if (Model.Batter.ThirdBase)
+                            {
+                                <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                            }
+                            else // regular advance actions
+                            {
+                                if (Model.PlayerOnSecond == null) //no runner on second base
+                                {
+                                    <button name="playerOnBase" id="firstBaseSecond" type="button" value="2nd" style="color: #2e8b43; background-color: #FFF;">Advance to 2nd &#10003;</button>
+
+                                    if (Model.PlayerOnThird == null) //no runner on third base either
+                                    {
+                                        <button name="playerOnBase" id="firstBaseThird" type="button" value="3rd" style="color: #2e8b43; background-color: #FFF;">Advance to 3rd &#10003;</button>
+                                        <button name="playerOnBase" id="firstBaseHome" type="button" value="home" style="color: #2e8b43; background-color: #FFF;">Advance to home &#10003;</button>
+                                    }
+                                }
+                                <button name="playerOnBase" id="firstBaseStay" type="button" value="stay" style="color: #000; background-color: #FFF;">stay on base &#8211;</button>
+                            }
+                        }
+                        <button name="playerOnBase" id="firstBaseOut" type="button" value="out" style="color: #900; background-color: #F8F8F8;">Out &#10005;</button>
+                    </div>
+                }
+                <!--Player on base prompts-->
+                <!--Batter actions prompt-->
+                //after all bases were handled, the next batter action happens
+                if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
+                {
+                    <div class="batter-action-button-container">
+                        <button id="btnBatterAction" type="button" class="batter-action-button" onclick="ShowBatterAction()">PITCH</button>
+                    </div>
+                    <div id="batterActionPrompt" class="batter-prompt">
+                        <p style="color: #000; margin-bottom: 0;">Choose an action for @Model.Batter.Name</p>
+                        <input id="btnCloseBatterActions" type="button" class="btn-close-batter-prompt" value="X" onclick="HideBatterAction()" />
+                        @Html.DropDownList("BatterActionList", null, htmlAttributes: new { @class = "form-control", size="15", style="font-weight: 600; max-width: 180px; margin: 10px auto;" })
+                        <button id="batterActionSubmit" type="button" class="btn-batter-action-submit">Confirm play</button>
+                    </div>
+
+                    //if any player has the opportunity to steal a base
+                    if ((Model.PlayerOnFirst != null && Model.PlayerOnSecond == null)
+                    || (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
+                    || Model.PlayerOnThird != null)
+                    {
+                        <div id="stealPrompt" class="steal-prompt-container">
+                            @{
+                                if (Model.PlayerOnFirst != null && Model.PlayerOnSecond == null) //check for each possible steal play individually
+                                {
+                                    <div class="steal-prompt">
+                                        <button name="stealPrompt" id="stealSecond" type="button" class="btn-steal-prompt">Steal Second Base</button>
+                                    </div>
+                                }
+
+                                if (Model.PlayerOnSecond != null && Model.PlayerOnThird == null)
+                                {
+                                    <div class="steal-prompt">
+                                        <button name="stealPrompt" id="stealThird" type="button" class="btn-steal-prompt">Steal Third Base</button>
+                                    </div>
+                                }
+
+                                if (Model.PlayerOnThird != null)
+                                {
+                                    <div class="steal-prompt">
+                                        <button name="stealPrompt" id="stealHome" type="button" class="btn-steal-prompt">Steal Home Base</button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                }
+                <!--Batter actions prompt-->
+                if (!Model.HandleFirstBase && !Model.HandleSecondBase && !Model.HandleThirdBase)
+                {
+                    <button id="btnSkip" type="button" class="btn-skip-prompt btn-outline-dark">Skip Batter</button>
+                }
+            }
+            else //bottom half of the inning
+            {
+                <button id="btnEndInning" type="button" class="btn-end-inning-prompt" onclick="UpdateGame('endInning')">End Inning</button>
+            }
+        }
+
+    </div>
+</section>
+
+
+
+<style>
+    /*Baseball diamond*/
+    .diamond-container {
+        background-image: url(../../Image/baseball-diamond.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        display: block;
+        height: 648px;
+        margin: 0 auto;
+        width: 709px;
+    }
+
+    .position-label {
+        background-color: rgba(0,0,0,0.5);
+        border-radius: 5px;
+        color: #FFF;
+        font-size: 19px;
+        font-weight: 600;
+        height: 30px;
+        position: relative;
+        text-align: center;
+        width: 30px;
+    }
+
+    .player-label {
+        background-color: rgba(0,0,0,0.5);
+        border-radius: 5px;
+        color: #FFF;
+        display: flow;
+        font-size: 16px;
+        font-weight: 600;
+        height: 50px;
+        position: relative;
+        text-align: center;
+        width: 90px;
+    }
+
+    /*Prompt for runners and batter*/
+    .player-on-base-prompt {
+        background: rgba(255,255,255,0.8);
+        border: 2px solid #000;
+        border-radius: 5px;
+        color: #FFF;
+        font-size: 12px;
+        font-weight: 600;
+        height: auto;
+        padding: 2px 0;
+        position: relative;
+        text-align: center;
+        width: 140px;
+    }
+
+    .batter-prompt {
+        background: rgba(255,255,255,0.8);
+        border: 2px solid #000;
+        border-radius: 5px;
+        color: #FFF;
+        display: none;
+        font-size: 12px;
+        font-weight: 600;
+        height: auto;
+        left: 233px;
+        padding: 2px 0;
+        position: relative;
+        text-align: center;
+        top: -375px;
+        width: 250px;
+    }
+
+    #BatterActionList {
+        font-size: 14px;
+    }
+
+    .player-on-base-prompt button {
+        border: 0;
+        border-top: 2px solid #000;
+        border-bottom: 2px solid #000;
+        font-weight: 600;
+        height: 28px;
+        margin: 1px 0 1px 0;
+        width: 100%;
+    }
+
+        .player-on-base-prompt button:hover {
+            font-weight: 800;
+            height: 29px;
+            margin: 2px 0 2px 0;
+            width: 100%;
+        }
+
+    .batter-action-button-container {
+        background-color: #FFF;
+        border: 2px solid #000;
+        height: 60px;
+        left: 324px;
+        position: relative;
+        transform: rotate(45deg);
+        top: -68px;
+        width: 60px;
+    }
+
+    .batter-action-button {
+        background-color: rgba(0,0,0,0);
+        border: none;
+        font-weight: 600;
+        height: 60px;
+        transform: rotate(-45deg);
+        width: 60px;
+    }
+
+        .batter-action-button:hover {
+            font-weight: 800;
+        }
+
+    .btn-batter-action-submit {
+        font-weight: 600;
+        height: 35px;
+        margin: 5px 0;
+        width: 100px;
+    }
+
+    .btn-close-batter-prompt {
+        position: relative;
+        left: 110px;
+        top: -17px;
+    }
+
+    /*Steal prompt*/
+    .steal-prompt-container {
+        border-radius: 5px;
+        color: #FFF;
+        font-weight: 600;
+        height: auto;
+        left: 545px;
+        padding: 2px 0;
+        position: relative;
+        text-align: center;
+        top: -40px;
+        width: 140px;
+    }
+
+    .btn-steal-prompt {
+        background-color: #900;
+        border: 2px solid #FFF;
+        border-radius: 5px;
+        color: #F8F8F8;
+        font-size: 17px;
+        font-weight: 600;
+        height: 35px;
+        width: 160px;
+    }
+
+    .btn-skip-prompt {
+        border: 1px solid #000;
+        border-radius: 5px;
+        font-size: 17px;
+        font-weight: 600;
+        height: 35px;
+        position: relative;
+        top: -50px;
+        width: 160px;
+    }
+
+    .btn-end-inning-prompt {
+        border: 1px solid #000;
+        border-radius: 5px;
+        font-size: 17px;
+        font-weight: 600;
+        height: 35px;
+        left: 270px;
+        position: relative;
+        top: -80px;
+        width: 160px;
+    }
+
+    /*Labels for defensive positions*/
+    .first-base {
+        left: 463px;
+        top: 330px;
+    }
+
+    .second-base {
+        left: 470px;
+        top: 180px;
+    }
+
+    .third-base {
+        left: 215px;
+        top: 270px;
+    }
+
+    .short-stop {
+        left: 208px;
+        top: 120px;
+    }
+
+    .left-field {
+        left: 140px;
+        top: 0px;
+    }
+
+    .center-field {
+        left: 340px;
+        top: -80px;
+    }
+
+    .right-field {
+        left: 532px;
+        top: -60px;
+    }
+
+    /*Labels for runners and batter*/
+    .first-base-label,
+    .second-base-label,
+    .third-base-label,
+    .current-batter {
+        text-align: center;
+    }
+
+    .first-base-label {
+        left: 414px;
+        top: 110px;
+    }
+
+    .second-base-label {
+        left: 310px;
+        top: -73px;
+    }
+
+    .third-base-label {
+        left: 205px;
+        top: 10px;
+    }
+
+    .current-batter {
+        left: 310px;
+        top: 310px;
+    }
+
+    .first-base-prompt {
+        left: 390px;
+        top: -219px;
+    }
+
+    .second-base-prompt {
+        left: 283px;
+        top: -342px;
+    }
+
+    .third-base-prompt {
+        left: 176px;
+        top: -175px;
+    }
+
+    /*Inning tracker*/
+    .inning-tracker-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 200px;
+        width: 100%;
+    }
+
+    .inning-info-container {
+        margin-top: 20px;
+    }
+
+        .inning-info-container th,
+        .inning-info-container td {
+            border: 5px solid #FFF;
+        }
+
+        .inning-info-container .inning-info-header p {
+            font-size: 24px;
+            margin-bottom: 0px;
+        }
+
+    .inning-info-header {
+        color: #17254c;
+        font-weight: 600;
+        height: 40px;
+        text-align: center;
+        width: 20px;
+    }
+
+
+    .blank-indicator,
+    .green-indicator,
+    .red-indicator {
+        border-radius: 100%;
+        display: inline-block;
+        height: 20px;
+        margin: -4px 2px;
+        width: 20px;
+    }
+
+    .blank-indicator {
+        background-color: #ddd;
+        border: 1px solid #000;
+    }
+
+    .green-indicator {
+        background-color: #1B1;
+    }
+
+    .red-indicator {
+        background-color: #B11;
+    }
+
+    .number-indicator {
+        display: inline-block;
+        font-size: 24px;
+        margin: 0 0 0 4px;
+    }
+
+
+
+    /*     .batter-up-next-dropdown{
+                font-weight: 600;
+                position: relative;
+                left: -28px;
+                max-width: 180px;
+            } */
+
+    /* Tablet */
+    @@media only screen and (min-width: 426px) and (max-width: 768px) {
+        .diamond-container {
+            height: 362px;
+            width: 396px;
+        }
+
+        .position-label {
+            font-size: 15px;
+            height: 23px;
+            width: 23px;
+        }
+
+        .player-label {
+            font-size: 10px;
+            height: 31px;
+            width: 60px;
+        }
+
+        .player-on-base-prompt {
+            font-size: 10px;
+            font-weight: 600;
+            width: 140px;
+        }
+
+        .batter-prompt {
+            left: 83px;
+            top: -410px;
+        }
+
+        #BatterActionList {
+            font-size: 12px;
+        }
+
+        .batter-action-button-container {
+            height: 40px;
+            left: 177px;
+            width: 40px;
+            top: -99px;
+        }
+
+        .batter-action-button {
+            font-size: 10px;
+            height: 43px;
+            width: 32px;
+        }
+
+        .steal-prompt-container {
+            height: 30px;
+            left: 280px;
+            width: 130px;
+        }
+
+        .btn-steal-prompt {
+            font-size: 13px;
+            width: 130px;
+        }
+
+        .btn-skip-prompt {
+            font-size: 13px;
+            height: 33px;
+            width: 120px;
+        }
+
+        .first-base {
+            left: 256px;
+            top: 177px;
+        }
+
+        .second-base {
+            left: 262px;
+            top: 92px;
+        }
+
+        .third-base {
+            left: 116px;
+            top: 131px;
+        }
+
+        .short-stop {
+            left: 112px;
+            top: 46px;
+        }
+
+        .left-field {
+            left: 76px;
+            top: -20px;
+        }
+
+        .center-field {
+            left: 187px;
+            top: -68px;
+        }
+
+        .right-field {
+            left: 294px;
+            top: -68px;
+        }
+
+        .first-base-label {
+            left: 225px;
+            top: 15px;
+        }
+
+        .second-base-label {
+            left: 169px;
+            top: -91px;
+        }
+
+        .third-base-label {
+            left: 109px;
+            top: -47px;
+        }
+
+        .current-batter {
+            left: 169px;
+            top: 130px;
+        }
+
+        .first-base-prompt {
+            left: 188px;
+            top: -255px;
+        }
+
+        .second-base-prompt {
+            left: 128px;
+            top: -298px;
+        }
+
+        .third-base-prompt {
+            left: 70px;
+            top: -208px;
+        }
+
+        .btn-end-inning-prompt {
+            font-size: 10px;
+            left: 151px;
+            height: 28px;
+            top: -100px;
+            width: 90px;
+        }
+        /*Inning tracker CSS*/
+        .inning-info-container {
+            margin: 0;
+        }
+
+        .inning-info-header {
+            width: 20px;
+        }
+
+        .inning-info-container .inning-info-header p {
+            font-size: 16px;
+            margin-bottom: 0px;
+        }
+
+        .number-indicator {
+            font-size: 20px;
+            margin: 0 0 0 4px;
+        }
+        /*         .batter-up-next-dropdown {
+                        font-size: 14px;
+                        left: -24px;
+                        top: -60px;
+                        width: 140px;
+                    } */
+    }
+
+    /* phone */
+    @@media only screen and (min-width: 320px) and (max-width: 426px) {
+        .diamond-container {
+            height: 274px;
+            width: 300px;
+        }
+
+        .position-label {
+            font-size: 12px;
+            height: 18px;
+            width: 18px;
+        }
+
+        .player-label {
+            font-size: 9px;
+            height: 28px;
+            width: 45px;
+        }
+
+        .player-on-base-prompt {
+            font-size: 10px;
+            font-weight: 600;
+            width: 140px;
+        }
+
+            .player-on-base-prompt button {
+                height: 24px;
+            }
+
+                .player-on-base-prompt button:hover {
+                    font-weight: 800;
+                    height: 26px;
+                    margin: 2px 0 2px 0;
+                }
+
+        .batter-prompt {
+            left: 32px;
+            top: -435px;
+        }
+
+        .batter-action-button-container {
+            height: 30px;
+            left: 134px;
+            width: 30px;
+            top: -97px;
+        }
+
+        .batter-action-button {
+            font-size: 9px;
+            height: 45px;
+            width: 9px;
+        }
+
+        .steal-prompt-container {
+            height: 30px;
+            left: 209px;
+            top: -60px;
+            width: 100px;
+        }
+
+        .btn-steal-prompt {
+            font-size: 10px;
+            height: 30px;
+            width: 100px;
+        }
+
+        .btn-skip-prompt {
+            font-size: 10px;
+            height: 28px;
+            top: -65px;
+            width: 90px;
+        }
+
+        .btn-end-inning-prompt {
+            font-size: 10px;
+            height: 28px;
+            left: 102px;
+            top: -102px;
+            width: 90px;
+        }
+
+        .first-base {
+            left: 193px;
+            top: 132px;
+        }
+
+        .second-base {
+            left: 196px;
+            top: 66px;
+        }
+
+        .third-base {
+            left: 89px;
+            top: 96px;
+        }
+
+        .short-stop {
+            left: 83px;
+            top: 30px;
+        }
+
+        .left-field {
+            left: 60px;
+            top: -26px;
+        }
+
+        .center-field {
+            left: 140px;
+            top: -60px;
+        }
+
+        .right-field {
+            left: 222px;
+            top: -62px;
+        }
+
+        .first-base-label {
+            left: 171px;
+            top: 3px;
+        }
+
+        .second-base-label {
+            left: 126px;
+            top: -82px;
+        }
+
+        .third-base-label {
+            left: 81px;
+            top: -53px;
+        }
+
+        .current-batter {
+            left: 126px;
+            top: 95px;
+        }
+
+        .first-base-prompt {
+            left: 125px;
+            top: -235px;
+        }
+
+        .second-base-prompt {
+            left: 80px;
+            top: -266px;
+        }
+
+        .third-base-prompt {
+            left: 35px;
+            top: -202px;
+        }
+        /*Inning tracker CSS*/
+        .inning-info-container {
+            margin: 0;
+        }
+
+        .inning-info-header {
+            width: 20px;
+        }
+
+        .inning-info-container .inning-info-header p {
+            font-size: 16px;
+            margin-bottom: 0px;
+        }
+
+        .blank-indicator,
+        .green-indicator,
+        .red-indicator {
+            height: 12px;
+            width: 12px;
+            margin: 0px 2px -1px 2px;
+        }
+
+        .number-indicator {
+            font-size: 16px;
+            margin: 0 0 0 1px;
+        }
+
+        /*         .batter-up-next-dropdown {
+                        font-size: 12px;
+                        left: -8px;
+                        top: -50px;
+                        width: 110px;
+                    } */
+    }
+</style>

@@ -1,0 +1,68 @@
+﻿@model wmbaApp.ViewModels.UserVM
+@using wmbaApp.ViewModels;
+
+@{
+    ViewBag.Title = "Edit Roles";
+}
+
+<h2>Teams assigned to this user</h2>
+
+<form asp-action="AssignTeams">
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="ID" />
+    <input type="hidden" id="selectedTeams" />
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <b><label asp-for="UserName" class="control-label"></label>:</b>
+                <input asp-for="UserName" class="form-control" readonly="readonly" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            @{
+                foreach (Division d in ViewData["DivisionsList"] as List<Division>)
+                {
+                    <div class="form-group">
+                        <label class="control-label"></label>
+                        <label class="control-label"><b>@d.DivName Team:</b></label>
+                        @Html.DropDownList("selectedTeams", (SelectList)ViewData[d.DivName], "No team assigned", new { @class = "form-control", id=$"{d.DivName}" })
+                        <br />
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="submit" id="btnSubmit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+<div>
+    <partial name="_BackToList" />
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('select[name="selectedRoles"]').each(function (index, value) {
+                value.change(function (one) {
+                    console.log(one);
+                })
+            });
+        }
+    </script>
+
+
+    <script type="text/javascript">
+                        GenerateContextHelp([
+            "<p>The Team Assignment page shows all teams that can be assigned to a user, sorted by division. The user being edited is shown under 'User Name'.</p>",
+            "<p>Picking a team from a division's dropdown and clicking 'save' will assign that team to the user being edited.</p>",
+            "<p>A user can be assigned one team for every division. Selecting multiple teams from each dropdown and clicking 'save' will assign all teams selected.</p>"
+        ]);
+    </script>
+}

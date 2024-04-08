@@ -1,0 +1,183 @@
+@model wmbaApp.Models.Game
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1 class="text-center">@Html.DisplayFor(model => model.FullVersus)</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HomeTeam)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HomeTeam.TmName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AwayTeam)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AwayTeam.TmName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StartTimeSummary)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartTimeSummary)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EndTimeSummary)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndTimeSummary)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameLocation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameLocation.Name)
+        </dd>
+    </dl>
+</div>
+<hr />
+
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Home Team Lineup</h3>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.HomeLineup != null)
+                {
+                    foreach (var playerLineup in Model.HomeTeam.Players.Where(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID && p.IsActive == true)).ToList() as List<wmbaApp.Models.Player>)
+                    {
+                        <tr>
+                            <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Visitor Team Lineup</h3>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.AwayLineup != null)
+                {
+                    foreach (var playerLineup in Model.AwayTeam.Players.Where(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID && p.IsActive == true)).ToList() as List<wmbaApp.Models.Player>)
+                    {
+                        <tr>
+                            <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="text-center" style="margin-top: 50px;">
+    @{
+        if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+        {
+            if (Model.GameStartTime <= DateTime.Now && Model.GameEndTime >= DateTime.Now)
+                if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 0)
+                    if (Model.Innings.Count < 3)
+                    {
+                        <a asp-action="StartGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game" style="min-width: 100px;">
+                            <span></span><span></span><span></span><span></span>
+                            HOME GAME
+                        </a>
+                        <a asp-action="StartAwayGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game" style="min-width: 100px;">
+                            <span></span><span></span><span></span><span></span>
+                            AWAY GAME
+                        </a>
+                    }
+                    else
+                    {
+                        //put a button to redirect to game results view (N.Y.I) here
+                    }
+        }
+        else
+        {
+            if (User.IsInRole(Model.HomeTeam.TmName))
+            {
+                if (Model.GameStartTime <= DateTime.Now && Model.GameEndTime >= DateTime.Now)
+                    if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 0)
+                        if (Model.Innings.Count < 3)
+                        {
+                            <a asp-action="StartGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game" style="min-width: 100px;">
+                                <span></span><span></span><span></span><span></span>
+                                START GAME
+                            </a>
+                        }
+                        else
+                        {
+                            //put a button to redirect to game results view (N.Y.I) here
+                        }
+            }
+            else
+            {
+                if (Model.GameStartTime <= DateTime.Now && Model.GameEndTime >= DateTime.Now)
+                    if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 0)
+                        if (Model.Innings.Count < 3)
+                        {
+                            <a asp-action="StartAwayGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm" role="button" data-bs-toggle="tooltip" title="Start this game" style="min-width: 100px;">
+                                <span></span><span></span><span></span><span></span>
+                                START GAME
+                            </a>
+                        }
+                        else
+                        {
+                            //put a button to redirect to game results view (N.Y.I) here
+                        }
+            }
+        }
+    }
+
+    @{
+        bool homeLineupHasPlayers = Model.HomeLineup != null && Model.HomeTeam.Players.Any(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID));
+        bool awayLineupHasPlayers = Model.AwayLineup != null && Model.AwayTeam.Players.Any(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID));
+    }
+    <br />
+    @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-outline-dark" style="min-width: 100px;">Edit Game</a>
+    }
+    @if (!User.IsInRole("ScoreKeeper"))
+    {
+        if (homeLineupHasPlayers && awayLineupHasPlayers)
+        {
+            <a asp-action="Edit" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="btn btn-outline-dark" style="min-width: 100px;">
+                Edit Lineup
+            </a>
+        }
+        else
+        {
+            <a asp-action="Create" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="btn btn-outline-dark" style="min-width: 100px;">
+                Create Lineup
+            </a>
+        }
+    }
+    <br />
+    <a asp-action="Index" class="btn btn-outline-dark" style="min-width: 130px;">Back to Games List</a>
+
+</div>
+<br />
+<br />
+<br />
+<br />

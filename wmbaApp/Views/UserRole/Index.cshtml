@@ -1,0 +1,132 @@
+﻿@model IEnumerable<wmbaApp.ViewModels.UserVM>
+
+@{
+    ViewBag.Title = "User Roles";
+}
+
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <div class="container">
+        <h2 class="text-center">User Role Assignments</h2>
+
+        <br />
+
+        <div class="form-horizontal">
+            <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+                <span></span><span></span><span></span><span></span>
+                <p id="seacrchBtnChange" class="filSearch" style="color: #2e8b43;">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+            </button>
+
+            <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+                <div class="card card-body bg-light">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="control-label">Search by Username/Role:</label>
+                            @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="d-grid">
+                                <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" id="filterBtn" onclick="change()" />
+                                <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="d-sm-table-cell d-md-table-cell">
+                            <div class="d-flex align-items-center">
+                                <input type="submit" name="actionButton" value="Username" class="non-button-input userVmText" data-bs-toggle="tooltip" title="Sort User-Name" />
+                                <i class="fa-solid fa-arrows-up-down arrow non-button-input " id="move" style="margin-left: 5px;"></i>
+                            </div>
+                        </th>
+
+                        <th class="d-sm-table-cell d-md-table-cell">
+                            <div class="d-flex align-items-center">
+                                <input type="submit" name="actionButton" value="role(s)" class="non-button-input userVmText" data-bs-toggle="tooltip" title="Sort User-Roles" />
+                                <i class="fa-solid fa-arrows-up-down arrow non-button-input " id="move" style="margin-left: 5px;"></i>
+                            </div>
+                        </th>
+
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.UserName)
+                            </td>
+                            <td>
+                                @{
+                                    foreach (var r in item.UserRoles)
+                                    {
+                                        @:  @((r == "Admin" || r == "Convenor" || r == "Coach" || r == "ScoreKeeper") ? Html.Raw(r + "<br />") : "")
+                                    }
+                                }
+                            </td>
+                            <td class="GameCrud">
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                                   role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                    Edit
+                                </a>
+                            </td>
+                            @{
+                                if (item.UserRoles.Any(ur => ur == "Coach" || ur == "ScoreKeeper"))
+                                {
+                                    <td>
+                                        <a asp-action="AssignTeams" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary"
+                                           role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                            Teams
+                                        </a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <partial name="_PagingNavBar" />
+        <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block btn-left btn-outline-dark">Back</a>
+    </div>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script type="text/javascript">
+     
+            GenerateContextHelp([
+                "<p>The User Role Assignment page allows you to view and change the level of access that a user has within the system.</p>",
+                "<p>Users can have multiple roles, including Admin, Convenor, Coach, and ScoreKeeper, each granting different levels of access and functionality.</p>",
+                "<p>You can search for user by their username, and you can also sort the users by clicking on the headings 'Username' or 'role(s)'.</p>",
+                "<P>You can adjust the number of users displayed by clicking on the button below, which indicates the total page count such as '1 of 10'. This feature allows you to navigate between pages by skipping forward or returning to previous pages based on the page number.</p>",
+                "<p>Only users with the Admin role can maintain and assign roles to other users. An admin cannot change their own role; it must be done by another admin.</p>",
+                "<p>Clicking 'Edit' allows you to modify a user's access level. If a user has roles such as Coach or ScoreKeeper, you can also click 'Teams' to assign teams to that user.</p>",
+                "<p>Ensure that role assignments are accurate to maintain appropriate access levels and system security.</p>"
+            ]);
+      
+    </script>
+}

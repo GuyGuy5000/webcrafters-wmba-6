@@ -1,0 +1,69 @@
+﻿@model wmbaApp.Models.Team
+
+<hr />
+
+<form asp-action="Edit" method="post" id="editform" enctype="multipart/form-data" class="mx-auto mt-4 editform " style="width: 80%">
+    <fieldset>
+        <partial name="_ViewHeading" class="partial" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ID" />
+
+        <div class="form-group">
+            <label asp-for="TmName" class="control-label required-label">Team Name </label>
+            <input asp-for="TmName" id="disable" class="form-control" placeholder="Ex: Green Jr. Jackfish" autocomplete="on"  />
+            <span asp-validation-for="TmName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DivisionID" class="control-label required-label"> Division   </label>
+            <div class="input-group mb-3">
+                <select asp-for="DivisionID" id="disableDropdown" class="form-control" asp-items="ViewBag.DivisionID"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label"></label>
+            <label class="control-label">Coach</label>
+            @Html.DropDownList("CoachID", (SelectList)ViewData["CoachID"], "Select a Coach", new { @class = "form-control" })
+            <span asp-validation-for="DivisionCoaches" class="text-danger"></span>
+            <br />
+        </div>
+
+        <div id="customModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="close" onclick="closeModal()">&times;</span>
+                <b><p id="question">Are you done, have you reviewed it?</p></b>
+                <b><p id="required">All Fields are required</p></b>
+                <i></i>
+                <i id="saveCheck" class="fa-solid fa-question fa-f6"></i>
+                <input type="submit" id="hideBtn" value="Save" class="btn btn-outline-dark " />
+
+                <i id="error" class="fa-solid fa-xmark fa-f6"></i>
+                <a asp-action="Index" id="bck" class="btn btn-outline-dark" onclick="closeModal()">Back to Teams List</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex  align-items-center justify-content-center center">
+                        <button id="btnView" class="btn btn-outline-dark">Save</button>
+                        <button type="button" id="tmsBck" class="btn btn-outline-dark " onclick="openModal()">
+                           Back 
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</form>
+
+<script></script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script src="~/js/site.js"></script>
+    }
+
+}

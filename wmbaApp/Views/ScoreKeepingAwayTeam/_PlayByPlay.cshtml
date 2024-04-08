@@ -1,0 +1,210 @@
+﻿@model wmbaApp.ViewModels.GameScoreKeepingVM
+
+<div class="modal fade" id="playByPlay" tabindex="-1" role="dialog" aria-labelledby="playByPlayLabel" aria-hidden="true" style="width: 100%;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="min-height: 450px;">
+            <div class="modal-header">
+                <h2 class="modal-title" id="playByPlayLabel">Inning @(Model.CurrentInning + 1):</h2>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div id="playByPlayContainer" class="play-by-play-container">
+                    <h4 style="text-align: center; font-weight: 800;">Play-By-Play</h4>
+                    <ol class="play-by-play-list">
+                        @{
+                            string playByPlayOutput = "";
+                            foreach (PlayByPlay play in Model.Innings[Model.CurrentInning].PlayByPlays)
+                            {
+                                switch (play.PlayerAction.PlayerActionName)
+                                {
+                                    case "Single":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>1B</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Double":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>2B</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Triple":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>3B</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Home Run":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>HR</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Ball":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>B</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Strike":
+                                        playByPlayOutput += $"<li><div class='red-play-indicator'><p class='play-type'>K</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Foul Ball":
+                                        playByPlayOutput += $"<li><div class='red-play-indicator'><p class='play-type'>FB</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Foul Tip":
+                                        playByPlayOutput += $"<li><div class='red-play-indicator'><p class='play-type'>FT</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Fly Out":
+                                        playByPlayOutput += $"<li><div class='red-play-indicator'><p class='play-type'>FO</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Ground Out":
+                                        playByPlayOutput += $"<li><div class='red-play-indicator'><p class='play-type'>GO</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Hit By Pitch":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>HBP</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Intentional Walk":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>IBB</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Catcher Interference":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>CI</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Run":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>R</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "First Base":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>1ST</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Second Base":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>2ND</p></p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Third Base":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>3RD</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Out":
+                                        playByPlayOutput += $"<li><div class='red-play-indicator'><p class='play-type'>O</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+
+                                    case "Walk":
+                                        playByPlayOutput += $"<li><div class='green-play-indicator'><p class='play-type'>BB</p></div>{play.Player.PlyrFirstName} - {play.PlayerAction.PlayerActionName}</li>";
+                                        break;
+                                }
+                            }
+                            if (playByPlayOutput == "")
+                                @Html.Raw("<h4>No plays have been made yet</h4>")
+                            else
+                                @Html.Raw(playByPlayOutput)
+                        }
+                    </ol>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div style="display: block; margin: 0 auto;">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    /*Play by play*/
+    .play-by-play-container {
+        max-height: 375px;
+        overflow-y: scroll;
+        width: 100%;
+    }
+
+    .play-by-play-list {
+        margin: 0 auto;
+        text-align: left;
+    }
+
+        .play-by-play-list li {
+            background-color: rgba(0,0,0,0.1);
+            font-size: 18px;
+            height: 45px;
+            list-style-type: none;
+            margin: 5px 0;
+        }
+
+        .play-type{
+            margin: 10px 0;
+        }
+
+    .green-play-indicator,
+    .red-play-indicator {
+        display: inline-block;
+        font-size: 18px;
+        font-weight: 800;
+        height: 45px;
+        margin-right: 10px;
+        text-align: center;
+        width: 45px;
+    }
+
+    .green-play-indicator {
+        background-color: #1B1;
+    }
+
+    .red-play-indicator {
+        background-color: #A00;
+        color: #FFF;
+    }
+
+    @@media only screen and (min-width: 426px) and (max-width: 768px) {
+        .play-by-play-list {
+            padding-left: 0;
+        }
+
+            .play-by-play-list li {
+                height: 38px;
+                margin: 5px 0;
+            }
+
+        .play-type {
+            margin: 7px 0;
+        }
+
+        .green-play-indicator,
+        .red-play-indicator {
+            font-size: 16px;
+            height: 38px;
+            margin-right: 5px;
+            width: 38px;
+        }
+    }
+
+    @@media only screen and (min-width: 320px) and (max-width: 426px) {
+        .play-by-play-list {
+            padding-left: 0;
+        }
+
+            .play-by-play-list li {
+                font-size: 16px;
+                height: 28px;
+                margin: 5px 0;
+            }
+
+        .play-type {
+            margin: 5px 0;
+        }
+
+        .green-play-indicator,
+        .red-play-indicator {
+            font-size: 12px;
+            height: 28px;
+            margin-right: 2px;
+            width: 28px;
+        }
+    }
+</style>

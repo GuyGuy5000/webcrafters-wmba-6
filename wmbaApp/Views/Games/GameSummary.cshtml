@@ -1,0 +1,295 @@
+﻿@model wmbaApp.Models.Game
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1 class="text-center">@Html.DisplayFor(model => model.FullVersus)</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HomeTeam)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HomeTeam.TmName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AwayTeam)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AwayTeam.TmName)
+        </dd>
+        <dt class="col-sm-2">
+            Started
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StartTimeSummary)
+        </dd>
+        <dt class="col-sm-2">
+            Ended:
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EndTimeSummary)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GameLocation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GameLocation.Name)
+        </dd>
+    </dl>
+</div>
+<hr />
+
+<!--Innings table-->
+<section class="innings-table-container">
+    <table class="innings-table">
+        <tr>
+            <th colspan="@(Model.Innings.Count + 4)">
+                Innings
+            </th>
+        </tr>
+        <tr>
+            <td class="team-th" colspan="3">
+                Team
+            </td>
+            @{
+                for (int i = 1; i <= Model.Innings.Count; i++)
+                {
+                    <td class="inning-heading">
+                        @i
+                    </td>
+                }
+            }
+            <td class="inning-heading">
+                R
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                @Model.HomeTeam.TmName
+            </td>
+            @{
+                foreach (Inning inning in Model.Innings)
+                {
+                    <td>
+                        @inning.HomeTeamScore
+                    </td>
+                }
+            }
+            <td>
+                @Model.Innings.Sum(i => i.HomeTeamScore)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                @Model.AwayTeam.TmName
+            </td>
+            @{
+                foreach (Inning inning in Model.Innings)
+                {
+                    <td>
+                        @inning.AwayTeamScore
+                    </td>
+                }
+            }
+            <td>
+                @Model.Innings.Sum(i => i.AwayTeamScore)
+            </td>
+        </tr>
+    </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--Statistics table-->
+<section>
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Player
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        AB
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Hits
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Runs
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        HR
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        BB
+                    </h6>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in ViewBag.GameStats as List<Statistic>)
+            {
+                <tr>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.Players.FirstOrDefault().FullName)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsAB)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsH)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsR)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsHR)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsBB)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--Lineup-->
+<div class="row">
+    <div class="col-md-6">
+        <h3>Home Team Lineup</h3>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.HomeLineup != null)
+                {
+                    foreach (var playerLineup in Model.HomeTeam.Players.Where(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID && p.IsActive == true)).ToList() as List<wmbaApp.Models.Player>)
+                    {
+                        <tr>
+                            <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <h3>Visitor Team Lineup</h3>
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.AwayLineup != null)
+                {
+                    foreach (var playerLineup in Model.AwayTeam.Players.Where(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID && p.IsActive == true)).ToList() as List<wmbaApp.Models.Player>)
+                    {
+                        <tr>
+                            <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<a asp-action="FinishedGames" class="btn btn-outline-dark" style="min-width: 130px;">Back to Games List</a>
+
+
+<style>
+    .innings-table-container {
+        display: block;
+        margin: 0px auto 40px auto;
+        overflow-x: scroll;
+        width: 100%;
+    }
+
+    .innings-table {
+        text-align: center;
+        width: 100%;
+    }
+
+        .innings-table td,
+        .innings-table th {
+            background-color: #DEE4FE;
+            border: solid 2px #FFF;
+        }
+
+
+        .innings-table th {
+            background-color: #2e8b43;
+            color: #FFF;
+            padding: 5px 0;
+        }
+
+        .innings-table .team-th {
+            background-color: #2e8b43;
+            color: #FFF;
+            font-weight: 600;
+            padding: 5px 5px;
+        }
+
+        .innings-table .inning-heading {
+            background-color: #B88453;
+            color: #FFF;
+            font-weight: 600;
+            padding: 5px;
+        }
+</style>
+
+
+
+<br />
+<br />
+<br />
+<br />

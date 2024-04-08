@@ -1,0 +1,144 @@
+﻿@model wmbaApp.ViewModels.GameScoreKeepingVM
+
+<style>
+    .score-bar-container {
+        background-color: #FFF;
+        color: #000;
+        display: grid;
+        height: 88px;
+        grid-template-columns: repeat(3, 1fr);
+        padding: 0 40px 0 40px;
+    }
+
+    .home-team-header,
+    .score-container,
+    .score-header,
+    .away-team-header {
+        display: block;
+        padding: 15px;
+        margin: auto;
+    }
+
+    .home-team-header {
+        text-align: left;
+    }
+
+    .score-container {
+        text-align: center;
+    }
+
+    .score-header {
+        background-color: #DEE4FE;
+    }
+
+    .away-team-header {
+        text-align: right;
+    }
+
+    .btn-finish-game {
+        border: 2px solid #000;
+        border-radius: 5px;
+        display: block;
+        font-size: 17px;
+        font-weight: 600;
+        height: 40px;
+        margin: 0 auto;
+        position: relative;
+        left: 0;
+        width: 170px;
+    }
+
+    @@media only screen and (min-width: 320px) and (max-width: 769px) {
+        .score-bar-container {
+            height: 80px;
+        }
+
+        .score-bar-container,
+        .score-container {
+            padding: 0;
+        }
+
+        .score-header {
+            padding: 10px;
+        }
+
+        .home-team-header,
+        .away-team-header {
+            padding: 0;
+        }
+
+            .home-team-header h2,
+            .score-container h2,
+            .away-team-header h2 {
+                font-size: 16px;
+            }
+
+
+        .home-team-header,
+        .score-header,
+        .away-team-header {
+            text-align: center;
+        }
+
+        .btn-finish-game {
+            font-size: 13px;
+            height: 30px;
+            width: 115px;
+        }
+    }
+</style>
+
+
+@{
+    if (Model.CurrentInning >= (int)TempData.Peek("OfficialGameCutOff"))
+    {
+        <form asp-action="FinishGame" style="margin-bottom: 0;">
+            <input name="gameScoreKeepingJSON" id="gameScoreKeepingJSON" type="hidden" value='@Json.Serialize(Model)' />
+            <input type="submit" value="FINISH GAME" class="btn-finish-game" />
+        </form>
+    }
+    else
+    {
+        <input name="gameScoreKeepingJSON" id="gameScoreKeepingJSON" type="hidden" value='@Json.Serialize(Model)' />
+    }
+}
+<section class="score-bar-container">
+    <div class="home-team-header">
+        <h2>
+            @Model.HomeTeamName
+        </h2>
+    </div>
+
+    <div class="score-container">
+        <div class="score-header">
+            <h2>
+                @Model.HomeTeamScore - @Model.AwayTeamScore
+            </h2>
+        </div>
+        <h6 style="text-align: center; display: inline; color: #5f5f5f;">
+            Inning:
+            @{
+                string inningCountOutput = "";
+
+                if (Model.CurrentInning + 1 >= (int)TempData.Peek("GameLength"))
+                    inningCountOutput += Model.CurrentInning + 1 > (int)TempData.Peek("GameLength") ? (Model.CurrentInning + 1) + " (EXTRA)" : (Model.CurrentInning + 1) + " (FINAL)";
+                else
+                    inningCountOutput += Model.CurrentInning + 1;
+
+                if (Model.Innings[Model.CurrentInning].InningTop)
+                    inningCountOutput += " &#9650;";
+                else
+                    inningCountOutput += " &#9660;";
+
+                @Html.Raw(inningCountOutput)
+
+            }
+        </h6>
+    </div>
+
+    <div class="away-team-header">
+        <h2>
+            @Model.AwayTeamName
+        </h2>
+    </div>
+</section>

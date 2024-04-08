@@ -1,0 +1,52 @@
+﻿@model wmbaApp.Models.Lineup
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="font-italic font-weight-bold">@ViewData["HomeTeamName"]</h4>
+
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var player in ViewData["SelectedHomePlayers"] as List<wmbaApp.Models.Player>)
+                    {
+                        <tr>
+                            <td class="font-italic font-weight-bold">@player.FullName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <h4 class="font-italic font-weight-bold">@ViewData["AwayTeamName"]</h4>
+
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var player in ViewData["SelectedAwayPlayers"] as List<wmbaApp.Models.Player>)
+                    {
+                        <tr>
+                            <td class="font-italic font-weight-bold">@player.FullName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div>
+    <a asp-action="Index" asp-controller="Games" class="btn btn-outline-dark ">Back to Game List</a>
+</div>
+
+

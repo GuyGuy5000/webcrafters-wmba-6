@@ -1,0 +1,100 @@
+﻿@model IEnumerable<wmbaApp.Models.Player>
+
+@{
+    wmbaApp.Models.Team team = (wmbaApp.Models.Team)ViewBag.Team;
+    <partial name="_TeamDetails" model="team" />
+    ViewData["Title"] = ViewData["ControllerFriendlyName"];
+}
+<div style="text-align:center;">
+    <h2>Inactive Players</h2>
+</div>
+<form asp-action="InactiveIndex" method="get">
+    <input type="hidden" name="TeamID" value="@team.ID" />
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <br />
+    <div class="form-horizontal">
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <span></span><span></span><span></span><span></span>
+            <p class="filSearch ">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        </button>
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+
+                    <div class="col-md-4 activeView">
+                        <label class="control-label ">Click to View Inactive Players:</label>
+                        <a asp-action="Index" asp-route-TeamID="@team.ID" class="btn  btn-outline-dark btn-center view deactivateTeam btn-active-toggle" title="Click to toggle between active and inactive teams">Currently viewing: Active Players</a>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">Search by Player Name:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" id="filterBtn" onclick="change()" />
+                        <a asp-action="InactiveIndex" asp-route-TeamID="@team.ID" class="btn btn-outline-dark">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="d-none d-lg-table-cell">
+                    <input type="submit" name="actionButton" value="Player Full Name" class="non-button-input " />
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <h5>
+                        Jersey Number
+                    </h5>
+                </th>
+                <th style="min-width:120px">
+                    @if (!User.IsInRole("ScoreKeeper"))
+                    {
+                        <a asp-action="Create" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Add a new player to this team">
+                            <strong>Create</strong>
+                        </a>
+                    }
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PlyrJerseyNumber)
+                    </td>
+                    <td class="GameCrud">
+                        <a asp-action="Details" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-dark" role="button" data-bs-toggle="tooltip" title="Player Details">
+                            DETAILS
+                        </a>
+                        @if (!User.IsInRole("ScoreKeeper"))
+                        {
+                            <a asp-action="MakeActive" asp-route-id="@item.ID" asp-route-TeamID="@team.ID" class="btn btn-sm btn-outline-dark" role="button" data-bs-toggle="tooltip" title="Reactivate Player">
+                                INACTIVE
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+</form>
+<br />
+<br />
+<br />
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

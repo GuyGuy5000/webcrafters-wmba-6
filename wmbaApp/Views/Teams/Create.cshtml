@@ -1,0 +1,84 @@
+﻿@using wmbaApp.ViewModels
+@model wmbaApp.Models.Team
+
+<form asp-action="Create" method="post" enctype="multipart/form-data" class="mx-auto mt-4 editform" id="createForm" style="width: 80%;">
+    <fieldset>
+        <partial name="_ViewHeading" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="TmName" class="control-label required-label"></label>
+            <input asp-for="TmName" class="form-control " placeholder="Ex: Green Jr. Jackfish" />
+            <br />
+            <span asp-validation-for="TmName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="DivisionID" class="control-label required-label"></label>
+            <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID">
+                <option value="">Select a Division</option>
+            </select>Create and add players
+
+            <br />
+            <span asp-validation-for="DivisionID" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label"></label>
+            <label class="control-label">Coach</label>
+            @Html.DropDownList("CoachID", (SelectList)ViewData["CoachID"], "Select a Coach", new { @class = "form-control" })
+            <span asp-validation-for="DivisionCoaches" class="text-danger"></span>
+            <br />
+        </div>
+
+
+        <br />
+        <div class="form-group">
+            <input type="submit" name="submitButton" value="Create and add players" class="btn btn-outline-dark crud deactivateTeam" />
+            <input type="submit" id="submitCreate" name="submitButton" value="Create" onclick="openModal()" class="btn btn-outline-dark deactivate" />
+            <a asp-action="Index" type="button" class="btn btn-outline-dark deactivate">Back to Teams list</a>
+        </div>
+    </fieldset>
+</form>
+
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+
+
+
+        $(function () {
+            $("#submitCreate").click(function () {
+                // Trigger form validation
+                var form = $('#createForm').submit();
+                console.log(form);
+
+                // Check if form has validation errors
+                var hasValidationErrors = $('#createForm').valid();
+                console.log(hasValidationErrors);
+
+                //postback
+                $.ajax({
+                    url: "@Url.Action("Check", "Home")",
+                    data: { isValid: hasValidationErrors }
+                            type: "Post",
+                    success: function (result) {
+                        $("#IsValidCheck").html(""); //reset the div
+                        $("#IsValidCheck").html(result); // set the div to the result of the postback
+                    },
+                    error: function (result) {
+                        window.alert("This is an unhandled exception");
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+

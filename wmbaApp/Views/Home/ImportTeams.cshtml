@@ -1,0 +1,214 @@
+﻿@using wmbaApp.Utilities;
+@model IEnumerable<wmbaApp.Models.Team>
+
+@{
+    if (ViewData["SuccessfullyImportedTeams"] != null)
+    {
+        <h2>Players Succesfully Imported:</h2>
+        <form asp-action="ImportTeams" method="get">
+            <table class="table mt-3 playerTable">
+                <thead>
+                    <tr>
+                        <th class="d-sm-table-cell d-md-table-cell">
+                            <input type="submit" name="actionButton" value="Team" class="non-button-input" disabled />
+                            <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move"></i>
+                        </th>
+
+                        <!-- Coaches -->
+                        <th class="d-none d-xxl-table-cell">
+                            <h6 class="non-button-input" id="heading">
+                                Players
+                            </h6>
+                        </th>
+                        <!-- Division -->
+                        <th class="d-none d-xxl-table-cell">
+                            <input type="submit" value="Division" name="actionButton" class="non-button-input" disabled />
+                            <i class="fa-solid fa-arrows-up-down arrow  non-button-input"></i>
+                        </th>
+                        <th style="min-width:120px">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewData["SuccessfullyImportedTeams"] as List<Team>)
+                    {
+                        <tr style="background-color: rgba(144,250,144, 0.2);">
+                            <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.TmName)</td>
+                            <td class="d-none d-xxl-table-cell">
+                                @{
+                                    if (ViewData["SuccesfullyImportedPlayers"] != null)
+                                    {
+                                        List<Player> players = ((List<Player>)ViewData["SuccesfullyImportedPlayers"]).Where(p => p.Team.TmName.Contains(item.TmName)).ToList();
+                                        int playerCount = players.Count;
+                                        if (playerCount > 0)
+                                        {
+                                            string firstPlayer = players.First().FullName;
+                                            if (playerCount > 1)
+                                            {
+                                                string playerList = "";
+                                                for (int i = 1; i < playerCount; i++)
+                                                {
+                                                    playerList += players[i].FullName + " <br />";
+                                                }
+                                                <a style="color: #020202;" role="button" data-bs-toggle="collapse" href="#collapsePlayer@(item.TmName.Replace(" ", "-"))"
+                                                   aria-expanded="false" aria-controls="collapsePlayer@(item.TmName.Replace(" ", "-"))">
+                                                    @firstPlayer <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Players">@playerCount</span>
+                                                </a>
+                                                <div class="collapse" id="collapsePlayer@(item.TmName.Replace(" ", "-"))">
+                                                    @Html.Raw(playerList)
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @firstPlayer
+                                            }
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
+                            <td>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    }
+}
+
+@{
+    if (ViewData["FailedImportedTeams"] != null)
+    {
+        <h2>Players Failed To Import:</h2>
+        <form asp-action="ImportTeams" method="get">
+            <table class="table mt-3 playerTable">
+                <thead>
+                    <tr>
+                        <th class="d-sm-table-cell d-md-table-cell">
+                            <input type="submit" name="actionButton" value="Team" class="non-button-input" disabled />
+                            <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move"></i>
+                        </th>
+
+                        <!-- Coaches -->
+                        <th class="d-none d-xxl-table-cell">
+                            <h6 class="non-button-input" id="heading">
+                                Players
+                            </h6>
+                        </th>
+                        <!-- Division -->
+                        <th class="d-none d-xxl-table-cell">
+                            <input type="submit" value="Division" name="actionButton" class="non-button-input" disabled />
+                            <i class="fa-solid fa-arrows-up-down arrow  non-button-input"></i>
+                        </th>
+                        <th style="min-width:120px">
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewData["FailedImportedTeams"] as List<Team>)
+                    {
+                        <tr style="background-color: rgba(250,144,144, 0.2);">
+                            <td class="d-sm-table-cell d-md-table-cell">@Html.DisplayFor(modelItem => item.TmName)</td>
+                            <td class="d-none d-xxl-table-cell">
+                                @{
+                                    if (ViewData["FailedImportedPlayers"] != null)
+                                    {
+                                        List<Player> players = ((List<Player>)ViewData["FailedImportedPlayers"]).Where(p => p.Team.TmName.Contains(item.TmName)).ToList();
+                                        int playerCount = players.Count;
+                                        if (playerCount > 0)
+                                        {
+                                            string firstPlayer = players.First().FullName;
+                                            if (playerCount > 1)
+                                            {
+                                                string playerList = "";
+                                                for (int i = 1; i < playerCount; i++)
+                                                {
+                                                    playerList += players[i].FullName + " <br />";
+                                                }
+                                                <a style="color: #020202;" role="button" data-bs-toggle="collapse" href="#collapsePlayer@(item.TmName.Replace(" ", "_"))"
+                                                   aria-expanded="false" aria-controls="collapsePlayer@(item.TmName.Replace(" ", "_"))">
+                                                    @firstPlayer <span class="badge bg-info" data-bs-toggle="tooltip" title="Number of Players">@playerCount</span>
+                                                </a>
+                                                <div class="collapse" id="collapsePlayer@(item.TmName.Replace(" ", "_"))">
+                                                    @Html.Raw(playerList)
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                @firstPlayer
+                                            }
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
+                            <td>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    }
+}
+
+
+
+<div style="margin: 5px auto; width: 90%;">
+
+    <div class="import-guide">
+        <img src="~/Image/import-screenshot.png" alt="Import Screenshot" class="img-fluid">
+        <div class="arrow-container">
+            <i class="fa-solid fa-arrow-up fa-f6 arrow"></i>
+        </div>
+        <div class="text-container">
+            <h4>
+                Above is an example of an excel document with the right format,
+                please check and be sure your document has the exact same format before uploading.
+            </h4>
+        </div>
+    </div>
+
+    <div class="import-section">
+        <form asp-action="ImportTeams" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label class="control-label custom-file-label">IMPORT TEAMS:</label>
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" name="theFile" id="theFile" accept=".csv,.xlsx">
+                </div>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="feedback">
+                @Html.Raw(TempData["TeamImportFeedback"])
+                <br />
+                @Html.Raw(TempData["PlayerImportFeedback"])
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Upload" class="btn btn-outline-dark " />
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>The Import Teams page allows importing a large number of teams and players all at once.</p>",
+            "<p>To import any data, your file must follow the example shown on the page.</p>",
+            "<p>Once imported, a list of all successfully imported teams and players will show up. Clicking the first player in the players column will reveal all players belonging to that team.</p>"
+        ]);
+    </script>
+    }

@@ -1,0 +1,542 @@
+@using wmbaApp.Utilities;
+@using wmbaApp.ViewModels;
+@model IEnumerable<wmbaApp.ViewModels.GameIndexVM>
+@using Microsoft.AspNetCore.Identity;
+@using System.Security.Claims
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if(!User.Identity.IsAuthenticated)
+{
+    <div class="col-md-6 welcomeContainer">
+        <div class="childWelcomeContainer">
+            <img class="img-fluid logo" src="~/Image/WMBA-combine.png" alt="Logo" tabindex="1" />
+            <a class="nav-link btn btn-outline-dark loginClass" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </div>
+    </div>
+}
+
+
+@if (User.IsInRole("Admin"))
+{
+    <div class="wmba">
+        <h1><i id="icon1" class="fa-solid fa-baseball"></i> WMBA <i id="icon2" class="fa-solid fa-baseball"></i></h1>
+    </div>
+
+    <div class="container-fluid text-center d-flex align-items-center justify-content-center parent">
+
+        <div class="row dashboard layout">
+
+            <section class="dash">
+                <div class="col-md-12 gameStyle styleGameTbl ">
+
+                    @if (Model != null)
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class=" gamesHeading"><h1>GAMES</h1></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model is IEnumerable<GameIndexVM> games && games.Any())
+                                {
+                                    foreach (var item in games)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @{
+                                                    string firstGame = item?.FullVersus;
+                                                    string startTimeFormatted = item?.StartTimeSummary;
+
+                                                    if (!string.IsNullOrEmpty(firstGame))
+                                                    {
+                                                        <h3 class="gameDate">@Html.Raw(startTimeFormatted).</h3>
+
+                                                        <br> <h5 class="gameDetails">@firstGame</h5>
+                                                        <a class="btn viewBtn " asp-area="" asp-controller="Games" asp-action="Index">
+                                                            View
+                                                            <span></span><span></span><span></span><span></span>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No game data available.</p>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No game data available.</p>
+                    }
+
+
+                </div>
+                <!-- Hide on laptop, show on phones and tablets -->
+                <div class="d-md-none mt-3 hideGameBtnLaptop">
+                    <p class="link " style="text-align: center;">
+                        <a asp-controller="Games" asp-action="Index" class="btn">
+                            View Games
+
+                            <span></span><span></span><span></span><span></span>
+                            <i class="fa-solid fa-angles-right" tabindex="8"></i>
+
+                        </a>
+
+                    </p>
+                </div>
+
+                <!-- Hide on phones and tablets, show on laptop -->
+                <p class="link d-none d-md-block " id="gameBtn">
+                    <a asp-controller="Games" asp-action="Index" class="btn">
+                        View Games
+
+                        <span></span><span></span><span></span><span></span>
+                        <i class="fa-solid fa-angles-right" tabindex="8">
+                        </i>
+                    </a>
+                </p>
+            </section>
+
+
+            <div class="parent-section">
+                <div class="col-md-6">
+                    <div class="first-section-container move">
+                        <a asp-controller="Home" asp-action="ImportTeams" class="first-section link-container">
+                            <div>
+                                <i class="fa-solid fa-file-import icons"></i>
+                                <h3>Import Teams</h3>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Statistics" asp-action="Index" class="first-section link-container">
+                            <div>
+                                <i class="fa-solid fa-chart-simple icons"></i>
+                                <h3>Stats</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="second-section-container">
+                        <a asp-controller="Divisions" asp-action="Index" class="second-section link-container">
+                            <div>
+                                <i class="fa-solid fa-baseball-bat-ball icon"></i>
+                                <h3>Division</h3>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Teams" asp-action="Index" class="second-section link-container">
+                            <div>
+                                <i class="fa-solid fa-users icon"></i>
+                                <h3>Teams</h3>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Players" asp-action="Index" class="second-section link-container">
+                            <div>
+                                <i class="fa-solid fa-user-plus icon"></i>
+                                <h3>Players</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+else if  (User.IsInRole("Convenor"))
+{
+    <div class="wmba">
+        <h1><i id="icon1" class="fa-solid fa-baseball"></i> WMBA <i id="icon2" class="fa-solid fa-baseball"></i></h1>
+    </div>
+
+    <div class="container-fluid text-center d-flex align-items-center justify-content-center parent">
+
+        <div class="row dashboard layout">
+
+            <section class="dash">
+                <div class="col-md-12 gameStyle styleGameTbl ">
+
+                    @if (Model != null)
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class=" gamesHeading"><h1>GAMES</h1></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model is IEnumerable<GameIndexVM> games && games.Any())
+                                {
+                                    foreach (var item in games)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @{
+                                                    string firstGame = item?.FullVersus;
+                                                    string startTimeFormatted = item?.StartTimeSummary;
+
+                                                    if (!string.IsNullOrEmpty(firstGame))
+                                                    {
+                                                        <h3 class="gameDate">@Html.Raw(startTimeFormatted).</h3>
+
+                                                        <br> <h5 class="gameDetails">@firstGame</h5>
+                                                        <a class="btn viewBtn " asp-area="" asp-controller="Games" asp-action="Index">
+                                                            View
+                                                            <span></span><span></span><span></span><span></span>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No game data available.</p>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No game data available.</p>
+                    }
+
+
+                </div>
+                <!-- Hide on laptop, show on phones and tablets -->
+                <div class="d-md-none mt-3 hideGameBtnLaptop">
+                    <p class="link " style="text-align: center;">
+                        <a asp-controller="Games" asp-action="Index" class="btn">
+                            View Games
+
+                            <span></span><span></span><span></span><span></span>
+                            <i class="fa-solid fa-angles-right" tabindex="8"></i>
+
+                        </a>
+
+                    </p>
+                </div>
+
+                <!-- Hide on phones and tablets, show on laptop -->
+                <p class="link d-none d-md-block " id="gameBtn">
+                    <a asp-controller="Games" asp-action="Index" class="btn">
+                        View Games
+
+                        <span></span><span></span><span></span><span></span>
+                        <i class="fa-solid fa-angles-right" tabindex="8">
+                        </i>
+                    </a>
+                </p>
+            </section>
+
+
+            <div class="parent-section">
+                <div class="col-md-6">
+                    <div class="first-section-container move">
+                        <a asp-controller="Home" asp-action="ImportTeams" class="first-section link-container">
+                            <div>
+                                <i class="fa-solid fa-file-import icons"></i>
+                                <h3>Import Teams</h3>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Statistics" asp-action="Index" class="first-section link-container">
+                            <div>
+                                <i class="fa-solid fa-chart-simple icons"></i>
+                                <h3>Stats</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="second-section-container">
+                        <a asp-controller="Divisions" asp-action="Index" class="second-section link-container">
+                            <div>
+                                <i class="fa-solid fa-baseball-bat-ball icon"></i>
+                                <h3>Division</h3>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Teams" asp-action="Index" class="second-section link-container">
+                            <div>
+                                <i class="fa-solid fa-users icon"></i>
+                                <h3>Teams</h3>
+                            </div>
+                        </a>
+
+                        <a asp-controller="Players" asp-action="Index" class="second-section link-container">
+                            <div>
+                                <i class="fa-solid fa-user-plus icon"></i>
+                                <h3>Players</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (User.IsInRole("Coach"))
+{
+    <div class="wmba">
+        <h1><i id="icon1" class="fa-solid fa-baseball"></i> WMBA <i id="icon2" class="fa-solid fa-baseball"></i></h1>
+    </div>
+
+    <div class="container-fluid text-center d-flex align-items-center justify-content-center parent">
+
+        <div class="row dashboard layout">
+
+            <section class="dash">
+                <div class="col-md-12 gameStyle styleGameTbl ">
+
+                    @if (Model != null)
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class=" gamesHeading"><h1>GAMES</h1></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model is IEnumerable<GameIndexVM> games && games.Any())
+                                {
+                                    foreach (var item in games)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @{
+                                                    string firstGame = item?.FullVersus;
+                                                    string startTimeFormatted = item?.StartTimeSummary;
+
+                                                    if (!string.IsNullOrEmpty(firstGame))
+                                                    {
+                                                        <h3 class="gameDate">@Html.Raw(startTimeFormatted).</h3>
+
+                                                        <br> <h5 class="gameDetails">@firstGame</h5>
+                                                        <a class="btn viewBtn " asp-area="" asp-controller="Games" asp-action="Index">
+                                                            View
+                                                            <span></span><span></span><span></span><span></span>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No game data available.</p>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No game data available.</p>
+                    }
+
+
+                </div>
+                <!-- Hide on laptop, show on phones and tablets -->
+                <div class="d-md-none mt-3 hideGameBtnLaptop">
+                    <p class="link " style="text-align: center;">
+                        <a asp-controller="Games" asp-action="Index" class="btn">
+                            View Games
+
+                            <span></span><span></span><span></span><span></span>
+                            <i class="fa-solid fa-angles-right" tabindex="8"></i>
+                        </a>
+                    </p>
+                </div>
+
+                <!-- Hide on phones and tablets, show on laptop -->
+                <p class="link d-none d-md-block " id="gameBtn">
+                    <a asp-controller="Games" asp-action="Index" class="btn">
+                        View Games
+
+                        <span></span><span></span><span></span><span></span>
+                        <i class="fa-solid fa-angles-right" tabindex="8">
+                        </i>
+                    </a>
+                </p>
+            </section>
+
+
+            <div class="parent-section">
+
+
+                <div class="col-md-6 gameTeamsPlayers">
+                    <div class="second-section-container">
+                        <div class=" gameTeamsPlayers">
+                            <a asp-controller="Statistics" asp-action="Index" class="second-section link-container ">
+                                <div>
+                                    <i class="fa-solid fa-baseball-bat-ball icon"></i>
+                                    <h3>Stats</h3>
+                                </div>
+                            </a>
+
+                            <a asp-controller="Teams" asp-action="Index" class="second-section link-container ">
+                                <div>
+                                    <i class="fa-solid fa-users icon"></i>
+                                    <h3>Teams</h3>
+                                </div>
+                            </a>
+                        </div>
+                            <a asp-controller="Players" asp-action="Index" class="second-section link-container scoreKeeperTeams">
+                                <div>
+                                    <i class="fa-solid fa-user-plus icon"></i>
+                                    <h3>Players</h3>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+}
+else if (User.IsInRole("ScoreKeeper"))
+{
+    <div class="wmba">
+        <h1><i id="icon1" class="fa-solid fa-baseball"></i> WMBA <i id="icon2" class="fa-solid fa-baseball"></i></h1>
+    </div>
+
+    <div class="container-fluid text-center d-flex align-items-center justify-content-center parent">
+
+        <div class="row dashboard layout">
+
+            <section class="dash">
+                <div class="col-md-12 gameStyle styleGameTbl ">
+
+                    @if (Model != null)
+                    {
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class=" gamesHeading"><h1>GAMES</h1></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model is IEnumerable<GameIndexVM> games && games.Any())
+                                {
+                                    foreach (var item in games)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @{
+                                                    string firstGame = item?.FullVersus;
+                                                    string startTimeFormatted = item?.StartTimeSummary;
+
+                                                    if (!string.IsNullOrEmpty(firstGame))
+                                                    {
+                                                        <h3 class="gameDate">@Html.Raw(startTimeFormatted).</h3>
+
+                                                        <br> <h5 class="gameDetails">@firstGame</h5>
+                                                        <a class="btn viewBtn " asp-area="" asp-controller="Games" asp-action="Index">
+                                                            View
+                                                            <span></span><span></span><span></span><span></span>
+                                                        </a>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <p>No game data available.</p>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>No game data available.</p>
+                    }
+
+
+                </div>
+                <!-- Hide on laptop, show on phones and tablets -->
+                <div class="d-md-none mt-3 hideGameBtnLaptop">
+                    <p class="link " style="text-align: center;">
+                        <a asp-controller="Games" asp-action="Index" class="btn">
+                            View Games
+
+                            <span></span><span></span><span></span><span></span>
+                            <i class="fa-solid fa-angles-right" tabindex="8"></i>
+                        </a>
+                    </p>
+                </div>
+
+                <!-- Hide on phones and tablets, show on laptop -->
+                <p class="link d-none d-md-block " id="gameBtn">
+                    <a asp-controller="Games" asp-action="Index" class="btn">
+                        View Games
+
+                        <span></span><span></span><span></span><span></span>
+                        <i class="fa-solid fa-angles-right" tabindex="8">
+                        </i>
+                    </a>
+                </p>
+            </section>
+
+
+            <div class="parent-section">
+
+                <div class="col-md-6 gameTeamsPlayers">
+                    <div class="second-section-container">
+                        <div class=" gameTeamsPlayers">
+                            <a asp-controller="Games" asp-action="Index" class="second-section link-container ">
+                                <div>
+                                    <i class="fa-solid fa-baseball-bat-ball icon"></i>
+                                    <h3>Games</h3>
+                                </div>
+                            </a>
+
+                            <a asp-controller="Teams" asp-action="Index" class="second-section link-container ">
+                                <div>
+                                    <i class="fa-solid fa-users icon"></i>
+                                    <h3>Teams</h3>
+                                </div>
+                            </a>
+                        </div>
+
+                        <a asp-controller="Players" asp-action="Index" class="second-section link-container scoreKeeperTeams">
+                            <div>
+                                <i class="fa-solid fa-user-plus icon"></i>
+                                <h3>Players</h3>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section Scripts {
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This is the homepage help section. It provides information about the page you are currently in. Clicking the 'next' button will show the next page of the help section.</p>",
+            "<p>You can access the help section by clicking the help icon located in the navigation bar, or by pressing alt + h.</p>",
+            "<p>The homepage contains a list of upcoming games. Clicking 'view' will take you to the full list of games.</p>",
+            "<p>There are also links that will take you to the list of teams, players, and games that are assigned to your account.</p>"
+        ]);
+    </script>
+}

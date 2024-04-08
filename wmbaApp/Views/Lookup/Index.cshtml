@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h2>Lookup Values</h2>
+
+<div class="text-danger">@Html.Raw(TempData["Feedback"])</div>
+<div>
+    <!-- Nav tabs -->
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <button class="nav-link active" id="Information-Tab" data-bs-toggle="tab" data-bs-target="#InformationPanel" type="button" role="tab" aria-controls="InformationPanel" aria-selected="true">Information</button>
+            <button class="nav-link" id="GameLocation-Tab" data-bs-toggle="tab" data-bs-target="#GameLocationPanel" type="button" role="tab" aria-controls="GameLocationPanel" aria-selected="false">Location</button>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="InformationPanel" role="tabpanel" aria-labelledby="InformationTab">
+            <br />
+            <p>This page will allow you to manage all of the Lookup values in the system. </p><p>
+                Just select a Tab to view and maintiain the values for a specific one.
+            </p>
+        </div>
+        <div class="tab-pane fade" id="GameLocationPanel" role="tabpanel" aria-labelledby="GameLocation-Tab"><br /></div>
+    </div>
+
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
+</div>
+<hr />
+<br />
+
+@section Scripts {
+    <script type="text/javascript">
+        function refreshTab(activeTab) {
+            switch (activeTab) {
+                case 'GameLocation-Tab': $('#GameLocationPanel').load('/Lookup/GameLocation');
+                    break;
+                default: break;
+            };
+            return;
+        };
+        $('.nav-link').click(function () {
+            var activeTab = $(this).attr("id");
+            refreshTab(activeTab);
+        });
+        $(".tab-content").on("click", ".linkClick", function (event) {
+            event.preventDefault();
+            var address = $(this).attr("href");
+            var lookup = address.split("/")[1];
+            var id = $("#" + lookup + "ID").val();
+            var caption = $("#" + lookup).html();
+
+            if (id == null) {
+                alert("Error: no value selected from the " + caption + " list!");
+            } else {
+                window.location.href = address + "/" + id;
+            }
+
+        });
+        $(function () {
+            setTimeout(function () {
+                $("#@ViewData["Tab"]").trigger('click');
+            }, 10);
+        });
+    </script>
+}

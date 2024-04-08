@@ -1,0 +1,144 @@
+﻿.row {
+    height: 600px;
+}
+
+.header-login {
+    height: 79%;
+}
+
+    .header-login .card-header {
+        padding: 0px 0px 0px 0px;
+    }
+
+.card-header {
+    background-color: #17254c;
+}
+
+.header-login ul.nav-tabs {
+    margin: 0px 0px -1px 0px;
+}
+
+.header-login li.nav-item {
+    width: 50%;
+}
+
+.header-login a.nav-link {
+    font-size: 1rem;
+    color: #fff;
+    text-align: center;
+    padding: 1rem;
+}
+
+    .header-login a.nav-link.active {
+        background-color: #fff;
+        color: #000;
+        font-size: 19px;
+    }
+
+
+.first-section, .second-section, a {
+    text-decoration: none;
+    color: #000;
+}
+
+#login-submit, #registerSubmit {
+    font-size: 18px;
+    height: 55px;
+    right: 20px;
+    border-color: #17254c;
+    background-color: #17254c;
+    color: #fff;
+}
+
+@media only screen and (min-width: 1001px) and (max-width: 1440px) {
+    .col-5 {
+        flex: 0 0 auto;
+        width: 70%;
+        height: 123%;
+    }
+
+    #login-submit {
+        font-size: 18px;
+        height: 60px;
+        right: 20px;
+    }
+}
+
+@media only screen and (min-width: 780px) and (max-width: 1000px) {
+    #login-submit {
+        font-size: 18px;
+        height: 55px;
+    }
+
+    .col-5 {
+        flex: 0 0 auto;
+        width: 70%;
+        height: 103%;
+    }
+
+    .header-login {
+        height: 79%;
+        margin: -56px 0px 0px 0px;
+    }
+}
+
+@media only screen and (min-width: 771px) and (max-width: 779px) {
+    html {
+        height: 70%;
+    }
+
+    .col-5 {
+        flex: 0 0 auto;
+        width: 67%;
+    }
+
+    .row {
+        margin-top: -20px;
+        height: 50%;
+    }
+
+    form {
+        margin-top: 68px;
+    }
+
+    #login-submit {
+        font-size: 14px;
+        height: 48px;
+        right: 10px;
+    }
+
+    .header-login {
+        height: 77%;
+        margin: 145px 0px 0px 0px;
+    }
+}
+
+@media only screen and (min-width: 230px) and (max-width: 770px) {
+    html {
+        height: 70%;
+    }
+
+    .row {
+        margin-top: -20px;
+        height: 50%;
+    }
+
+    form {
+        margin-top: 68px;
+    }
+
+    #login-submit, #registerSubmit {
+        font-size: 11px;
+        height: 48px;
+        right: 1px;
+    }
+
+    .header-login {
+        height: 86%;
+    }
+
+    .col-5 {
+        flex: 0 0 auto;
+        width: 67%;
+    }
+}

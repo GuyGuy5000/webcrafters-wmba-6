@@ -1,0 +1,122 @@
+﻿@model wmbaApp.Models.Statistic
+
+@* <partial name="_ViewHeading" /> *@
+
+
+<h1 style="text-align: center; ">@Html.DisplayFor(model => model.Players.FirstOrDefault().FullName)</h1>
+
+
+<div class="center-content">
+<div class="abbvMeaning ">
+    
+
+    <table class="specific-table">
+        <tr>
+            <th>Abbrevation</th>
+            <th>meaning</th>
+                <br />
+        </tr>
+            <tr >
+                
+                <td style="font-weight: 400;">GP:</td>
+
+                <td >  @Html.DisplayFor(model => model.StatsGP) - (Games Played)
+                    <br />
+                    <br />
+                </td>
+               
+        </tr>
+        <tr>
+           
+                <td style="font-weight: 400;">PA:</td>
+           
+
+                <td > @Html.DisplayFor(model => model.StatsPA) - (Plate Appearances)
+                    <br />
+                    <br />
+                </td>
+
+        </tr>
+        <tr>
+               
+                <td style="font-weight: 400;">  AVG</td>
+                <td> @Html.DisplayFor(model => model.StatsAVG) - (Batting Average)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">OBP:</td>
+                <td>
+                    @Html.DisplayFor(model => model.StatsAVG) (On-base Percentage)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">OPS:</td>
+                <td> @Html.DisplayFor(model => model.StatsOBP) - (On-base Plus Slugging)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">SLG:</td>
+                <td> @Html.DisplayFor(model => model.StatsOPS) - (Slugging Percentage)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">H:</td>
+                <td> @Html.DisplayFor(model => model.StatsH) - (Hits)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">R:</td>
+                <td> @Html.DisplayFor(model => model.StatsR) - (Runs)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">K:</td>
+                <td> @Html.DisplayFor(model => model.StatsK) - (Strikeouts)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">HR:</td>
+                <td> @Html.DisplayFor(model => model.StatsHR) - (Home Runs)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">RBI:</td>
+                <td> @Html.DisplayFor(model => model.StatsRBI) - (Runs Batted In)
+                    <br />
+                    <br />
+                </td>
+        </tr>
+        <tr>
+                <td style="font-weight: 400;">BB:</td>
+                <td>  @Html.DisplayFor(model => model.StatsBB) - (Base on Balls (Walks)) 
+                       <br />
+                    <br />
+                </td>
+        </tr>
+    </table>
+
+
+
+
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-outline-dark">Edit</a>
+        <a asp-action="Index" class="btn btn-outline-dark">Back to Staistics List</a>
+    </div>
+</div>
+</div>

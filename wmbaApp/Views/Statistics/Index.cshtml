@@ -1,0 +1,219 @@
+﻿﻿@using wmbaApp.Utilities;
+@model IEnumerable<wmbaApp.Models.Statistic>
+@using wmbaApp.Models;
+<partial name="_ViewHeading" />
+
+<a asp-action="DownloadStatisticsReport" class="btn btn-outline-dark float-end d-none d-lg-table-cell deactivateTeam">Download Stats</a>
+<form asp-action="Index" method="get">
+    <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
+    <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
+
+    <br />
+    <div class="form-horizontal">
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter" style="text-align: center;">
+            <p class="filSearch">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        </button>
+        <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
+            <div class="card card-body bg-light">
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <label class="control-label">Search By Player First/Last Name:</label>
+                        @Html.TextBox("SearchString", null, new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-4 align-self-end">
+                        <input type="submit" name="actionButton" value="Filter" class="btn btn-outline-primary" />
+                        <a asp-action="Index" class="btn btn-outline-dark">Clear</a>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table mt-3">
+        <thead>
+            <tr>
+
+
+                @*                 <th class="d-sm-table-cell d-md-table-cell">
+                <h6 class="non-button-input" id="heading">
+                Player
+                </h6>
+
+                </th> *@
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <input type="submit" name="actionButton" value="Player" class="non-button-input" title="Sort by Full Name" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
+
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        GP
+                    </h6>
+                </th>
+                <th class="d-sm-table-cell d-md-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                       PA
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                       AB
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        AVG
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                     OBP
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        OPS
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        SLG
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Hits
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        Runs
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        K
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                       HR
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        RBI
+                    </h6>
+                </th>
+
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
+                        BB
+                    </h6>
+                </th>
+
+                <th style="min-width:120px">
+                    @*                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a Players Statistics">
+                    <strong>&#x270D; Create </strong>
+                    </a> *@
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.Players.FirstOrDefault().FullName)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsGP)
+                    </td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsPA)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsAB)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsAVG)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsOBP)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsOPS)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsSLG)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsH)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsR)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsK)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsHR)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsRBI)
+                    </td>
+                    <td class="d-none d-lg-table-cell">
+                        @Html.DisplayFor(modelItem => item.StatsBB)
+                    </td>
+                    <td>
+
+                        <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-dark" role="button" data-bs-toggle="tooltip" title=" @ViewData["ControllerFriendlyName"] Detail">
+                            Details
+                        </a>
+                        @*                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
+                    &#x274C;
+                    </a> *@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_PagingNavBar" />
+    <a href="@Url.Action("Index", "Home")" class="btn d-none d-lg-block  btn-left btn-outline-dark">Back</a>
+</form>
+
+@section Scripts {
+    <script type="text/javascript">
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+
+    <script type="text/javascript">
+        GenerateContextHelp([
+            "<p>This page displays the statistics of players during games.</p>",
+            "<p>Use the search bar to find specific players by their first or last name.</p>",
+            "<p>Clicking 'Filter' allows you to filter the statistics based on your search criteria.</p>",
+            "<p>You can view detailed statistics of each player, including games played (GP), plate appearances (PA), at bats (AB), batting average (AVG), on-base percentage (OBP), on-base plus slugging (OPS), slugging percentage (SLG), hits, runs scored, strikeouts (K), home runs (HR), runs batted in (RBI), and walks (BB).</p>",
+            "<p>To download the statistics report, click on the 'Download Stats' button.</p>",
+            "<p>Use the pagination navigation bar at the bottom to navigate between pages of statistics.</p>",
+            "<p>Clicking 'Details' allows you to view more detailed information about a player's statistics.</p>"
+        ]);
+    </script>
+}
+
+
