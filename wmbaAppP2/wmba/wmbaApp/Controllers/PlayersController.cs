@@ -383,7 +383,7 @@ namespace wmbaApp.Controllers
             {
                 try
                 {
-
+                    playerToUpdate.PlyrJerseyNumber = null;
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Details", new { playerToUpdate.ID });
