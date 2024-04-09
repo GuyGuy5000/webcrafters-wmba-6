@@ -11,23 +11,23 @@
             <span asp-validation-for="PlyrFirstName" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="PlyrLastName" class="control-label "></label>
+            <label asp-for="PlyrLastName" class="control-label required-label"></label>
             <input asp-for="PlyrLastName" id="disablePlayer" class="form-control" placeholder="Ex:  Leon" />
             <span asp-validation-for="PlyrLastName" class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label asp-for="PlyrJerseyNumber" class="control-label "></label>
+            <label asp-for="PlyrJerseyNumber" class="control-label required-label"></label>
             <input asp-for="PlyrJerseyNumber" id="disable" class="form-control" placeholder="Ex: 7" />
             <span asp-validation-for="PlyrJerseyNumber" class="text-danger"></span>
         </div>
 
         @* for division dropdown *@
         <div class="form-group">
-            <label asp-for="Team.DivisionID" class="control-label"></label>
+            <label asp-for="Team.DivisionID" class="control-label required-label"></label>
             <select asp-for="Team.DivisionID" class="form-control" id="divisionDropdown">
                 <option value="">Select Division</option>
-                @foreach (var division in ViewData["DivisionID"] as SelectList)
+                @foreach (var division in ViewData["EditDivisionID"] as SelectList)
                 {
                     <option value="@division.Value">@division.Text</option>
                 }

@@ -45,7 +45,7 @@ namespace wmbaApp.Controllers
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Name", "Team" };
 
-            PopulateDropDownLists();
+            CreatePopulateDropDownLists();
 
             IQueryable<Player> players;
 
@@ -145,7 +145,7 @@ namespace wmbaApp.Controllers
         }
 
         // GET: Players
-        [Authorize(Roles ="Admin,Convenor,Coach")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> InactiveIndex(string SearchString, int? TeamID,
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
@@ -158,7 +158,7 @@ namespace wmbaApp.Controllers
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Name", "Team" };
 
-            PopulateDropDownLists();
+            CreatePopulateDropDownLists();
 
             IQueryable<Player> players;
 
@@ -288,7 +288,7 @@ namespace wmbaApp.Controllers
         public IActionResult Create()
         {
             Player player = new Player();
-            PopulateDropDownLists(player);
+            CreatePopulateDropDownLists(player);
             return View(player);
         }
 
@@ -329,7 +329,7 @@ namespace wmbaApp.Controllers
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
 
-            PopulateDropDownLists(player);
+            CreatePopulateDropDownLists(player);
             return View(player);
         }
 
@@ -343,7 +343,7 @@ namespace wmbaApp.Controllers
             }
 
             var player = await _context.Players
-                .Include(p=>p.Team).ThenInclude(p=>p.Division)
+                .Include(p => p.Team).ThenInclude(p => p.Division)
                 .FirstOrDefaultAsync(f => f.ID == id);
 
             if (player == null)
@@ -354,7 +354,7 @@ namespace wmbaApp.Controllers
             if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
                 return RedirectToAction("Index", "Players");
 
-            PopulateDropDownLists(player);
+            EditPopulateDropDownLists(player);
             return View(player);
         }
 
@@ -383,7 +383,7 @@ namespace wmbaApp.Controllers
             {
                 try
                 {
-                playerToUpdate.PlyrJerseyNumber = null;
+
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Details", new { playerToUpdate.ID });
@@ -413,7 +413,7 @@ namespace wmbaApp.Controllers
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
             }
-            PopulateDropDownLists(playerToUpdate);
+            EditPopulateDropDownLists(playerToUpdate);
             return View(playerToUpdate);
         }
 
@@ -658,7 +658,7 @@ namespace wmbaApp.Controllers
                     }
                 }
             }
-            PopulateDropDownLists();
+            CreatePopulateDropDownLists();
             return RedirectToAction("InactiveIndex");
         }
 
@@ -669,24 +669,29 @@ namespace wmbaApp.Controllers
             return new SelectList(_context.Teams.Where(t => t.IsActive), "ID", "TmName", selectedId);
         }
 
-        private SelectList DivisionSelectList(int? selectedId)
-{
-    var divisions = _context.Divisions.OrderBy(d => d.ID).ToList();
-    var currentDivsion = divisions.FirstOrDefault(d => d.ID == selectedId);
-    var nextDivision = _context.Divisions.FirstOrDefault(d => d.ID > selectedId);
-    List<Division> divisionList = new List<Division>();
-    if (currentDivsion != null)
-    {
-        divisionList.Add(currentDivsion);
-    }
+        private SelectList EditDivisionSelectList(int? selectedId)
+        {
+            var divisions = _context.Divisions.OrderBy(d => d.ID).ToList();
+            var currentDivsion = divisions.FirstOrDefault(d => d.ID == selectedId);
+            var nextDivision = _context.Divisions.FirstOrDefault(d => d.ID > selectedId);
+            List<Division> divisionList = new List<Division>();
+            if (currentDivsion != null)
+            {
+                divisionList.Add(currentDivsion);
+            }
 
-    if (nextDivision != null)
-    {
-        divisionList.Add(nextDivision);
-    }
+            if (nextDivision != null)
+            {
+                divisionList.Add(nextDivision);
+            }
 
-    return new SelectList(divisionList, "ID", "DivName", selectedId);
-}
+            return new SelectList(divisionList, "ID", "DivName", selectedId);
+        }
+
+        private SelectList CreateDivisionSelectList(int? selectedId)
+        {
+            return new SelectList(_context.Divisions, "ID", "DivName", selectedId);
+        }
 
 
         private SelectList StatisticSelectList(int? selectedId)
@@ -694,11 +699,18 @@ namespace wmbaApp.Controllers
             return new SelectList(_context.Statistics, "ID", "ID", selectedId);
         }
         #endregion
-        private void PopulateDropDownLists(Player player = null)
+        private void EditPopulateDropDownLists(Player player = null)
         {
             ViewData["TeamID"] = TeamSelectList(player?.TeamID);
-            ViewData["DivisionID"] = DivisionSelectList(player?.Team?.DivisionID);
+            ViewData["EditDivisionID"] = EditDivisionSelectList(player?.Team?.DivisionID);
             ViewData["StatisticID"] = StatisticSelectList(player?.StatisticID);
+        }
+
+        private void CreatePopulateDropDownLists(Player player = null)
+        {
+            ViewData["TeamID"] = TeamSelectList(player?.TeamID);
+            ViewData["StatisticID"] = StatisticSelectList(player?.StatisticID);
+            ViewData["CreateDivisionID"] = CreateDivisionSelectList(player?.Team?.DivisionID);
         }
 
         [HttpGet]
@@ -712,8 +724,6 @@ namespace wmbaApp.Controllers
 
             return Json(teams);
         }
-
-
 
 
         //#region PositionCheckboxes
