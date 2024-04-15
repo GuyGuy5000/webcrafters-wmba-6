@@ -7,60 +7,38 @@
 
 
 <div class="center-content">
-<div class="abbvMeaning ">
+    <div class="abbvMeaning ">
 
 
 
         <form style="padding-bottom: 30px;">
             <table class="specific-table">
-               
-              
+
+
                 <tr>
                 <tr>
 
                     <td class="ratingHeader" style="font-weight: 700;">Rating:</td>
 
                     <td>
-                            @{
-                                string ratingClass = "";
-                                if (Model.StatsAVG >= 0.300 && Model.StatsAVG <= 0.500)
-                                {
-                                    ratingClass = "three-stars";
-                                }
-                                else if (Model.StatsAVG > 0.500 && Model.StatsAVG <= 0.700)
-                                {
-                                    ratingClass = "four-stars";
-                                }
-                                else if (Model.StatsAVG > 0.700)
-                                {
-                                    ratingClass = "five-stars";
-                                }
-                                else
-                                {
-                                    ratingClass = "two-stars";
-                                }
+                            @for (int i = 1; i <= 4; i++) // Assuming a maximum of 5 stars
+                            {
+                            <span class="star @(i <= Model.Rating ? "gold" : "")">&#9733;</span>
                             }
-                        <div class="rating col-sm-10 @ratingClass">
-                                @for (int i = 1; i <= 5; i++)
-                                {
-                                <span class="@ratingClass" data-value="@i">&#9733;</span>
-                                }
-                            <input type="hidden" id="rating-value" value="0" />
-                        </div>
-                          
+
                         <br />
                         <br />
                     </td>
 
 
                 </tr>
-                    <td class="statsHeader" style="font-weight: 700;">GP:</td>
+                <td class="statsHeader" style="font-weight: 700;">GP:</td>
 
-                    <td>
+                <td>
                         @Html.DisplayFor(model => model.StatsGP) - (Games Played)
-                        <br />
-                        <br />
-                    </td>
+                    <br />
+                    <br />
+                </td>
 
                 </tr>
                 <tr>
@@ -161,15 +139,15 @@
                 </tr>
 
             </table>
-             <div>
-        <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-outline-dark">Edit</a>
-        <a asp-action="Index" class="btn btn-outline-dark">Back </a>
-    </div>
+            <div>
+                <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-outline-dark">Edit</a>
+                <a asp-action="Index" class="btn btn-outline-dark">Back </a>
+            </div>
         </form>
 
 
 
 
-   
-</div>
+
+    </div>
 </div>

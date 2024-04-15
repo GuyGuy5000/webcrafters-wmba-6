@@ -2,93 +2,52 @@
 
 <hr />
 
-        <form asp-action="Edit">
-            <fieldset>
+<form asp-controller="Statistics" asp-action="Edit" asp-route-id="@Model.ID" method="post">
+    <fieldset>
         <partial name="_ViewHeading" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="ID" />
+        <input type="hidden" id="ratingInput" asp-for="Rating" />
+
+
+        <!-- Display the star rating UI -->
         <div class="form-group">
-            <label asp-for="Players.FirstOrDefault().FullName" class="control-label"></label>
-            <input asp-for="Players.FirstOrDefault().FullName" class="form-control" />
-            <span asp-validation-for="Players.FirstOrDefault().FullName" class="text-danger"></span>
+            <label class="control-label">Rating:</label>
+            <div class="rating">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
         </div>
-        <div class="form-group">
-            <label asp-for="StatsGP" class="control-label"></label>
-            <input asp-for="StatsGP" class="form-control" />
-            <span asp-validation-for="StatsGP" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsPA" class="control-label"></label>
-            <input asp-for="StatsPA" class="form-control" />
-            <span asp-validation-for="StatsPA" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsAB" class="control-label"></label>
-            <input asp-for="StatsAB" class="form-control" />
-            <span asp-validation-for="StatsAB" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsAVG" class="control-label"></label>
-            <input asp-for="StatsAVG" class="form-control" />
-            <span asp-validation-for="StatsAVG" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsOBP" class="control-label"></label>
-            <input asp-for="StatsOBP" class="form-control" />
-            <span asp-validation-for="StatsOBP" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsOPS" class="control-label"></label>
-            <input asp-for="StatsOPS" class="form-control" />
-            <span asp-validation-for="StatsOPS" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsSLG" class="control-label"></label>
-            <input asp-for="StatsSLG" class="form-control" />
-            <span asp-validation-for="StatsSLG" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsH" class="control-label"></label>
-            <input asp-for="StatsH" class="form-control" />
-            <span asp-validation-for="StatsH" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsR" class="control-label"></label>
-            <input asp-for="StatsR" class="form-control" />
-            <span asp-validation-for="StatsR" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsK" class="control-label"></label>
-            <input asp-for="StatsK" class="form-control" />
-            <span asp-validation-for="StatsK" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsHR" class="control-label"></label>
-            <input asp-for="StatsHR" class="form-control" />
-            <span asp-validation-for="StatsHR" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsRBI" class="control-label"></label>
-            <input asp-for="StatsRBI" class="form-control" />
-            <span asp-validation-for="StatsRBI" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="StatsBB" class="control-label"></label>
-            <input asp-for="StatsBB" class="form-control" />
-            <span asp-validation-for="StatsBB" class="text-danger"></span>
-        </div>
+
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-outline-dark " />
+            <a asp-action="Index" class="btn btn-outline-dark">Back   </a>
         </div>
     </fieldset>
-    <div>
-        <a asp-action="Index" class="btn btn-outline-dark">Back to Staistics List</a>
-    </div>
-        </form>
-
-
-
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            // Function to handle star clicks
+            $('.rating .star').on('click', function () {
+                var value = parseInt($(this).attr('data-value'));
+                $('#ratingInput').val(value);
+
+                // Toggle "gold" class for visual feedback
+                $('.rating .star').removeClass('gold'); // Remove gold class from all stars
+                $(this).prevAll('.star').addBack().addClass('gold'); // Add gold class to clicked star and previous stars
+
+                // Update UI to reflect selected rating (optional)
+                $(this).addClass('selected').prevAll('.star').addClass('selected');
+                $(this).nextAll('.star').removeClass('selected');
+            });
+        });
+    </script>
 }
+

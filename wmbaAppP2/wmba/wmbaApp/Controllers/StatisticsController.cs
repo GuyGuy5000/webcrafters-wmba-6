@@ -17,7 +17,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 
 namespace wmbaApp.Controllers
 {
-    [Authorize(Roles ="Admin,Convenor,Coach")]
+    [Authorize(Roles = "Admin,Convenor,Coach")]
     public class StatisticsController : ElephantController
     {
         private readonly WmbaContext _context;
@@ -39,7 +39,10 @@ namespace wmbaApp.Controllers
             string[] sortOptions = new[] { "Player" };
 
             IQueryable<Statistic> statistics;
-
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
             if (User.IsInRole("Admin"))
             {
                 statistics = _context.Statistics
@@ -128,6 +131,7 @@ namespace wmbaApp.Controllers
             return View(pagedData);
         }
 
+
         public IActionResult UpdateRating(int id, int rating)
         {
             var statistic = _context.Statistics.Find(id);
@@ -135,7 +139,9 @@ namespace wmbaApp.Controllers
             {
                 statistic.Rating = rating;
                 _context.SaveChanges();
-                return Ok();
+                TempData["Message"] = "Rating updated successfully.";
+
+                return Ok("OK");
             }
             return NotFound();
         }
@@ -163,24 +169,25 @@ namespace wmbaApp.Controllers
 
             // Get the data from the database
             var statisticsData = statistics
-           .OrderBy(r => r.StatsGP) // Change to the actual property for player name
-           .Select(r => new
-           {
-               GP = r.StatsGP,
-               PA = r.StatsPA,
-               AVG = r.StatsAVG,
-               OBP = r.StatsOBP,
-               OPS = r.StatsOPS,
-               SLG = r.StatsSLG,
-               H = r.StatsH,
-               R = r.StatsR,
-               K = r.StatsK,
-               HR = r.StatsHR,
-               RBI = r.StatsRBI,
-               BB = r.StatsBB,
-               Rating = CalculateRating(r)
-           })
-                .AsNoTracking();
+    .AsEnumerable() // Switch to client-side evaluation
+    .OrderBy(r => r.Players.First().FullName) // Change to the actual property for player name
+    .Select(r => new
+    {
+        Player = r.Players.First().FullName,
+        GP = r.StatsGP,
+        PA = r.StatsPA,
+        AVG = r.StatsAVG,
+        OBP = r.StatsOBP,
+        OPS = r.StatsOPS,
+        SLG = r.StatsSLG,
+        H = r.StatsH,
+        R = r.StatsR,
+        K = r.StatsK,
+        HR = r.StatsHR,
+        RBI = r.StatsRBI,
+        BB = r.StatsBB,
+        Rating = ConvertRatingToWord(r.Rating).ToString()
+    });
 
             // How many rows?
             int numRows = statisticsData.Count();
@@ -241,26 +248,25 @@ namespace wmbaApp.Controllers
             }
             return NotFound("No data.");
         }
-        private static string CalculateRating(Statistic avg)
+
+        public static string ConvertRatingToWord(int rating)
         {
-            if (avg.StatsAVG >= 0.300 && avg.StatsAVG <= 0.500)
+            switch (rating)
             {
-                return "Three Stars";
-            }
-            else if (avg.StatsAVG > 0.500 && avg.StatsAVG <= 0.700)
-            {
-                return "Four Stars";
-            }
-            else if (avg.StatsAVG > 0.700)
-            {
-                return "Five Stars";
-            }
-            else
-            {
-                return "Two Stars";
+                case 1:
+                    return "One Star";
+                case 2:
+                    return "Two Stars";
+                case 3:
+                    return "Three Stars";
+                case 4:
+                    return "Four Stars";
+                case 5:
+                    return "Five Stars";
+                default:
+                    return "Unknown Rating";
             }
         }
-
 
 
 
@@ -275,7 +281,7 @@ namespace wmbaApp.Controllers
             var statistic = await _context.Statistics
                 .Include(p => p.Players)
                 .FirstOrDefaultAsync(m => m.ID == id);
-                 
+
             if (statistic == null)
             {
                 return NotFound();
@@ -351,50 +357,50 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id, Statistic statistic)
         {
+            if (id != statistic.ID)
+            {
+                return NotFound();
+            }
 
-            var statistic = await _context.Statistics
-                .Include(t => t.Players)
-                .FirstOrDefaultAsync(s => s.ID == id);
-
-
-
-            var statisticsToUpdate = await _context.Statistics.FirstOrDefaultAsync(p => p.ID == id);
+            var statisticsToUpdate = await _context.Statistics.FindAsync(id);
 
             if (statisticsToUpdate == null)
             {
                 return NotFound();
             }
 
+            // Update the properties of statisticsToUpdate based on the incoming model
+            statisticsToUpdate.Rating = statistic.Rating; // Assuming Rating is the property for the star rating
 
-            if (await TryUpdateModelAsync<Statistic>(statisticsToUpdate, "",
-               s => s.StatsGP, s => s.StatsPA, s => s.StatsAB, s => s.StatsAVG, s => s.StatsOBP, s => s.StatsOPS, s => s.StatsSLG,
-              s => s.StatsH, s => s.StatsR, s => s.StatsK, s => s.StatsHR, s => s.StatsRBI, s => s.StatsBB))
+            try
             {
-                try
+                // Update the entity in the database
+                _context.Update(statisticsToUpdate);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Statistic updated successfully."; // Set success message
+                return RedirectToAction(nameof(Index)); // Redirect to the index page or any other appropriate action
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!StatisticExists(statisticsToUpdate.ID))
                 {
-                    await _context.SaveChangesAsync();
-                    return Redirect(ViewData["returnURL"].ToString());
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!StatisticExists(statisticsToUpdate.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                catch (DbUpdateException)
-                {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                    throw;
                 }
             }
+            catch (DbUpdateException)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+
             return View(statisticsToUpdate);
         }
+
 
         // GET: Statistics/Delete/5
         public async Task<IActionResult> Delete(int? id)

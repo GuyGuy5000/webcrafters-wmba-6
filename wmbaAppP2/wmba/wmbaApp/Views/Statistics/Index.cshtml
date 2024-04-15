@@ -4,6 +4,16 @@
 <partial name="_ViewHeading" />
 
 <a asp-action="DownloadStatisticsReport" class="btn btn-outline-dark float-end d-none d-lg-table-cell deactivateTeam">Download Stats</a>
+@{
+    string message = TempData["Message"] as string;
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <div id="successMessage" class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
 <form asp-action="Index" method="get">
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
@@ -60,13 +70,13 @@
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
                     <h6 class="non-button-input" id="heading">
-                       PA
+                        PA
                     </h6>
                 </th>
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                       AB
+                        AB
                     </h6>
                 </th>
 
@@ -78,7 +88,7 @@
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                     OBP
+                        OBP
                     </h6>
                 </th>
 
@@ -114,7 +124,7 @@
 
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
-                       HR
+                        HR
                     </h6>
                 </th>
 
@@ -144,34 +154,13 @@
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.Players.FirstOrDefault().FullName)
                     </td>
-                    <td class="d-sm-table-cell d-md-table-cell">
-                        @{
-                            string ratingClass = "";
-                            if (item.StatsAVG >= 0.300 && item.StatsAVG <= 0.500)
-                            {
-                                ratingClass = "three-stars";
-                            }
-                            else if (item.StatsAVG > 0.500 && item.StatsAVG <= 0.700)
-                            {
-                                ratingClass = "four-stars";
-                            }
-                            else if (item.StatsAVG > 0.700)
-                            {
-                                ratingClass = "five-stars";
-                            }
-                            else
-                            {
-                                ratingClass = "two-stars";
-                            }
+                    <td class="d-none d-lg-table-cell">
+                        @for (int i = 1; i <= 4; i++) // Assuming a maximum of 5 stars
+                        {
+                            <span class="star @(i <= item.Rating ? "gold" : "")">&#9733;</span>
                         }
-                        <div class="rating col-sm-10 @ratingClass">
-                            @for (int i = 1; i <= 5; i++)
-                            {
-                                <span class="@ratingClass" data-value="@i">&#9733;</span>
-                            }
-                            <input type="hidden" id="rating-value" value="0" />
-                        </div>
                     </td>
+
                     <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.StatsGP)
                     </td>
@@ -211,9 +200,18 @@
                     <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.StatsBB)
                     </td>
+
                     <td>
+                        @if (User.IsInRole("Coach") || User.IsInRole("Convenor"))
+                        {
+                            <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
+                                <span></span><span></span><span></span><span></span>
+                                EDIT
+                            </a>
+                        }
 
                         <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-outline-dark" role="button" data-bs-toggle="tooltip" title=" @ViewData["ControllerFriendlyName"] Detail">
+                            <span></span><span></span><span></span><span></span>
                             Details
                         </a>
                         @*                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
@@ -248,11 +246,11 @@
         ]);
     </script>
 
-    
+
 }
 
 
-           
+
 
 
 

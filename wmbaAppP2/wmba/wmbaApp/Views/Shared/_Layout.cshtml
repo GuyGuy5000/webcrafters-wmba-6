@@ -28,10 +28,10 @@
         @* removing nav bar at login and register page *@
         @if (!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Login", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Register", StringComparison.OrdinalIgnoreCase) &&
-!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ResetPassword", StringComparison.OrdinalIgnoreCase) &&
+        !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ResetPassword", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ResetPasswordConfirmation", StringComparison.OrdinalIgnoreCase) &&
-!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/LoginWithRecoveryCode", StringComparison.OrdinalIgnoreCase) &&
-!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ForgotPasswordConfirmation", StringComparison.OrdinalIgnoreCase) &&
+        !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/LoginWithRecoveryCode", StringComparison.OrdinalIgnoreCase) &&
+        !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ForgotPasswordConfirmation", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ForgotPassword", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ResendEmailConfirmation", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/LoginWith2fa", StringComparison.OrdinalIgnoreCase) &&
@@ -50,8 +50,8 @@
                     </a>
 
 
-                 
-                   
+
+
                     @if (ViewContext.RouteData.Values["controller"] != null)
                     {
                         @if (User.Identity.IsAuthenticated && (ViewContext.RouteData.Values["controller"].ToString() == "ScoreKeeping" || ViewContext.RouteData.Values["controller"].ToString() == "ScoreKeepingAwayTeam"))
@@ -87,6 +87,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Teams" asp-action="Index">Teams</a>
                                     </li>
+                 
 
                                     <li class="nav-item">
                                         <a class="nav-link text-white custom-hover-effect" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
@@ -116,14 +117,14 @@
                                         </li>
                                     }
                                 </ul>
-                                <div class="help-icon-container" id="help-icon" accesskey="h">
-                                    <span class="help-icon fa-solid fa-question"></span>
-                                </div>
-                                <div>
+
+                                <div class="helloAdmin">
                                     <partial name="_LoginPartial" />
                                 </div>
 
-
+                                <div class="help-icon-container" id="help-icon" accesskey="h">
+                                    <span class="help-icon fa-solid fa-question"></span>
+                                </div>
                             </div>
 
 

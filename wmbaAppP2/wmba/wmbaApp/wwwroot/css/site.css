@@ -1837,7 +1837,6 @@ form .btn-active-toggle {
     background-color: #f0f0f0;
     padding: 20px;
     border-radius: 10px;
-
 }
 
 .center-abbvContent {
@@ -2093,35 +2092,26 @@ footer {
 
 .ratingHeader {
     position: relative;
-    top: -25px;
+    top: -15px;
 }
+
 .star {
     cursor: pointer;
     font-size: 20px;
 }
-.three-stars,
-.four-stars,
-.five-stars,
-.two-stars {
-    color: gold;
-}
 
-
-.two-stars span:nth-child(n+3),
-.three-stars span:nth-child(n+4),
-.four-stars span:nth-child(n+5),
-.five-stars span:nth-child(n+6) {
-    color: initial; 
-}
+    .star.gold {
+        color: gold;
+    }
 
 /*******Rating Ends*******/
 
 
 /*******Player Avatar Starts*******/
 .playerAvatar {
-   height: 200px;
-   width: 200px;
-   border: 2px solid #fff;
+    height: 200px;
+    width: 200px;
+    border: 2px solid #fff;
 }
 
 @media (min-width: 320px) and (max-width: 768px) {
@@ -2129,15 +2119,14 @@ footer {
         height: 100px;
         width: 100px;
     }
-
 }
 /*******Player Avatar Ends*******/
 
-.statsLogo{
+.statsLogo {
     display: none;
 }
 
-.img-container img{
+.img-container img {
     position: absolute;
     left: 0;
     top: 0;
@@ -2148,4 +2137,14 @@ footer {
     width: auto; /* Maintain aspect ratio */
     height: 900px; /* Set the desired height */
     max-width: 100%; /* Ensure responsiveness */
+}
+
+.helloAdmin {
+    position: relative;
+    bottom: -50px;
+}
+
+.lgnBtn {
+    position: relative;
+    top: -10px;
 }

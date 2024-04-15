@@ -49,32 +49,10 @@
                 </dt>
                 <dd  class="col-sm-2">
                     
-                            @{
-                                string ratingClass = "";
-                                if (Model.Statistics.StatsAVG  >= 0.300 && Model.Statistics.StatsAVG  <= 0.500)
-                                {
-                                    ratingClass = "three-stars";
-                                }
-                                else if (Model.Statistics.StatsAVG > 0.500 && Model.Statistics.StatsAVG <= 0.700)
-                                {
-                                    ratingClass = "four-stars";
-                                }
-                                else if (Model.Statistics.StatsAVG  > 0.700)
-                                {
-                                    ratingClass = "five-stars";
-                                }
-                                else
-                                {
-                                    ratingClass = "two-stars";
-                                }
-                            }
-                        <div class="rating col-sm-10 @ratingClass">
-                                @for (int i = 1; i <= 5; i++)
-                                {
-                                <span class="@ratingClass" data-value="@i">&#9733;</span>
-                                }
-                            <input type="hidden" id="rating-value" value="0" />
-                        </div>
+                  @for (int i = 1; i <= 4; i++) // Assuming a maximum of 5 stars
+                        {
+                            <span class="star @(i <= Model.Statistics.Rating ? "gold" : "")">&#9733;</span>
+                        }
                 </dd>
             </dl>
 
