@@ -26,8 +26,8 @@
 
 
 <!--popup modals-->
-<partial name="_HomeLineUp" model="@((Lineup)ViewData["HomeLineUp"])" />
-<partial name="_AwayLineUp" model="@((Lineup)ViewData["AwayLineUp"])" />
+<partial name="_HomeLineUp" model="@((Lineup)ViewData["AwayLineUp"])" />
+<partial name="_AwayLineUp" model="@((Lineup)ViewData["HomeLineUp"])" />
 <div id="playByPlayPartial">
     <partial name="_PlayByPlay" model="@Model" />
 </div>

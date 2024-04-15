@@ -104,7 +104,7 @@
         if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
         {
             if (Model.GameStartTime <= DateTime.Now && Model.GameEndTime >= DateTime.Now)
-                if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 0)
+                if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 4)
                     if (Model.Innings.Count < 3)
                     {
                         <a asp-action="StartGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game" style="min-width: 100px;">
@@ -126,7 +126,7 @@
             if (User.IsInRole(Model.HomeTeam.TmName))
             {
                 if (Model.GameStartTime <= DateTime.Now && Model.GameEndTime >= DateTime.Now)
-                    if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 0)
+                    if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 4)
                         if (Model.Innings.Count < 3)
                         {
                             <a asp-action="StartGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Start this game" style="min-width: 100px;">
@@ -142,7 +142,7 @@
             else
             {
                 if (Model.GameStartTime <= DateTime.Now && Model.GameEndTime >= DateTime.Now)
-                    if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 0)
+                    if (Model.HomeLineup != null && Model.HomeLineup.PlayerLineups.Count > 4)
                         if (Model.Innings.Count < 3)
                         {
                             <a asp-action="StartAwayGame" onclick="start()" asp-route-id="@Model.ID" id="clickGame" class="btn btn-sm" role="button" data-bs-toggle="tooltip" title="Start this game" style="min-width: 100px;">
@@ -165,20 +165,19 @@
     <br />
     @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.ID" class="text-primary" style="min-width: 100px; margin-right: 10px;">Edit Game</a>
+        <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-sm" style="min-width: 100px; margin-right: 10px;">Edit Game</a>
     }
     @if (!User.IsInRole("ScoreKeeper"))
     {
         @if (homeLineupHasPlayers && awayLineupHasPlayers)
         {
-            <a asp-action="Edit" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="text-primary" style="min-width: 100px; margin-right: 15px; padding-bottom: 20px;">
+            <a asp-action="Edit" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="btn btn-sm" style="min-width: 100px; margin-right: 15px; padding-bottom: 20px;">
                 Edit Lineup
             </a>
         }
         else
         {
-            <a asp-action="Create" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="text-primary" style="min-width: 100px; margin-right: 15px; padding-bottom: 20px;
-">
+            <a asp-action="Create" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="btn btn-sm" style="min-width: 100px; margin-right: 15px; padding-bottom: 20px;">
                 Create Lineup
             </a>
         }
