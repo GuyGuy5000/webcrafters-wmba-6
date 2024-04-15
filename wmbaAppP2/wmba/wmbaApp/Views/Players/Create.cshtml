@@ -4,6 +4,7 @@
 
 <form asp-action="Create" method="post" enctype="multipart/form-data" class="mx-auto mt-4 games-editform" id="createForm" style="width: 80%;">
 
+
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success" role="alert">
@@ -17,7 +18,9 @@
         </div>
     }
 
-        <fieldset>
+
+    <fieldset>
+
         <partial name="_ViewHeading" />
         <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -29,7 +32,7 @@
             <div class="form-group">
                 <label asp-for="PlyrLastName" class="control-label "></label>
                 <input asp-for="PlyrLastName" class="form-control" placeholder="Ex:  James" />
-              
+
                 <span asp-validation-for="PlyrLastName" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -48,7 +51,7 @@
                 <label asp-for="Team.DivisionID" class="control-label required-label"></label>
                 <select asp-for="Team.DivisionID" class="form-control" id="divisionDropdown">
                     <option value="">Select Division</option>
-                    @foreach (var division in ViewData["DivisionID"] as SelectList)
+                    @foreach (var division in ViewData["CreateDivisionID"] as SelectList)
                     {
                         <option value="@division.Value">@division.Text</option>
                     }
@@ -71,12 +74,15 @@
             <a asp-action="Index" class="btn btn-outline-dark">Back to Players List</a>
         </div>
     </fieldset>
-       
-    </form>
+
+</form>
 
 
 
 @section Scripts {
+    <script src="~/js/modal.js"></script>
+    <script src="~/js/multiselect.js"></script>
+    <script src="~/js/site.js"></script>
     <script src="~/js/modal.js"></script>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

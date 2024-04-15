@@ -48,7 +48,6 @@ $(document).ready(function () {
                     }
                 });
             } else {
-                //clearing dropdown
                 $("#teamDropdown").html("");
                 $("#teamDropdown").append('<option value="">Assign Team to Player</option>');
             }

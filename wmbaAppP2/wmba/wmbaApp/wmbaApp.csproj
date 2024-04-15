@@ -26,6 +26,14 @@
     <None Include="Views\GameLocation\Edit.cshtml" />
     <None Include="Views\Lineups\Create.cshtml" />
     <None Include="Views\Lineups\Details.cshtml" />
+    <None Include="Views\Players\Create.cshtml" />
+    <None Include="Views\Players\Delete.cshtml" />
+    <None Include="Views\Players\Details.cshtml" />
+    <None Include="Views\Players\Edit.cshtml" />
+    <None Include="Views\Players\InactiveIndex.cshtml" />
+    <None Include="Views\Players\Index.cshtml" />
+    <None Include="Views\Players\MakeActive.cshtml" />
+    <None Include="Views\Players\MakeInactive.cshtml" />
     <None Include="Views\UserRole\Edit.cshtml" />
     <None Include="Views\UserRole\Index.cshtml" />
   </ItemGroup>
