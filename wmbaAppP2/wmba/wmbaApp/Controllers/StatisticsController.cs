@@ -128,10 +128,19 @@ namespace wmbaApp.Controllers
             return View(pagedData);
         }
 
-
+        public IActionResult UpdateRating(int id, int rating)
+        {
+            var statistic = _context.Statistics.Find(id);
+            if (statistic != null)
+            {
+                statistic.Rating = rating;
+                _context.SaveChanges();
+                return Ok();
+            }
+            return NotFound();
+        }
         public async Task<IActionResult> DownloadStatisticsReport()
         {
-
             IQueryable<Statistic> statistics;
 
             if (User.IsInRole("Admin"))
@@ -151,25 +160,26 @@ namespace wmbaApp.Controllers
                 .Where(s => s.Players.First().IsActive && (rolesTeamIDs.Contains(s.Players.First().TeamID) || rolesDivisionIDs.Contains(s.Players.First().Team.DivisionID)))
                 .AsNoTracking();
             }
+
             // Get the data from the database
             var statisticsData = statistics
-                .OrderBy(r => r.StatsGP) // Change to the actual property for player name
-                .Select(r => new
-                {
-                    GP = r.StatsGP,
-                    PA = r.StatsPA,
-                    AVG = r.StatsAVG,
-                    OBP = r.StatsOBP,
-                    OPS = r.StatsOPS,
-                    SLG = r.StatsSLG,
-                    H = r.StatsH,
-                    R = r.StatsR,
-                    K = r.StatsK,
-                    HR = r.StatsHR,
-                    RBI = r.StatsRBI,
-                    BB = r.StatsBB
-                    // Add other properties as needed
-                })
+           .OrderBy(r => r.StatsGP) // Change to the actual property for player name
+           .Select(r => new
+           {
+               GP = r.StatsGP,
+               PA = r.StatsPA,
+               AVG = r.StatsAVG,
+               OBP = r.StatsOBP,
+               OPS = r.StatsOPS,
+               SLG = r.StatsSLG,
+               H = r.StatsH,
+               R = r.StatsR,
+               K = r.StatsK,
+               HR = r.StatsHR,
+               RBI = r.StatsRBI,
+               BB = r.StatsBB,
+               Rating = CalculateRating(r)
+           })
                 .AsNoTracking();
 
             // How many rows?
@@ -195,7 +205,7 @@ namespace wmbaApp.Controllers
 
                     // Add a title and timestamp at the top of the report
                     workSheet.Cells[1, 1].Value = "Statistics Report";
-                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 13]) // Adjust the column count accordingly
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 15]) // Adjust the column count accordingly
                     {
                         Rng.Merge = true;
                         Rng.Style.Font.Bold = true;
@@ -206,7 +216,7 @@ namespace wmbaApp.Controllers
                     DateTime utcDate = DateTime.UtcNow;
                     TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
                     DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
-                    using (ExcelRange Rng = workSheet.Cells[2, 13]) // Adjust the column accordingly
+                    using (ExcelRange Rng = workSheet.Cells[2, 15]) // Adjust the column accordingly
                     {
                         Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
                             localDate.ToShortDateString();
@@ -231,6 +241,27 @@ namespace wmbaApp.Controllers
             }
             return NotFound("No data.");
         }
+        private static string CalculateRating(Statistic avg)
+        {
+            if (avg.StatsAVG >= 0.300 && avg.StatsAVG <= 0.500)
+            {
+                return "Three Stars";
+            }
+            else if (avg.StatsAVG > 0.500 && avg.StatsAVG <= 0.700)
+            {
+                return "Four Stars";
+            }
+            else if (avg.StatsAVG > 0.700)
+            {
+                return "Five Stars";
+            }
+            else
+            {
+                return "Two Stars";
+            }
+        }
+
+
 
 
         // GET: Statistics/Details/5

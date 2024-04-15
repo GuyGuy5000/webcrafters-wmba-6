@@ -5,7 +5,12 @@
 }
 
 <h1 class="text-center">@Html.DisplayFor(model => model.FullVersus)</h1>
-
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <div id="successMessage" class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
 <div>
     <hr />
     <dl class="row">
@@ -43,52 +48,56 @@
 </div>
 <hr />
 
-
-<div class="row">
-    <div class="col-md-6">
-        <h3>Home Team Lineup</h3>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Player Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.HomeLineup != null)
-                {
-                    foreach (var playerLineup in Model.HomeTeam.Players.Where(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID && p.IsActive == true)).ToList() as List<wmbaApp.Models.Player>)
+<form>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Home Team Lineup</h3>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.HomeLineup != null)
                     {
-                        <tr>
-                            <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
-                        </tr>
+                        foreach (var playerLineup in Model.HomeTeam.Players.Where(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID && p.IsActive == true)).ToList() as List<wmbaApp.Models.Player>)
+                        {
+                            <tr>
+                                <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
+                            </tr>
+                        }
                     }
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <h3>Visitor Team Lineup</h3>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.AwayLineup != null)
+                    {
+                        foreach (var playerLineup in Model.AwayTeam.Players.Where(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID && p.IsActive == true)).ToList() as List<wmbaApp.Models.Player>)
+                        {
+                            <tr>
+                                <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="col-md-6">
-        <h3>Visitor Team Lineup</h3>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Player Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model.AwayLineup != null)
-                {
-                    foreach (var playerLineup in Model.AwayTeam.Players.Where(p => p.PlayerLineups.Any(pl => pl.PlayerID == p.ID && p.IsActive == true)).ToList() as List<wmbaApp.Models.Player>)
-                    {
-                        <tr>
-                            <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+    <a asp-action="Index" class="text-primary text-left" style="min-width: 130px; font-weight: 700;">Back </a>
+</form>
+
 
 <div class="text-center" style="margin-top: 50px;">
     @{
@@ -156,28 +165,45 @@
     <br />
     @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
     {
-        <a asp-action="Edit" asp-route-id="@Model?.ID" class="btn btn-outline-dark" style="min-width: 100px;">Edit Game</a>
+        <a asp-action="Edit" asp-route-id="@Model?.ID" class="text-primary" style="min-width: 100px; margin-right: 10px;">Edit Game</a>
     }
     @if (!User.IsInRole("ScoreKeeper"))
     {
-        if (homeLineupHasPlayers && awayLineupHasPlayers)
+        @if (homeLineupHasPlayers && awayLineupHasPlayers)
         {
-            <a asp-action="Edit" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="btn btn-outline-dark" style="min-width: 100px;">
+            <a asp-action="Edit" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="text-primary" style="min-width: 100px; margin-right: 15px; padding-bottom: 20px;">
                 Edit Lineup
             </a>
         }
         else
         {
-            <a asp-action="Create" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="btn btn-outline-dark" style="min-width: 100px;">
+            <a asp-action="Create" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="text-primary" style="min-width: 100px; margin-right: 15px; padding-bottom: 20px;
+">
                 Create Lineup
             </a>
         }
     }
     <br />
-    <a asp-action="Index" class="btn btn-outline-dark" style="min-width: 130px;">Back to Games List</a>
+
 
 </div>
 <br />
 <br />
 <br />
 <br />
+
+@section  Scripts {
+     <script>
+        $(document).ready(function () {
+            // Function to fade out the success message after 3 seconds (adjust as needed)
+            setTimeout(function () {
+                $('#successMessage').fadeOut('slow');
+            }, 2000); // 3000 milliseconds = 3 seconds
+
+            // Optional: You can also close the success message when clicking on it
+            $('#successMessage').click(function () {
+                $(this).fadeOut('slow');
+            });
+        });
+    </script>
+}

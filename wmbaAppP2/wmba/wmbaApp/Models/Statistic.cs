@@ -39,7 +39,8 @@ namespace wmbaApp.Models
         public int? StatsRBI { get; set; } = 0;
         [Display(Name = "BB")]
         public int? StatsBB { get; set; } = 0;
-
+        [Display(Name = "Rating")]
+        public int Rating { get; set; }
         public ICollection<Player> Players { get; set; } = new HashSet<Player>();
     }
 }

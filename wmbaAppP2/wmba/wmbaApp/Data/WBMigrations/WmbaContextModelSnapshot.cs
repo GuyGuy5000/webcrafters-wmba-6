@@ -17,7 +17,7 @@ namespace wmbaApp.Data.WBMigrations
 #pragma warning disable 612, 618
             modelBuilder
                 .UseCollation("NOCASE")
-                .HasAnnotation("ProductVersion", "7.0.15");
+                .HasAnnotation("ProductVersion", "7.0.17");
 
             modelBuilder.Entity("wmbaApp.Models.Coach", b =>
                 {
@@ -110,10 +110,8 @@ namespace wmbaApp.Data.WBMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("GameLocation")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("GameLocationID")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("GameStartTime")
                         .IsRequired()
@@ -139,11 +137,32 @@ namespace wmbaApp.Data.WBMigrations
 
                     b.HasIndex("DivisionID");
 
+                    b.HasIndex("GameLocationID");
+
                     b.HasIndex("HomeLineupID");
 
                     b.HasIndex("HomeTeamID");
 
                     b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.GameLocation", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("GameLocations");
                 });
 
             modelBuilder.Entity("wmbaApp.Models.GameTeam", b =>
@@ -322,6 +341,9 @@ namespace wmbaApp.Data.WBMigrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Rating")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int?>("StatsAB")
                         .HasColumnType("INTEGER");
 
@@ -471,6 +493,12 @@ namespace wmbaApp.Data.WBMigrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("wmbaApp.Models.GameLocation", "GameLocation")
+                        .WithMany("Games")
+                        .HasForeignKey("GameLocationID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("wmbaApp.Models.Lineup", "HomeLineup")
                         .WithMany("HomeGames")
                         .HasForeignKey("HomeLineupID");
@@ -486,6 +514,8 @@ namespace wmbaApp.Data.WBMigrations
                     b.Navigation("AwayTeam");
 
                     b.Navigation("Division");
+
+                    b.Navigation("GameLocation");
 
                     b.Navigation("HomeLineup");
 
@@ -622,6 +652,11 @@ namespace wmbaApp.Data.WBMigrations
                     b.Navigation("GameTeams");
 
                     b.Navigation("Innings");
+                });
+
+            modelBuilder.Entity("wmbaApp.Models.GameLocation", b =>
+                {
+                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("wmbaApp.Models.Inning", b =>

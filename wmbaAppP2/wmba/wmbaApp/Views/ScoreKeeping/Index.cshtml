@@ -1,28 +1,30 @@
 ﻿@using wmbaApp.ViewModels
 @model wmbaApp.ViewModels.GameScoreKeepingVM
+<body class="no-scroll">
+    <div id="scoreKeepingMain" class="scoreKeepin">
+        <div id="ScoreBar">
+            <partial name="_ScoreBar" model="@Model" />
+        </div>
 
-<div id="scoreKeepingMain">
-    <div id="ScoreBar">
-        <partial name="_ScoreBar" model="@Model" />
+        <div class="grid">
+            <input id="btnUndoLast" type="button" value="Undo" onclick="UndoLastAction()" class="btn-action btn-outline-dark" />
+            <div></div>
+            <input id="btnAddToVisitorTeam" type="button" value="Add score" class="btn-action btn-outline-dark" />
+        </div>
+        <div id="BaseballDiamond">
+            <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
+        </div>
+
+        <div id="InningsTable">
+            <partial name="_InningsTable" model="@Model" />
+        </div>
+
+        <input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" onclick="openModal()" style="min-width: 110px; margin-bottom: 60px;" />
+
+        <input type="hidden" id="undoLastPlayJSON" value='' />
     </div>
+</body>
 
-    <div class="grid">
-        <input id="btnUndoLast" type="button" value="Undo" onclick="UndoLastAction()" class="btn-action btn-outline-dark" />
-        <div></div>
-        <input id="btnAddToVisitorTeam" type="button" value="Add score" class="btn-action btn-outline-dark" />
-    </div>
-    <div id="BaseballDiamond">
-        <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
-    </div>
-
-    <div id="InningsTable">
-        <partial name="_InningsTable" model="@Model" />
-    </div>
-
-    <input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" onclick="openModal()" style="min-width: 110px; margin-bottom: 60px;" />
-
-    <input type="hidden" id="undoLastPlayJSON" value='' />
-</div>
 
 
 <!--popup modals-->
@@ -36,10 +38,10 @@
 <div id="customModal" class="modal">
     <div class="modal-content">
         <span class="close" id="close" onclick="closeModal()">X</span>
-        <b><p id="question" style="margin: 0 20px;">Canceling a game will reset the game to before it started.<br><br>Cancel game?</br></p></b>
+        <b><p id="notify" style="margin: 0 20px;">Canceling a game will reset the game and all data will be lost.<br><br>Cancel game?</br></p></b>
         <b><p id="required"></p></b>
         <i></i>
-        <input type="submit" id="hideBtn" value="Cancel" class="btn btn-outline-dark " />
+
 
         <i id="error" class="fa-solid fa-xmark fa-f6"></i>
         <form asp-action="CancelGame">
@@ -54,6 +56,11 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
     }
+
+    .scoreKeepin {
+        margin-top: 60px;
+    }
+
 
     .btn-action {
         color: #2e8b43;

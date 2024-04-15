@@ -35,6 +35,10 @@ namespace wmbaApp.Controllers
         public async Task<IActionResult> Index(int? page, int? pageSizeID)
         {
             IQueryable<Division> divisions;
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
 
             if (User.IsInRole("Admin"))
             {
@@ -114,12 +118,17 @@ namespace wmbaApp.Controllers
                     await _context.SaveChangesAsync();
                     IdentityResult roleResult;
                     roleResult = await _roleManager.CreateAsync(new ApplicationRole(division.DivName + " Convenor", division.ID, 0));
+                    TempData["SuccessMessage"] = "Division created successfully.";
                     return RedirectToAction(nameof(Index));
                 }
             }
             catch (DbUpdateException)
             {
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating players. {ex.Message}";
             }
             if (!ModelState.IsValid && Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
@@ -208,8 +217,12 @@ namespace wmbaApp.Controllers
                 {
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
-
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Error creating players. {ex.Message}";
+                }
             }
+            TempData["SuccessMessage"] = "Division edited successfully.";
             return RedirectToAction("Details", new { divisionsToUpdate.ID });
 
         }
@@ -262,6 +275,7 @@ namespace wmbaApp.Controllers
                     _AppContext.Roles.Remove(role);
                     await _AppContext.SaveChangesAsync();
                 }
+                TempData["SuccessMessage"] = "Division deleted successfully.";
                 return Redirect(ViewData["returnURL"].ToString());
             }
             catch (DbUpdateException dex)
@@ -274,6 +288,10 @@ namespace wmbaApp.Controllers
                 {
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
                 }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Unable to delete this dividion, {ex.Message}";
             }
 
             return View(division);

@@ -8,8 +8,7 @@
     <br />
     <div class="form-horizontal">
         <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            <span></span><span></span><span></span><span></span>
-            <p id="seacrchBtnChange" class="filSearch" style="color: #2e8b43;">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+            <p class="filSearch">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
             <div class="card card-body bg-light">
@@ -37,7 +36,12 @@
             </div>
         </div>
     </div>
-
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div id="successMessage" class="alert alert-success">
+            @ViewBag.SuccessMessage
+        </div>
+    }
 
   
     <table class="table playerTable">
@@ -135,6 +139,20 @@
             "<p>Clicking the 'Edit' button lets you modify the details of an existing player.</p>",
             "<p>Clicking the 'Active' button deactivates a player and stores them in the database. Deactivated players can be viewed by toggling the search bar to 'Currently viewing inactive players.' You can reactivate players from the deactivated players page.</p>"
         ]);
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to fade out the success message after 3 seconds (adjust as needed)
+            setTimeout(function () {
+                $('#successMessage').fadeOut('slow');
+            }, 2000); // 3000 milliseconds = 3 seconds
+
+            // Optional: You can also close the success message when clicking on it
+            $('#successMessage').click(function () {
+                $(this).fadeOut('slow');
+            });
+        });
     </script>
 }
 

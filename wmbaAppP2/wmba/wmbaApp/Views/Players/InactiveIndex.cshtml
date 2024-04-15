@@ -46,11 +46,16 @@
             </div>
         </div>
     </div>
-
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewBag.SuccessMessage
+        </div>
+    }
     <table class="table">
         <thead>
             <tr>
-               
+
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
                     <input type="submit" name="actionButton" value="Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
@@ -60,7 +65,7 @@
                         Team
                     </h6>
                 </th>
-                <
+                
                 <th class="d-none d-xxl-table-cell">
                     <h6 class="non-button-input" id="heading">
                         Division

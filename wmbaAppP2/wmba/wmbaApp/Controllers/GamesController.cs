@@ -278,13 +278,20 @@ namespace wmbaApp.Controllers
                 ViewData["HomeTeamID"] = new SelectList(_context.Teams.Where(t => t.DivisionID == selectedDivision && t.IsActive == true), "ID", "TmName");
                 ViewData["AwayTeamID"] = new SelectList(_context.Teams.Where(t => t.DivisionID == selectedDivision && t.IsActive == true), "ID", "TmName");
             }
-
-            if (ModelState.IsValid)
+            try
             {
+                if (ModelState.IsValid)
+                {
 
-                _context.Add(game);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", new { game.ID });
+                    _context.Add(game);
+                    TempData["SuccessMessage"] = "Game created successfully.";
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", new { game.ID });
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating player: {ex.Message}";
             }
             //ViewData["AwayTeamID"] = new SelectList(_context.Teams, "ID", "TmName", game.AwayTeamID);
             //ViewData["HomeTeamID"] = new SelectList(_context.Teams, "ID", "TmName", game.HomeTeamID);
@@ -356,6 +363,7 @@ namespace wmbaApp.Controllers
                 {
                     _context.Update(gameToUpdate);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Game updated successfully.";
                     return RedirectToAction("Details", new { gameToUpdate.ID });
                 }
                 catch (DbUpdateConcurrencyException)
@@ -368,6 +376,10 @@ namespace wmbaApp.Controllers
                     {
                         throw;
                     }
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Error updating player: {ex.Message}";
                 }
             }
             ViewData["HomeLineupID"] = new SelectList(_context.Lineups, "ID", "ID", gameToUpdate.HomeLineupID);
@@ -385,6 +397,10 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
             var game = await _context.Games
                 .Include(g => g.GameLocation)
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
