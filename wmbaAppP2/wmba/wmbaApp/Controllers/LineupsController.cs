@@ -72,24 +72,46 @@ namespace wmbaApp.Controllers
 
                 if (game != null)
                 {
-                    var selectedHomePlayersCount = SelectedPlayers.Count(p => game.HomeTeam.Players.Any(hp => hp.ID == p));
-                    var selectedAwayPlayersCount = SelectedPlayers.Count(p => game.AwayTeam.Players.Any(ap => ap.ID == p));
+                    Lineup firstCreatedLineup = new Lineup();
+                    Lineup secondCreatedLineup = new Lineup();
 
-                    lineup.HomeGames = new List<Game> { game };
-                    lineup.AwayGames = new List<Game> { game };
+                    firstCreatedLineup.HomeGames = new List<Game> { game };
+                    secondCreatedLineup.AwayGames = new List<Game> { game };
 
                     foreach (var playerId in SelectedPlayers)
                     {
                         var playerLineup = new PlayerLineup
                         {
-                            Lineup = lineup,
-                            PlayerID = playerId
+                            ID = 0,
+                            LineupID = firstCreatedLineup.ID, //assume the player comes from the home team lineup
+                            PlayerID = playerId,
                         };
-                        lineup.PlayerLineups.Add(playerLineup);
-                    }
 
-                    _context.Lineups.Add(lineup);
-                    await _context.SaveChangesAsync();
+                        //if  the home team contains the player, add to home team lineup. else add to away team lineup
+                        if (game.HomeTeam.Players.Select(p => p.ID).Any(pID => pID == playerLineup.PlayerID))
+                        {
+                            firstCreatedLineup.PlayerLineups.Add(playerLineup);
+                        }
+                        else
+                        {
+                            playerLineup.LineupID = secondCreatedLineup.ID; //change lineup ID if player is from away team lineup
+                            secondCreatedLineup.PlayerLineups.Add(playerLineup);
+                        }
+                    }
+                    try
+                    {
+                        _context.Lineups.Update(firstCreatedLineup);
+                        _context.Lineups.Update(secondCreatedLineup);
+                        await _context.SaveChangesAsync();
+                    }
+                    catch (RetryLimitExceededException /* dex */)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+                    }
+                    catch (DbUpdateException dex)
+                    {
+                        ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                    }
 
                     // goes to the details page
                     return RedirectToAction("Details", "Games", new { id = game.ID });

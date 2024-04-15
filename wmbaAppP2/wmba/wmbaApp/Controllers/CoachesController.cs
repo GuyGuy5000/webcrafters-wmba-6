@@ -13,7 +13,7 @@ using wmbaApp.Utilities;
 
 namespace wmbaApp.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    [Authorize(Roles ="Admin,Convenor")]
     public class CoachesController : ElephantController
     {
         private readonly WmbaContext _context;

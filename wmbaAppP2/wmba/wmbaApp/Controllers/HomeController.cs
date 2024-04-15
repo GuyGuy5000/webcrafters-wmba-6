@@ -306,6 +306,7 @@ namespace wmbaApp.Controllers
                     p.PlyrLastName = data[2];
                     p.PlyrMemberID = data[3];
                     p.TeamID = (int)teamID;
+                    p.Statistics = new Statistic();
                     _context.Players.Add(p);
                     _context.SaveChanges();
                     successCount++;
@@ -458,6 +459,7 @@ namespace wmbaApp.Controllers
                     p.PlyrLastName = workSheet.Cells[row, 3].Text;
                     p.PlyrMemberID = workSheet.Cells[row, 4].Text;
                     p.TeamID = (int)teamID;
+                    p.Statistics = new Statistic();
                     _context.Players.Add(p);
                     _context.SaveChanges();
                     successCount++;
