@@ -4,6 +4,12 @@
 <partial name="_ViewHeading" />
 
 <form asp-action="Index" method="get">
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div id="successMessage" class="alert alert-success">
+            @ViewBag.SuccessMessage
+        </div>
+    }
     <table class="table mt-3 divisionTable">
 
         <thead>
@@ -70,6 +76,17 @@
             "<p>Clicking the 'Delete' button removes a division from the system. Please use caution when deleting division records.</p>"
         ]);
     </script>
-    
-}
+    <script>
+        $(document).ready(function () {
+            // Function to fade out the success message after 3 seconds (adjust as needed)
+            setTimeout(function () {
+                $('#successMessage').fadeOut('slow');
+            }, 2000); // 3000 milliseconds = 3 seconds
 
+            // Optional: You can also close the success message when clicking on it
+            $('#successMessage').click(function () {
+                $(this).fadeOut('slow');
+            });
+        });
+    </script>
+}

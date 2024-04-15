@@ -1,6 +1,9 @@
-﻿<main class="error ">
-    <div style="text-align:center;">
-        <h2>Page under construction. </h2>
-        <h4>This page is unfinished and is not currently available.</h4>
+﻿@if (!User.Identity.IsAuthenticated)
+{
+    <div class="col-md-6 welcomeContainer">
+        <div class="childWelcomeContainer">
+            <img class="img-fluid logo" src="~/Image/WMBA-combine.png" alt="Logo" tabindex="1" />
+            <a class="nav-link btn btn-outline-dark loginClass" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </div>
     </div>
-</main>
+}

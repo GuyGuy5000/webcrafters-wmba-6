@@ -40,7 +40,10 @@ namespace wmbaApp.Controllers
             ViewData["Filtering"] = " btn-outline-dark";
             int numberFilters = 0;
             //Then in each "test" for filtering, add to the count of Filters applied
-
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Name", "Team" };
@@ -150,10 +153,13 @@ namespace wmbaApp.Controllers
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
+            ViewData["Filtering"] = "btn-outline-dark";
             int numberFilters = 0;
             //Then in each "test" for filtering, add to the count of Filters applied
-
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Name", "Team" };
@@ -267,6 +273,12 @@ namespace wmbaApp.Controllers
                 return NotFound();
             }
 
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
+
+
             var player = await _context.Players
                 .Include(p => p.Team).ThenInclude(p => p.Division)
                 .Include(p => p.Statistics)
@@ -306,6 +318,8 @@ namespace wmbaApp.Controllers
                 if (ModelState.IsValid)
                 {
                     _context.Add(player);
+
+                    TempData["SuccessMessage"] = "Player created successfully.";
                     await _context.SaveChangesAsync();
                     return RedirectToAction("Details", new { player.ID });
                 }
@@ -327,6 +341,11 @@ namespace wmbaApp.Controllers
                 }
                 else
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating player: {ex.Message}";
             }
 
             CreatePopulateDropDownLists(player);
@@ -363,11 +382,10 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor,Coach")]
+        [Authorize(Roles = "Admin, Convenor, Coach")]
         public async Task<IActionResult> Edit(int id)
         {
-            var playerToUpdate = await _context.Players
-            .FirstOrDefaultAsync(m => m.ID == id);
+            var playerToUpdate = await _context.Players.FirstOrDefaultAsync(m => m.ID == id);
 
             if (playerToUpdate == null)
             {
@@ -375,7 +393,9 @@ namespace wmbaApp.Controllers
             }
 
             if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, playerToUpdate))
+            {
                 return RedirectToAction("Index", "Players");
+            }
 
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
                 t => t.PlyrFirstName, t => t.PlyrLastName, t => t.TeamID, t => t.PlyrJerseyNumber, t => t.PlyrMemberID,
@@ -386,7 +406,10 @@ namespace wmbaApp.Controllers
                     playerToUpdate.PlyrJerseyNumber = null;
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Details", new { playerToUpdate.ID });
+
+                    TempData["SuccessMessage"] = "Player updated successfully."; // Set success message
+
+                    return RedirectToAction("Details", new { id = playerToUpdate.ID }); // Redirect to Details action with success message
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -401,73 +424,58 @@ namespace wmbaApp.Controllers
                 }
                 catch (DbUpdateException dex)
                 {
-                    if (dex.InnerException.Message.Contains("UNIQUE")) //if a UNIQUE constraint caused the exception
+                    if (dex.InnerException.Message.Contains("UNIQUE"))
                     {
-                        //check which field triggered the error
                         if (dex.InnerException.Message.Contains("PlyrMemberID"))
-                            ModelState.AddModelError("PlyrMemberID", "A player with this member ID already exists."); //pass a message to the field that triggered the error
+                        {
+                            ModelState.AddModelError("PlyrMemberID", "A player with this member ID already exists.");
+                        }
                         else if (dex.InnerException.Message.Contains("PlyrJerseyNumber"))
+                        {
                             ModelState.AddModelError("PlyrJerseyNumber", "A player with this jersey number already exists.");
+                        }
                     }
                     else
+                    {
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Error updating player: {ex.Message}";
                 }
             }
+
+
+       
+            TempData["SuccessMessage"] = "Player updated successfully.";
+
             EditPopulateDropDownLists(playerToUpdate);
+
             return View(playerToUpdate);
         }
 
-        //// GET: Players/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null || _context.Players == null)
-        //    {
-        //        return NotFound();
-        //    }
 
-        //    var player = await _context.Players
-        //        .FirstOrDefaultAsync(m => m.ID == id);
-        //    if (player == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(player);
-        //}
-
-        //// POST: Players/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (_context.Players == null)
-        //    {
-        //        return Problem("Entity set 'WmbaContext.Players' is null.");
-        //    }
-        //    var player = await _context.Players.FindAsync(id);
-        //    if (player != null)
-        //    {
-        //        _context.Players.Remove(player);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        // GET: Players/Inactive/5
-        [Authorize(Roles = "Admin,Convenor,Coach")]
+        // GET: Players/MakeInactive/5
+        [Authorize(Roles = "Admin, Convenor, Coach")]
         public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Players == null)
+            {
                 return NotFound();
+            }
 
             var player = await _context.Players
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (player == null)
-                return NotFound();
 
+            if (player == null)
+            {
+                return NotFound();
+            }
+
+        
             return View(player);
         }
 
@@ -487,13 +495,24 @@ namespace wmbaApp.Controllers
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(p => p.ID == id);
 
-            if (player != null)
+            if (player == null)
             {
-                player.IsActive = false;
-                _context.Players.Update(player);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                player.IsActive = false;
+                _context.Update(player);
+                await _context.SaveChangesAsync();
+
+               
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error making player inactive: {ex.Message}";
+            }
+            TempData["SuccessMessage"] = "Player made inactive successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -505,10 +524,15 @@ namespace wmbaApp.Controllers
             if (id == null || _context.Players == null)
                 return NotFound();
 
+
+
             var player = await _context.Players
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(m => m.ID == id);
+
+            
+
 
             if (player == null)
                 return NotFound();
@@ -534,24 +558,34 @@ namespace wmbaApp.Controllers
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(p => p.ID == id);
 
-            if (player != null)
+            if (player == null)
             {
-                if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
-                    return RedirectToAction("Index", "Players");
-
-                if (player.Team.IsActive)
-                {
-                    player.IsActive = true;
-                    _context.Players.Update(player);
-                }
-                else
-                {
-                    ModelState.AddModelError("", "This player's team is inactive. Reactivate the team or reassign this player to a different team to reactivate");
-                    return View(player);
-                }
+                return NotFound();
+            }
+            if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
+            {
+                return RedirectToAction("Index", "Players");
             }
 
-            await _context.SaveChangesAsync();
+            if (player.Team == null || !player.Team.IsActive)
+            {
+                ModelState.AddModelError("", "This player's team is inactive. Reactivate the team or reassign this player to a different team to reactivate.");
+                return View(player);
+            }
+
+            try
+            {
+                player.IsActive = true;
+                _context.Players.Update(player);
+                await _context.SaveChangesAsync();
+
+              
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error making player active: {ex.Message}";
+            }
+            TempData["SuccessMessage"] = "Player made active successfully.";
             return RedirectToAction("InactiveIndex");
         }
 
@@ -726,93 +760,6 @@ namespace wmbaApp.Controllers
         }
 
 
-        //#region PositionCheckboxes
-        //private void PopulateAssignedPositionCheckboxes(Player player)
-        //{
-        //    //For this to work, you must have Included the FunctionRooms 
-        //    //in the Function
-        //    var allOptions = _context.Positions;
-        //    var currentOptionIDs = new HashSet<int>(player.PlayerPositions.Select(b => b.PositionID));
-        //    var checkBoxes = new List<CheckOptionVM>();
-        //    foreach (var option in allOptions)
-        //    {
-        //        checkBoxes.Add(new CheckOptionVM
-        //        {
-        //            ID = option.ID,
-        //            DisplayText = option.PosName,
-        //            Assigned = currentOptionIDs.Contains(option.ID)
-        //        });
-        //    }
-        //    ViewData["PositionOptions"] = checkBoxes;
-        //}
-
-        ////For the posiionList
-        //private void PopulateAssignedPositionLists(Player player)
-        //{
-        //    //For this to work, you must have Included the child collection in the parent object
-        //    var allOptions = _context.Positions;
-        //    var currentOptionsHS = new HashSet<int>(player.PlayerPositions.Select(b => b.PositionID));
-        //    //Instead of one list with a boolean, we will make two lists
-        //    var selected = new List<ListOptionVM>();
-        //    var available = new List<ListOptionVM>();
-        //    foreach (var r in allOptions)
-        //    {
-        //        if (currentOptionsHS.Contains(r.ID))
-        //        {
-        //            selected.Add(new ListOptionVM
-        //            {
-        //                ID = r.ID,
-        //                DisplayText = r.PosName
-        //            });
-        //        }
-        //        else
-        //        {
-        //            available.Add(new ListOptionVM
-        //            {
-        //                ID = r.ID,
-        //                DisplayText = r.PosName
-        //            });
-        //        }
-        //    }
-
-        //    ViewData["selOpts"] = new MultiSelectList(selected.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-        //    ViewData["availOpts"] = new MultiSelectList(available.OrderBy(s => s.DisplayText), "ID", "DisplayText");
-        //}
-
-        //private void UpdatePlayerPositionsListboxes(string[] selectedOptions, Player playerToUpdate)
-        //{
-        //    if (selectedOptions == null)
-        //    {
-        //        playerToUpdate.PlayerPositions = new List<PlayerPosition>();
-        //        return;
-        //    }
-
-        //    var selectedOptionsHS = new HashSet<string>(selectedOptions);
-        //    var currentOptionsHS = new HashSet<int>(playerToUpdate.PlayerPositions.Select(b => b.PositionID));
-        //    foreach (var r in _context.Positions)
-        //    {
-        //        if (selectedOptionsHS.Contains(r.ID.ToString()))//it is selected
-        //        {
-        //            if (!currentOptionsHS.Contains(r.ID))
-        //            {
-        //                playerToUpdate.PlayerPositions.Add(new PlayerPosition
-        //                {
-        //                    PositionID = r.ID,
-        //                    PlayerID = playerToUpdate.ID
-        //                });
-        //            }
-        //        }
-        //        else //not selected
-        //        {
-        //            if (currentOptionsHS.Contains(r.ID))
-        //            {
-        //                PlayerPosition positionToRemove = playerToUpdate.PlayerPositions.FirstOrDefault(d => d.PositionID == r.ID);
-        //                _context.Remove(positionToRemove);
-        //            }
-        //        }
-        //    }
-        //}
-        //#endregion
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.ID == id);

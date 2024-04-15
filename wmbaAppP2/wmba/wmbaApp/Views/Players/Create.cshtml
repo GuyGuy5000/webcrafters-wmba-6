@@ -3,7 +3,24 @@
 <hr />
 
 <form asp-action="Create" method="post" enctype="multipart/form-data" class="mx-auto mt-4 games-editform" id="createForm" style="width: 80%;">
+
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+
     <fieldset>
+
         <partial name="_ViewHeading" />
         <div class="col-md-4">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>

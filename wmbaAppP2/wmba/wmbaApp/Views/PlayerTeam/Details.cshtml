@@ -4,7 +4,15 @@
     wmbaApp.Models.Team team = (wmbaApp.Models.Team)ViewBag.Team;
     <partial name="_TeamDetails" model="team" />
     ViewData["Title"] = ViewData["ControllerFriendlyName"];
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div class="alert alert-success" role="alert">
+            @ViewBag.SuccessMessage
+        </div>
+    }
+
 }
+
 <input type="hidden" name="TeamID" value="@team.ID" />
 
 <div>

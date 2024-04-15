@@ -50,6 +50,11 @@
                 </th>
                 <th class="d-none d-lg-table-cell">
                     <h6 class="non-button-input" id="heading">
+                        Rating
+                    </h6>
+                </th>
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">
                         GP
                     </h6>
                 </th>
@@ -139,6 +144,34 @@
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.Players.FirstOrDefault().FullName)
                     </td>
+                    <td class="d-sm-table-cell d-md-table-cell">
+                        @{
+                            string ratingClass = "";
+                            if (item.StatsAVG >= 0.300 && item.StatsAVG <= 0.500)
+                            {
+                                ratingClass = "three-stars";
+                            }
+                            else if (item.StatsAVG > 0.500 && item.StatsAVG <= 0.700)
+                            {
+                                ratingClass = "four-stars";
+                            }
+                            else if (item.StatsAVG > 0.700)
+                            {
+                                ratingClass = "five-stars";
+                            }
+                            else
+                            {
+                                ratingClass = "two-stars";
+                            }
+                        }
+                        <div class="rating col-sm-10 @ratingClass">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span class="@ratingClass" data-value="@i">&#9733;</span>
+                            }
+                            <input type="hidden" id="rating-value" value="0" />
+                        </div>
+                    </td>
                     <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.StatsGP)
                     </td>
@@ -214,6 +247,12 @@
             "<p>Clicking 'Details' allows you to view more detailed information about a player's statistics.</p>"
         ]);
     </script>
+
+    
 }
+
+
+           
+
 
 

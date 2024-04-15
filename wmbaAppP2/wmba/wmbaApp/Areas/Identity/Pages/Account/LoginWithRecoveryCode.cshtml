@@ -1,0 +1,97 @@
+﻿@page
+@model LoginWithRecoveryCodeModel
+@{
+    ViewData["Title"] = "Recovery code verification";
+}
+
+<link rel="stylesheet" href="~/css/login-design.css" asp-append-version="true" />
+<head>
+    <title>@ViewData["Title"]</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .form-container {
+            max-width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 40px auto;
+        }
+
+        .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-bottom: 150px;
+            margin-left: auto;
+        }
+
+            .form-container h2 {
+                margin-bottom: 20px;
+                color: #333;
+                font-size: 24px;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            .form-container p {
+                color: #666;
+                font-size: 16px;
+                text-align: center;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .btn-login {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>@ViewData["Title"]</h2>
+            <hr />
+            <p>
+                You have requested to log in with a recovery code. This login will not be remembered until you provide
+                an authenticator app code at log in or disable 2FA and log in again.
+            </p>
+
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <div class="form-group">
+                    <label for="RecoveryCode">Recovery Code</label>
+                    <input asp-for="Input.RecoveryCode" class="form-control" id="RecoveryCode" autocomplete="off" />
+                    <span asp-validation-for="Input.RecoveryCode" class="text-danger"></span>
+                </div>
+
+                <button id="login-submit" type="submit" class="btn btn-lg btn-primary btn-login">Log in</button>
+
+                <p>
+                    Click here to <a asp-page="./LoginWith2fa">Login with 2FA</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+</body>

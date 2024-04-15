@@ -8,14 +8,21 @@
 
 <hr />
 <h2>Add player to team</h2>
+@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+{
+    <div id="successMessage" class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create" method="post" enctype="multipart/form-data">
             <input type="hidden" name="TeamID" value="@team.ID" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="PlyrFirstName" class="control-label"></label>
+            <div class="form-group ">
+                <label asp-for="PlyrFirstName" class="control-label required-label"></label>
                 <input asp-for="PlyrFirstName" class="form-control" placeholder="Ex: John" />
                 <span asp-validation-for="PlyrFirstName" class="text-danger"></span>
             </div>
@@ -25,7 +32,7 @@
                 <span asp-validation-for="PlyrLastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PlyrMemberID" class="control-label"></label>
+                <label asp-for="PlyrMemberID" class="control-label required-label"></label>
                 <input asp-for="PlyrMemberID" class="form-control" placeholder="Ex: 1ca5f32" />
                 <span asp-validation-for="PlyrMemberID" class="text-danger"></span>
             </div>
@@ -37,7 +44,7 @@
             <div class="form-group">
                 <input asp-route-TeamID="@team.ID" type="submit" name="submitButton" value="Add player" class="btn btn-outline-dark deactivate" />
                @*  <input asp-route-TeamID="@team.ID" type="submit" name="submitButton" value="Add player and finish" class="btn btn-outline-dark " /> *@
-                <a asp-action="Index" asp-route-TeamID="@team.ID" type="button" class="btn btn-outline-dark ">Back to players list</a>
+                <a asp-action="Index" asp-route-TeamID="@team.ID" type="button" class="btn btn-outline-dark ">Back </a>
             </div>
         </form>
     </div>
@@ -45,6 +52,17 @@
 
 
 @section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Function to fade out the success message after 3 seconds (adjust as needed)
+            setTimeout(function () {
+                $('#successMessage').fadeOut('slow');
+            }, 2000); // 3000 milliseconds = 3 seconds
 
+            // Optional: You can also close the success message when clicking on it
+            $('#successMessage').click(function () {
+                $(this).fadeOut('slow');
+            });
+        });
+    </script>
 }
-

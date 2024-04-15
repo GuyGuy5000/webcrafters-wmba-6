@@ -36,6 +36,11 @@ namespace wmbaApp.Controllers
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = " btn-outline-dark";
             int numberFilters = 0;
+
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
             //Then in each "test" for filtering, add to the count of Filters applied
 
             //List of sort options.
@@ -162,10 +167,13 @@ namespace wmbaApp.Controllers
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
+            ViewData["Filtering"] = "btn-outline-dark";
             int numberFilters = 0;
             //Then in each "test" for filtering, add to the count of Filters applied
-
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Team", "Division", "Coaches" };
@@ -292,6 +300,10 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
 
             var team = await _context.Teams
            .Include(t => t.Division)
@@ -339,6 +351,9 @@ namespace wmbaApp.Controllers
                     _context.Add(team);
                     await _context.SaveChangesAsync();
 
+                    // Set success message
+                    TempData["SuccessMessage"] = "Team created successfully.";
+
                     if (coachID.HasValue)
                     {
                         var divisionCoach = new DivisionCoach() { DivisionID = team.DivisionID, CoachID = coachID.Value, TeamID = team.ID };
@@ -381,8 +396,10 @@ namespace wmbaApp.Controllers
                     await _context.SaveChangesAsync();
                 }
             }
+
             return View(team);
         }
+
 
         // GET: Teams/Edit/5 
         [Authorize(Roles = "Admin,Convenor")]
@@ -528,69 +545,21 @@ namespace wmbaApp.Controllers
                 }
             }
             ViewData["DivisionID"] = new SelectList(_context.Divisions, "ID", "DivName", teamToUpdate.DivisionID);
-
+            TempData["SuccessMessage"] = "Team updated successfully.";
             return RedirectToAction("Details", new { teamToUpdate.ID });
         }
 
-        //// GET: Teams/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null || _context.Teams == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var team = await _context.Teams
-        //     .Include(t => t.Division)
-        //     .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
-        //     .Include(t => t.Players)
-        //     .Include(t => t.GameTeams).ThenInclude(t => t.Game)
-        //     .AsNoTracking()
-        //     .FirstOrDefaultAsync(m => m.ID == id);
-
-        //    if (team == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(team);
-        //}
-
-        //// POST: Teams/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (_context.Teams == null)
-        //    {
-        //        return Problem("Entity set 'WmbaContext.Teams'  is null.");
-        //    }
-        //    var team = await _context.Teams.FindAsync(id);
-        //    try
-        //    {
-        //        if (team != null)
-        //            _context.Teams.Remove(team);
-
-        //        await _context.SaveChangesAsync();
-        //        return Redirect(ViewData["returnURL"].ToString());
-        //    }
-        //    catch (DbUpdateException dex)
-        //    {
-        //        if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
-        //            ModelState.AddModelError("FK", $"Unable to delete a team that has players. Reassign or delete the players assigned to this team.");
-        //        else
-        //            //Note: there is really no reason a delete should fail if you can "talk" to the database.
-        //            ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-        //        return View("Delete", team);
-        //    }
-        //}
-
+   
         // GET: Teams/Inactive/5
         [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Teams == null)
                 return NotFound();
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
 
             var team = await _context.Teams
                      .Include(t => t.Division)
@@ -659,6 +628,7 @@ namespace wmbaApp.Controllers
                         _AppContext.Roles.Remove(role);
                         await _AppContext.SaveChangesAsync();
                     }
+
                     return RedirectToAction(nameof(Index));
                 }
             }

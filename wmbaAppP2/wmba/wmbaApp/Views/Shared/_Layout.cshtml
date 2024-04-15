@@ -28,6 +28,7 @@
         @* removing nav bar at login and register page *@
         @if (!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Login", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Register", StringComparison.OrdinalIgnoreCase) &&
+!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/LoginWithRecoveryCode", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ForgotPassword", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ResendEmailConfirmation", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/LoginWith2fa", StringComparison.OrdinalIgnoreCase) &&
@@ -35,9 +36,19 @@
         {
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light yemiNav border-bottom box-shadow mb-0" id="navBar">
                 <div class="container-fluid" style="padding-bottom: 0px;">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-                        <img class="secondLogo img-fluid " src="~/Image/WMBA (9).png" alt="Logo" tabindex="1" />
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" id="homeLink" asp-action="Index">
+                        <img class="secondLogo img-fluid " id="imgHome" src="~/Image/WMBA (9).png" alt="Logo" tabindex="1" />
                     </a>
+
+                    <a href="#">
+                        <div class="img-container">
+                            <img class="secondLogo img-fluid statsLogo float-left" id="img" style="height: 1000px;" src="~/Image/WMBA (9).png" alt="Logo" tabindex="1" />
+                        </div>
+                    </a>
+
+
+                 
+                   
                     @if (ViewContext.RouteData.Values["controller"] != null)
                     {
                         @if (User.Identity.IsAuthenticated && (ViewContext.RouteData.Values["controller"].ToString() == "ScoreKeeping" || ViewContext.RouteData.Values["controller"].ToString() == "ScoreKeepingAwayTeam"))
@@ -127,9 +138,9 @@
                             </div>
                         }
                     }
-                  
+
                 </div>
-               
+
             </nav>
 
             <nav class="phoneNav">
@@ -147,7 +158,7 @@
             <nav class="scoreKeepingNav" id="scoreBar">
                 <input id="btnScorekeepingNav" type="button" value="V" style="margin: 0 42.5%; width: 15%; border-radius: 15px 15px 5px 5px; border: 1px solid #FFF; background-color: #17254c; color: #FFF;" />
                 <div id="navToggleContainer">
-                    <a href="#BaseballDiamond" class="phoneIcon"><i class="fa-solid fa-baseball iconP"></i><br>Score</a>
+                    <a href="#BaseballDiamond" id="btnBatterAction" onclick="ShowBatterAction()" class="phoneIcon"><i class="fa-solid fa-baseball iconP"></i><br>Score</a>
                     <a href="#homeLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#homeLineUp"><i class="fa-solid fa-shirt iconP"></i><br>My Team</a>
                     <a href="#awayLineUp" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#awayLineUp"><i class="fa-solid fa-shirt iconP" style="color: #808080;"></i><br>Opponent</a>
                     <a href="#playByPlay" class="phoneIcon" data-bs-toggle="modal" data-bs-target="#playByPlay"><i class="fa-solid fa-list iconP"></i><br>Play-by-Play</a>
@@ -163,7 +174,7 @@
                     <i class="fa-solid fa-angle-left" style="color: black"></i>
                 </a>
             </nav>
-           
+
         }
     </header>
     <div class="container-fluid">

@@ -1,15 +1,16 @@
 ﻿@using wmbaApp.ViewModels
 @model wmbaApp.ViewModels.GameScoreKeepingVM
 
-<div id="scoreKeepingMain">
+
+<div id="scoreKeepingMain" class="scoreKeepin">
     <div id="ScoreBar">
         <partial name="_ScoreBar" model="@Model" />
     </div>
 
     <div class="grid">
-        <input id="btnAddToVisitorTeam" type="button" value="Add score" class="btn-action btn-outline-dark" />
-        <div></div>
         <input id="btnUndoLast" type="button" value="Undo" onclick="UndoLastAction()" class="btn-action btn-outline-dark" />
+        <div></div>
+        <input id="btnAddToVisitorTeam" type="button" value="Add score" class="btn-action btn-outline-dark" />
     </div>
     <div id="BaseballDiamond">
         <partial name="_BaseballDiamond" model="@Model.Innings[Model.CurrentInning]" />
@@ -19,7 +20,7 @@
         <partial name="_InningsTable" model="@Model" />
     </div>
 
-    <input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" onclick="openModal()" style="min-width: 110px; margin-bottom: 60px;" />
+    <input type="submit" value="CANCEL GAME" class="btn btn-outline-dark" onclick="openModal()" style="min-width: 110px; margin-bottom: 80px;" />
 
     <input type="hidden" id="undoLastPlayJSON" value='' />
 </div>
@@ -36,11 +37,10 @@
 <div id="customModal" class="modal">
     <div class="modal-content">
         <span class="close" id="close" onclick="closeModal()">X</span>
-        <b><p id="question" style="margin: 0 20px;">Canceling a game will reset the game to before it started.<br><br>Cancel game?</br></p></b>
+        <b><p id="notify" style="margin: 0 20px;">Canceling a game will reset the game and all data will be lost.<br><br>Cancel game?</br></p></b>
         <b><p id="required"></p></b>
         <i></i>
-        <input type="submit" id="hideBtn" value="Cancel" class="btn btn-outline-dark " />
-
+       
         <i id="error" class="fa-solid fa-xmark fa-f6"></i>
         <form asp-action="CancelGame">
             <input type="hidden" asp-for="GameID" />
@@ -68,6 +68,10 @@
         width: 170px;
     }
 
+    .scoreKeepin{
+        margin-top: 60px;
+    }
+
     /* Tablet */
     @@media only screen and (min-width: 426px) and (max-width: 768px) {
         .btn-action {
@@ -91,8 +95,9 @@
     <script src="~/js/site.js"></script>
     <!--Postback ajax scripts-->
     <script type="text/javascript">
+
         $("#btnAddToVisitorTeam").click(function () {
-            IncrementHomeTeamScore();
+            IncrementAwayTeamScore();
         });
 
         $("input[type='button']").each(function () {
@@ -150,7 +155,7 @@
         function HandlePlayerOnBase(sender) {
             //postback
             $.ajax({
-                url: "@Url.Action("HandlePlayerOnBase", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("HandlePlayerOnBase", "ScoreKeeping")",
                 data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val(), senderID: `${sender.id}`, senderAction: `${sender.value}` }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -168,7 +173,7 @@
         function HandleBatterAction() {
             //postback
             $.ajax({
-                url: "@Url.Action("HandleBatterAction", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("HandleBatterAction", "ScoreKeeping")",
                 data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val(), actionID: $("#BatterActionList").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -186,7 +191,7 @@
         function HandleSteal(sender) {
             //postback
             $.ajax({
-                url: "@Url.Action("HandleSteal", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("HandleSteal", "ScoreKeeping")",
                 data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val(), senderID: `${sender.id}` }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -204,7 +209,7 @@
         function SkipBatter() {
             //postback
             $.ajax({
-                url: "@Url.Action("SkipBatter", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("SkipBatter", "ScoreKeeping")",
                 data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -219,10 +224,10 @@
         }
 
         //handles skipBatter
-        function IncrementHomeTeamScore() {
+        function IncrementAwayTeamScore() {
             //postback
             $.ajax({
-                url: "@Url.Action("IncrementHomeTeamScore", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("IncrementAwayTeamScore", "ScoreKeeping")",
                 data: { inningScoreKeepingJSON: $("#inningScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -247,7 +252,7 @@
             $("#gameScoreKeepingJSON").val(undoJSON.val()); //sets the current JSON to the undoJSON so that UpdateGame() can use it\
             //postback
             $.ajax({
-                url: "@Url.Action("UndoLastAction", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("UndoLastAction", "ScoreKeeping")",
                 data: { undoGameJSON: undoJSON.val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -263,13 +268,13 @@
         }
 
         //retrieves an updated JSON of the game and updates the hidden gameScoreKeepingJSON field then updates all partial views accordingly
-        function UpdateGame(turnOver) {
+        function UpdateGame(endInning) {
             $("#undoLastPlayJSON").val($("#gameScoreKeepingJSON").val()); //retains the current JSON for the undo feature
             var game = JSON.parse($("#gameScoreKeepingJSON").val());
             //postback
             $.ajax({
-                url: "@Url.Action("UpdateGameScoreKeeping", "ScoreKeepingAwayTeam")",
-                data: { gameJSON: $("#gameScoreKeepingJSON").val(), currentInningJSON: $("#inningScoreKeepingJSON").val(), turnOver: turnOver }, //dictionary with same keys as the method's params
+                url: "@Url.Action("UpdateGameScoreKeeping", "ScoreKeeping")",
+                data: { gameJSON: $("#gameScoreKeepingJSON").val(), currentInningJSON: $("#inningScoreKeepingJSON").val(), endInning: endInning }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#gameScoreKeepingJSON").val(result); // set the div to the result of the postback
@@ -282,10 +287,8 @@
                         UpdateScorePartial();
                         UpdateInningsTablePartial();
                         UpdatePlayByPlayPartial();
-                        UpdateBaseballDiamondPartial();
                         AssignClickEvents();
                     }
-
 
                 },
                 error: function (result, status, err) {
@@ -297,13 +300,12 @@
         function StartNewInning() {
             //postback
             $.ajax({
-                url: "@Url.Action("StartNewInning", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("StartNewInning", "ScoreKeeping")",
                 data: { gameScoreKeepingJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
                     $("#BaseballDiamond").html(""); //reset the div
                     $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    UpdateBaseballDiamondPartial();
                     UpdateScorePartial();
                     UpdateInningsTablePartial();
                     UpdatePlayByPlayPartial();
@@ -318,7 +320,7 @@
         function UpdateScorePartial() {
             //postback
             $.ajax({
-                url: "@Url.Action("UpdateScorePartial", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("UpdateScorePartial", "ScoreKeeping")",
                 data: { gameJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -334,7 +336,7 @@
         function UpdateInningsTablePartial() {
             //postback
             $.ajax({
-                url: "@Url.Action("UpdateInningsTablePartial", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("UpdateInningsTablePartial", "ScoreKeeping")",
                 data: { gameJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -350,7 +352,7 @@
         function UpdatePlayByPlayPartial() {
             //postback
             $.ajax({
-                url: "@Url.Action("UpdatePlayByPlayPartial", "ScoreKeepingAwayTeam")",
+                url: "@Url.Action("UpdatePlayByPlayPartial", "ScoreKeeping")",
                 data: { gameJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
                 type: "Post",
                 success: function (result) {
@@ -359,24 +361,6 @@
                 },
                 error: function (result, status, err) {
                     window.alert("Update play by play " + result.responseText + " " + status.responseText, err.Message);
-                }
-            });
-        }
-
-        function UpdateBaseballDiamondPartial() {
-            //postback
-            $.ajax({
-                url: "@Url.Action("UpdateBaseballDiamondPartial", "ScoreKeepingAwayTeam")",
-                data: { gameJSON: $("#gameScoreKeepingJSON").val() }, //dictionary with same keys as the method's params
-                type: "Post",
-                success: function (result) {
-                    $("#BaseballDiamond").html(""); //reset the div
-                    $("#BaseballDiamond").html(result); // set the div to the result of the postback
-                    AssignClickEvents();
-
-                },
-                error: function (result, status, err) {
-                    window.alert("Update BaseballDiamond" + result.responseText + " " + status.responseText, err.Message);
                 }
             });
         }

@@ -33,10 +33,13 @@ namespace wmbaApp.Controllers
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
+            ViewData["Filtering"] = "btn-outline-dark";
             int numberFilters = 0;
             //Then in each "test" for filtering, add to the count of Filters applied
-
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Name", "Team" };
@@ -82,7 +85,7 @@ namespace wmbaApp.Controllers
             if (numberFilters != 0)
             {
                 //Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
+                ViewData["Filtering"] = "btn-outline-dark";
                 //Show how many filters have been applied
                 ViewData["numberFilters"] = "(" + numberFilters.ToString()
                     + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
@@ -156,6 +159,10 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
 
             var player = await _context.Players
                 .Include(p => p.Team)
@@ -195,6 +202,12 @@ namespace wmbaApp.Controllers
 
             ViewBag.Team = team;
 
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+                TempData.Remove("SuccessMessage"); // Remove the success message from TempData after displaying it
+            }
+
             return View();
         }
 
@@ -204,9 +217,14 @@ namespace wmbaApp.Controllers
              int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             //Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
+            ViewData["Filtering"] = "btn-outline-dark";
             int numberFilters = 0;
             //Then in each "test" for filtering, add to the count of Filters applied
+
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
 
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
@@ -251,7 +269,7 @@ namespace wmbaApp.Controllers
             if (numberFilters != 0)
             {
                 //Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
+                ViewData["Filtering"] = "btn-outline-dark";
                 //Show how many filters have been applied
                 ViewData["numberFilters"] = "(" + numberFilters.ToString()
                     + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
@@ -321,6 +339,7 @@ namespace wmbaApp.Controllers
         // POST: PlayerTeam/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: PlayerTeam/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Convenor,Coach")]
@@ -346,12 +365,17 @@ namespace wmbaApp.Controllers
                 {
                     _context.Add(player);
                     await _context.SaveChangesAsync();
+
+                    TempData["SuccessMessage"] = "Player created successfully."; // Set the success message in TempData
+
                     if (!String.IsNullOrEmpty(submitButton))
                     {
                         if (submitButton == "Add player")
-                            return RedirectToAction("Create", new { TeamID = team.ID });
-                        if (submitButton == "Add player and finish")
-                            return RedirectToAction("Index", new { TeamID = team.ID });
+                        {
+                            return RedirectToAction("Create", new { TeamID = team.ID }); // Redirect to the Create action to display the success message
+                        }
+
+                        return RedirectToAction("Index"); // Redirect to index or any other action as needed
                     }
                 }
             }
@@ -363,17 +387,23 @@ namespace wmbaApp.Controllers
                         ModelState.AddModelError("PlyrJerseyNumber", "A player with this member ID already exists.");
                 }
                 else
-                   ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+                {
+                    ModelState.AddModelError("", "Unable to save changes after multiple attempts. Try again, and if the problem persists, see your system administrator.");
+                }
             }
             catch (DbUpdateException)
             {
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
-
-
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating player: {ex.Message}";
+                // Handle the exception as needed
+            }
 
             return View(player);
         }
+
 
         // GET: PlayerTeam/Edit/5
         [Authorize(Roles = "Admin,Convenor,Coach")]
@@ -441,6 +471,7 @@ namespace wmbaApp.Controllers
                 {
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Player updated successfully.";
                     return RedirectToAction("Details", new { playerToUpdate.ID, TeamID = team.ID });
                 }
                 catch (DbUpdateConcurrencyException)
@@ -463,6 +494,11 @@ namespace wmbaApp.Controllers
                     }
                     else
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                }
+                catch (Exception ex)
+                {
+                    TempData["ErrorMessage"] = $"Error creating player: {ex.Message}";
+                    // Handle the exception as needed
                 }
             }
             return View(playerToUpdate);
@@ -604,11 +640,17 @@ namespace wmbaApp.Controllers
                 }
 
                 await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Player deactivated successfully.";
                 return RedirectToAction("Index", new { TeamID = team.ID });
             }
             catch (DbUpdateException)
             {
                 ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating player: {ex.Message}";
+                // Handle the exception as needed
             }
 
             return View(player);
@@ -628,19 +670,28 @@ namespace wmbaApp.Controllers
                 .FirstOrDefaultAsync();
 
             ViewBag.Team = team;
+            try
+            {
+                if (id == null || _context.Players == null)
+                    return NotFound();
 
-            if (id == null || _context.Players == null)
-                return NotFound();
-
+                //TempData["SuccessMessage"] = "Player activated successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating player: {ex.Message}";
+                // Handle the exception as needed
+            }
             var player = await _context.Players
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (player == null)
                 return NotFound();
-
+            //TempData["SuccessMessage"] = "Player activated successfully.";
             return View(player);
         }
+
 
         // POST: Players/Active/5
         [HttpPost, ActionName("MakeActive")]
@@ -663,28 +714,43 @@ namespace wmbaApp.Controllers
             {
                 return Problem("Entity set 'WmbaContext.Players' is null.");
             }
+
             var player = await _context.Players
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(p => p.ID == id);
 
-            if (player != null)
+            try
             {
-                if (player.Team.IsActive)
+                if (player != null)
                 {
-                    player.IsActive = true;
-                    _context.Players.Update(player);
+                    if (player.Team.IsActive)
+                    {
+                        player.IsActive = true;
+                        _context.Players.Update(player);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "This player's team is inactive. Reactivate the team or reassign this player to a different team to reactivate");
+                        return View(player);
+                    }
                 }
-                else
-                {
-                    ModelState.AddModelError("", "This player's team is inactive. Reactivate the team or reassign this player to a different team to reactivate");
-                    return View(player);
-                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error creating player: {ex.Message}";
+                // Handle the exception as needed
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction("InactiveIndex", new { TeamID = team.ID });
+
+            // Set the success message in TempData
+            TempData["SuccessMessage"] = "Player activated successfully.";
+
+            // Redirect to the InactiveIndex action with the TeamID and SuccessMessage as query parameters
+            return RedirectToAction("InactiveIndex", new { TeamID = team.ID, SuccessMessage = TempData["SuccessMessage"] });
         }
+
 
         #region SelectLists
         private SelectList TeamSelectList(int? selectedId)
