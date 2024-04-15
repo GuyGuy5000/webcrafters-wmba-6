@@ -28,6 +28,7 @@
         @* removing nav bar at login and register page *@
         @if (!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Login", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/Register", StringComparison.OrdinalIgnoreCase) &&
+!ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ResetPassword", StringComparison.OrdinalIgnoreCase) &&
 !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/LoginWithRecoveryCode", StringComparison.OrdinalIgnoreCase) &&
 !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ForgotPasswordConfirmation", StringComparison.OrdinalIgnoreCase) &&
         !ViewContext.HttpContext.Request.Path.Equals("/Identity/Account/ForgotPassword", StringComparison.OrdinalIgnoreCase) &&
