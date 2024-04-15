@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model ResendEmailConfirmationModel
 @{
     ViewData["Title"] = "Resend email confirmation";
@@ -75,7 +75,7 @@
                     <label asp-for="Input.Email" class="form-label"></label>
                     <span asp-validation-for="Input.Email" class="text-danger"></span>
                 </div>
-            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary btn-block btn-reset-password">Resend</button>
+            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary btn-block btn-reset-password"><i class="fas fa-envelope"></i> Resend</button>
             <a asp-controller="Home" asp-action="Index">Click Here to Go Back to Login Page</a>
             </form>
     </div>
