@@ -1,10 +1,17 @@
-﻿@page
+@page
 @model LoginModel
 <link rel="stylesheet" href="~/css/login-design.css" asp-append-version="true" />
 @{
     ViewData["Title"] = "Log in";
     Layout = "~/Areas/Identity/Pages/Account/_UsersLayout.cshtml";
 }
+
+<style>
+    #forgot-password, #resend-confirmation 
+    {
+        color: #007bff;
+    }
+</style>
 
 <section>
     <form id="account" method="post">
@@ -27,7 +34,7 @@
             </label>
         </div>
         <div>
-            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary"><i class="fas fa-sign-in-alt"></i> Log in</button>
         </div>
         <div>
             <p>
