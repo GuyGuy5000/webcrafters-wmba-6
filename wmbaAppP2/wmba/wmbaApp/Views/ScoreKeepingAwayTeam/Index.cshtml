@@ -36,11 +36,10 @@
 <div id="customModal" class="modal">
     <div class="modal-content">
         <span class="close" id="close" onclick="closeModal()">X</span>
-        <b><p id="question" style="margin: 0 20px;">Canceling a game will reset the game to before it started.<br><br>Cancel game?</br></p></b>
+        <b><p id="notify" style="margin: 0 20px;">Canceling a game will reset the game and all data will be lost.<br><br>Cancel game?</br></p></b>
         <b><p id="required"></p></b>
         <i></i>
-        <input type="submit" id="hideBtn" value="Cancel" class="btn btn-outline-dark " />
-
+       
         <i id="error" class="fa-solid fa-xmark fa-f6"></i>
         <form asp-action="CancelGame">
             <input type="hidden" asp-for="GameID" />
@@ -285,8 +284,6 @@
                         UpdateBaseballDiamondPartial();
                         AssignClickEvents();
                     }
-
-
                 },
                 error: function (result, status, err) {
                     window.alert("Update game " + result.responseText + " " + status.responseText, err.Message);
