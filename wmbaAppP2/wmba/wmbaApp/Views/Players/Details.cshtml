@@ -47,12 +47,18 @@
                 <dt>
                     <h6>Rating</h6>
                 </dt>
-                <dd  class="col-sm-2">
-                    
-                  @for (int i = 1; i <= 4; i++) // Assuming a maximum of 5 stars
+                 <dd class="col-sm-2">
+                    @if (Model.Statistics != null && Model.Statistics.Rating != 0)
+                    {
+                        for (int i = 1; i <= 4; i++) 
                         {
                             <span class="star @(i <= Model.Statistics.Rating ? "gold" : "")">&#9733;</span>
                         }
+                    }
+                    else
+                    {
+                        <span class="star">&#9733;</span> 
+                    }
                 </dd>
             </dl>
 
@@ -111,7 +117,9 @@
         </tr>
     </thead>
     <tbody>
-        @{
+        @if (Model.Statistics != null)
+        {
+             
             <tr>
                 <td class="d-sm-table-cell d-md-table-cell">
                     @Html.DisplayFor(modelItem => modelItem.Statistics.StatsGP)
@@ -152,6 +160,13 @@
                 <td class="d-none d-lg-table-cell">
                     @Html.DisplayFor(modelItem => modelItem.Statistics.StatsBB)
                 </td>
+            </tr>
+        
+        }
+        else
+        {
+            <tr>
+                <td colspan="14">No statistics available</td>
             </tr>
         }
     </tbody>

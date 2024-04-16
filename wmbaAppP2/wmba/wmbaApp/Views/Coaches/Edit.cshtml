@@ -35,12 +35,9 @@
                 <a asp-action="Index" id="bck" class="btn btn-center  btn-outline-dark" onclick="closeModal()">Back </a>
             </div>
         </div>
-
         <div class="form-group">
-            <input type="submit" value="Save" class="btn btn-outline-dark " />
-            <a asp-action="Index" class="btn ">
-                <span></span><span></span><span></span><span></span>
-                Back   </a>
+            <input type="submit" id="btnView" value="Save" class="btn btn-outline-dark" />
+            <button type="button" id="tmsBck" class="btn btn-outline-dark" onclick="openModal()">Back</button>
         </div>
     </fieldset>
            

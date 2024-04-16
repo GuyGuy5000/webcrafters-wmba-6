@@ -39,11 +39,13 @@ namespace wmbaApp.Controllers
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = " btn-outline-dark";
             int numberFilters = 0;
-            //Then in each "test" for filtering, add to the count of Filters applied
             if (TempData["SuccessMessage"] != null)
             {
                 ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
             }
+
+            //Then in each "test" for filtering, add to the count of Filters applied
+
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Name", "Team" };
@@ -154,12 +156,15 @@ namespace wmbaApp.Controllers
         {
             //Count the number of filters applied - start by assuming no filters
             ViewData["Filtering"] = "btn-outline-dark";
-            int numberFilters = 0;
-            //Then in each "test" for filtering, add to the count of Filters applied
+
             if (TempData["SuccessMessage"] != null)
             {
                 ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
             }
+
+            int numberFilters = 0;
+            //Then in each "test" for filtering, add to the count of Filters applied
+
             //List of sort options.
             //NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Name", "Team" };
@@ -272,7 +277,6 @@ namespace wmbaApp.Controllers
             {
                 return NotFound();
             }
-
             if (TempData["SuccessMessage"] != null)
             {
                 ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
@@ -317,6 +321,7 @@ namespace wmbaApp.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    player.Statistics = new Statistic();
                     _context.Add(player);
 
                     TempData["SuccessMessage"] = "Player created successfully.";
@@ -342,11 +347,11 @@ namespace wmbaApp.Controllers
                 else
                     ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
             }
-
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"Error creating player: {ex.Message}";
             }
+
 
             CreatePopulateDropDownLists(player);
             return View(player);
@@ -382,10 +387,11 @@ namespace wmbaApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Convenor, Coach")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> Edit(int id)
         {
-            var playerToUpdate = await _context.Players.FirstOrDefaultAsync(m => m.ID == id);
+            var playerToUpdate = await _context.Players
+            .FirstOrDefaultAsync(m => m.ID == id);
 
             if (playerToUpdate == null)
             {
@@ -393,9 +399,7 @@ namespace wmbaApp.Controllers
             }
 
             if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, playerToUpdate))
-            {
                 return RedirectToAction("Index", "Players");
-            }
 
             if (await TryUpdateModelAsync<Player>(playerToUpdate, "",
                 t => t.PlyrFirstName, t => t.PlyrLastName, t => t.TeamID, t => t.PlyrJerseyNumber, t => t.PlyrMemberID,
@@ -403,13 +407,11 @@ namespace wmbaApp.Controllers
             {
                 try
                 {
-                    playerToUpdate.PlyrJerseyNumber = null;
+
                     _context.Update(playerToUpdate);
                     await _context.SaveChangesAsync();
-
-                    TempData["SuccessMessage"] = "Player updated successfully."; // Set success message
-
-                    return RedirectToAction("Details", new { id = playerToUpdate.ID }); // Redirect to Details action with success message
+                    TempData["SuccessMessage"] = "Player updated successfully.";
+                    return RedirectToAction("Details", new { playerToUpdate.ID });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -424,58 +426,42 @@ namespace wmbaApp.Controllers
                 }
                 catch (DbUpdateException dex)
                 {
-                    if (dex.InnerException.Message.Contains("UNIQUE"))
+                    if (dex.InnerException.Message.Contains("UNIQUE")) //if a UNIQUE constraint caused the exception
                     {
+                        //check which field triggered the error
                         if (dex.InnerException.Message.Contains("PlyrMemberID"))
-                        {
-                            ModelState.AddModelError("PlyrMemberID", "A player with this member ID already exists.");
-                        }
+                            ModelState.AddModelError("PlyrMemberID", "A player with this member ID already exists."); //pass a message to the field that triggered the error
                         else if (dex.InnerException.Message.Contains("PlyrJerseyNumber"))
-                        {
                             ModelState.AddModelError("PlyrJerseyNumber", "A player with this jersey number already exists.");
-                        }
                     }
                     else
-                    {
                         ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
-                    }
                 }
                 catch (Exception ex)
                 {
                     TempData["ErrorMessage"] = $"Error updating player: {ex.Message}";
                 }
+
             }
-
-
-       
-            TempData["SuccessMessage"] = "Player updated successfully.";
-
             EditPopulateDropDownLists(playerToUpdate);
-
             return View(playerToUpdate);
         }
 
 
-        // GET: Players/MakeInactive/5
-        [Authorize(Roles = "Admin, Convenor, Coach")]
+        // GET: Players/Inactive/5
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public async Task<IActionResult> MakeInactive(int? id)
         {
             if (id == null || _context.Players == null)
-            {
                 return NotFound();
-            }
 
             var player = await _context.Players
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(m => m.ID == id);
-
             if (player == null)
-            {
                 return NotFound();
-            }
 
-        
             return View(player);
         }
 
@@ -495,18 +481,13 @@ namespace wmbaApp.Controllers
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(p => p.ID == id);
 
-            if (player == null)
-            {
-                return NotFound();
-            }
-
             try
             {
                 player.IsActive = false;
                 _context.Update(player);
                 await _context.SaveChangesAsync();
 
-               
+
             }
             catch (Exception ex)
             {
@@ -514,6 +495,7 @@ namespace wmbaApp.Controllers
             }
             TempData["SuccessMessage"] = "Player made inactive successfully.";
             return RedirectToAction(nameof(Index));
+
         }
 
 
@@ -524,15 +506,10 @@ namespace wmbaApp.Controllers
             if (id == null || _context.Players == null)
                 return NotFound();
 
-
-
             var player = await _context.Players
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(m => m.ID == id);
-
-            
-
 
             if (player == null)
                 return NotFound();
@@ -557,34 +534,25 @@ namespace wmbaApp.Controllers
                 .Include(p => p.Team)
                 .Include(p => p.Statistics)
                 .FirstOrDefaultAsync(p => p.ID == id);
+            
+            if (player != null)
+            {
+                if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
+                    return RedirectToAction("Index", "Players");
 
-            if (player == null)
-            {
-                return NotFound();
-            }
-            if (!await UserRolesHelper.IsAuthorizedForPlayer(_AppContext, User, player))
-            {
-                return RedirectToAction("Index", "Players");
-            }
-
-            if (player.Team == null || !player.Team.IsActive)
-            {
-                ModelState.AddModelError("", "This player's team is inactive. Reactivate the team or reassign this player to a different team to reactivate.");
-                return View(player);
+                if (player.Team.IsActive)
+                {
+                    player.IsActive = true;
+                    _context.Players.Update(player);
+                }
+                else
+                {
+                    ModelState.AddModelError("", "This player's team is inactive. Reactivate the team or reassign this player to a different team to reactivate");
+                    return View(player);
+                }
             }
 
-            try
-            {
-                player.IsActive = true;
-                _context.Players.Update(player);
-                await _context.SaveChangesAsync();
-
-              
-            }
-            catch (Exception ex)
-            {
-                TempData["ErrorMessage"] = $"Error making player active: {ex.Message}";
-            }
+            await _context.SaveChangesAsync();
             TempData["SuccessMessage"] = "Player made active successfully.";
             return RedirectToAction("InactiveIndex");
         }
@@ -760,6 +728,7 @@ namespace wmbaApp.Controllers
         }
 
 
+        
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.ID == id);

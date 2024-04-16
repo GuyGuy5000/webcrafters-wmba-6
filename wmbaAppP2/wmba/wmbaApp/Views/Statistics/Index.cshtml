@@ -2,8 +2,6 @@
 @model IEnumerable<wmbaApp.Models.Statistic>
 @using wmbaApp.Models;
 <partial name="_ViewHeading" />
-
-<a asp-action="DownloadStatisticsReport" class="btn btn-outline-dark float-end d-none d-lg-table-cell deactivateTeam">Download Stats</a>
 @{
     string message = TempData["Message"] as string;
 }
@@ -140,11 +138,11 @@
                     </h6>
                 </th>
 
-                <th style="min-width:120px">
-                    @*                     <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create a Players Statistics">
-                    <strong>&#x270D; Create </strong>
-                    </a> *@
-                </th>
+                <div style="min-width:120px">
+
+                    <a asp-action="DownloadStatisticsReport" class="btn btn-outline-dark float-end d-none d-lg-table-cell deactivateTeam">Download Stats</a>
+
+                </div>
             </tr>
         </thead>
         <tbody>
