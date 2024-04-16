@@ -2122,6 +2122,8 @@ footer {
 }
 /*******Player Avatar Ends*******/
 
+
+/************Score Keeping Nav Starts*************/
 .statsLogo {
     display: none;
 }
@@ -2134,10 +2136,13 @@ footer {
 }
 
 .img-container img {
-    width: auto; /* Maintain aspect ratio */
-    height: 900px; /* Set the desired height */
-    max-width: 100%; /* Ensure responsiveness */
+    width: auto; 
+    height: 900px; 
+    max-width: 100%; 
 }
+
+/************Score Keeping Nav Ends************/
+
 
 
 /*User Gear Icon Starts*/
@@ -2154,6 +2159,7 @@ footer {
 
 /*User Gear Icon Ends*/
 
+/************StatisticS Edit Starts *************/
 .centerRating {
     display: flex;
     flex-direction: column;
@@ -2161,25 +2167,48 @@ footer {
 }
 
     .centerRating .control-label {
-        font-size: 30px; /* Adjust as needed */
+        font-size: 30px;
         margin-bottom: 10px;
         font-weight: 700;
     }
 
     .centerRating .star {
-        font-size: 40px; /* Adjust as needed */
+        font-size: 40px;
         cursor: pointer;
     }
 
         .centerRating .star:hover,
         .centerRating .star.active {
-            color: gold; /* Or any other color you prefer */
+            color: gold;
         }
 
 .centerRating {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Adjust the shadow as needed */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
     .centerRating .form-group {
-        margin-top: 20px; /* Adjust as needed */
+        margin-top: 20px;
     }
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    .centerRating .control-label {
+        font-size: 20px;
+    }
+
+    .centerRating .star {
+        font-size: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .centerRating .control-label {
+        font-size: 18px;
+    }
+
+    .centerRating .star {
+        font-size: 24px;
+    }
+}
+
+/**StatisticS Edit Ends *********************/
