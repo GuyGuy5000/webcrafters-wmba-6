@@ -116,6 +116,19 @@
                                             </div>
                                         </li>
                                     }
+                                    else if (User.IsInRole("Coach"))
+                                    {
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link text-white  dropdown-toggle menu" href="#" id="navbarDropdown" role="button"
+                                               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-bs-target="#navbarDropdown">
+                                                Tools
+                                            </a>
+                                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                                <a class="nav-link text-dark menuEffect " asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
+                                               
+                                            </div>
+                                        </li>
+                                    }
                                 </ul>
 
                                 <div class="helloAdmin">

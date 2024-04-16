@@ -14,9 +14,12 @@
             <div class="card card-body bg-light">
                 <div class="row">
 
-                    <div class="col-md-4 activeView">
-                        <label class="control-label ">Click to View Inactive Players:</label>
-                        <a asp-action="InactiveIndex" class="btn  btn-outline-dark btn-center view deactivateTeam btn-active-toggle" title="Click to toggle between active and inactive teams">Currently viewing: Active Players</a>
+                    <div class="col-md-4 activeView" style="margin-left: 10px;">
+                        <label class="control-label">Click to view Inactive Players:</label>
+                        <a id="toggleTeams" asp-action="InactiveIndex" class="btn btn-outline-dark btn-center view deactivateTeam btn-active-toggle" title="Click to toggle between active and inactive teams">
+                            <i class="fa-solid fa-toggle-off"></i>
+                            Currently viewing: Active Players
+                        </a>
                     </div>
 
                     <div class="col-md-4">

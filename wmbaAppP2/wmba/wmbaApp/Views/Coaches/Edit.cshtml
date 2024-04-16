@@ -2,7 +2,7 @@
 
 
 <hr />
-<form asp-action="Edit" class="mx-auto mt-4 editform" id="createForm" style="width: 80%;">
+<form asp-action="Edit" class="mx-auto mt-4 editform" id="editform" style="width: 80%;">
 
 
     <fieldset>
@@ -22,11 +22,25 @@
           
         </div>
 
+        <div id="customModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="close" onclick="closeModal()">&times;</span>
+                <b><p id="question">Are you done, have you reviewed it?</p></b>
+                <b><p id="required">All Fields are required</p></b>
+                <i></i>
+                <i id="saveCheck" class="fa-solid fa-question fa-f6"></i>
+                <input type="submit" id="hideBtn" value="Save" class="btn btn-center btn-outline-dark" />
+
+                <i id="error" class="fa-solid fa-xmark fa-f6"></i>
+                <a asp-action="Index" id="bck" class="btn btn-center  btn-outline-dark" onclick="closeModal()">Back </a>
+            </div>
+        </div>
+
         <div class="form-group">
             <input type="submit" value="Save" class="btn btn-outline-dark " />
             <a asp-action="Index" class="btn ">
                 <span></span><span></span><span></span><span></span>
-                Back to Coaches List</a>
+                Back   </a>
         </div>
     </fieldset>
            
@@ -35,5 +49,6 @@
 
 
 @section Scripts {
+    <script src="~/js/site.js"></script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

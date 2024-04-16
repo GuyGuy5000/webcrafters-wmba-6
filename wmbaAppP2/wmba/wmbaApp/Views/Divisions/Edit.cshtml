@@ -18,9 +18,7 @@
 
         <div class="form-group">
             <input type="submit" id="btnView" value="Save" class="btn btn-outline-dark " />
-            <button type="button" id="tmsBck" class="btn btn-outline-dark " onclick="openModal()">
-                <span class="d-none d-md-inline">Back </span>
-            </button>
+            <button type="button" id="tmsBck" class="btn btn-outline-dark" onclick="openModal()">Back</button>
         </div>
 
         <div id="customModal" class="modal">
@@ -30,10 +28,10 @@
                 <b><p id="required">All Fields are required</p></b>
                 <i></i>
                 <i id="saveCheck" class="fa-solid fa-question fa-f6"></i>
-                <input type="submit" id="hideBtn" value="Save" class="btn btn-outline-dark " />
+                <input type="submit" id="hideBtn" value="Save" class="btn btn-center btn-outline-dark" />
 
                 <i id="error" class="fa-solid fa-xmark fa-f6"></i>
-                <a asp-action="Index" class="btn btn-outline-dark ">Back to Division List</a>
+                <a asp-action="Index" id="bck" class="btn btn-center  btn-outline-dark" onclick="closeModal()">Back </a>
             </div>
         </div>
     </fieldset>
