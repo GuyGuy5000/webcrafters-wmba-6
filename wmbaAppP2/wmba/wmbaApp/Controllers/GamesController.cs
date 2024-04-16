@@ -1,4 +1,4 @@
-﻿/// <summary>
+/// <summary>
 /// Game
 /// Farooq Jidelola
 /// </summary>
@@ -746,13 +746,21 @@ namespace wmbaApp.Controllers
             var sumQ = _context.Games
                 .Include(r => r.HomeTeam)
                 .Include(r => r.AwayTeam)
+                .Include(r => r.Division)
                 .OrderBy(r => r.Division.DivName)
                 .Select(r => new
                 {
-                    Games = r.FullVersus,
-                    Game_Details = r.Summary,
+                    Home_Team = r.HomeTeam.TmName,
+                    Visitor_Team = r.AwayTeam.TmName,
                     Game_Division = r.Division.DivName,
                     Game_Location = r.GameLocation.Name,
+                    Home_Score = r.HomeTeamScore,
+                    Visitor_Score = r.AwayTeamScore,
+                    Game_Status = r.HasStarted,
+                    Game_Duration = r.Duration,
+                    Game_Innings = r.CurrentInning,
+                    Game_Date = r.Summary,
+
                 })
                 .AsNoTracking();
 
@@ -772,7 +780,7 @@ namespace wmbaApp.Controllers
 
                     //Note: You can define a BLOCK of cells: Cells[startRow, startColumn, endRow, endColumn]
                     //Make Date and Patient Bold
-                    workSheet.Cells[4, 1, numRows + 3, 1].Style.Font.Bold = true;
+                    workSheet.Cells[10, 1, numRows + 3, 1].Style.Font.Bold = true;
 
                     //Set Style and backgound colour of headings
                     using (ExcelRange headings = workSheet.Cells[3, 1, 3, 7])
