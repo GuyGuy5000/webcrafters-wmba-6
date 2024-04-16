@@ -2139,6 +2139,9 @@ footer {
     max-width: 100%; /* Ensure responsiveness */
 }
 
+
+/*User Gear Icon Starts*/
+
 .helloAdmin {
     position: relative;
     bottom: -50px;
@@ -2148,3 +2151,35 @@ footer {
     position: relative;
     top: -10px;
 }
+
+/*User Gear Icon Ends*/
+
+.centerRating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    .centerRating .control-label {
+        font-size: 30px; /* Adjust as needed */
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .centerRating .star {
+        font-size: 40px; /* Adjust as needed */
+        cursor: pointer;
+    }
+
+        .centerRating .star:hover,
+        .centerRating .star.active {
+            color: gold; /* Or any other color you prefer */
+        }
+
+.centerRating {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Adjust the shadow as needed */
+}
+
+    .centerRating .form-group {
+        margin-top: 20px; /* Adjust as needed */
+    }

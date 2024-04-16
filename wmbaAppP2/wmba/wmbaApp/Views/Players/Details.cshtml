@@ -8,8 +8,8 @@
         @ViewBag.SuccessMessage
     </div>
 }
-
-<div>
+<form>
+    <div>
     <hr />
     <div class="row">
         <div class="col-sm-10">
@@ -48,17 +48,12 @@
                     <h6>Rating</h6>
                 </dt>
                  <dd class="col-sm-2">
-                    @if (Model.Statistics != null && Model.Statistics.Rating != 0)
-                    {
-                        for (int i = 1; i <= 4; i++) 
+                     
+                        @for (int i = 1; i <= 4; i++) 
                         {
                             <span class="star @(i <= Model.Statistics.Rating ? "gold" : "")">&#9733;</span>
                         }
-                    }
-                    else
-                    {
-                        <span class="star">&#9733;</span> 
-                    }
+                 
                 </dd>
             </dl>
 
@@ -182,6 +177,8 @@
     }
      <a asp-action="Index" class="btn btn-outline-dark">Back </a>
 </div>
+
+</form>
 
 @section scripts{
     

@@ -1,18 +1,18 @@
 ﻿@model wmbaApp.Models.Statistic
-
+<partial name="_ViewHeading" />
 <hr />
 
-<form asp-controller="Statistics" asp-action="Edit" asp-route-id="@Model.ID" method="post">
+<form asp-controller="Statistics" asp-action="Edit" asp-route-id="@Model.ID" method="post" class="editform">
     <fieldset>
-        <partial name="_ViewHeading" />
+     
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="ID" />
         <input type="hidden" id="ratingInput" asp-for="Rating" />
 
-
-        <!-- Display the star rating UI -->
-        <div class="form-group">
-            <label class="control-label">Rating:</label>
+        <div class="centerRating">
+             <!-- Display the star rating UI -->
+        <div class="form-group ">
+            <label class="control-label">Rate Me  <i class="fa-solid fa-arrow-down fa-1x"></i></label>
             <div class="rating">
                 <span class="star" data-value="1">&#9733;</span>
                 <span class="star" data-value="2">&#9733;</span>
@@ -25,6 +25,8 @@
             <input type="submit" value="Save" class="btn btn-outline-dark " />
             <a asp-action="Index" class="btn btn-outline-dark">Back   </a>
         </div>
+        </div>
+       
     </fieldset>
 </form>
 
