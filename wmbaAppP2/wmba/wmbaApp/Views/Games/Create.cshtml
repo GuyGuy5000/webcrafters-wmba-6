@@ -8,56 +8,56 @@
     <fieldset>
         <partial name="_ViewHeading" />
 
-            <div class="form-group">
-            <label asp-for="DivisionID" class="control-label required-label"></label>
-                <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID">
-                    <option value="">--Select Division--</option>
-                </select>
-                <span asp-validation-for="DivisionID" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-            <label asp-for="HomeTeamID" class="control-label required-label"></label>
-                <select asp-for="HomeTeamID" class="form-control" asp-items="ViewBag.HomeTeamID">
-                    <option value="">--Select Team--</option>
-                </select>
-                <span asp-validation-for="HomeTeamID" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-            <label asp-for="AwayTeamID" class="control-label required-label"></label>
-                <select asp-for="AwayTeamID" class="form-control" asp-items="ViewBag.AwayTeamID">
-                    <option value="">--Select Team--</option>
-                </select>
-                <span asp-validation-for="AwayTeamID" class="text-danger"></span>
-            </div>
         <div class="form-group">
-            <label class="control-label ">Date</label>
+            <label asp-for="DivisionID" class="control-label required-label"></label>
+            <select asp-for="DivisionID" class="form-control" asp-items="ViewBag.DivisionID">
+                <option value="">--Select Division--</option>
+            </select>
+            <span asp-validation-for="DivisionID" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="HomeTeamID" class="control-label required-label"></label>
+            <select asp-for="HomeTeamID" class="form-control" asp-items="ViewBag.HomeTeamID">
+                <option value="">--Select Team--</option>
+            </select>
+            <span asp-validation-for="HomeTeamID" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="AwayTeamID" class="control-label required-label"></label>
+            <select asp-for="AwayTeamID" class="form-control" asp-items="ViewBag.AwayTeamID">
+                <option value="">--Select Team--</option>
+            </select>
+            <span asp-validation-for="AwayTeamID" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label required-label">Date</label>
             <input type="date" id="GameDate" class="form-control" />
             <span class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label class="control-label ">Start Time</label>
+            <label class="control-label required-label">Start Time</label>
             <input type="time" id="StartTime" class="form-control" />
             <span class="text-danger"></span>
         </div>
 
         <div class="form-group">
-            <label class="control-label ">Duration (in hours)</label>
-            <input type="number" id="Duration" class="form-control" max="2"/>
+            <label class="control-label required-label">Duration (in hours)</label>
+            <input type="number" id="Duration" class="form-control" max="2" />
             <span class="text-danger"></span>
         </div>
 
         <div class="form-group">
-           
-            <input asp-for="GameEndTime" id="GameEndTime" class="form-control" type="hidden" readonly />
+            <label asp-for="GameEndTime" class="control-label required-label"></label>
+            <input asp-for="GameEndTime" id="GameEndTime" class="form-control" readonly />
             <span asp-validation-for="GameEndTime" class="text-danger"></span>
         </div>
 
         <input type="hidden" id="GameStartTime" name="GameStartTime" />
 
-       
+
 
 
         @* game location *@
@@ -73,10 +73,10 @@
             </div>
         </div>
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-outline-dark " />
-                <a asp-action="Index" class="btn btn-outline-dark">Back to Game List</a>
-            </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-outline-dark " />
+            <a asp-action="Index" class="btn btn-outline-dark">Back to Game List</a>
+        </div>
 
     </fieldset>
 
@@ -158,10 +158,8 @@
             }
 
         });
-    </script>
 
-
-    <script type="text/javascript">
+        ////////////////////////////// GAME LOCATION ///////////////////
         $('#submitGameLocationCreate').click(function (event) {
             event.preventDefault();
             ClearErrors();
@@ -207,9 +205,6 @@
             return false;
         });
 
-
-
-
         $('#addGameLocationModal').on('hide.bs.modal', function () {
             document.getElementById("createGameLocationForm").reset(); //to clear the data in the popup form
             ClearErrors();
@@ -220,8 +215,6 @@
         function ClearErrors() {
             //Empty out the list of validation errors if there are any
             var ul = document.getElementById("ErrorList");
-
-
             while (ul.firstChild) {
                 ul.removeChild(ul.firstChild);
             }
