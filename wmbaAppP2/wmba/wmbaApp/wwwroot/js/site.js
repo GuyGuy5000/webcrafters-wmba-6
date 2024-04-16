@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Call the hideNavBar function when the page loads
     document.addEventListener("DOMContentLoaded", function () {
         hideNavBar();
-        logoRedirect();
+
     });
 
     // Call the hideNavBar function when the "START GAME" button is clicked
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     hideNavBar();
-    logoRedirect();
+  
     // Event listener for clicking links in the navigation bar
     links.forEach(function (link) {
         link.addEventListener("click", function (event) {

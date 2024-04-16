@@ -1,7 +1,7 @@
 ﻿@using wmbaApp.ViewModels
 @model wmbaApp.ViewModels.GameScoreKeepingVM
 
-<div id="scoreKeepingMain">
+<div id="scoreKeepingMain" class="scoreKeepin">
     <div id="ScoreBar">
         <partial name="_ScoreBar" model="@Model" />
     </div>
@@ -66,6 +66,11 @@
         margin: 0 auto;
         width: 170px;
     }
+
+    .scoreKeepin {
+        margin-top: -65px;
+    }
+
 
     /* Tablet */
     @@media only screen and (min-width: 426px) and (max-width: 768px) {
