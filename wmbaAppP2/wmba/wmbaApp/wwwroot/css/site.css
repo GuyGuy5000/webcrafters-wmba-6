@@ -2136,9 +2136,9 @@ footer {
 }
 
 .img-container img {
-    width: auto; 
-    height: 900px; 
-    max-width: 100%; 
+    width: auto;
+    height: 900px;
+    max-width: 100%;
 }
 
 /************Score Keeping Nav Ends************/
@@ -2212,3 +2212,66 @@ footer {
 }
 
 /**StatisticS Edit Ends *********************/
+
+
+
+
+
+/*****************Team Comparision Starts***************************/
+
+.team-stats {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.percentage {
+    font-size: 18px;
+    font-weight: bold;
+    color: #17254c;
+}
+
+    .percentage span {
+        color: #28a745;
+    }
+
+/*****************Team Comparision Ends***************************/
+
+
+/*****************Modal Starts************************/
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 90%; /* Adjust the width for tablet views */
+        max-width: 400px; /* Adjust the maximum width for tablet views */
+    }
+}
+
+@media (max-width: 576px) {
+    .modal-content {
+        width: 100%; /* Full width for phone views */
+        max-width: none; /* No maximum width for phone views */
+        margin: 5% auto; /* Adjust margin for better centering */
+    }
+
+    .close {
+        font-size: 24px; /* Adjust close button size for phone views */
+    }
+}
+/*****************Modal Enda************************/

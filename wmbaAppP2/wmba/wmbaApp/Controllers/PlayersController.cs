@@ -727,8 +727,53 @@ namespace wmbaApp.Controllers
             return Json(teams);
         }
 
+        // POST: Games/Delete
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Convenor")]
+        public async Task<IActionResult> DeleteConfirmed()
+        {
+            // Retrieve all games from the database
+            var players = await _context.Players.ToListAsync();
 
-        
+            // Check if there are any games to delete
+            if (players == null || players.Count == 0)
+            {
+                return NotFound();
+            }
+
+            // Delete all games
+            _context.Players.RemoveRange(players);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "All Players have been deleted successfully.";
+
+            // Redirect to an appropriate action after deleting all games
+            return RedirectToAction("Index", "Players");
+        }
+
+        // GET: Games/Delete
+        [Authorize(Roles = "Admin,Convenor")]
+        public async Task<IActionResult> Delete()
+        {
+            // Retrieve all games from the database
+            var players = await _context.Players.ToListAsync();
+
+            // Check if there are any games to delete
+            if (players == null || players.Count == 0)
+            {
+                return NotFound();
+            }
+
+            // Delete all games
+            _context.Players.RemoveRange(players);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "All games have been deleted successfully.";
+
+            // Redirect to an appropriate action after deleting all games
+            return RedirectToAction("Index", "Games");
+        }
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.ID == id);

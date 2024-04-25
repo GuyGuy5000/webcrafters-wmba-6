@@ -47,7 +47,11 @@
     </dl>
 </div>
 <hr />
-
+@{
+    // Retrieve team percentages from ViewData
+    var homeTeamStats = ViewData["HomeTeamPercentage"] as double?;
+    var awayTeamStats = ViewData["AwayTeamPercentage"] as double?;
+}
 <form>
     <div class="row">
         <div class="col-md-6">
@@ -67,7 +71,17 @@
                                 <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
                             </tr>
                         }
+                        <div class="team-stats">
+                            @if (homeTeamStats.HasValue)
+                            {
+                                <p class="percentage">
+                                    The home team has <span>@homeTeamStats.Value.ToString("F2")%</span> chance of winning.
+                                </p>
+                            }
+                        </div>
+
                     }
+
                 </tbody>
             </table>
         </div>
@@ -88,15 +102,27 @@
                             <tr>
                                 <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
                             </tr>
+
                         }
+                        <div class="team-stats">
+                            @if (awayTeamStats.HasValue)
+                            {
+                                <p class="percentage">
+                                    The away team has <span>@awayTeamStats.Value.ToString("F2")%</span> chance of winning.
+                                </p>
+                            }
+                        </div>
+
                     }
                 </tbody>
             </table>
+
         </div>
     </div>
 
     <a asp-action="Index" class="text-primary text-left" style="min-width: 130px; font-weight: 700;">Back </a>
 </form>
+
 
 
 <div class="text-center" style="margin-top: 50px;">
@@ -172,6 +198,7 @@
         @if (homeLineupHasPlayers && awayLineupHasPlayers)
         {
             <a asp-action="Edit" asp-controller="Lineups" asp-route-gameId="@Model.ID" class="btn btn-sm" style="min-width: 100px; margin-right: 15px; padding-bottom: 20px;">
+                <span></span><span></span><span></span><span></span>
                 Edit Lineup
             </a>
         }
@@ -192,7 +219,7 @@
 <br />
 
 @section  Scripts {
-     <script>
+    <script>
         $(document).ready(function () {
             // Function to fade out the success message after 3 seconds (adjust as needed)
             setTimeout(function () {

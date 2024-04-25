@@ -31,6 +31,12 @@
             </div>
         </div>
     </div>
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div id="successMessage" class="alert alert-success">
+            @ViewBag.SuccessMessage
+        </div>
+    }
     <div class="table-responsive">
         <table class="table mt-3 gameTable">
             <thead>
@@ -57,7 +63,28 @@
                             <i class="fa-solid fa-arrows-up-down arrow non-button-input" id="move" style="margin-left: 5px;"></i>
                         </div>
                     </th>
+
                     <th class="text-end gameBtn">
+                        <div id="customModal" class="modal">
+                            <div class="modal-content">
+                                <span class="close" id="close" onclick="closeModal()">X</span>
+                                <b><p id="notify" style="margin: 0 20px;">Are you sure you want to delete all games?.<br><br> </br></p></b>
+                                <b><p id="required"></p></b>
+                                <i></i>
+
+                                <i id="error" class="fa-solid fa-xmark fa-f6"></i>
+                                <a asp-action="Delete" class="btn btn-center btn-sm  " role="button" data-bs-toggle="tooltip" title="Delete all Games">
+                                    <span></span><span></span><span></span><span></span>
+                                    <strong> Delete </strong>
+                                </a>
+                            </div>
+                        </div>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <input value="End of Season" class="btn btn-sm btn-outline-dark  d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Delete all Games" onclick="openModal()" style="min-width: 110px; " />
+
+
+                        }
                         @if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
                         {
                             <a asp-action="Create" class="btn btn-sm btn-outline-dark  d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Create a new Game">

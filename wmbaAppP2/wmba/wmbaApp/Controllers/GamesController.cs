@@ -1,6 +1,7 @@
 /// <summary>
 /// Game
 /// Farooq Jidelola
+/// Emmanuel James
 /// </summary>
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,10 @@ namespace wmbaApp.Controllers
             ViewData["Filtering"] = " btn-outline-dark";
             int numberFilters = 0;
             // Then in each "test" for filtering, add to the count of Filters applied
-
+            if (TempData["SuccessMessage"] != null)
+            {
+                ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
+            }
             // List of sort options.
             // NOTE: make sure this array has matching values to the column headings
             string[] sortOptions = new[] { "Teams", "Location" };
@@ -387,7 +391,6 @@ namespace wmbaApp.Controllers
             PopulateDropDownLists(gameToUpdate);
             return View(gameToUpdate);
         }
-
         // GET: Games/Details/5
         [Authorize]
         public async Task<IActionResult> Details(int? id)
@@ -401,13 +404,35 @@ namespace wmbaApp.Controllers
             {
                 ViewBag.SuccessMessage = TempData["SuccessMessage"].ToString();
             }
+
+            // Retrieve the game from the database
             var game = await _context.Games
                 .Include(g => g.GameLocation)
                 .Include(p => p.HomeTeam).ThenInclude(p => p.Players)
                 .Include(p => p.AwayTeam).ThenInclude(p => p.Players)
                 .Include(g => g.HomeLineup).ThenInclude(hl => hl.PlayerLineups).ThenInclude(pl => pl.Player)
+                    .ThenInclude(p => p.Statistics) // Include player statistics
                 .Include(g => g.AwayLineup).ThenInclude(al => al.PlayerLineups).ThenInclude(pl => pl.Player)
+                    .ThenInclude(p => p.Statistics) // Include player statistics
                 .FirstOrDefaultAsync(m => m.ID == id);
+
+            // Calculate total stats for home team
+            double totalHomeStats = CalculateTotalStats(game?.HomeTeam?.Players);
+
+            // Calculate total stats for away team
+            double totalAwayStats = CalculateTotalStats(game?.AwayTeam?.Players);
+
+            // Calculate total possible stats for both teams
+            double totalPossibleHomeStats = CalculateTotalPossibleStats(game?.HomeTeam?.Players);
+            double totalPossibleAwayStats = CalculateTotalPossibleStats(game?.AwayTeam?.Players);
+
+            // Calculate percentages
+            double homeTeamPercentage = totalHomeStats / totalPossibleHomeStats * 100;
+            double awayTeamPercentage = totalAwayStats / totalPossibleAwayStats * 100;
+
+            // Assign team percentages to the ViewData or ViewBag for use in the view
+            ViewData["HomeTeamPercentage"] = homeTeamPercentage;
+            ViewData["AwayTeamPercentage"] = awayTeamPercentage;
 
             if (game == null)
             {
@@ -415,10 +440,70 @@ namespace wmbaApp.Controllers
             }
 
             if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
+            {
                 return RedirectToAction("Index", "Games");
+            }
 
             return View(game);
         }
+
+        private int CalculateTotalStats(IEnumerable<Player> players)
+        {
+            int totalStats = 0;
+
+            if (players != null)
+            {
+                foreach (var player in players)
+                {
+                    // Calculate the sum of player statistics
+                    totalStats += CalculatePlayerStatistics(player.Statistics);
+                }
+            }
+
+            return totalStats;
+        }
+
+        private int CalculatePlayerStatistics(Statistic statistics)
+        {
+            if (statistics != null)
+            {
+                return (int)((statistics.StatsH ?? 0) + (statistics.StatsR ?? 0) + (statistics.StatsHR ?? 0) +
+                             (statistics.StatsAB ?? 0) + (statistics.StatsAVG ?? 0));
+            }
+            else
+            {
+                return 0; // or handle the null case as per your logic
+            }
+        }
+
+
+        private double CalculateTotalPossibleStats(IEnumerable<Player> players)
+        {
+            const int MaxHits = 200;
+            const int MaxRuns = 100;
+            const int MaxHomeRuns = 50;
+            const int MaxAtBats = 500;
+            const double MaxBattingAverage = 1.0;
+
+            double totalPossibleStats = 0;
+
+            if (players != null)
+            {
+                foreach (var player in players)
+                {
+                    // Calculate the potential maximum stats for each player
+                    double potentialStats = MaxHits + MaxRuns + MaxHomeRuns + MaxAtBats + MaxBattingAverage;
+
+                    // Accumulate potential stats for all players
+                    totalPossibleStats += potentialStats;
+                }
+            }
+
+            return totalPossibleStats;
+        }
+
+
+
 
         // GET: Games/Details/5
         [Authorize]
@@ -447,7 +532,7 @@ namespace wmbaApp.Controllers
                 return RedirectToAction("Index", "Games");
 
             var plays = game.Innings.SelectMany(i => i.PlayByPlays);
-            List<Statistic> gameStats= new();
+            List<Statistic> gameStats = new();
 
             if (plays.Any(p => game.HomeLineup.PlayerLineups.Any(pl => pl.PlayerID == p.PlayerID))) //if plays contain players from the homelineup
             {
@@ -515,53 +600,54 @@ namespace wmbaApp.Controllers
             return View(game);
         }
 
-        // GET: Games/Delete/5
+        // GET: Games/Delete
         [Authorize(Roles = "Admin,Convenor")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete()
         {
-            if (id == null || _context.Games == null)
+            // Retrieve all games from the database
+            var games = await _context.Games.ToListAsync();
+
+            // Check if there are any games to delete
+            if (games == null || games.Count == 0)
             {
                 return NotFound();
             }
 
-            var game = await _context.Games
-                .Include(g => g.AwayTeam)
-                .Include(g => g.HomeTeam)
-                .Include(g => g.GameLocation)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (game == null)
-            {
-                return NotFound();
-            }
+            // Delete all games
+            _context.Games.RemoveRange(games);
+            await _context.SaveChangesAsync();
 
-            if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
-                return RedirectToAction("Index", "Games");
+            TempData["SuccessMessage"] = "All games have been deleted successfully.";
 
-            return View(game);
+            // Redirect to an appropriate action after deleting all games
+            return RedirectToAction("Index", "Games");
         }
 
-        // POST: Games/Delete/5
+        // POST: Games/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Convenor")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed()
         {
-            if (_context.Games == null)
-            {
-                return Problem("Entity set 'WmbaContext.Games'  is null.");
-            }
-            var game = await _context.Games.FindAsync(id);
-            if (game != null)
-            {
-                if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
-                    return RedirectToAction("Index", "Games");
+            // Retrieve all games from the database
+            var games = await _context.Games.ToListAsync();
 
-                _context.Games.Remove(game);
+            // Check if there are any games to delete
+            if (games == null || games.Count == 0)
+            {
+                return NotFound();
             }
 
+            // Delete all games
+            _context.Games.RemoveRange(games);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            TempData["SuccessMessage"] = "All games have been deleted successfully.";
+
+            // Redirect to an appropriate action after deleting all games
+            return RedirectToAction("Index", "Games");
         }
+
 
         public IActionResult SelectLineup(int gameId)
         {
@@ -740,7 +826,7 @@ namespace wmbaApp.Controllers
             return Redirect("Index");
         }
 
-        [Authorize(Roles ="Admin,Convenor,Coach")]
+        [Authorize(Roles = "Admin,Convenor,Coach")]
         public IActionResult DownloadGamesFixtures()
         {
             var sumQ = _context.Games
@@ -901,6 +987,36 @@ namespace wmbaApp.Controllers
             var scoreKeeping = new GameScoreKeepingVM(game.ID, homeTeamName, awayTeamName, lineUp);
 
             return RedirectToAction("Index", "ScoreKeepingAwayTeam", scoreKeeping);
+        }
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAll()
+        {
+            try
+            {
+                // Retrieve all games from the database
+                var allGames = await _context.Games.ToListAsync();
+
+                // Remove all games from the context and save changes
+                _context.Games.RemoveRange(allGames);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "All games have been deleted successfully.";
+                return RedirectToAction("Index", "Games"); // Redirect to the games index page or another appropriate page
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions, log them, and display an error message if needed
+                TempData["ErrorMessage"] = "An error occurred while deleting all games.";
+                // Log the exception
+
+
+                return RedirectToAction("Index", "Games"); // Redirect to the games index page or another appropriate page
+            }
         }
 
         private bool GameExists(int id)
