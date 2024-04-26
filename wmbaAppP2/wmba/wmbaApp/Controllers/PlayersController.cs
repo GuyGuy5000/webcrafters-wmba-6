@@ -752,28 +752,41 @@ namespace wmbaApp.Controllers
             return RedirectToAction("Index", "Players");
         }
 
-        // GET: Games/Delete
+        // GET: Players/Delete
         [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Delete()
         {
             // Retrieve all games from the database
-            var players = await _context.Players.ToListAsync();
+            var players = await _context.Players
+                .Include(p => p.Statistics)    
+                .Include(p => p.PlayerLineups)
+                .ToListAsync();
 
-            // Check if there are any games to delete
+            // Check if there are any players to delete
             if (players == null || players.Count == 0)
             {
                 return NotFound();
             }
+            
+            // Delete all player child records
+            foreach (Player player in players)
+            {
+                _context.Statistics.RemoveRange(player.Statistics);
+                _context.PlayerLineup.RemoveRange(player.PlayerLineups);
 
-            // Delete all games
+            }
+            await _context.SaveChangesAsync();
+
+            // Delete all players
             _context.Players.RemoveRange(players);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "All games have been deleted successfully.";
+            TempData["SuccessMessage"] = "All players have been deleted successfully.";
 
             // Redirect to an appropriate action after deleting all games
-            return RedirectToAction("Index", "Games");
+            return RedirectToAction("Index", "Players");
         }
+        
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.ID == id);
