@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -200,15 +201,17 @@ namespace wmbaApp.Controllers
                 numberFilters++;
             }
 
-            if (!System.String.IsNullOrEmpty(SearchString))
+            if (!string.IsNullOrEmpty(SearchString))
             {
-                players = players.Where(p => p.PlyrFirstName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.PlyrLastName.ToUpper().Contains(SearchString.ToUpper())
-                                       || p.Team.TmName.ToUpper().Contains(SearchString.ToUpper())
-                                       );
+                string searchStringUpper = SearchString.ToUpper().Trim();
+                players = players.Where(p =>
+                    (p.PlyrFirstName.ToUpper() + " " + p.PlyrLastName.ToUpper()).Contains(searchStringUpper) ||
+                    p.Team.TmName.ToUpper().Contains(searchStringUpper)
+                );
 
                 numberFilters++;
             }
+
             //Give feedback about the state of the filters
             if (numberFilters != 0)
             {
@@ -566,19 +569,19 @@ namespace wmbaApp.Controllers
             if (User.IsInRole("Admin"))
             {
                 inactivePlayersData = _context.Players
-                .Include(t => t.Team).ThenInclude(t => t.Division)
-                .Include(t => t.Statistics)
-                .Where(t => t.IsActive)
-                .OrderBy(ip => ip.PlyrFirstName) // Change to the actual property for sorting
-                .Select(ip => new
-                {
-                    Member_ID = ip.PlyrMemberID,
-                    First_Name = ip.PlyrFirstName,
-                    Last_Name = ip.PlyrLastName,
-                    Team = ip.Team.TmName,
-                    Division = ip.Team.Division.DivName,
-                })
-                .AsNoTracking();
+                      .Include(t => t.Team).ThenInclude(t => t.Division)
+                    .Where(r => r.IsActive == false) 
+                    .OrderBy(r => r.PlyrFirstName)
+                    .Select(r => new
+                    {
+                        PlyrFirst_Name = r.PlyrFirstName,
+                        PlyrLast_Name = r.PlyrLastName,
+                        PlyrJersey_Number = r.PlyrJerseyNumber,
+                        PlyrMember_ID = r.PlyrMemberID,
+                        Team = r.Team.TmName,
+                        Division = r.Team.Division.DivName
+                    })
+                    .AsNoTracking();
             }
             else
             {
@@ -586,47 +589,68 @@ namespace wmbaApp.Controllers
                 var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
 
                 inactivePlayersData = _context.Players
-                .Include(t => t.Team).ThenInclude(t => t.Division)
-                .Include(t => t.Statistics)
-                .Where(t => t.IsActive && (rolesTeamIDs.Contains(t.TeamID) || rolesDivisionIDs.Contains(t.Team.DivisionID)))
-                .OrderBy(ip => ip.PlyrFirstName) // Change to the actual property for sorting
-                .Select(ip => new
-                {
-                    Member_ID = ip.PlyrMemberID,
-                    First_Name = ip.PlyrFirstName,
-                    Last_Name = ip.PlyrLastName,
-                    Team = ip.Team.TmName,
-                    Division = ip.Team.Division.DivName,
-                })
-                .AsNoTracking();
+                      .Include(t => t.Team).ThenInclude(t => t.Division)
+                    .Where(r => r.IsActive == false) 
+                    .OrderBy(r => r.PlyrFirstName)
+                    .Select(r => new
+                    {
+                        PlyrFirst_Name = r.PlyrFirstName,
+                        PlyrLast_Name = r.PlyrLastName,
+                        PlyrJersey_Number = r.PlyrJerseyNumber,
+                        PlyrMember_ID = r.PlyrMemberID,
+                        Team = r.Team.TmName,
+                        Division = r.Team.Division.DivName
+                    })
+                    .AsNoTracking();
             }
 
-
-
             // How many rows?
-            int numRows = inactivePlayersData.Count();
+            int numRows = await inactivePlayersData.CountAsync();
 
             if (numRows > 0)
             {
-                // Create a new spreadsheet from scratch.
-                using (ExcelPackage excel = new())
+                using (ExcelPackage excel = new ExcelPackage())
                 {
-                    var workSheet = excel.Workbook.Worksheets.Add("Inactive Players Report");
+                    var workSheet = excel.Workbook.Worksheets.Add("Inactive Players");
 
-                    // Note: Cells[row, column]
-                    workSheet.Cells[3, 1].LoadFromCollection(inactivePlayersData, true);
+                    // Set headers starting from row 4
+                    workSheet.Cells[4, 1].Value = "First Name";
+                    workSheet.Cells[4, 2].Value = "Last Name";
+                    workSheet.Cells[4, 3].Value = "Jersey Number";
+                    workSheet.Cells[4, 4].Value = "Member ID";
+                    workSheet.Cells[4, 5].Value = "Team Name";
+                    workSheet.Cells[4, 6].Value = "Division Name";
 
-                    // Set column styles if needed
+                    int row = 5; // Start populating data from row 5
 
-                    // Make certain cells bold
-                    workSheet.Cells[4, 1, numRows + 3, 1].Style.Font.Bold = true;
+                    foreach (var playerData in inactivePlayersData)
+                    {
+                        workSheet.Cells[row, 1].Value = playerData.PlyrFirst_Name;
+                        workSheet.Cells[row, 2].Value = playerData.PlyrLast_Name;
+                        workSheet.Cells[row, 3].Value = playerData.PlyrJersey_Number;
+                        workSheet.Cells[row, 4].Value = playerData.PlyrMember_ID;
+                        workSheet.Cells[row, 5].Value = playerData.Team;
+                        workSheet.Cells[row, 6].Value = playerData.Division;
 
-                    // Autofit columns
+                        row++; // Move to the next row for the next player
+                    }
+
+
+                    // Adjusted the ending row to numRows + 3
+                    workSheet.Cells[6, 1, numRows + 5, 6].Style.Font.Bold = true;
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 4, 6])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
                     workSheet.Cells.AutoFitColumns();
 
-                    // Add a title and timestamp at the top of the report
-                    workSheet.Cells[1, 1].Value = "Inactive Players Report";
-                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3]) // Adjust the column count accordingly
+                    workSheet.Cells[1, 1].Value = "Inactive Players";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 6])
                     {
                         Rng.Merge = true;
                         Rng.Style.Font.Bold = true;
@@ -637,7 +661,7 @@ namespace wmbaApp.Controllers
                     DateTime utcDate = DateTime.UtcNow;
                     TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
                     DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
-                    using (ExcelRange Rng = workSheet.Cells[2, 6]) // Adjust the column accordingly
+                    using (ExcelRange Rng = workSheet.Cells[2, 6])
                     {
                         Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
                             localDate.ToShortDateString();
@@ -752,41 +776,181 @@ namespace wmbaApp.Controllers
             return RedirectToAction("Index", "Players");
         }
 
+        //// GET: Players/Delete
+        //[Authorize(Roles = "Admin,Convenor")]
+        //public async Task<IActionResult> Delete()
+        //{
+        //    // Retrieve all games from the database
+        //    var players = await _context.Players
+        //        .Include(p => p.Statistics)    
+        //        .Include(p => p.PlayerLineups)
+        //        .ToListAsync();
+
+        //    // Check if there are any players to delete
+        //    if (players == null || players.Count == 0)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Delete all player child records
+        //    foreach (Player player in players)
+        //    {
+        //        _context.Statistics.RemoveRange(player.Statistics);
+        //        _context.PlayerLineup.RemoveRange(player.PlayerLineups);
+
+        //    }
+        //    await _context.SaveChangesAsync();
+
+        //    // Delete all players
+        //    _context.Players.RemoveRange(players);
+        //    await _context.SaveChangesAsync();
+
+        //    TempData["SuccessMessage"] = "All players have been deleted successfully.";
+
+        //    // Redirect to an appropriate action after deleting all games
+        //    return RedirectToAction("Index", "Players");
+        //}
+
+
         // GET: Players/Delete
         [Authorize(Roles = "Admin,Convenor")]
         public async Task<IActionResult> Delete()
         {
-            // Retrieve all games from the database
-            var players = await _context.Players
-                .Include(p => p.Statistics)    
-                .Include(p => p.PlayerLineups)
-                .ToListAsync();
-
-            // Check if there are any players to delete
-            if (players == null || players.Count == 0)
+            try
             {
-                return NotFound();
+                // Retrieve all games from the database
+                var allPlayers = await _context.Players.ToListAsync();
+
+                if (allPlayers != null && allPlayers.Count > 0)
+                {
+                    // Generate Excel file asynchronously
+                    byte[] theData = await GenerateExcelFileAsync(allPlayers); // Updated method name
+                    string filename = "Deleted PLAYERS.xlsx";
+                    string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                    // Delete the games and set success message
+                    await DeletePlayersAndShowMessage(allPlayers);
+
+                    // Return the Excel file for download
+                    var fileContentResult = File(theData, mimeType, filename);
+                    TempData["SuccessMessage"] = "All players have been downloaded, click again to delete.";
+                    // Return the file content result for download
+                    return fileContentResult;
+
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "All players have been deleted  and downloaded successfully.";
+                }
             }
-            
-            // Delete all player child records
-            foreach (Player player in players)
+            catch (Exception ex)
             {
-                _context.Statistics.RemoveRange(player.Statistics);
-                _context.PlayerLineup.RemoveRange(player.PlayerLineups);
-
+                // Handle exceptions and log them
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
             }
-            await _context.SaveChangesAsync();
 
-            // Delete all players
-            _context.Players.RemoveRange(players);
-            await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "All players have been deleted successfully.";
-
-            // Redirect to an appropriate action after deleting all games
+            // Redirect to appropriate page if download or deletion fails
             return RedirectToAction("Index", "Players");
         }
-        
+
+
+
+        private async Task<byte[]> GenerateExcelFileAsync(List<Player> players)
+        {
+            var sumQ = _context.Players
+             .Include(t => t.Team).ThenInclude(t => t.Division)
+                .OrderBy(r => r.PlyrFirstName)
+                .Select(r => new
+                {
+                    PlyrFirst_Name = r.PlyrFirstName,
+                    PlyrLast_Name = r.PlyrLastName,
+                    PlyrJersey_Number = r.PlyrJerseyNumber,
+                    PlyrMember_ID = r.PlyrMemberID,
+                    Team = r.Team.TmName,
+                    Division = r.Team.Division.DivName
+
+                })
+                .AsNoTracking();
+
+            // How many rows?
+            int numRows = await sumQ.CountAsync();
+
+            if (numRows > 0)
+            {
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add("Players");
+
+                    workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
+
+                    workSheet.Cells[4, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 4])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+                    workSheet.Cells.AutoFitColumns();
+
+                    workSheet.Cells[1, 1].Value = "Players";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 4])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 4])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    byte[] theData = excel.GetAsByteArray();
+                    return theData;
+                }
+            }
+
+
+            return null;
+        }
+
+
+        private async Task DeletePlayersAndShowMessage(List<Player> players)
+        {
+            try
+            {
+                // Check if there are any players to delete
+                if (players == null || players.Count == 0)
+                {
+                    TempData["SuccessMessage"] = "There are no players available.";
+                    return;
+                }
+
+                // Delete all players and let cascade delete handle related entities
+                _context.Players.RemoveRange(players);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "All players have been deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while deleting players: {ex.Message}";
+            }
+        }
+
+
+
         private bool PlayerExists(int id)
         {
             return _context.Players.Any(e => e.ID == id);

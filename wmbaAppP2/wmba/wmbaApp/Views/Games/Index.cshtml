@@ -33,7 +33,7 @@
     </div>
     @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
     {
-        <div id="successMessage" class="alert alert-success">
+        <div  class="alert alert-success">
             @ViewBag.SuccessMessage
         </div>
     }
@@ -68,10 +68,10 @@
                         <div id="customModal" class="modal">
                             <div class="modal-content">
                                 <span class="close" id="close" onclick="closeModal()">X</span>
-                                <b><p id="notify" style="margin: 0 20px;">Are you sure you want to delete all games?.<br><br> </br></p></b>
+                                <b><p id="notify" style="margin: 0 20px;">Are you sure you want to delete all games? <br /><br />If yes, click delete twice.<br /><br><br> </br></p></b>
                                 <b><p id="required"></p></b>
                                 <i></i>
-
+                                <i class="fa-solid fa-triangle-exclamation text-center fa-3x triangle"></i>
                                 <i id="error" class="fa-solid fa-xmark fa-f6"></i>
                                 <a asp-action="Delete" class="btn btn-center btn-sm  " role="button" data-bs-toggle="tooltip" title="Delete all Games">
                                     <span></span><span></span><span></span><span></span>
@@ -81,7 +81,7 @@
                         </div>
                         @if (User.IsInRole("Admin"))
                         {
-                            <input value="End of Season" class="btn btn-sm btn-outline-dark  d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Delete all Games" onclick="openModal()" style="min-width: 110px; " />
+                            <input value="End of Season"  class="btn btn-sm btn-outline-dark  d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Delete all Games" onclick="openModal()" style="min-width: 110px; " />
 
 
                         }
@@ -96,6 +96,10 @@
                             <a asp-action="DownloadGamesFixtures" class="btn btn-sm btn-outline-dark btnCreateTeam gameCreateBtn d-none d-lg-block" role="button" data-bs-toggle="tooltip" title="Download Games Roster">
                                 <strong>&#x1F4C4; Download Games</strong>
                             </a>
+                        }
+                        else
+                        {
+                            <hr ></hr>
                         }
                     </th>
                 </tr>

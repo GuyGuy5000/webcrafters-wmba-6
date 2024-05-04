@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -8,10 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
 using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
 using wmbaApp.Utilities;
+using System.Numerics;
+using System.IO.Compression;
 
 namespace wmbaApp.Controllers
 {
@@ -745,6 +750,467 @@ namespace wmbaApp.Controllers
             roleResult = await _roleManager.CreateAsync(new ApplicationRole(team.TmName, 0, team.ID));
             return RedirectToAction(nameof(Index));
         }
+
+
+        [Authorize(Roles = "Admin,Convenor")]
+        public async Task<IActionResult> Delete()
+        {
+            try
+            
+            {
+                // Retrieve all teams and games from the database
+                var allTeams = await _context.Teams.ToListAsync();
+                var allGames = await _context.Games.ToListAsync();
+                var allPlayers = await _context.Players.ToListAsync();
+                var allPlayerStats = await _context.Statistics.ToListAsync();
+
+                if (allTeams != null && allTeams.Count > 0 && allGames != null && allGames.Count > 0 && allPlayers != null && allPlayers.Count > 0 
+                    && allPlayerStats != null && allPlayerStats.Count > 0)
+                {
+                    // Generate Excel files for teams and games asynchronously
+                    byte[] teamsData = await GenerateExcelFileAsync(allTeams);
+                    string teamsFilename = "Deleted Teams.xlsx";
+                    string teamsMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                    byte[] playersData = await GeneratePlayerExcelFileAsync(allPlayers);
+                    string playersFilename = "Deleted Players.xlsx";
+                    string playersMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                    byte[] gamesData = await GenerateGameExcelFileAsync(allGames);
+                    string gamesFilename = "Deleted Games.xlsx";
+                    string gamesMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                    byte[] playerStatsData = await GeneratePlayerStatsExcelFileAsync(allPlayerStats);
+                    string playerStatsFilename = "Deleted STATISTICS.xlsx";
+                    string statsMimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                    // Delete the teams (you should implement this method)
+                    await DeleteTeamsAndShowMessage(allTeams);
+
+                    // Create a memory stream for the zip archive
+                    using (MemoryStream zipStream = new MemoryStream())
+                    {
+                        using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+                        {
+                            // Add teams Excel file to the zip archive
+                            ZipArchiveEntry teamsEntry = zip.CreateEntry(teamsFilename);
+                            using (Stream entryStream = teamsEntry.Open())
+                            {
+                                await entryStream.WriteAsync(teamsData, 0, teamsData.Length);
+                            }
+
+                            ZipArchiveEntry playersEntry = zip.CreateEntry(playersFilename);
+                            using (Stream entryStream = playersEntry.Open())
+                            {
+                                await entryStream.WriteAsync(playersData, 0, playersData.Length);
+                            }
+
+                            // Add games Excel file to the zip archive
+                            ZipArchiveEntry gamesEntry = zip.CreateEntry(gamesFilename);
+                            using (Stream entryStream = gamesEntry.Open())
+                            {
+                                await entryStream.WriteAsync(gamesData, 0, gamesData.Length);
+                            }
+
+                            ZipArchiveEntry statsEntry = zip.CreateEntry(playerStatsFilename);
+                            using (Stream entryStream = statsEntry.Open())
+                            {
+                                await entryStream.WriteAsync(playerStatsData, 0, playerStatsData.Length);
+                            }
+
+                        }
+
+                        // Ensure the zipStream is not disposed before returning the FileResult
+                        zipStream.Position = 0;
+                        return File(zipStream.ToArray(), "application/zip", "Deleted Data.zip");
+                    }
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = $"There are currently no teams to delete, please try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while deleting teams: {ex.Message}";
+            }
+            // Redirect to appropriate page if download or deletion fails
+            return RedirectToAction("Index", "Teams");
+        }
+
+
+        private async Task<byte[]> GenerateExcelFileAsync(List<Team> teams)
+        {
+            var sumQ = _context.Teams
+             .Include(t => t.Division)
+                     .Include(t => t.DivisionCoaches).ThenInclude(t => t.Coach)
+                .OrderBy(r => r.TmName)
+                .Select(r => new
+                {
+                    Team_Name = r.TmName,
+                    Division = r.Division.DivName,
+                    Coaches = r.DivisionCoaches.FirstOrDefault().Coach.FullName
+
+
+                })
+                .AsNoTracking();
+
+            // How many rows?
+            int numRows = await sumQ.CountAsync();
+
+            if (numRows > 0)
+            {
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add("Players");
+
+                    workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
+
+                    workSheet.Cells[3, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 3])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+                    workSheet.Cells.AutoFitColumns();
+
+                    workSheet.Cells[1, 1].Value = "Teams";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 3])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    byte[] theData = excel.GetAsByteArray();
+                    return theData;
+                }
+            }
+
+
+            return null;
+        }
+
+
+        private async Task<byte[]> GenerateGameExcelFileAsync(List<Game> games)
+        {
+            var sumQ = _context.Games
+                .Include(r => r.HomeTeam)
+                .Include(r => r.AwayTeam)
+                .Include(r => r.Division)
+                .OrderBy(r => r.Division.DivName)
+                .Select(r => new
+                {
+                    Home_Team = r.HomeTeam.TmName,
+                    Visitor_Team = r.AwayTeam.TmName,
+                    Game_Division = r.Division.DivName,
+                    Game_Location = r.GameLocation.Name,
+                    Home_Score = r.HomeTeamScore,
+                    Visitor_Score = r.AwayTeamScore,
+                    Game_Status = r.HasStarted,
+                    Game_Duration = r.Duration,
+                    Game_Innings = r.CurrentInning,
+                    Game_Date = r.Summary,
+                })
+                .AsNoTracking();
+
+            // How many rows?
+            int numRows = await sumQ.CountAsync();
+
+            if (numRows > 0)
+            {
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add("Game by Division");
+
+                    workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
+
+                    workSheet.Cells[10, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 10])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+                    workSheet.Cells.AutoFitColumns();
+
+                    workSheet.Cells[1, 1].Value = "Game Fixtures";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 7])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 7])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    byte[] theData = excel.GetAsByteArray();
+                    return theData;
+                }
+            }
+
+            // If no rows, return null or handle as needed
+            return null;
+        }
+
+
+        private async Task<byte[]> GeneratePlayerExcelFileAsync(List<Player> players)
+        {
+            var sumQ = _context.Players
+             .Include(t => t.Team).ThenInclude(t => t.Division)
+                .OrderBy(r => r.PlyrFirstName)
+                .Select(r => new
+                {
+                    First_Name = r.PlyrFirstName,
+                    Last_Name = r.PlyrLastName,
+                    Jersey_Number = r.PlyrJerseyNumber,
+                    Member_ID = r.PlyrMemberID,
+                    Team = r.Team.TmName,
+                    Division = r.Team.Division.DivName
+
+                })
+                .AsNoTracking();
+
+            // How many rows?
+            int numRows = await sumQ.CountAsync();
+
+            if (numRows > 0)
+            {
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add("Players");
+
+                    workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
+
+                    workSheet.Cells[6, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 6])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+                    workSheet.Cells.AutoFitColumns();
+
+                    workSheet.Cells[1, 1].Value = "Players";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 4])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 6])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    byte[] theData = excel.GetAsByteArray();
+                    return theData;
+                }
+            }
+
+
+            return null;
+        }
+
+
+
+        public async Task<byte[]>  GeneratePlayerStatsExcelFileAsync(List<Statistic> teams)
+        {
+            IQueryable<Statistic> statistics;
+
+            if (User.IsInRole("Admin"))
+            {
+                statistics = _context.Statistics
+                .Include(s => s.Players).ThenInclude(p => p.Team)
+                .Where(s => s.Players.First().IsActive)
+                .AsNoTracking();
+            }
+            else
+            {
+                var rolesTeamIDs = await UserRolesHelper.GetUserTeamIDs(_AppContext, User);
+                var rolesDivisionIDs = await UserRolesHelper.GetUserDivisionIDs(_AppContext, User);
+
+                statistics = _context.Statistics
+                .Include(s => s.Players).ThenInclude(p => p.Team)
+                .Where(s => s.Players.First().IsActive && (rolesTeamIDs.Contains(s.Players.First().TeamID) || rolesDivisionIDs.Contains(s.Players.First().Team.DivisionID)))
+                .AsNoTracking();
+            }
+
+            // Get the data from the database
+            var statisticsData = statistics
+             .AsEnumerable()
+             .OrderBy(r => r.Players.First().FullName)
+             .Select(r => new
+             {
+                 Player = r.Players.First().FullName,
+                 GP = r.StatsGP,
+                 PA = r.StatsPA,
+                 AVG = r.StatsAVG,
+                 OBP = r.StatsOBP,
+                 OPS = r.StatsOPS,
+                 SLG = r.StatsSLG,
+                 H = r.StatsH,
+                 R = r.StatsR,
+                 K = r.StatsK,
+                 HR = r.StatsHR,
+                 RBI = r.StatsRBI,
+                 BB = r.StatsBB,
+                 Rating = ConvertRatingToWord(r.Rating).ToString()
+             });
+
+            // How many rows?
+            int numRows = statisticsData.Count();
+
+            if (numRows > 0)
+            {
+                // Create a new spreadsheet from scratch.
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add("Statistics Report");
+
+                    // Note: Cells[row, column]
+                    workSheet.Cells[3, 1].LoadFromCollection(statisticsData, true);
+
+                    // Set column styles if needed
+
+                    // Make certain cells bold
+                    workSheet.Cells[4, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+                    // Autofit columns
+                    workSheet.Cells.AutoFitColumns();
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 15])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+
+                    // Add a title and timestamp at the top of the report
+                    workSheet.Cells[1, 1].Value = "Statistics Report";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 15]) // Adjust the column count accordingly
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 15]) // Adjust the column accordingly
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+
+                    byte[] theData = excel.GetAsByteArray();
+                    return theData;
+                }
+            }
+            return null;
+        }
+
+        public static string ConvertRatingToWord(int rating)
+        {
+            switch (rating)
+            {
+                case 1:
+                    return "One Star";
+                case 2:
+                    return "Two Stars";
+                case 3:
+                    return "Three Stars";
+                case 4:
+                    return "Four Stars";
+                case 5:
+                    return "Five Stars";
+                default:
+                    return "Unknown Rating";
+            }
+        }
+
+
+        private async Task DeleteTeamsAndShowMessage(List<Team> teams)
+        {
+            try
+            {
+                if (teams == null || teams.Count == 0)
+                {
+                    TempData["ErrorMessage"] = "No teams found to delete.";
+                    return;
+                }
+
+                foreach (var team in teams)
+                {
+                    // Optional: Delete related entities (e.g., players, games) with cascade delete
+                    _context.Players.RemoveRange(team.Players);
+                    _context.Games.RemoveRange(team.HomeGames.Concat(team.AwayGames));
+                    _context.DivisionCoaches.RemoveRange(team.DivisionCoaches);
+                }
+
+                // Remove all teams passed as parameter
+                _context.Teams.RemoveRange(teams);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "All teams have been deleted successfully and all  associated data downloaded as a zip file.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while deleting teams: {ex.Message}";
+            }
+        }
+
 
         #region SelectLists
         private SelectList DivisionSelectList(int? selectedId)

@@ -6,8 +6,9 @@
     <input type="hidden" name="sortDirection" value="@ViewData["sortDirection"]" />
     <input type="hidden" name="sortField" value="@ViewData["sortField"]" />
     <div class="form-horizontal">
-        <button class="btn btn-center @ViewData["Filtering"]" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
-            <p class="filSearch">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
+        <button class="btn btn-center @ViewData["Filtering"] btnFilter" type="button" data-bs-toggle="collapse" id="filterToggle" data-bs-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+            <span></span><span></span><span></span><span></span>
+            <p class="filSearch ">Search <i class="fa-solid fa-magnifying-glass"></i> </p>  @ViewData["numberFilters"]
         </button>
         <br />
         <div class="collapse @ViewData["ShowFilter"]" id="collapseFilter">
@@ -34,54 +35,80 @@
         </div>
     </div>
 
-
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div class="alert alert-success">
+            @ViewBag.SuccessMessage
+        </div>
+    }
 
     <table class="table playerTable">
         <thead>
             <tr>
-                <th class="d-sm-table-cell d-md-table-cell ">
+                <th class="d-sm-table-cell d-md-table-cell">
                     <div class="coachName">
+                        <div class="flex-container">
                         <input type="submit" name="actionButton" value="Coach Name" class="non-button-input" title="Sort by Full Name" />
                         <i class="fa-solid fa-arrows-up-down arrow non-button-input coachIcon"></i>
+                        </div>
                     </div>
-                    
-                 
                 </th>
-                <th class="d-sm-table-cell d-md-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        Team
-                       </h6>
-                </th>
-
                 <th class="d-none d-lg-table-cell">
-                    <h6 class="non-button-input" id="heading">
-                        Division
-                    </h6>
+                    <h6 class="non-button-input" id="heading">Team</h6>
                 </th>
-
-                <th style="min-width:120px">
-                    <a asp-action="Create" class="btn btn-sm btn-outline-dark " role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
+                <th class="d-none d-lg-table-cell">
+                    <h6 class="non-button-input" id="heading">Division</h6>
+                </th>
+                <th style="min-width:120px;  ">
+                    <a asp-action="Create" class="btn btn-sm" role="button" style=" margin-bottom: -1px; " data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
                         <span></span><span></span><span></span><span></span>
-                        <strong> Create </strong>
+                        <strong>Create</strong>
                     </a>
                 </th>
+                <th style="min-width:120px">
+                    <div id="customModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="close" onclick="closeModal()">X</span>
+                            <b><p id="notify" style="margin: 0 20px;">Are you sure you want to delete all coaches? <br /><br />If yes, click delete twice.<br /><br><br> </br></p></b>
+                            <b><p id="required"></p></b>
+                            <i></i>
+                            <i class="fa-solid fa-triangle-exclamation text-center fa-3x triangle"></i>
+                            <i id="error" class="fa-solid fa-xmark fa-f6"></i>
+                            <a asp-action="DeleteAll" class="btn btn-center btn-sm  " role="button" data-bs-toggle="tooltip" title="Delete all Coaches">
+                                <span></span><span></span><span></span><span></span>
+                                <strong> Delete </strong>
+                            </a>
+                        </div>
+                    </div>
+                </th>
+                <th style="min-width:120px">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a href="#" class="btn btn-sm d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="End of Season" onclick="openModal()" style="width: 200px;">
+                            <span></span><span></span><span></span><span></span>
+                            <strong>End of Season</strong>
+                        </a>
+
+                    }
+                </th>
             </tr>
+
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td class="d-sm-table-cell d-md-table-cell">
+                    <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.FullName)
                     </td>
                     <td class="d-sm-table-cell d-md-table-cell">
                         @Html.DisplayFor(modelItem => item.DivisionCoaches.FirstOrDefault().Team.TmName)
                     </td>
 
-                    <td class="d-sm-table-cell d-md-table-cell">
+                    <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.DivisionCoaches.FirstOrDefault().Division.DivName)
                     </td>
-                    <td>
+                    <td class="alignPlayers">
                         <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                             <span></span><span></span><span></span><span></span>
                             EDIT

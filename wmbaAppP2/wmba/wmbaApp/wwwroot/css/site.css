@@ -31,14 +31,13 @@ html {
     width: 380px;
 }
 
+@media only screen and (min-width: 320px) and (max-width: 769px) {
+    nav.navbar .nav-link {
+        font-size: 12px;
+    }
+}
 /*Genereic Css End*/
-
-
-
-
 /*Welland Minor Css Home Page Start*/
-
-
 body {
     margin: 0;
     overflow-y: auto;
@@ -2275,3 +2274,44 @@ footer {
     }
 }
 /*****************Modal Enda************************/
+
+.alignPlayers {
+    display: flex;
+    justify-content: space-between; /* Or any other desired alignment */
+}
+
+/* Media query for tablets */
+@media only screen and (max-width: 768px) {
+    .alignPlayers {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center items horizontally */
+    }
+}
+
+/* Media query for phones */
+@media only screen and (max-width: 480px) {
+    .alignPlayers {
+        /* Adjust styles for smaller screens if needed */
+    }
+}
+
+.percentage {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333; /* Adjust color as needed */
+}
+
+.flex-container {
+    display: flex;
+    align-items: center; /* Align items vertically in the center */
+}
+
+    /* Optional: Adjust spacing between the icon and text */
+    .flex-container .arrow {
+        margin-left: 5px; /* Adjust as needed */
+    }
+
+.triangle{
+    color: darkred;
+    margin-top: -40px;
+}

@@ -154,7 +154,7 @@ namespace wmbaApp.Controllers
             int? page, int? pageSizeID, string actionButton, string sortDirection = "asc", string sortField = "")
         {
             // Count the number of filters applied - start by assuming no filters
-            ViewData["Filtering"] = "btn-outline-secondary";
+            ViewData["Filtering"] = "btn-outline-dark";
             int numberFilters = 0;
             // Then in each "test" for filtering, add to the count of Filters applied
 
@@ -211,7 +211,7 @@ namespace wmbaApp.Controllers
             if (numberFilters != 0)
             {
                 // Toggle the Open/Closed state of the collapse depending on if we are filtering
-                ViewData["Filtering"] = " btn-danger";
+                ViewData["Filtering"] = " btn-outline-dark";
                 // Show how many filters have been applied
                 ViewData["numberFilters"] = "(" + numberFilters.ToString()
                     + " Filter" + (numberFilters > 1 ? "s" : "") + " Applied)";
@@ -391,6 +391,7 @@ namespace wmbaApp.Controllers
             PopulateDropDownLists(gameToUpdate);
             return View(gameToUpdate);
         }
+
         // GET: Games/Details/5
         [Authorize]
         public async Task<IActionResult> Details(int? id)
@@ -416,24 +417,6 @@ namespace wmbaApp.Controllers
                     .ThenInclude(p => p.Statistics) // Include player statistics
                 .FirstOrDefaultAsync(m => m.ID == id);
 
-            // Calculate total stats for home team
-            double totalHomeStats = CalculateTotalStats(game?.HomeTeam?.Players);
-
-            // Calculate total stats for away team
-            double totalAwayStats = CalculateTotalStats(game?.AwayTeam?.Players);
-
-            // Calculate total possible stats for both teams
-            double totalPossibleHomeStats = CalculateTotalPossibleStats(game?.HomeTeam?.Players);
-            double totalPossibleAwayStats = CalculateTotalPossibleStats(game?.AwayTeam?.Players);
-
-            // Calculate percentages
-            double homeTeamPercentage = totalHomeStats / totalPossibleHomeStats * 100;
-            double awayTeamPercentage = totalAwayStats / totalPossibleAwayStats * 100;
-
-            // Assign team percentages to the ViewData or ViewBag for use in the view
-            ViewData["HomeTeamPercentage"] = homeTeamPercentage;
-            ViewData["AwayTeamPercentage"] = awayTeamPercentage;
-
             if (game == null)
             {
                 return NotFound();
@@ -442,6 +425,33 @@ namespace wmbaApp.Controllers
             if (!await UserRolesHelper.IsAuthorizedForGame(_AppContext, User, game))
             {
                 return RedirectToAction("Index", "Games");
+            }
+
+            // Check if there are players for home and away teams
+            bool hasHomePlayers = game?.HomeTeam?.Players?.Any() ?? false;
+            bool hasAwayPlayers = game?.AwayTeam?.Players?.Any() ?? false;
+
+            // Pass the flags to the view
+            ViewData["HasHomePlayers"] = hasHomePlayers;
+            ViewData["HasAwayPlayers"] = hasAwayPlayers;
+
+            // Calculate stats only if there are players
+            if (hasHomePlayers)
+            {
+                // Calculate total stats for home team
+                double totalHomeStats = CalculateTotalStats(game.HomeTeam.Players);
+                double totalPossibleHomeStats = CalculateTotalPossibleStats(game.HomeTeam.Players);
+                double homeTeamPercentage = totalHomeStats / totalPossibleHomeStats * 100;
+                ViewData["HomeTeamPercentage"] = homeTeamPercentage;
+            }
+
+            if (hasAwayPlayers)
+            {
+                // Calculate total stats for away team
+                double totalAwayStats = CalculateTotalStats(game.AwayTeam.Players);
+                double totalPossibleAwayStats = CalculateTotalPossibleStats(game.AwayTeam.Players);
+                double awayTeamPercentage = totalAwayStats / totalPossibleAwayStats * 100;
+                ViewData["AwayTeamPercentage"] = awayTeamPercentage;
             }
 
             return View(game);
@@ -600,54 +610,8 @@ namespace wmbaApp.Controllers
             return View(game);
         }
 
-        // GET: Games/Delete
-        [Authorize(Roles = "Admin,Convenor")]
-        public async Task<IActionResult> Delete()
-        {
-            // Retrieve all games from the database
-            var games = await _context.Games.ToListAsync();
 
-            // Check if there are any games to delete
-            if (games == null || games.Count == 0)
-            {
-                return NotFound();
-            }
-
-            // Delete all games
-            _context.Games.RemoveRange(games);
-            await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "All games have been deleted successfully.";
-
-            // Redirect to an appropriate action after deleting all games
-            return RedirectToAction("Index", "Games");
-        }
-
-        // POST: Games/Delete
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin,Convenor")]
-        public async Task<IActionResult> DeleteConfirmed()
-        {
-            // Retrieve all games from the database
-            var games = await _context.Games.ToListAsync();
-
-            // Check if there are any games to delete
-            if (games == null || games.Count == 0)
-            {
-                return NotFound();
-            }
-
-            // Delete all games
-            _context.Games.RemoveRange(games);
-            await _context.SaveChangesAsync();
-
-            TempData["SuccessMessage"] = "All games have been deleted successfully.";
-
-            // Redirect to an appropriate action after deleting all games
-            return RedirectToAction("Index", "Games");
-        }
-
+    
 
         public IActionResult SelectLineup(int gameId)
         {
@@ -989,35 +953,185 @@ namespace wmbaApp.Controllers
             return RedirectToAction("Index", "ScoreKeepingAwayTeam", scoreKeeping);
         }
 
+        //// POST: Games/Delete
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Admin,Convenor")]
+        //public async Task<IActionResult> DeleteConfirmed()
+        //{
+        //    // Retrieve all games from the database
+        //    var games = await _context.Games.ToListAsync();
+
+        //    // Check if there are any games to delete
+        //    if (games == null || games.Count == 0)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Delete all games
+        //    _context.Games.RemoveRange(games);
+        //    await _context.SaveChangesAsync();
+
+        //    TempData["SuccessMessage"] = "All games have been deleted successfully.";
+
+        //    // Redirect to an appropriate action after deleting all games
+        //    return RedirectToAction("Index", "Games");
+        //}
+
+        //// GET: Games/Delete
+        //[Authorize(Roles = "Admin,Convenor")]
+        //public async Task<IActionResult> Delete()
+        //{
+        //    // Retrieve all games from the database
+        //    var games = await _context.Games.ToListAsync();
+
+        //    // Check if there are any games to delete
+        //    if (games == null || games.Count == 0)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    // Delete all games
+        //    _context.Games.RemoveRange(games);
+        //    await _context.SaveChangesAsync();
+
+        //    TempData["SuccessMessage"] = "All games have been deleted successfully.";
+
+        //    // Redirect to an appropriate action after deleting all games
+        //    return RedirectToAction("Index", "Games");
+        //}
 
 
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteAll()
+        // GET: Games/Delete
+        [Authorize(Roles = "Admin,Convenor")]
+        public async Task<IActionResult> Delete()
         {
             try
             {
                 // Retrieve all games from the database
                 var allGames = await _context.Games.ToListAsync();
 
-                // Remove all games from the context and save changes
-                _context.Games.RemoveRange(allGames);
-                await _context.SaveChangesAsync();
+                if (allGames != null && allGames.Count > 0)
+                {
+                    // Generate Excel file asynchronously
+                    byte[] theData = await GenerateExcelFileAsync(allGames); // Updated method name
+                    string filename = "Deleted Games.xlsx";
+                    string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
-                TempData["SuccessMessage"] = "All games have been deleted successfully.";
-                return RedirectToAction("Index", "Games"); // Redirect to the games index page or another appropriate page
+                    // Delete the games and set success message
+                    await DeleteGamesAndShowMessage(allGames);
+
+                    // Return the Excel file for download
+                    var fileContentResult = File(theData, mimeType, filename);
+                    TempData["SuccessMessage"] = "All games have been downloaded, click again to delete.";
+                    // Return the file content result for download
+                    return fileContentResult;
+                   
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "All games have been deleted  and downloaded successfully.";
+                }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions, log them, and display an error message if needed
-                TempData["ErrorMessage"] = "An error occurred while deleting all games.";
-                // Log the exception
-
-
-                return RedirectToAction("Index", "Games"); // Redirect to the games index page or another appropriate page
+                // Handle exceptions and log them
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
             }
+
+            // Redirect to appropriate page if download or deletion fails
+            return RedirectToAction("Index", "Games");
         }
+
+
+
+        private async Task<byte[]> GenerateExcelFileAsync(List<Game> games)
+        {
+            var sumQ = _context.Games
+                .Include(r => r.HomeTeam)
+                .Include(r => r.AwayTeam)
+                .Include(r => r.Division)
+                .OrderBy(r => r.Division.DivName)
+                .Select(r => new
+                {
+                    Home_Team = r.HomeTeam.TmName,
+                    Visitor_Team = r.AwayTeam.TmName,
+                    Game_Division = r.Division.DivName,
+                    Game_Location = r.GameLocation.Name,
+                    Home_Score = r.HomeTeamScore,
+                    Visitor_Score = r.AwayTeamScore,
+                    Game_Status = r.HasStarted,
+                    Game_Duration = r.Duration,
+                    Game_Innings = r.CurrentInning,
+                    Game_Date = r.Summary,
+                })
+                .AsNoTracking();
+
+            // How many rows?
+            int numRows = await sumQ.CountAsync();
+
+            if (numRows > 0)
+            {
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add("Game by Division");
+
+                    workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
+
+                    workSheet.Cells[10, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 7])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+                    workSheet.Cells.AutoFitColumns();
+
+                    workSheet.Cells[1, 1].Value = "Game Fixtures";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 7])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 7])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    byte[] theData = excel.GetAsByteArray();
+                    return theData;
+                }
+            }
+
+            // If no rows, return null or handle as needed
+            return null;
+        }
+
+
+        private async Task DeleteGamesAndShowMessage(List<Game> games)
+        {
+            // Delete the games
+            _context.Games.RemoveRange(games);
+            await _context.SaveChangesAsync();
+
+            // Show success message
+            TempData["SuccessMessage"] = "All games have been deleted successfully.";
+        
+        }
+
 
         private bool GameExists(int id)
         {

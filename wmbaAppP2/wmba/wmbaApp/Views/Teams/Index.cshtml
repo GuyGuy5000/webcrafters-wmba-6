@@ -44,6 +44,12 @@
             </div>
         </div>
     </div>
+    @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+    {
+        <div class="alert alert-success">
+            @ViewBag.SuccessMessage
+        </div>
+    }
     <table class="table mt-3 playerTable">
         <thead>
             <tr>
@@ -61,16 +67,48 @@
                 </th>
                 <!-- Division -->
                 <th class="d-none d-xxl-table-cell">
-                    <input type="submit" value="Division" name="actionButton" class="non-button-input" data-bs-toggle="tooltip" title="Sort Division Name" />
-                    <i class="fa-solid fa-arrows-up-down arrow  non-button-input"></i>
+                    <div class="flex-container">
+                        <input type="submit" value="Division" name="actionButton" class="non-button-input" data-bs-toggle="tooltip" title="Sort Division Name" />
+                        <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
+                    </div>
                 </th>
+
                 <!-- Create New Team -->
                 <th style="min-width:120px">
                     @if (User.IsInRole("Admin") || User.IsInRole("Convenor") || User.IsInRole("Coach"))
                     {
-                        <a asp-action="Create" class="btn btn-right btn-sm btn btn-outline-dark btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team">
+                        <a asp-action="Create" class="btn btn-right btn-sm btn  btnCreateTeam" role="button" data-bs-toggle="tooltip" title="Create a new team" style=" margin-bottom: -1px; ">
+                            <span></span><span></span><span></span><span></span>
                             <strong> Create  </strong>
                         </a>
+                    }
+
+                </th>
+                <th style="min-width:120px">
+                    <div id="customModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="close" onclick="closeModal()">X</span>
+                            <p id="notify" style="margin: 0 20px;">Deleting all teams will also delete all stats games and players.  <br /><br />Click twice to delete .<br> <br><br> </p>
+                            <b><p id="required"></p></b>
+                            <i></i>
+                            <i class="fa-solid fa-triangle-exclamation text-center fa-3x triangle"></i>
+                            <i id="error" class="fa-solid fa-xmark fa-f6"></i>
+                            <a asp-action="Delete" class="btn btn-center btn-sm  " role="button" data-bs-toggle="tooltip" title="Delete all Teams">
+                                <span></span><span></span><span></span><span></span>
+                                <strong> Delete </strong>
+                            </a>
+                        </div>
+                    </div>
+                  
+                </th>
+                <th style="min-width:120px">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a href="#" class="btn btn-sm d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="End of Season" onclick="openModal()" style="width: 200px;">
+                            <span></span><span></span><span></span><span></span>
+                            <strong>End of Season</strong>
+                        </a>
+
                     }
                 </th>
             </tr>
@@ -110,7 +148,7 @@
                         }
                     </td>
                     <td class="d-none d-xxl-table-cell">@Html.DisplayFor(modelItem => item.Division.DivName)</td>
-                    <td>
+                    <td class="alignPlayers">
                         @{
                             if (User.IsInRole("Admin") || User.IsInRole("Convenor"))
                             {
@@ -131,13 +169,14 @@
                             {
                                 if (!item.HomeGames.Any(g => g.HasStarted) || !item.AwayGames.Any(g => g.HasStarted))
                                 {
-                                    <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm MakeInactive" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
+                                    <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
                                         <span></span><span></span><span></span><span></span>
                                         ACTIVE
                                     </a>
                                 }
                             }
                         }
+                      
                     </td>
                 </tr>
             }

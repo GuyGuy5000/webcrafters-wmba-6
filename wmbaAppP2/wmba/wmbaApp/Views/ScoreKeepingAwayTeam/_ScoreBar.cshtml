@@ -102,14 +102,14 @@
         <input name="gameScoreKeepingJSON" id="gameScoreKeepingJSON" type="hidden" value='@Json.Serialize(Model)' />
     }
 }
-<section class="score-bar-container">
+<section class="score-bar-container " >
     <div class="home-team-header">
         <h2>
             @Model.HomeTeamName
         </h2>
     </div>
 
-    <div class="score-container">
+    <div class="score-container" >
         <div class="score-header">
             <h2>
                 @Model.HomeTeamScore - @Model.AwayTeamScore

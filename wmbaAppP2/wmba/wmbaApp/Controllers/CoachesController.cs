@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.Style;
+using OfficeOpenXml;
 using wmbaApp.CustomControllers;
 using wmbaApp.Data;
 using wmbaApp.Models;
@@ -249,6 +252,148 @@ namespace wmbaApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
+
+
+        // GET: Games/Delete
+        [Authorize(Roles = "Admin,Convenor")]
+        public async Task<IActionResult> DeleteAll()
+        {
+            try
+            {
+                // Retrieve all games from the database
+                var allCoaches = await _context.Coaches.ToListAsync();
+
+                if (allCoaches != null && allCoaches.Count > 0)
+                {
+                    // Generate Excel file asynchronously
+                    byte[] theData = await GenerateExcelFileAsync(allCoaches);
+                    string filename = "Deleted Coaches.xlsx";
+                    string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                    // Delete the games and set success message
+                    await DeleteGamesAndShowMessage(allCoaches);
+
+                    // Return the Excel file for download
+                    var fileContentResult = File(theData, mimeType, filename);
+                    TempData["SuccessMessage"] = "All games have been downloaded, click again to delete.";
+                    // Return the file content result for download
+                    return fileContentResult;
+
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "All games have been deleted  and downloaded successfully.";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and log them
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
+            }
+
+            // Redirect to appropriate page if download or deletion fails
+            return RedirectToAction("Index", "Coaches");
+        }
+
+        private async Task<byte[]> GenerateExcelFileAsync(List<Coach> coach)
+        {
+            var sumQ = _context.Coaches
+                 .Include(c => c.DivisionCoaches).ThenInclude(c => c.Division)
+                .Include(c => c.DivisionCoaches).ThenInclude(c => c.Team)
+                .OrderBy(r => r.CoachFirstName)
+                .Select(r => new
+                {
+                    Coach_Name = r.CoachFirstName,
+                    Team_ = r.DivisionCoaches.FirstOrDefault().Team.TmName,
+                    Division_ = r.DivisionCoaches.FirstOrDefault().Division.DivName
+
+                })
+                .AsNoTracking();
+
+            // How many rows?
+            int numRows = await sumQ.CountAsync();
+
+            if (numRows > 0)
+            {
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add("Coaches");
+
+                    workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
+
+                    workSheet.Cells[3, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 3])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+                    workSheet.Cells.AutoFitColumns();
+
+                    workSheet.Cells[1, 1].Value = "Players";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 3])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 3])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    byte[] theData = excel.GetAsByteArray();
+                    return theData;
+                }
+            }
+
+
+            return null;
+        }
+
+        private async Task DeleteGamesAndShowMessage(List<Coach> coach)
+        {
+            // Delete the DivisionCoaches
+
+            try
+            {
+                if( coach != null && coach.Count > 0)
+                {
+                    TempData["SuccessMessage"] = "There are currently no coaches, please try again";
+                }
+
+                foreach (var coaches in coach)
+                {
+                    _context.DivisionCoaches.RemoveRange(coaches.DivisionCoaches);
+                }
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                TempData["SuccessMessage"] = $"An error occured: {ex.Message}";
+            }
+           
+            _context.Coaches.RemoveRange(coach);
+            await _context.SaveChangesAsync();
+
+            // Show success message
+            TempData["SuccessMessage"] = "All games have been deleted successfully.";
+        }
+
+
 
         #region SelectLists
         private SelectList DivisionSelectList(int? selectedId)

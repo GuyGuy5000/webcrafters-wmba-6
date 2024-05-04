@@ -51,10 +51,9 @@
         <thead>
             <tr>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <div class="d-flex align-items-center">
-                        <input type="submit" name="actionButton" value="Name" class="non-button-input" data-bs-toggle="tooltip" title="Sort Player Name" />
-                        <i class="fa-solid fa-arrows-up-down arrow non-button-input " id="move" style="margin-left: 5px;"></i>
-                    </div>
+                    <h6 class="non-button-input" id="heading">
+                        Name
+                    </h6>
                 </th>
 
                
@@ -77,6 +76,29 @@
                         </a>
                     }
                 </th>
+
+                <th class="d-none d-lg-table-cell" style="min-width:120px;">
+                    <div id="customModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="close" onclick="closeModal()">X</span>
+                            <b><p id="notify" style="margin: 0 20px;">Are you sure you want to delete all players?.  <br /><br />If yes, click delete twice.<br> <br><br> </br></p></b>
+                            <b><p id="required"></p></b>
+                            <i></i>
+                            <i class="fa-solid fa-triangle-exclamation text-center fa-3x triangle"></i>
+                            <i id="error" class="fa-solid fa-xmark fa-f6"></i>
+                            <a asp-action="Delete" class="btn btn-center btn-sm  " role="button" data-bs-toggle="tooltip" title="Delete all Players">
+                                <span></span><span></span><span></span><span></span>
+                                <strong> Delete </strong>
+                            </a>
+                        </div>
+                    </div>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <input value="End of Season" class="btn btn-sm btn-outline-dark  d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Delete all Games" onclick="openModal()" style="min-width: 110px; " />
+
+
+                    }
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -92,27 +114,8 @@
                     <td class="d-none d-lg-table-cell">
                         @Html.DisplayFor(modelItem => item.Team.Division.DivName)
                     </td>
-                    <td>
-                        <div id="customModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close" id="close" onclick="closeModal()">X</span>
-                                <b><p id="notify" style="margin: 0 20px;">Are you sure you want to delete all games?.<br><br> </br></p></b>
-                                <b><p id="required"></p></b>
-                                <i></i>
-
-                                <i id="error" class="fa-solid fa-xmark fa-f6"></i>
-                                <a asp-action="Delete" class="btn btn-center btn-sm  " role="button" data-bs-toggle="tooltip" title="Delete all Games">
-                                    <span></span><span></span><span></span><span></span>
-                                    <strong> Delete </strong>
-                                </a>
-                            </div>
-                        </div>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <input value="End of Season" class="btn btn-sm btn-outline-dark  d-none d-lg-block btnCreateTeam gameCreateBtn createTeam me-2 ml-md-9" role="button" data-bs-toggle="tooltip" title="Delete all Games" onclick="openModal()" style="min-width: 110px; " />
-
-
-                        }
+                    <td class="alignPlayers">
+                       
                         @if (!User.IsInRole("ScoreKeeper"))
                         {
                             <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
@@ -126,12 +129,14 @@
                         </a>
                         @if (!User.IsInRole("ScoreKeeper"))
                         {
-                            <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm MakeInactive" role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
+                            <a asp-action="MakeInactive" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Deactivate @ViewData["ControllerFriendlyName"]">
                                 <span></span><span></span><span></span><span></span>
                                 ACTIVE
                             </a>
                         }
+                        
                     </td>
+
                 </tr>
             }
         </tbody>

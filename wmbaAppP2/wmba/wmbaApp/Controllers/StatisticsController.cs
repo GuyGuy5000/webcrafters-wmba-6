@@ -14,6 +14,7 @@ using wmbaApp.Models;
 using wmbaApp.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using System.Drawing;
 
 namespace wmbaApp.Controllers
 {
@@ -145,6 +146,8 @@ namespace wmbaApp.Controllers
             }
             return NotFound();
         }
+
+
         public async Task<IActionResult> DownloadStatisticsReport()
         {
             IQueryable<Statistic> statistics;
@@ -168,9 +171,9 @@ namespace wmbaApp.Controllers
             }
 
             // Get the data from the database
-            var statisticsData = statistics
-    .AsEnumerable() // Switch to client-side evaluation
-    .OrderBy(r => r.Players.First().FullName) // Change to the actual property for player name
+   var statisticsData = statistics
+    .AsEnumerable() 
+    .OrderBy(r => r.Players.First().FullName) 
     .Select(r => new
     {
         Player = r.Players.First().FullName,
@@ -402,58 +405,207 @@ namespace wmbaApp.Controllers
         }
 
 
-        // GET: Statistics/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        //// GET: Statistics/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null || _context.Statistics == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var statistic = await _context.Statistics
+        //        .FirstOrDefaultAsync(m => m.ID == id);
+        //    if (statistic == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(statistic);
+        //}
+
+        //// POST: Statistics/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Statistics == null)
+        //    {
+        //        return Problem("There are Staistics to delete.");
+        //    }
+        //    var statistic = await _context.Statistics.FindAsync(id);
+        //    try
+        //    {
+        //        if (statistic != null)
+        //        {
+        //            _context.Statistics.Remove(statistic);
+        //        }
+        //        await _context.SaveChangesAsync();
+        //        return Redirect(ViewData["returnURL"].ToString());
+        //    }
+        //    catch (DbUpdateException dex)
+        //    {
+        //        if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
+        //        {
+        //            ModelState.AddModelError("", "Unable to Delete Staistics. Remember, you cannot delete a Staistics that is used in the system.");
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+        //        }
+        //    }
+
+
+        //    return View(statistic);
+        //}
+
+
+        // GET: Players/Delete
+        [Authorize(Roles = "Admin,Convenor")]
+        public async Task<IActionResult> Delete()
         {
-            if (id == null || _context.Statistics == null)
-            {
-                return NotFound();
-            }
-
-            var statistic = await _context.Statistics
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (statistic == null)
-            {
-                return NotFound();
-            }
-
-            return View(statistic);
-        }
-
-        // POST: Statistics/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Statistics == null)
-            {
-                return Problem("There are Staistics to delete.");
-            }
-            var statistic = await _context.Statistics.FindAsync(id);
             try
             {
-                if (statistic != null)
+                // Retrieve all games from the database
+                var allPlayerStats = await _context.Statistics.ToListAsync();
+
+                if (allPlayerStats != null && allPlayerStats.Count > 0)
                 {
-                    _context.Statistics.Remove(statistic);
-                }
-                await _context.SaveChangesAsync();
-                return Redirect(ViewData["returnURL"].ToString());
-            }
-            catch (DbUpdateException dex)
-            {
-                if (dex.GetBaseException().Message.Contains("FOREIGN KEY constraint failed"))
-                {
-                    ModelState.AddModelError("", "Unable to Delete Staistics. Remember, you cannot delete a Staistics that is used in the system.");
+                    // Generate Excel file asynchronously
+                    byte[] theData = await GenerateExcelFileAsync(allPlayerStats); // Updated method name
+                    string filename = "Deleted Statistics.xlsx";
+                    string mimeType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                    // Delete the games and set success message
+                    await DeletePlayersStatsAndShowMessage(allPlayerStats);
+
+                    // Return the Excel file for download
+                    var fileContentResult = File(theData, mimeType, filename);
+                    TempData["SuccessMessage"] = "All players have been downloaded, click again to delete.";
+                    // Return the file content result for download
+                    return fileContentResult;
+
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists see your system administrator.");
+                    TempData["SuccessMessage"] = "All players have been deleted  and downloaded successfully.";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and log them
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
+            }
+
+            // Redirect to appropriate page if download or deletion fails
+            return RedirectToAction("Index", "Statistics");
+        }
+
+
+
+        private async Task<byte[]> GenerateExcelFileAsync(List<Statistic> stats)
+        {
+            var sumQ = _context.Statistics
+             .Include(t => t.Players)
+                .OrderBy(r => r.Players.FirstOrDefault().FullName)
+                .Select(r => new
+                {
+                    playe_r  = r.Players.FirstOrDefault().FullName,
+                    Stats_GP = r.StatsGP,
+                    Stats_PA = r.StatsPA,
+                    Stats_AB = r.StatsAB,
+                    Stats_AVG = r.StatsAVG,
+                    Stats_OBP = r.StatsOBP,
+                    Stats_OPS = r.StatsOPS,
+                    Stats_SLG = r.StatsSLG,
+                    Stats_H = r.StatsH,
+                    Stats_R = r.StatsR,
+                    Stats_K = r.StatsK,
+                    Stats_HR = r.StatsHR,
+                    Stats_RBI = r.StatsRBI,
+                    Stats_BB = r.StatsBB,
+                    Rating = ConvertRatingToWord(r.Rating).ToString()
+
+                })
+                .AsNoTracking();
+
+            // How many rows?
+            int numRows = await sumQ.CountAsync();
+
+            if (numRows > 0)
+            {
+                using (ExcelPackage excel = new ExcelPackage())
+                {
+                    var workSheet = excel.Workbook.Worksheets.Add("Players");
+
+                    workSheet.Cells[3, 1].LoadFromCollection(sumQ, true);
+
+                    workSheet.Cells[4, 1, numRows + 3, 1].Style.Font.Bold = true;
+
+                    using (ExcelRange headings = workSheet.Cells[3, 1, 3, 15])
+                    {
+                        headings.Style.Font.Bold = true;
+                        var fill = headings.Style.Fill;
+                        fill.PatternType = ExcelFillStyle.Solid;
+                        fill.BackgroundColor.SetColor(Color.LightBlue);
+                    }
+
+                    workSheet.Cells.AutoFitColumns();
+
+                    workSheet.Cells[1, 1].Value = "Players";
+                    using (ExcelRange Rng = workSheet.Cells[1, 1, 1, 15])
+                    {
+                        Rng.Merge = true;
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 18;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    }
+
+                    DateTime utcDate = DateTime.UtcNow;
+                    TimeZoneInfo esTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Eastern Standard Time");
+                    DateTime localDate = TimeZoneInfo.ConvertTimeFromUtc(utcDate, esTimeZone);
+                    using (ExcelRange Rng = workSheet.Cells[2, 15])
+                    {
+                        Rng.Value = "Created: " + localDate.ToShortTimeString() + " on " +
+                            localDate.ToShortDateString();
+                        Rng.Style.Font.Bold = true;
+                        Rng.Style.Font.Size = 12;
+                        Rng.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                    }
+
+                    byte[] theData = excel.GetAsByteArray();
+                    return theData;
                 }
             }
 
 
-            return View(statistic);
+            return null;
         }
+
+
+        private async Task DeletePlayersStatsAndShowMessage(List<Statistic> stats)
+        {
+            try
+            {
+                // Check if there are any players to delete
+                if (stats == null || stats.Count == 0)
+                {
+                    TempData["SuccessMessage"] = "There are no players available.";
+                    return;
+                }
+
+                // Delete all players and let cascade delete handle related entities
+                _context.Statistics.RemoveRange(stats);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "All players have been deleted successfully.";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while deleting players: {ex.Message}";
+            }
+        }
+
+
 
         private bool StatisticExists(int id)
         {

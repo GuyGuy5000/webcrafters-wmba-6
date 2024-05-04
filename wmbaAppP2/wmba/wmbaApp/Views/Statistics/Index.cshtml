@@ -143,6 +143,7 @@
                     <a asp-action="DownloadStatisticsReport" class="btn btn-outline-dark float-end d-none d-lg-table-cell deactivateTeam">Download Stats</a>
 
                 </div>
+               
             </tr>
         </thead>
         <tbody>
@@ -200,7 +201,7 @@
                     </td>
 
                     <td>
-                        @if (User.IsInRole("Coach") || User.IsInRole("Convenor"))
+                        @if (User.IsInRole("Coach") || User.IsInRole("Convenor") || User.IsInRole("Admin"))
                         {
                             <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm " role="button" data-bs-toggle="tooltip" title="Edit @ViewData["ControllerFriendlyName"]">
                                 <span></span><span></span><span></span><span></span>
@@ -212,9 +213,7 @@
                             <span></span><span></span><span></span><span></span>
                             Details
                         </a>
-                        @*                         <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-outline-primary" role="button" data-bs-toggle="tooltip" title="Delete @ViewData["ControllerFriendlyName"]">
-                    &#x274C;
-                    </a> *@
+                     
                     </td>
                 </tr>
             }

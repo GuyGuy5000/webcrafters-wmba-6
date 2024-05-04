@@ -60,7 +60,8 @@
 
                 </th>
                 <th class="d-sm-table-cell d-md-table-cell">
-                    <input type="submit" name="actionButton" value="Name" class="btn btn-link hover" data-bs-toggle="tooltip" title="Sort Player Name" />
+                    <input type="submit" name="actionButton" value="Name" class=" non-button-input" data-bs-toggle="tooltip" title="Sort Player Name" />
+                    <i class="fa-solid fa-arrows-up-down arrow non-button-input"></i>
                 </th>
                 <th class="d-none d-xxl-table-cell">
                     <h6 class="non-button-input" id="heading">
@@ -77,7 +78,7 @@
                     @if (!User.IsInRole("ScoreKeeper"))
                     {
                         <a asp-action="Create" class="btn btn-sm btn-outline-success" role="button" data-bs-toggle="tooltip" title="Create New @ViewData["ControllerFriendlyName"]">
-                            <strong>&#x270D; Create New</strong>
+                            <strong>Create </strong>
                         </a>
                     }
                 </th>

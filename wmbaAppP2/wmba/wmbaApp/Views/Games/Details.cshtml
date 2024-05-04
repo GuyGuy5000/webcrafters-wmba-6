@@ -71,17 +71,26 @@
                                 <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
                             </tr>
                         }
+
                         <div class="team-stats">
-                            @if (homeTeamStats.HasValue)
+                            @if (ViewData["HasHomePlayers"] != null && (bool)ViewData["HasHomePlayers"])
                             {
                                 <p class="percentage">
                                     The home team has <span>@homeTeamStats.Value.ToString("F2")%</span> chance of winning.
                                 </p>
                             }
+                            else
+                            {
+                                <p class="percentage">
+                                    The home team has no players, please add your players and try again.
+                                </p>
+                            }
                         </div>
-
                     }
-
+                    else
+                    {
+                        <p class="no-players-message">No players found for the home team.</p>
+                    }
                 </tbody>
             </table>
         </div>
@@ -102,17 +111,26 @@
                             <tr>
                                 <td class="font-italic font-weight-bold">@playerLineup.FullName</td>
                             </tr>
-
                         }
+
                         <div class="team-stats">
-                            @if (awayTeamStats.HasValue)
+                            @if (ViewData["HasAwayPlayers"] != null && (bool)ViewData["HasAwayPlayers"])
                             {
                                 <p class="percentage">
-                                    The away team has <span>@awayTeamStats.Value.ToString("F2")%</span> chance of winning.
+                                    The home team has <span>@awayTeamStats.Value.ToString("F2")%</span> chance of winning.
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="percentage">
+                                    The away team has no players, please add your players and try again.
                                 </p>
                             }
                         </div>
-
+                    }
+                    else
+                    {
+                        <p class="no-players-message">No players found for the away team.</p>
                     }
                 </tbody>
             </table>

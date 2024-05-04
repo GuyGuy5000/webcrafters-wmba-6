@@ -91,18 +91,50 @@ namespace wmbaApp.Data
 
             //Prevent cascade delete from division to teams
             modelBuilder.Entity<Team>()
-                .HasMany<Player>(t => t.Players)
-                .WithOne(p => p.Team)
-                .HasForeignKey(p => p.TeamID)
-                .OnDelete(DeleteBehavior.Restrict);
+               .HasMany(t => t.Players)
+               .WithOne(p => p.Team)
+               .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Team>()
+              .HasMany(t => t.DivisionCoaches)
+              .WithOne(dc => dc.Team)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Team>()
+    .HasMany(t => t.GameTeams)
+    .WithOne(dc => dc.Team)
+    .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Team>()
+    .HasMany(t => t.HomeGames)
+    .WithOne(g => g.HomeTeam)
+    .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Team>()
+                .HasMany(t => t.AwayGames)
+                .WithOne(g => g.AwayTeam)
+                .OnDelete(DeleteBehavior.Cascade);
 
 
-            //Prevent cascade delete from division to coaches
+            modelBuilder.Entity<Player>()
+            .HasMany(t => t.PlayerLineups)
+            .WithOne(p => p.Player)
+            .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Player>()
+      .HasOne(p => p.Statistics)
+      .WithMany(s => s.Players)
+      .HasForeignKey(s => s.StatisticID)
+      .OnDelete(DeleteBehavior.Cascade);
+
+            // Prevent cascade delete from division to coaches
             modelBuilder.Entity<Division>()
-                .HasMany<DivisionCoach>(d => d.DivisionCoaches)
-                .WithOne(c => c.Division)
-                .HasForeignKey(c => c.DivisionID)
+                .HasMany(d => d.DivisionCoaches)
+                .WithOne(dc => dc.Division)
+                .HasForeignKey(dc => dc.DivisionID)
                 .OnDelete(DeleteBehavior.Restrict);
+
 
             //Prevent cascade delete from Game to Innings
             modelBuilder.Entity<Game>()
