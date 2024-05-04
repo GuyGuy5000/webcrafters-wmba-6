@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Check if the current URL indicates a scorekeeping page or homepage
         if (phoneBack) {
-            const shouldHide = currentUrl.includes("ScoreKeeping") || currentUrl === "https://localhost:7297/";
+            const shouldHide = currentUrl.includes("ScoreKeeping") || currentUrl === "https://wmbaappbywebcrafters.azurewebsites.net/";
             phoneBack.style.display = shouldHide ? "none" : "block"; // Hide or show based on condition
         }
     }
@@ -175,10 +175,7 @@ $(document).ready(function () {
     });
 
 
-    //$('#btnView').on('click', function () {
-    //    // Submit the form when the user confirms the save action
-    //    $('#bck').show();
-    //});
+ 
 
     // Handle the click event for the "Back" button
     $('#tmsBck').on('click', function () {
